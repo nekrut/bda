@@ -1,0 +1,28 @@
+project:
+  type: website
+
+website:
+  title: "BMMB554"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+  sidebar:
+    contents:
+      - section: "Lectures"
+        contents:
+          - href: lectures/lecture1.ipynb
+            text: "1. Python basics"
+          - href: lectures/lecture2.qmd
+            text: "2. Introduction to Bash"
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+
+

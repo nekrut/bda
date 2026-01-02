@@ -1,0 +1,16 @@
+/.quarto/
+**/*.quarto_ipynb
+
+# Build output
+_site/
+
+# JupyterLite
+.jupyterlite.doit.db
+
+# OS files
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

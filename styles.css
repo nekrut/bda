@@ -1,0 +1,17 @@
+/* css styles */
+
+.navbar {
+  background-image: url('images/navbar-bg.png') !important;
+  background-size: cover;
+  background-position: center;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: black !important;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 0.5rem 1rem !important;
+  border-radius: 50px;
+  margin: 0.25rem;
+}

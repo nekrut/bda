@@ -1,0 +1,12 @@
+---
+title: "BMMB554 | Biological data analysis"
+---
+
+![](images/banner.png)
+
+<small style="font-size: 0.7em; color: gray;">Image by [Bob Harris](https://www.instagram.com/rorschachsflock?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==)</small>
+
+## Lectures
+
+1. [Python 1: Variables, expressions, statements, functions](lectures/lecture1.ipynb)
+2. [Introduction to Bash](lectures/lecture2.qmd)
