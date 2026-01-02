@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-01-02T23:01:35.134213Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-01-02T23:00:49.428296Z",
+      "mimetype": null,
+      "name": "lecture1.ipynb",
+      "path": "lecture1.ipynb",
+      "size": 110664,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2026-01-02T23:01:35.135213Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-01-02T23:00:49.428296Z",
+      "mimetype": null,
+      "name": "lecture2.qmd",
+      "path": "lecture2.qmd",
+      "size": 11845,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-01-02T23:01:35.135213Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-01-02T23:01:35.135213Z",
+  "mimetype": null,
+  "name": "",
+  "path": "",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

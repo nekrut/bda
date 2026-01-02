@@ -1,0 +1,347 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "lectures/lecture2.html",
+    "href": "lectures/lecture2.html",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "",
+    "text": "This lecture introduces you to the Unix command line (bash shell). You’ll learn how to navigate files and directories, manipulate files, and use powerful tools like pipes, loops, and pattern matching.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#step-1-create-a-github-account",
+    "href": "lectures/lecture2.html#step-1-create-a-github-account",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Step 1: Create a GitHub Account",
+    "text": "Step 1: Create a GitHub Account\n\n\n\n\n\n\nNote\n\n\n\nUse your PSU email because GitHub provides a lot of functionality for free to educational users.\n\n\nIf you don’t already have one, go to github.com and create a free account.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#step-2-create-a-new-repository",
+    "href": "lectures/lecture2.html#step-2-create-a-new-repository",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Step 2: Create a New Repository",
+    "text": "Step 2: Create a New Repository\n\nClick the + icon in the top right corner and select New repository\nName your repository bashing (or any other meaningful name you prefer)\nSelect Public or Private based on your preference\nCheck Add a README file\nClick Create repository",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#step-3-open-a-codespace",
+    "href": "lectures/lecture2.html#step-3-open-a-codespace",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Step 3: Open a Codespace",
+    "text": "Step 3: Open a Codespace\nGitHub Codespaces provides a complete VS Code environment in your browser:\n\nGo to your newly created repository\nClick the green Code button\nSelect the Codespaces tab\nClick Create codespace on main\n\nAfter a moment, you’ll have a full VS Code environment running in your browser!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#step-4-open-the-terminal",
+    "href": "lectures/lecture2.html#step-4-open-the-terminal",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Step 4: Open the Terminal",
+    "text": "Step 4: Open the Terminal\nIn VS Code (within Codespaces):\n\nUse the menu: Terminal → New Terminal\nOr use the keyboard shortcut: Ctrl+` (backtick)\n\nA terminal panel will open at the bottom of the screen. This is where you’ll type bash commands.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#step-5-verify-everything-works",
+    "href": "lectures/lecture2.html#step-5-verify-everything-works",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Step 5: Verify Everything Works",
+    "text": "Step 5: Verify Everything Works\nLet’s test that everything is working. Type the following command and press Enter:\nls\nYou should see a list of files in your current directory (at minimum, a README.md file). If you see this output, you’re ready to go!\nTry one more command:\npwd\nThis shows your current directory (pwd = “print working directory”). You should see something like /workspaces/bashing.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#background",
+    "href": "lectures/lecture2.html#background",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Background",
+    "text": "Background\nHumans and computers commonly interact through a graphical user interface (GUI) - clicking icons and using menus. While intuitive, GUIs don’t scale well for repetitive tasks.\nImagine copying the third line from 1000 text files in 1000 directories into a single file. With a GUI, this would take hours of clicking. With the Unix shell, it takes seconds.\nThe Unix shell is both a command-line interface (CLI) and a scripting language. It allows you to automate repetitive tasks quickly and efficiently.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#the-shell",
+    "href": "lectures/lecture2.html#the-shell",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "The Shell",
+    "text": "The Shell\nThe shell is a program where users type commands. The most popular Unix shell is Bash (Bourne Again SHell).\nWhen you open a terminal, you see a prompt (usually ending in $ or &gt;), indicating the shell is waiting for input:\n$\n\n\n\n\n\n\nImportant\n\n\n\nWhen typing commands from examples, do not type the $ - only type the commands that follow it.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#setup-test-data",
+    "href": "lectures/lecture2.html#setup-test-data",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Setup Test Data",
+    "text": "Setup Test Data\nLet’s download some test data to practice with:\ncd ~\nmkdir -p Desktop\ncd Desktop\nwget -c https://github.com/swcarpentry/shell-novice/raw/2929ba2cbb1bcb5ff0d1b4100c6e58b96e155fd1/data/shell-lesson-data.zip\nunzip -u shell-lesson-data.zip\nNow let’s explore this data.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#navigating-files-and-directories",
+    "href": "lectures/lecture2.html#navigating-files-and-directories",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Navigating Files and Directories",
+    "text": "Navigating Files and Directories\nThe file system organizes data into files and directories (folders). Several commands help us navigate.\nAt the top is the root directory (/) that holds everything else:\n\n\n\nThe file system is made up of a root directory that contains sub-directories titled bin, data, users, and tmp\n\n\n\npwd - Print Working Directory\nShows where you are:\npwd\n\n\nls - List Contents\nShows what’s in the current directory:\nls\nAdd the -F option to classify items (directories get /, executables get *):\nls -F\n\n\nGetting Help\nMost commands support --help:\nls --help\nOr use the manual pages:\nman ls\n(Press q to quit the manual)\n\n\nUseful ls Options\n\n\n\nOption\nDescription\n\n\n\n\n-l\nLong format (shows permissions, size, date)\n\n\n-h\nHuman-readable sizes (with -l)\n\n\n-a\nShow hidden files (starting with .)\n\n\n-t\nSort by modification time\n\n\n-r\nReverse order\n\n\n\nTry combining options:\nls -lh\n\n\ncd - Change Directory\nMove into a directory:\ncd shell-lesson-data\nls -F\nMove up one level with ..:\ncd ..\npwd\nMove to your home directory:\ncd\npwd\nOr use ~ as shorthand for home:\ncd ~/Desktop/shell-lesson-data\nThe home directory is where user files are stored:\n\n\n\nHome directories are sub-directories underneath ‘/Users’ like ‘/Users/imhotep’, ‘/Users/larry’ or ‘/Users/nelle’\n\n\n\n\n\n\n\n\nTipShortcuts\n\n\n\n\n~ = home directory\n. = current directory\n.. = parent directory\n- = previous directory (try cd -)\n\n\n\n\n\nTab Completion\nStart typing a path and press Tab to auto-complete:\ncd ~/Desktop/shell-l    # Press Tab here!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#working-with-files-and-directories",
+    "href": "lectures/lecture2.html#working-with-files-and-directories",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Working with Files and Directories",
+    "text": "Working with Files and Directories\n\nmkdir - Make Directory\nCreate a new directory:\ncd ~/Desktop/shell-lesson-data\nmkdir thesis\nls -F\nCreate nested directories with -p:\nmkdir -p project/data project/results\nls -FR project\n\n\nCreating Files\nCreate an empty file with touch:\ncd thesis\ntouch draft.txt\nls\nOr use a text editor. In VS Code, you can: - Click File → New File - Or run code draft.txt to open in the editor\n\n\ncp - Copy\nCopy a file:\ncd ~/Desktop/shell-lesson-data\ncp notes.txt thesis/notes-backup.txt\nls thesis\nCopy a directory (requires -r for recursive):\ncp -r thesis thesis_backup\nls\n\n\nmv - Move (or Rename)\nRename a file:\nmv thesis/draft.txt thesis/quotes.txt\nls thesis\nMove a file to a different directory:\nmv thesis/quotes.txt .\nls\n\n\nrm - Remove\n\n\n\n\n\n\nWarningDeleting is Forever!\n\n\n\nThe shell doesn’t have a trash bin. Once deleted, files are gone permanently.\n\n\nRemove a file:\nrm quotes.txt\nls quotes.txt\nRemove a directory (requires -r):\nrm -r thesis_backup\nUse -i for interactive confirmation:\nrm -i notes.txt",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#wildcards",
+    "href": "lectures/lecture2.html#wildcards",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Wildcards",
+    "text": "Wildcards\nWildcards let you match multiple files:\n\n\n\nWildcard\nMatches\n\n\n\n\n*\nZero or more characters\n\n\n?\nExactly one character\n\n\n\nExamples in molecules/ directory:\ncd ~/Desktop/shell-lesson-data/molecules\nls *.pdb          # All .pdb files\nls p*.pdb         # Files starting with 'p'\nls ???ane.pdb     # Three characters + 'ane.pdb'",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#pipes-and-filters",
+    "href": "lectures/lecture2.html#pipes-and-filters",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Pipes and Filters",
+    "text": "Pipes and Filters\n\nwc - Word Count\nCount lines, words, and characters:\ncd ~/Desktop/shell-lesson-data/molecules\nwc cubane.pdb\nwc -l *.pdb    # Lines only\n\n\nRedirecting Output\nSave output to a file with &gt;:\nwc -l *.pdb &gt; lengths.txt\ncat lengths.txt\n\n\n\n\n\n\nWarning\n\n\n\n&gt; overwrites files! Use &gt;&gt; to append instead.\n\n\n\n\nsort - Sort Lines\nsort -n lengths.txt    # Numeric sort\n\n\nhead and tail\nView the beginning or end of files:\nhead -n 3 lengths.txt    # First 3 lines\ntail -n 2 lengths.txt    # Last 2 lines\n\n\nThe Pipe Operator |\nConnect commands - output of one becomes input to the next:\nwc -l *.pdb | sort -n\nwc -l *.pdb | sort -n | head -n 1\nThis is the pipes and filters philosophy: small tools that do one thing well, combined together.\n\n\n\nRedirects and pipes: wc outputs to shell, wc &gt; file outputs to file, wc | sort | head builds a pipeline\n\n\n\n\ncat - Concatenate\nDisplay file contents:\ncat lengths.txt\nCombine multiple files:\ncat file1.txt file2.txt &gt; combined.txt",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#loops",
+    "href": "lectures/lecture2.html#loops",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Loops",
+    "text": "Loops\nLoops repeat commands for each item in a list:\ncd ~/Desktop/shell-lesson-data/creatures\n\nfor filename in basilisk.dat minotaur.dat unicorn.dat\ndo\n    head -n 2 $filename | tail -n 1\ndone\nUsing wildcards:\nfor file in *.dat\ndo\n    echo \"Processing $file\"\n    head -n 3 $file\ndone\n\nLoop Syntax\nfor variable in list\ndo\n    commands using $variable\ndone\nThe $ before a variable name retrieves its value.\n\n\nPractical Example: Backup Files\nfor filename in *.dat\ndo\n    cp $filename original-$filename\ndone\nls\n\n\nDry Run with echo\nTest what a loop would do before running it:\nfor filename in *.dat\ndo\n    echo \"cp $filename backup-$filename\"\ndone\nHere’s how a for loop executes:\n\n\n\nThe for loop assigns filenames to a variable and executes commands for each file",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#finding-things",
+    "href": "lectures/lecture2.html#finding-things",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Finding Things",
+    "text": "Finding Things\n\ngrep - Search File Contents\nFind lines matching a pattern:\ncd ~/Desktop/shell-lesson-data/writing\ngrep \"not\" haiku.txt\nUseful options:\n\n\n\nOption\nDescription\n\n\n\n\n-w\nMatch whole words only\n\n\n-n\nShow line numbers\n\n\n-i\nCase insensitive\n\n\n-r\nSearch recursively in directories\n\n\n-v\nInvert match (lines NOT matching)\n\n\n\nExamples:\ngrep -n \"the\" haiku.txt\ngrep -w \"The\" haiku.txt\ngrep -i \"the\" haiku.txt\ngrep -r \"Yesterday\" .\n\n\nfind - Search for Files\nThe find command searches for files by name or properties. Consider this directory structure:\n\n\n\nA file tree showing writing directory with subdirectories data, thesis, tools and files\n\n\nFind files by name or properties:\nfind . -type f              # All files\nfind . -type d              # All directories\nfind . -name \"*.txt\"        # Files ending in .txt\n\n\nCombining find and grep\nFind files, then search within them:\ngrep \"FE\" $(find .. -name \"*.pdb\")\nThe $() runs the command inside and substitutes its output.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#committing-your-work",
+    "href": "lectures/lecture2.html#committing-your-work",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Committing Your Work",
+    "text": "Committing Your Work\nYou’ve created files and directories in your Codespace. Let’s save this work to GitHub using VS Code’s built-in Git support.\n\nStep 1: Open Source Control\nClick the Source Control icon in the left sidebar (or press Ctrl+Shift+G).\n\n\nStep 2: Stage Changes\nYou’ll see a list of changed files. Click the + icon next to each file to stage it, or click + next to “Changes” to stage all.\n\n\nStep 3: Write a Commit Message\nIn the message box at the top, type a brief description of your changes:\nAdd shell lesson practice files\n\n\nStep 4: Commit\nClick the checkmark icon (or press Ctrl+Enter) to commit your changes.\n\n\nStep 5: Push to GitHub\nClick Sync Changes to push your commits to GitHub. Your work is now saved!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#summary",
+    "href": "lectures/lecture2.html#summary",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Summary",
+    "text": "Summary\nYou’ve learned:\n\nNavigation: pwd, ls, cd\nFile operations: mkdir, touch, cp, mv, rm\nViewing files: cat, head, tail\nRedirection: &gt;, &gt;&gt;, |\nProcessing: wc, sort, grep, find\nAutomation: for loops\nVersion control: Committing with VS Code\n\nThese commands form the foundation for working efficiently on the command line. The more you practice, the more natural they become!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture2.html#key-points",
+    "href": "lectures/lecture2.html#key-points",
+    "title": "Lecture 2: Introduction to Bash",
+    "section": "Key Points",
+    "text": "Key Points\n\nThe shell reads commands and runs programs\npwd, ls, and cd navigate the file system\ncp, mv, and rm manage files and directories\n* and ? are wildcards that match filenames\n| pipes connect commands together\nfor loops automate repetitive tasks\ngrep finds patterns in files; find finds files by name",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "2. Introduction to Bash"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html",
+    "href": "lectures/lecture1.html",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "",
+    "text": "🚀 Run in JupyterLite",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#generate-a-random-sequence",
+    "href": "lectures/lecture1.html#generate-a-random-sequence",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "Generate a random sequence",
+    "text": "Generate a random sequence\nNext, we will write a simple loop that would generate a seuqence of pre-set length:\n\nseq = ''\nfor _ in range(100):\n    seq += random.choice('ATCG')\n\n\nseq\n\n'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT'",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#simulate-one-polymerase-molecule",
+    "href": "lectures/lecture1.html#simulate-one-polymerase-molecule",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "Simulate one polymerase molecule",
+    "text": "Simulate one polymerase molecule\nThe code below iterates through each element of a sequence seq (assumed to be a string containing nucleotides) and it checks if the current nucleotide is equal to ‘A’. If it is, it generates a random number between 0 and 1 using the random.random() function.\nIt then checks if the random number is greater than 0.5. If it is, the code does nothing and proceeds to the next iteration. If the random number is less than or equal to 0.5, the code adds the lowercase version of the nucleotide (‘a’) to a string called synthesized_strand and then breaks out of the loop.\nIn every iteration of the loop, regardless of whether the nucleotide is ‘A’ or not, the code then adds the current nucleotide to the synthesized_strand string.\nThis means that when the current nucleotide is ‘A’, then the generated random number will decide whether the code will add the nucleotide ‘A’ or ‘a’ to the synthesized_strand, and it will break out of the loop after adding the nucleotide to the synthesized_strand.\n\nsynthesized_strand = ''\n\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        d_or_dd = random.random()\n        if d_or_dd &gt; 0.5:\n            None\n        else:\n            synthesized_strand += 'a'\n            break\n    synthesized_strand += nucleotide\n\nThis can be simplified by first removing d_or_dd variable:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        if random.random() &gt; 0.5:\n            None\n        else:\n            synthesized_strand += 'a'\n            break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCAa\n\n\nand removing unnecessary group of if ... else statements:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A' and random.random() &gt; 0.5:\n        synthesized_strand += 'a'\n        break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCa\n\n\nfinally let’s make synthesized_strand += 'a' a bit more generic:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A' and random.random() &gt; 0.5:\n        synthesized_strand += nucleotide.lower()\n        break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCa",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#simulating-multiple-molecules",
+    "href": "lectures/lecture1.html#simulating-multiple-molecules",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "Simulating multiple molecules",
+    "text": "Simulating multiple molecules\nTo simulate 10 polymerase molucles we simply wrap the code from above into a for loop:\n\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    print(synthesized_strand)\n\nGCCTACCGCCa\nGCCTACCGCCAAa\nGCCTACCGCCAa\nGCCTa\nGCCTa\nGCCTa\nGCCTa\nGCCTa\nGCCTACCGCCAa\nGCCTa\n\n\nOne problem with this code is that does not actually save the newly synthesized strand: it simply prints it. To fix this we will create a list (or an array) called new_strands and initialize it by assigning an empty array to it:\n\nnew_strands = []\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n\n\nnew_strands\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCa',\n 'GCCTa',\n 'GCCTACCGCCa']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#simulating-multiple-molecules-and-all-nucleotides",
+    "href": "lectures/lecture1.html#simulating-multiple-molecules-and-all-nucleotides",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "Simulating multiple molecules and all nucleotides",
+    "text": "Simulating multiple molecules and all nucleotides\nAnd to repeat this for the remaining three nucleotides we will do the following crazy thing:\n\nnew_strands = []\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'C' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'G' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'T' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n\n\nlen(new_strands)\n\n40\n\n\nRepeating the same code four times is just plain stupid so instead we will write a function called polymerase. Here we need to worry about the scope of variables. The scope of a variable refers to the regions of the code where the variable can be accessed or modified. Variables that are defined within a certain block of code (such as a function or a loop) are said to have a local scope, meaning that they can only be accessed within that block of code. Variables that are defined outside of any block of code are said to have a global scope, meaning that they can be accessed from anywhere in the code.\nIn most programming languages, a variable defined within a function has a local scope, and it can only be accessed within that function. If a variable with the same name is defined outside the function, it will have a global scope and can be accessed from anywhere in the code. However, if a variable with the same name is defined within the function, it will take precedence over the global variable and will be used within the function.\nThere are also some languages that have block scope, where a variable defined within a block (such as an if statement or a for loop) can only be accessed within that block and not outside of it.\nIn Python, variables defined in the main module have global scope and can be accessed from any function or module. Variables defined within a function have local scope, and they can only be accessed within that function. Variables defined within a loop or a block, can be accessed only within the scope of the loop or block.\n\ndef ddN(number_of_iterations, template, base, ddN_ratio):\n    new_strands = []\n    for _ in range(number_of_iterations):\n        synthesized_strand = ''\n        for nucleotide in template:\n            if nucleotide == base and random.random() &gt; ddN_ratio:\n                synthesized_strand += nucleotide.lower()\n                break\n            synthesized_strand += nucleotide\n        new_strands.append(synthesized_strand)\n    return(new_strands)\n\n\nddN(10,seq,'A',0.5)\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTACCGCCa',\n 'GCCTACCGCCa']\n\n\nTo execute this function on all four types of ddNTPs with need to wrap it in a for loop iterating over the four possibilies:\n\nfor nt in 'ATCG':\n    ddN(10,seq,nt,0.5)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#a-bit-about-lists",
+    "href": "lectures/lecture1.html#a-bit-about-lists",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "A bit about lists",
+    "text": "A bit about lists\nTo store the sequences being generated in the previous loop we will create and initialize a list called seq_run:\n\nseq_run = []\nfor nt in 'ATCG':\n    seq_run.append(ddN(10,seq,nt,0.5))\n\nyou will see that the seq run is a two-dimensional list:\n\nseq_run\n\n[['GCCTa',\n  'GCCTa',\n  'GCCTACCGCCAa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n  'GCCTa',\n  'GCCTa'],\n ['GCCt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGt',\n  'GCCTACCGCCAAACCGCCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCt'],\n ['Gc',\n  'Gc',\n  'Gc',\n  'GCCTACCGCc',\n  'GCCTAc',\n  'GCCTAc',\n  'GCCTACc',\n  'GCc',\n  'GCc',\n  'GCCTACCGCCAAAc'],\n ['GCCTACCg',\n  'GCCTACCg',\n  'GCCTACCGCCAAACCg',\n  'g',\n  'g',\n  'GCCTACCGCCAAACCg',\n  'g',\n  'g',\n  'g',\n  'GCCTACCg']]\n\n\nas you will read in your next home assignment list elements can be addressed by “index”. The first element has number 0:\n\nseq_run[0]\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n 'GCCTa',\n 'GCCTa']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#a-bit-about-dictionaries",
+    "href": "lectures/lecture1.html#a-bit-about-dictionaries",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "A bit about dictionaries",
+    "text": "A bit about dictionaries\nAnother way to store these data is in a dictionary, which is a collection of key:value pairs where a key and value can be anything:\n\nseq_run = {}\nfor nt in 'ATCG':\n    seq_run[nt] = ddN(10,seq,nt,0.90)\n\n\nseq_run\n\n{'A': ['GCCTACCGCCAAACCGCCTCCAGTGTTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n  'GCCTACCGCCAa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCa',\n  'GCCTACCGCCAAa'],\n 'T': ['GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGt',\n  'GCCTACCGCCAAACCGCCTCCAGTGt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCTCCAGt'],\n 'C': ['GCCTACCGCCAAACCGCCTCCAGTGTTAc',\n  'GCCTACCGCCAAACc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCCAAACCGc',\n  'GCc',\n  'GCCTACCGCc',\n  'GCc'],\n 'G': ['GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGg',\n  'GCCTACCGCCAAACCGCCTCCAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGg',\n  'GCCTACCg']}\n\n\ndictionary elements can be retrieved using a key:\n\nseq_run['A']\n\n['GCCTACCGCCAAACCGCCTCCAGTGTTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCa',\n 'GCCTACCGCCAAa']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#drawing-a-sequencing-gel",
+    "href": "lectures/lecture1.html#drawing-a-sequencing-gel",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "Drawing a sequencing gel",
+    "text": "Drawing a sequencing gel\nNow that we can simulate and store newly synthesized sequencing strands terminated with ddNTPs let us try to draw a realistic representation of the sequencing gel. For this we will use several componenets that will be discussed in a much greated deatil in the upcoming lectures. These componenets are:\n\npandas - a dataframe manipulation tool\naltair - a statistical visualization library built on top of vega-light visualization grammar\n\nThese two libraries will be used in almost all lectures concerning Python in this class.\nGel electophoresis separates molecules based on mass, shape, or charge. In case of DNA all molecules are universally negatively charges and thus will always migrate to (+) electrode. All our molecules are linear single stranded pieces (our gel is denaturing) and so the only physical/chemical characteristic that disnguished them is length. Therefore the first thing we will do is to convert our sequecnes into their lengths. For this we will initialize a new dictionary called seq_lengths:\n\nseq_lengths = {'base':[],'length':[]}\nfor key in seq_run.keys():\n    for sequence in seq_run[key]:\n        seq_lengths['base'].append(key)\n        seq_lengths['length'].append(len(sequence))\n\n\nseq_lengths\n\n{'base': ['A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G'],\n 'length': [28,\n  32,\n  5,\n  75,\n  100,\n  12,\n  5,\n  100,\n  74,\n  13,\n  41,\n  41,\n  55,\n  41,\n  40,\n  24,\n  94,\n  26,\n  4,\n  24,\n  29,\n  15,\n  14,\n  14,\n  10,\n  14,\n  17,\n  3,\n  10,\n  3,\n  78,\n  43,\n  53,\n  78,\n  37,\n  23,\n  53,\n  43,\n  93,\n  8]}\n\n\nnow let’s import pandas:\n\nimport pandas as pd\n\nand inject seq_lengths into a pandas dataframe:\n\nsequences = pd.DataFrame(seq_lengths)\n\nit looks pretty:\n\nsequences\n\n\n\n\n\n\n\n\nbase\nlength\n\n\n\n\n0\nA\n28\n\n\n1\nA\n32\n\n\n2\nA\n5\n\n\n3\nA\n75\n\n\n4\nA\n100\n\n\n5\nA\n12\n\n\n6\nA\n5\n\n\n7\nA\n100\n\n\n8\nA\n74\n\n\n9\nA\n13\n\n\n10\nT\n41\n\n\n11\nT\n41\n\n\n12\nT\n55\n\n\n13\nT\n41\n\n\n14\nT\n40\n\n\n15\nT\n24\n\n\n16\nT\n94\n\n\n17\nT\n26\n\n\n18\nT\n4\n\n\n19\nT\n24\n\n\n20\nC\n29\n\n\n21\nC\n15\n\n\n22\nC\n14\n\n\n23\nC\n14\n\n\n24\nC\n10\n\n\n25\nC\n14\n\n\n26\nC\n17\n\n\n27\nC\n3\n\n\n28\nC\n10\n\n\n29\nC\n3\n\n\n30\nG\n78\n\n\n31\nG\n43\n\n\n32\nG\n53\n\n\n33\nG\n78\n\n\n34\nG\n37\n\n\n35\nG\n23\n\n\n36\nG\n53\n\n\n37\nG\n43\n\n\n38\nG\n93\n\n\n39\nG\n8\n\n\n\n\n\n\n\nIn our data there is a number of DNA fragments that have identical length (just look at the dataframe above). We can condense these by grouping dataframe entries first by nucleotide (['base']) and then by length (['length']). For each group we will then compute count and put it into a new column named, unsurprisngly, count:\n\nsequences_grouped_by_length = sequences.groupby(\n    ['base','length']\n).agg(\n    count=pd.NamedAgg(\n        column='length',\n        aggfunc='count'\n    )\n).reset_index()\n\n\nsequences_grouped_by_length\n\n\n\n\n\n\n\n\nbase\nlength\ncount\n\n\n\n\n0\nA\n5\n2\n\n\n1\nA\n12\n1\n\n\n2\nA\n13\n1\n\n\n3\nA\n28\n1\n\n\n4\nA\n32\n1\n\n\n5\nA\n74\n1\n\n\n6\nA\n75\n1\n\n\n7\nA\n100\n2\n\n\n8\nC\n3\n2\n\n\n9\nC\n10\n2\n\n\n10\nC\n14\n3\n\n\n11\nC\n15\n1\n\n\n12\nC\n17\n1\n\n\n13\nC\n29\n1\n\n\n14\nG\n8\n1\n\n\n15\nG\n23\n1\n\n\n16\nG\n37\n1\n\n\n17\nG\n43\n2\n\n\n18\nG\n53\n2\n\n\n19\nG\n78\n2\n\n\n20\nG\n93\n1\n\n\n21\nT\n4\n1\n\n\n22\nT\n24\n2\n\n\n23\nT\n26\n1\n\n\n24\nT\n40\n1\n\n\n25\nT\n41\n3\n\n\n26\nT\n55\n1\n\n\n27\nT\n94\n1\n\n\n\n\n\n\n\nThe following chart is created using the alt.Chart() function and passing the data as an argument. The mark_tick() function is used to create a tick chart with a thickness of 4 pixels.\nThe chart is encoded with two main axis:\n\ny-axis which represents the length of the data and it is encoded by the 'length' field of the data.\nx-axis which represents the base of the data and it is encoded by the 'base' field of the data. The chart also encodes a color, it encodes the 'count' field of the data and it sets the legend to None and it uses the 'greys' scale from the Altair library.\n\nFinally, the chart properties are set to a width of 100 pixels and a height of 800 pixels.\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q'),\n    x = alt.X('base'),\n    color=alt.Color('count:Q',legend=None,\n                    scale=alt.Scale(scheme=\"greys\"))\n).properties(\n    width=100,\n    height=800)\n\n\n\n\n\n\n\nAnd here is a color version of the same graph using just one line of the gel:\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q'),\n    color=alt.Color('base:N',#legend=None,\n                    scale=alt.Scale(scheme=\"set1\"))\n).properties(\n    width=20,\n    height=800)\n\n\n\n\n\n\n\n\n# Generate random sequences\n\nseq = ''\nfor _ in range(300):\n    seq += random.choice('ATCG')",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#putting-everything-together",
+    "href": "lectures/lecture1.html#putting-everything-together",
+    "title": "Data analysis ecosystem: Language + Dataframes + Viz",
+    "section": "Putting everything together",
+    "text": "Putting everything together\n\nseq\n\n'TTTCGACCGAGTGGACTTCGTGTACAGAGCAAAACCAGCTGAGGACGCGTGAACCCACTGCCCGTGTGCGCGCGGTCTTCACACATAAATTGCTGAGATCCTTGCACCCCGGTATGACCAGCGTCCCACGTGCCTGTCATACTATAATGTGTATAGAATTTACAGTGGCATAAGCTATCCAGACAAGTGCCGTCGCATTCCACCTGCACGGGTTATGTCCATGGTTATATTCCAAGAAAAGATGATGGAACATATTGGACACAATGTGATTGAGTCCTTCCTGGGCGAAGGTGTTCTATG'\n\n\n\n# Function silulating a single run of a single polymerase molecule\n\ndef ddN(number_of_iterations, template, base, ddN_ratio):\n    new_strands = []\n    for _ in range(number_of_iterations):\n        synthesized_strand = ''\n        for nucleotide in template:\n            if nucleotide == base and random.random() &gt; ddN_ratio:\n                synthesized_strand += nucleotide.lower()\n                break\n            synthesized_strand += nucleotide\n        new_strands.append(synthesized_strand)\n    return(new_strands)\n\n\n# Generating simulated sequencing run\n\nseq_run = {}\nfor nt in 'ATCG':\n    seq_run[nt] = ddN(100000,seq,nt,0.95)\n\n\n# Computing lengths\n\nseq_lengths = {'base':[],'length':[]}\nfor key in seq_run.keys():\n    for sequence in seq_run[key]:\n        seq_lengths['base'].append(key)\n        seq_lengths['length'].append(len(sequence))\n\n\n# Converting dictionaty into Pandas dataframe\n\nsequences = pd.DataFrame(seq_lengths)\n\n\n# Grouping by nucleotide and length\n\nsequences_grouped_by_length = sequences.groupby(\n    ['base','length']\n).agg(\n    count=pd.NamedAgg(\n        column='length',\n        aggfunc='count'\n    )\n).reset_index()\n\n\n# Plotting (note the quadratic scale for realism)\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q',scale=alt.Scale(type='sqrt')),\n    x = alt.X('base'),\n    color=alt.Color('count:Q',legend=None,\n                    scale=alt.Scale(type='log',scheme=\"greys\")),\n    tooltip='count:Q'\n).properties(\n    width=100,\n    height=800)\n\n\n\n\n\n\n\n\n# Plotting using color\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q',scale=alt.Scale(type=\"sqrt\")),\n    color=alt.Color('base:N',#legend=None,\n                    scale=alt.Scale(scheme=\"set1\")),\n    opacity=alt.Opacity('count:N',legend=None),\n    tooltip='count:Q'\n).properties(\n    width=20,\n    height=800)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Python basics"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "",
+    "text": "Image by Bob Harris"
+  },
+  {
+    "objectID": "index.html#lectures",
+    "href": "index.html#lectures",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "Lectures",
+    "text": "Lectures\n\nPython 1: Variables, expressions, statements, functions\nIntroduction to Bash"
+  }
+]
