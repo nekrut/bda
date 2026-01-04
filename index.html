@@ -95,6 +95,13 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Home</span></a>
   </li>  
 </ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
@@ -151,9 +158,10 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#goals-of-this-class" id="toc-goals-of-this-class" class="nav-link active" data-scroll-target="#goals-of-this-class">Goals of this class</a></li>
-  <li><a href="#spring-2026-jan-12---may-1" id="toc-spring-2026-jan-12---may-1" class="nav-link" data-scroll-target="#spring-2026-jan-12---may-1">Spring 2026 | Jan 12 - May 1</a></li>
+  <li><a href="#lectures" id="toc-lectures" class="nav-link" data-scroll-target="#lectures">Lectures</a></li>
+  <li><a href="#academic-integrity" id="toc-academic-integrity" class="nav-link" data-scroll-target="#academic-integrity">Academic integrity</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -181,16 +189,25 @@ ul.task-list li input[type="checkbox"] {
 <p><small style="font-size: 0.7em; color: gray;">Image by <a href="https://www.instagram.com/rorschachsflock?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw==">Bob Harris</a></small></p>
 <section id="goals-of-this-class" class="level2">
 <h2 class="anchored" data-anchor-id="goals-of-this-class">Goals of this class</h2>
-<p>Genomic data analysis can be represented as a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This <strong>primary analysis</strong> uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don’t yet contain biological insights.</p>
+<p>Genomic data analysis is a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This <strong>primary analysis</strong> uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don’t yet contain biological insights.</p>
 <p>The <strong>secondary analysis</strong> extracts meaning from these intermediate data. It’s typically done on a case-by-case basis using frameworks like Jupyter, RStudio, or Observable, since the approach depends on your experimental design. This is where programming, data management, and version control skills become critical.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/data-pyramid.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%"></p>
+<p><img src="images/data-pyramid.svg" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption><strong>Data analysis as a pyramid.</strong> Primary data (sequencing reads) is processed into smaller intermediate datasets, which are then analyzed to produce final insights—the content of your theses, publications, and blog posts. As you climb the pyramid, standardization (availability of standard tools and procedures) and computational demands all decrease.</figcaption>
 </figure>
 </div>
+<p>In this course we will try to learn key skills for climbing this pyramid. The course will be divided into following sections:</p>
+<ol type="1">
+<li><strong>Foundation | Tools</strong> - UNIX shell, Python for data manipulation, Python for visualization, version control with Git/GitHub, and responsible use of agentic AI tools.</li>
+<li><strong>Foundations | Computational approaches</strong> - algorithms for alignment, mapping, assembly, and composition analysis.<br>
+</li>
+<li><strong>Application | Datatypes and analysis</strong> - hands on primary and secondary analyses in genome assembly, transcriptomics, variation, epigenetics, and community analysis.</li>
+<li><strong>Application | Class projects</strong> - class will be divided into groups with each group given a research project.</li>
+</ol>
 </section>
-<section id="spring-2026-jan-12---may-1" class="level2">
-<h2 class="anchored" data-anchor-id="spring-2026-jan-12---may-1">Spring 2026 | Jan 12 - May 1</h2>
+<section id="lectures" class="level2">
+<h2 class="anchored" data-anchor-id="lectures">Lectures</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -204,67 +221,67 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td>1</td>
 <td>Jan 14</td>
-<td><a href="./lectures/lecture1.html">Python 1</a></td>
+<td><a href="./lectures/lecture1.html">Overview of python stack</a></td>
 <td></td>
 </tr>
 <tr class="even">
 <td>2</td>
 <td>Jan 16</td>
-<td><a href="./lectures/lecture2.html">Bash, Git</a></td>
+<td><a href="./lectures/lecture2.html">UNIX shell</a></td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>3</td>
 <td>Jan 21</td>
-<td>Python 2</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>4</td>
 <td>Jan 23</td>
-<td>Python 3</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>5</td>
 <td>Jan 28</td>
-<td>Python 4</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>6</td>
 <td>Jan 30</td>
-<td>Sequencing</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>7</td>
 <td>Feb 4</td>
-<td>Mapping</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>8</td>
 <td>Feb 6</td>
-<td>SAM/BAM</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>9</td>
 <td>Feb 11</td>
-<td>Variation I</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>10</td>
 <td>Feb 13</td>
-<td>Variation II</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>11</td>
 <td>Feb 18</td>
-<td>Genome graphs</td>
+<td>-</td>
 <td></td>
 </tr>
 <tr class="even">
@@ -297,98 +314,91 @@ ul.task-list li input[type="checkbox"] {
 <td>TBD</td>
 <td></td>
 </tr>
-</tbody>
-</table>
-<p>— Spring break —</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>#</th>
-<th>Date</th>
-<th>Topic</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
 <tr class="odd">
+<td>-</td>
+<td>-</td>
+<td>Spring break</td>
+<td></td>
+</tr>
+<tr class="even">
 <td>17</td>
 <td>Mar 17</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>18</td>
 <td>Mar 19</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>19</td>
 <td>Mar 24</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>20</td>
 <td>Mar 26</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>21</td>
 <td>Mar 31</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>22</td>
 <td>Apr 2</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>23</td>
 <td>Apr 7</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>24</td>
 <td>Apr 9</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>25</td>
 <td>Apr 14</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>26</td>
 <td>Apr 16</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>27</td>
 <td>Apr 21</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>28</td>
 <td>Apr 23</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>29</td>
 <td>Apr 28</td>
 <td>TBD</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>30</td>
 <td>Apr 29</td>
 <td>TBD</td>
@@ -396,11 +406,10 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<hr>
+</section>
+<section id="academic-integrity" class="level2">
+<h2 class="anchored" data-anchor-id="academic-integrity">Academic integrity</h2>
 <div style="font-size: 0.8em;">
-<h4 class="anchored">
-Academic Integrity
-</h4>
 <p>Academic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see <a href="https://undergrad.psu.edu/aappm/G-9-academic-integrity.html">Penn State Policy G-9</a>).</p>
 <p>Dishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.</p>
 <p><strong>Use of AI Tools</strong>: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.</p>
@@ -828,4 +837,4 @@ Counseling and Mental Health
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
