@@ -6,7 +6,80 @@ title: "BMMB554 | Biological data analysis"
 
 <small style="font-size: 0.7em; color: gray;">Image by [Bob Harris](https://www.instagram.com/rorschachsflock?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==)</small>
 
-## Lectures
+## Goals of this class
 
-1. [Python 1: Variables, expressions, statements, functions](lectures/lecture1.ipynb)
-2. [Introduction to Bash](lectures/lecture2.qmd)
+Genomic data analysis can be represented as a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This **primary analysis** uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don't yet contain biological insights.
+
+The **secondary analysis** extracts meaning from these intermediate data. It's typically done on a case-by-case basis using frameworks like Jupyter, RStudio, or Observable, since the approach depends on your experimental design. This is where programming, data management, and version control skills become critical. 
+
+
+
+![](images/data-pyramid.svg){width=50% fig-align="center"}
+
+## Spring 2026 | Jan 12 - May 1
+
+| # | Date | Topic | Description |
+|---|------|-------|-------------|
+| 1 | Jan 14 | [Python 1](lectures/lecture1.ipynb) | |
+| 2 | Jan 16 | [Bash, Git](lectures/lecture2.qmd) | |
+| 3 | Jan 21 | Python 2 | |
+| 4 | Jan 23 | Python 3 | |
+| 5 | Jan 28 | Python 4 | |
+| 6 | Jan 30 | Sequencing | |
+| 7 | Feb 4 | Mapping | |
+| 8 | Feb 6 | SAM/BAM | |
+| 9 | Feb 11 | Variation I | |
+| 10 | Feb 13 | Variation II | |
+| 11 | Feb 18 | Genome graphs | |
+| 12 | Feb 20 | TBD | |
+| 13 | Feb 25 | TBD | |
+| 14 | Feb 27 | TBD | |
+| 15 | Mar 4 | TBD | |
+| 16 | Mar 6 | TBD | |
+
+--- Spring break ---
+
+| # | Date | Topic | Description |
+|---|------|-------|-------------|
+| 17 | Mar 17 | TBD | |
+| 18 | Mar 19 | TBD | |
+| 19 | Mar 24 | TBD | |
+| 20 | Mar 26 | TBD | |
+| 21 | Mar 31 | TBD | |
+| 22 | Apr 2 | TBD | |
+| 23 | Apr 7 | TBD | |
+| 24 | Apr 9 | TBD | |
+| 25 | Apr 14 | TBD | |
+| 26 | Apr 16 | TBD | |
+| 27 | Apr 21 | TBD | |
+| 28 | Apr 23 | TBD | |
+| 29 | Apr 28 | TBD | |
+| 30 | Apr 29 | TBD | |
+
+---
+
+<div style="font-size: 0.8em;">
+
+<h4>Academic Integrity</h4>
+
+Academic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students' dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see [Penn State Policy G-9](https://undergrad.psu.edu/aappm/G-9-academic-integrity.html)).
+
+Dishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.
+
+**Use of AI Tools**: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.
+
+<h4>Educational Equity</h4>
+
+Penn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.
+
+Report incidents of bias at [https://equity.psu.edu/report-bias](https://equity.psu.edu/report-bias).
+
+<h4>Disability Accommodations</h4>
+
+Penn State welcomes students with disabilities into the University's educational programs. If you have a disability-related need for reasonable academic adjustments, contact [Student Disability Resources](https://equity.psu.edu/student-disability-resources) at your campus.
+
+<h4>Counseling and Mental Health</h4>
+
+Students facing personal or academic stressors may benefit from counseling or other support. Contact [Counseling and Psychological Services (CAPS)](https://studentaffairs.psu.edu/caps) or the Penn State Crisis Line at **877-229-6400** (24/7).
+
+</div>
