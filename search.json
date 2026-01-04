@@ -338,10 +338,17 @@
     "text": "Image by Bob Harris"
   },
   {
-    "objectID": "index.html#lectures",
-    "href": "index.html#lectures",
+    "objectID": "index.html#goals-of-this-class",
+    "href": "index.html#goals-of-this-class",
     "title": "BMMB554 | Biological data analysis",
-    "section": "Lectures",
-    "text": "Lectures\n\nPython 1: Variables, expressions, statements, functions\nIntroduction to Bash"
+    "section": "Goals of this class",
+    "text": "Goals of this class\nGenomic data analysis can be represented as a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This primary analysis uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don’t yet contain biological insights.\nThe secondary analysis extracts meaning from these intermediate data. It’s typically done on a case-by-case basis using frameworks like Jupyter, RStudio, or Observable, since the approach depends on your experimental design. This is where programming, data management, and version control skills become critical."
+  },
+  {
+    "objectID": "index.html#spring-2026-jan-12---may-1",
+    "href": "index.html#spring-2026-jan-12---may-1",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "Spring 2026 | Jan 12 - May 1",
+    "text": "Spring 2026 | Jan 12 - May 1\n\n\n\n#\nDate\nTopic\nDescription\n\n\n\n\n1\nJan 14\nPython 1\n\n\n\n2\nJan 16\nBash, Git\n\n\n\n3\nJan 21\nPython 2\n\n\n\n4\nJan 23\nPython 3\n\n\n\n5\nJan 28\nPython 4\n\n\n\n6\nJan 30\nSequencing\n\n\n\n7\nFeb 4\nMapping\n\n\n\n8\nFeb 6\nSAM/BAM\n\n\n\n9\nFeb 11\nVariation I\n\n\n\n10\nFeb 13\nVariation II\n\n\n\n11\nFeb 18\nGenome graphs\n\n\n\n12\nFeb 20\nTBD\n\n\n\n13\nFeb 25\nTBD\n\n\n\n14\nFeb 27\nTBD\n\n\n\n15\nMar 4\nTBD\n\n\n\n16\nMar 6\nTBD\n\n\n\n\n— Spring break —\n\n\n\n#\nDate\nTopic\nDescription\n\n\n\n\n17\nMar 17\nTBD\n\n\n\n18\nMar 19\nTBD\n\n\n\n19\nMar 24\nTBD\n\n\n\n20\nMar 26\nTBD\n\n\n\n21\nMar 31\nTBD\n\n\n\n22\nApr 2\nTBD\n\n\n\n23\nApr 7\nTBD\n\n\n\n24\nApr 9\nTBD\n\n\n\n25\nApr 14\nTBD\n\n\n\n26\nApr 16\nTBD\n\n\n\n27\nApr 21\nTBD\n\n\n\n28\nApr 23\nTBD\n\n\n\n29\nApr 28\nTBD\n\n\n\n30\nApr 29\nTBD\n\n\n\n\n\n\n\nAcademic Integrity\n\nAcademic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see Penn State Policy G-9).\nDishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.\nUse of AI Tools: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.\n\nEducational Equity\n\nPenn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.\nReport incidents of bias at https://equity.psu.edu/report-bias.\n\nDisability Accommodations\n\nPenn State welcomes students with disabilities into the University’s educational programs. If you have a disability-related need for reasonable academic adjustments, contact Student Disability Resources at your campus.\n\nCounseling and Mental Health\n\nStudents facing personal or academic stressors may benefit from counseling or other support. Contact Counseling and Psychological Services (CAPS) or the Penn State Crisis Line at 877-229-6400 (24/7)."
   }
 ]
