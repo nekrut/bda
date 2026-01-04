@@ -3,10 +3,16 @@ project:
 
 website:
   title: "BMMB554"
+  repo-url: https://github.com/nekrut/bda
+  repo-actions: [edit]
   navbar:
     left:
       - href: index.qmd
         text: Home
+    right:
+      - icon: github
+        href: https://github.com/nekrut/bda
+        text: "Edit on GitHub"
   sidebar:
     contents:
       - section: "Lectures"
