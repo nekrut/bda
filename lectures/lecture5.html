@@ -234,7 +234,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>🚀 <a href="../lite/lab/index.html?path=lecture5.ipynb" class="btn btn-primary" target="_blank">Run in JupyterLite</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/main/lectures/lecture5.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Open In Colab</figcaption>
+</figure>
+</div>
 <section id="lecture-5-file-io-in-python" class="level1">
 <h1>Lecture 5: File I/O in Python</h1>
 <p>In this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.</p>
@@ -242,43 +247,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reading-and-writing-files-in-python" class="level1">
 <h1>Reading and writing files in Python</h1>
 <p>First let’s download a file we will be using:</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>JupyterLite Compatibility
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This notebook checks if data files exist locally before downloading. In JupyterLite, files are pre-loaded so no download is needed. In standard Jupyter, the files will be downloaded automatically. The shell equivalent would be:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!curl</span> <span class="at">-sLO</span> https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/mt_cds.fa</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-<div id="cell-3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.504906Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.504788Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.508648Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.508236Z&quot;}}" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> <span class="st">"mt_cds.fa"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.exists(filename):</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> urllib.request <span class="im">import</span> urlretrieve</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    urlretrieve(<span class="st">"https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/mt_cds.fa"</span>, filename)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Downloaded: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Using pre-loaded file: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Using pre-loaded file: mt_cds.fa</code></pre>
-</div>
+<div id="cell-3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:42.161665Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:42.161600Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.076209Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.075328Z&quot;}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>raw.githubusercontent.com<span class="op">/</span>nekrut<span class="op">/</span>BMMB554<span class="op">/</span>master<span class="op">/</span><span class="dv">2023</span><span class="op">/</span>data<span class="op">/</span>l9<span class="op">/</span>mt_cds.fa</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>In Python, you can handle files using the built-in <code>open</code> function. The <code>open</code> function creates a file object, which you can use to read, write, or modify the file.</p>
 <p>Here’s an example of how to open a file for reading:</p>
-<div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.527480Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.527380Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.529308Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.528995Z&quot;}}" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.078545Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.078356Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.081112Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.080480Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>In this example, the open function takes two arguments: the name of the file, and the mode in which you want to open the file. The <code>r</code> mode indicates that you want to open the file for reading.</p>
 <p>After you’ve opened the file, you can read its contents using the read method:</p>
-<div id="cell-7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.530514Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.530428Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.532173Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.531886Z&quot;}}" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>contents <span class="op">=</span> f.read()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(contents[:<span class="dv">500</span>])  <span class="co"># Print first 500 characters</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.082827Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.082707Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.085115Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.084656Z&quot;}}" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>contents <span class="op">=</span> f.read()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(contents[:<span class="dv">500</span>])  <span class="co"># Print first 500 characters</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&gt;ENST00000387314.1
 GTTTATGTAGCTTACCTCCTCAAAGCAATACACTGAAAATGTTTAGACGGGCTCACATCA
@@ -294,10 +275,10 @@ ACACAAAATAGACTACGAAAGTG</code></pre>
 </div>
 </div>
 <p>You can also read the file line by line using the readline method:</p>
-<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.533211Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.533153Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.534966Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.534624Z&quot;}}" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> f.readline()</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(line)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.086857Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.086700Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.089060Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.088605Z&quot;}}" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> f.readline()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(line)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&gt;ENST00000387314.1
 </code></pre>
@@ -305,10 +286,10 @@ ACACAAAATAGACTACGAAAGTG</code></pre>
 </div>
 <p>The <code>with</code> statement automatically closes the file when you’re done, which is the recommended way to handle files in Python. It ensures resources are properly released even if an error occurs.</p>
 <p>You can also use the <code>with</code> statement to automatically close the file when you’re done:</p>
-<div id="cell-12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.535961Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.535906Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.537484Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.537229Z&quot;}}" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    contents <span class="op">=</span> f.read()</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(contents[:<span class="dv">500</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.090344Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.090248Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.092301Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.091867Z&quot;}}" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    contents <span class="op">=</span> f.read()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(contents[:<span class="dv">500</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&gt;ENST00000387314.1
 GTTTATGTAGCTTACCTCCTCAAAGCAATACACTGAAAATGTTTAGACGGGCTCACATCA
@@ -324,26 +305,26 @@ ACACAAAATAGACTACGAAAGTG</code></pre>
 </div>
 </div>
 <p>You can also write to files using <code>write</code> method (note the <code>"w"</code> mode):</p>
-<div id="cell-14" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.538404Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.538340Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.540097Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.539769Z&quot;}}" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="st">"This is a new line."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-14" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.093526Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.093431Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.095547Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.095075Z&quot;}}" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="st">"This is a new line."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-15" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.541009Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.540936Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.542611Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.542275Z&quot;}}" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify what we wrote</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(f.read())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-15" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.096702Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.096603Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.098611Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.098169Z&quot;}}" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify what we wrote</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(f.read())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>This is a new line.</code></pre>
 </div>
 </div>
 <p>If you open an existing file in write mode, its contents will be overwritten. If you want to append to an existing file instead, you can use the <code>"a"</code> mode:</p>
-<div id="cell-17" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.543479Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.543428Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.545136Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.544835Z&quot;}}" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"a"</span>) <span class="im">as</span> f:</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="st">" This is another line."</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(f.read())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-17" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.099736Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.099652Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:44.101799Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:44.101400Z&quot;}}" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"a"</span>) <span class="im">as</span> f:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="st">" This is another line."</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"sample.txt"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(f.read())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>This is a new line. This is another line.</code></pre>
 </div>
@@ -351,38 +332,14 @@ ACACAAAATAGACTACGAAAGTG</code></pre>
 <p>The <code>with</code> statement ensures files are properly closed even if an error occurs, making it the recommended approach for all file operations.</p>
 <p>In addition to reading and writing text files, you can also use Python to handle binary files, such as images or audio files.</p>
 <p>Let’s download an image:</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>JupyterLite Compatibility
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This uses Python’s <code>urllib.request</code> module for JupyterLite compatibility. In a standard Jupyter environment:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!curl</span> <span class="at">-sLO</span> https://imgs.xkcd.com/comics/file_extensions.png</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-<div id="cell-19" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.546068Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.546010Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.547705Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.547399Z&quot;}}" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> <span class="st">"file_extensions.png"</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.exists(filename):</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> urllib.request <span class="im">import</span> urlretrieve</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    urlretrieve(<span class="st">"https://imgs.xkcd.com/comics/file_extensions.png"</span>, filename)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Downloaded: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Using pre-loaded file: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Using pre-loaded file: file_extensions.png</code></pre>
-</div>
+<div id="cell-19" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:44.102909Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:44.102819Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:46.663318Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:46.662147Z&quot;}}" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>imgs.xkcd.com<span class="op">/</span>comics<span class="op">/</span>file_extensions.png</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here’s an example of how to read an image file:</p>
-<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.548541Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.548491Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.550072Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.549742Z&quot;}}" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"file_extensions.png"</span>, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    contents <span class="op">=</span> f.read()</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Read </span><span class="sc">{</span><span class="bu">len</span>(contents)<span class="sc">}</span><span class="ss"> bytes from image file"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:46.666075Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:46.665887Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:46.669061Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:46.668567Z&quot;}}" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"file_extensions.png"</span>, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    contents <span class="op">=</span> f.read()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Read </span><span class="sc">{</span><span class="bu">len</span>(contents)<span class="sc">}</span><span class="ss"> bytes from image file"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Read 12276 bytes from image file</code></pre>
 </div>
@@ -394,29 +351,29 @@ ACACAAAATAGACTACGAAAGTG</code></pre>
 <h2 class="anchored" data-anchor-id="fasta"><a href="https://en.wikipedia.org/wiki/FASTA_format">FASTA</a></h2>
 <p>FASTA is a file format that is commonly used to store biological sequences, such as DNA or protein sequences. In Python, you can read a FASTA file by opening the file, reading the lines one by one, and processing the data as needed.</p>
 <p>Here’s an example of how you might read a FASTA file in Python:</p>
-<div id="cell-24" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.550952Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.550887Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.554661Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.554382Z&quot;}}" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sequences <span class="op">=</span> {}</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    sequence <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> <span class="bu">file</span>:</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        line <span class="op">=</span> line.rstrip()</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> line.startswith(<span class="st">'&gt;'</span>):</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> header <span class="op">!=</span> <span class="st">""</span>:</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                sequences[header] <span class="op">=</span> sequence</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                sequence <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            header <span class="op">=</span> line[<span class="dv">1</span>:]</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            sequence <span class="op">+=</span> line</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> header <span class="op">!=</span> <span class="st">""</span>:</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        sequences[header] <span class="op">=</span> sequence</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-24" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:46.670708Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:46.670579Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:46.673453Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:46.673074Z&quot;}}" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sequences <span class="op">=</span> {}</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"mt_cds.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    sequence <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> <span class="bu">file</span>:</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        line <span class="op">=</span> line.rstrip()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> line.startswith(<span class="st">'&gt;'</span>):</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> header <span class="op">!=</span> <span class="st">""</span>:</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                sequences[header] <span class="op">=</span> sequence</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                sequence <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            header <span class="op">=</span> line[<span class="dv">1</span>:]</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>            sequence <span class="op">+=</span> line</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> header <span class="op">!=</span> <span class="st">""</span>:</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        sequences[header] <span class="op">=</span> sequence</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-25" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.555491Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.555445Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.556995Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.556711Z&quot;}}" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's see what we got</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of sequences: </span><span class="sc">{</span><span class="bu">len</span>(sequences)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Headers:"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> header <span class="kw">in</span> <span class="bu">list</span>(sequences.keys())[:<span class="dv">5</span>]:  <span class="co"># Show first 5</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>header[:<span class="dv">60</span>]<span class="sc">}</span><span class="ss">..."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-25" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:46.675052Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:46.674946Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:46.677283Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:46.676905Z&quot;}}" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's see what we got</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of sequences: </span><span class="sc">{</span><span class="bu">len</span>(sequences)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Headers:"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> header <span class="kw">in</span> <span class="bu">list</span>(sequences.keys())[:<span class="dv">5</span>]:  <span class="co"># Show first 5</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>header[:<span class="dv">60</span>]<span class="sc">}</span><span class="ss">..."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of sequences: 37
 
@@ -428,12 +385,12 @@ Headers:
   ENST00000386347.1...</code></pre>
 </div>
 </div>
-<div id="cell-26" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.557810Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.557748Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.559300Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.558999Z&quot;}}" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at one sequence</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>first_header <span class="op">=</span> <span class="bu">list</span>(sequences.keys())[<span class="dv">0</span>]</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Header: </span><span class="sc">{</span>first_header<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sequence length: </span><span class="sc">{</span><span class="bu">len</span>(sequences[first_header])<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"First 100 bp: </span><span class="sc">{</span>sequences[first_header][:<span class="dv">100</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-26" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:46.678405Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:46.678316Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:46.680411Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:46.679986Z&quot;}}" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at one sequence</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>first_header <span class="op">=</span> <span class="bu">list</span>(sequences.keys())[<span class="dv">0</span>]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Header: </span><span class="sc">{</span>first_header<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sequence length: </span><span class="sc">{</span><span class="bu">len</span>(sequences[first_header])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"First 100 bp: </span><span class="sc">{</span>sequences[first_header][:<span class="dv">100</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Header: ENST00000387314.1
 Sequence length: 71
@@ -446,60 +403,36 @@ First 100 bp: GTTTATGTAGCTTACCTCCTCAAAGCAATACACTGAAAATGTTTAGACGGGCTCACATCACCCCAT
 <section id="fastq" class="level2">
 <h2 class="anchored" data-anchor-id="fastq"><a href="https://en.wikipedia.org/wiki/FASTQ_format">FASTQ</a></h2>
 <p>Let’s download a sample FASTQ file:</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>JupyterLite Compatibility
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This uses Python’s <code>urllib.request</code> module for JupyterLite compatibility. In a standard Jupyter environment:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!curl</span> <span class="at">-sLO</span> https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/reads.fq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-<div id="cell-29" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.560201Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.560153Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.561805Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.561526Z&quot;}}" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> <span class="st">"reads.fq"</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.exists(filename):</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> urllib.request <span class="im">import</span> urlretrieve</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    urlretrieve(<span class="st">"https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/reads.fq"</span>, filename)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Downloaded: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Using pre-loaded file: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Using pre-loaded file: reads.fq</code></pre>
-</div>
+<div id="cell-29" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:46.681642Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:46.681571Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:48.439539Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:48.438574Z&quot;}}" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>raw.githubusercontent.com<span class="op">/</span>nekrut<span class="op">/</span>BMMB554<span class="op">/</span>master<span class="op">/</span><span class="dv">2023</span><span class="op">/</span>data<span class="op">/</span>l9<span class="op">/</span>reads.fq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>FASTQ is a file format that is commonly used to store high-throughput sequencing data. It consists of a series of records, each of which includes a header, a sequence, a quality score header, and a quality score string. In Python, you can read a FASTQ file by opening the file, reading the lines four at a time, and processing the data as needed.</p>
 <p>Here’s an example of how you might read a FASTQ file in Python:</p>
-<div id="cell-31" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.562597Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.562549Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.564204Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.563896Z&quot;}}" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_fastq(file_path):</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    records <span class="op">=</span> []</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(file_path, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>            header <span class="op">=</span> f.readline().strip()</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> header <span class="op">==</span> <span class="st">""</span>:</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>            sequence <span class="op">=</span> f.readline().strip()</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>            quality_header <span class="op">=</span> f.readline().strip()</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>            quality <span class="op">=</span> f.readline().strip()</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>            records.append((header, sequence, quality))</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> records</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-31" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:48.441969Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:48.441796Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:48.444669Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:48.444204Z&quot;}}" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_fastq(file_path):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    records <span class="op">=</span> []</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(file_path, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            header <span class="op">=</span> f.readline().strip()</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> header <span class="op">==</span> <span class="st">""</span>:</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>            sequence <span class="op">=</span> f.readline().strip()</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            quality_header <span class="op">=</span> f.readline().strip()</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            quality <span class="op">=</span> f.readline().strip()</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            records.append((header, sequence, quality))</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> records</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>In this example, the <code>read_fastq</code> function takes a file path as an argument, and returns a list of records, where each record is a tuple of three strings: the header, the sequence, and the quality score string. The function uses a <code>while</code> loop to read the lines four at a time until the end of the file is reached.</p>
 <p>You can use this function to read a FASTQ file like this:</p>
-<div id="cell-33" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.565040Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.564983Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.566731Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.566438Z&quot;}}" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> read_fastq(<span class="st">"reads.fq"</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of reads: </span><span class="sc">{</span><span class="bu">len</span>(records)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">First 3 records:"</span>)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> header, sequence, quality <span class="kw">in</span> records[:<span class="dv">3</span>]:</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Header: </span><span class="sc">{</span>header<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Sequence: </span><span class="sc">{</span>sequence[:<span class="dv">50</span>]<span class="sc">}</span><span class="ss">..."</span>)</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Quality: </span><span class="sc">{</span>quality[:<span class="dv">50</span>]<span class="sc">}</span><span class="ss">..."</span>)</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-33" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:48.446226Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:48.446105Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:48.448827Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:48.448404Z&quot;}}" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> read_fastq(<span class="st">"reads.fq"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of reads: </span><span class="sc">{</span><span class="bu">len</span>(records)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">First 3 records:"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> header, sequence, quality <span class="kw">in</span> records[:<span class="dv">3</span>]:</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Header: </span><span class="sc">{</span>header<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Sequence: </span><span class="sc">{</span>sequence[:<span class="dv">50</span>]<span class="sc">}</span><span class="ss">..."</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Quality: </span><span class="sc">{</span>quality[:<span class="dv">50</span>]<span class="sc">}</span><span class="ss">..."</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of reads: 10
 
@@ -524,54 +457,30 @@ Quality: BBBB@BFFB5FFGGFFGGGGFGGFH4F24BFGHHHHHGHH5B52AEE2AF...
 <section id="sam" class="level2">
 <h2 class="anchored" data-anchor-id="sam"><a href="https://en.wikipedia.org/wiki/SAM_(file_format)">SAM</a></h2>
 <p>Let’s download an example SAM file:</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>JupyterLite Compatibility
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This uses Python’s <code>urllib.request</code> module for JupyterLite compatibility. In a standard Jupyter environment:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!curl</span> <span class="at">-sLO</span> https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/sam_example.sam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-<div id="cell-36" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.567582Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.567521Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.569056Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.568762Z&quot;}}" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> <span class="st">"sam_example.sam"</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.exists(filename):</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> urllib.request <span class="im">import</span> urlretrieve</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    urlretrieve(<span class="st">"https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/sam_example.sam"</span>, filename)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Downloaded: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Using pre-loaded file: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Using pre-loaded file: sam_example.sam</code></pre>
-</div>
+<div id="cell-36" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:48.450257Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:48.450159Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:50.382425Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:50.381473Z&quot;}}" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>raw.githubusercontent.com<span class="op">/</span>nekrut<span class="op">/</span>BMMB554<span class="op">/</span>master<span class="op">/</span><span class="dv">2023</span><span class="op">/</span>data<span class="op">/</span>l9<span class="op">/</span>sam_example.sam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>SAM (Sequence Alignment/Map) is a file format that is used to store the results of DNA sequencing alignments. In Python, you can read a SAM file by opening the file, reading the lines one by one, and processing the data as needed.</p>
 <p>Here’s an example of how you might read a SAM file in Python:</p>
-<div id="cell-38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.569868Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.569817Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.571382Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.571095Z&quot;}}" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_sam(file_path):</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    records <span class="op">=</span> []</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(file_path, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> f:</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> line.startswith(<span class="st">"@"</span>):</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span>  <span class="co"># Skip header lines</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>            fields <span class="op">=</span> line.strip().split(<span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>            records.append(fields)</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> records</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:50.384609Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:50.384443Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:50.387495Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:50.386910Z&quot;}}" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_sam(file_path):</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    records <span class="op">=</span> []</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(file_path, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> line <span class="kw">in</span> f:</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> line.startswith(<span class="st">"@"</span>):</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span>  <span class="co"># Skip header lines</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>            fields <span class="op">=</span> line.strip().split(<span class="st">"</span><span class="ch">\t</span><span class="st">"</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>            records.append(fields)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> records</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>In this example, the <code>read_sam</code> function takes a file path as an argument, and returns a list of records, where each record is a list of fields. The function uses a <code>with</code> statement to open the file and read the lines one by one. If a line starts with an <code>"@"</code>, it is assumed to be a header and is ignored. If the line does not start with an <code>"@"</code>, it is assumed to be a record, and the fields are extracted by splitting the line on tabs.</p>
 <p>You can use this function to read a SAM file like this:</p>
-<div id="cell-40" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.572141Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.572096Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.573727Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.573452Z&quot;}}" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> read_sam(<span class="st">"sam_example.sam"</span>)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of alignment records: </span><span class="sc">{</span><span class="bu">len</span>(records)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">First record fields:"</span>)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, field <span class="kw">in</span> <span class="bu">enumerate</span>(records[<span class="dv">0</span>][:<span class="dv">6</span>]):  <span class="co"># Show first 6 fields</span></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  Field </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>field<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-40" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:50.389056Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:50.388945Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:50.391859Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:50.391485Z&quot;}}" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> read_sam(<span class="st">"sam_example.sam"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of alignment records: </span><span class="sc">{</span><span class="bu">len</span>(records)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">First record fields:"</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, field <span class="kw">in</span> <span class="bu">enumerate</span>(records[<span class="dv">0</span>][:<span class="dv">6</span>]):  <span class="co"># Show first 6 fields</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  Field </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>field<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of alignment records: 3
 
@@ -640,15 +549,15 @@ First record fields:
 </tbody>
 </table>
 <p>You can modify the <code>read_sam</code> function to process the data in any way you need. For example, you might want to extract specific fields, such as the reference name, the start position, and the CIGAR string.</p>
-<div id="cell-42" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.574560Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.574505Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.576016Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.575773Z&quot;}}" data-execution_count="20">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Extract specific fields</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> record <span class="kw">in</span> records[:<span class="dv">5</span>]:</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    qname <span class="op">=</span> record[<span class="dv">0</span>]</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    flag <span class="op">=</span> record[<span class="dv">1</span>]</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    rname <span class="op">=</span> record[<span class="dv">2</span>]</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> record[<span class="dv">3</span>]</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    cigar <span class="op">=</span> record[<span class="dv">5</span>]</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Read: </span><span class="sc">{</span>qname<span class="sc">}</span><span class="ss">, Ref: </span><span class="sc">{</span>rname<span class="sc">}</span><span class="ss">, Pos: </span><span class="sc">{</span>pos<span class="sc">}</span><span class="ss">, CIGAR: </span><span class="sc">{</span>cigar<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-42" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:50.393543Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:50.393431Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:50.395844Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:50.395347Z&quot;}}" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Extract specific fields</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> record <span class="kw">in</span> records[:<span class="dv">5</span>]:</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    qname <span class="op">=</span> record[<span class="dv">0</span>]</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    flag <span class="op">=</span> record[<span class="dv">1</span>]</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    rname <span class="op">=</span> record[<span class="dv">2</span>]</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> record[<span class="dv">3</span>]</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    cigar <span class="op">=</span> record[<span class="dv">5</span>]</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Read: </span><span class="sc">{</span>qname<span class="sc">}</span><span class="ss">, Ref: </span><span class="sc">{</span>rname<span class="sc">}</span><span class="ss">, Pos: </span><span class="sc">{</span>pos<span class="sc">}</span><span class="ss">, CIGAR: </span><span class="sc">{</span>cigar<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Read: r1, Ref: gi|9626243|ref|NC_001416.1|, Pos: 18401, CIGAR: 122M
 Read: r2, Ref: gi|9626243|ref|NC_001416.1|, Pos: 8886, CIGAR: 275M
@@ -660,34 +569,34 @@ Read: r3, Ref: gi|9626243|ref|NC_001416.1|, Pos: 11599, CIGAR: 338M</code></pre>
 <section id="writing-files-in-bioinformatics-formats" class="level2">
 <h2 class="anchored" data-anchor-id="writing-files-in-bioinformatics-formats">Writing files in bioinformatics formats</h2>
 <p>Now let’s practice writing files. We’ll write a simple FASTA file:</p>
-<div id="cell-44" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.576875Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.576829Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.578343Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.578089Z&quot;}}" data-execution_count="21">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_fasta(sequences, file_path):</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Write sequences dictionary to a FASTA file.</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co">        sequences: dict with headers as keys and sequences as values</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co">        file_path: output file path</span></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(file_path, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> header, sequence <span class="kw">in</span> sequences.items():</span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>            f.write(<span class="ss">f"&gt;</span><span class="sc">{</span>header<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Write sequence in lines of 60 characters</span></span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(sequence), <span class="dv">60</span>):</span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>                f.write(sequence[i:i<span class="op">+</span><span class="dv">60</span>] <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-44" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:50.397106Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:50.397021Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:50.399295Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:50.398921Z&quot;}}" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_fasta(sequences, file_path):</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Write sequences dictionary to a FASTA file.</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">        sequences: dict with headers as keys and sequences as values</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">        file_path: output file path</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(file_path, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> header, sequence <span class="kw">in</span> sequences.items():</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>            f.write(<span class="ss">f"&gt;</span><span class="sc">{</span>header<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Write sequence in lines of 60 characters</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(sequence), <span class="dv">60</span>):</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>                f.write(sequence[i:i<span class="op">+</span><span class="dv">60</span>] <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-45" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:23:43.579173Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:23:43.579130Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:23:43.580912Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:23:43.580618Z&quot;}}" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a small test dictionary</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>test_sequences <span class="op">=</span> {</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"seq1 test sequence"</span>: <span class="st">"ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG"</span>,</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"seq2 another sequence"</span>: <span class="st">"GCTAGCTAGCTAGCTAGCTAGCTAGCTA"</span></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write to file</span></span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>write_fasta(test_sequences, <span class="st">"test_output.fa"</span>)</span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
-<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"test_output.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
-<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(f.read())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-45" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:50.400417Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:50.400337Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:50.402743Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:50.402416Z&quot;}}" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a small test dictionary</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>test_sequences <span class="op">=</span> {</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"seq1 test sequence"</span>: <span class="st">"ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"seq2 another sequence"</span>: <span class="st">"GCTAGCTAGCTAGCTAGCTAGCTAGCTA"</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write to file</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>write_fasta(test_sequences, <span class="st">"test_output.fa"</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"test_output.fa"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(f.read())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&gt;seq1 test sequence
 ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG

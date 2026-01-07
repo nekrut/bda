@@ -274,7 +274,12 @@ window.Quarto = {
 
 
 
-<p>🚀 <a href="../lite/lab/index.html?path=lecture4.ipynb" class="btn btn-primary" target="_blank">Run in JupyterLite</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/main/lectures/lecture4.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Open In Colab</figcaption>
+</figure>
+</div>
 <section id="lecture-4-lists-and-dictionaries" class="level1">
 <h1>Lecture 4: Lists and Dictionaries</h1>
 <div class="quarto-figure quarto-figure-center">
@@ -383,7 +388,7 @@ D[i,j] = min\begin{cases}
 \textbf{Note}: sequence\ \texttt{X}\ is\ vertical\ and\ sequence\ \texttt{Y}\ is\ horizontal.
 \]</span></p>
 <p>This can be achieved with the following code:</p>
-<div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:01.434127Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:01.434045Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:01.462316Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:01.461991Z&quot;}}" data-execution_count="1">
+<div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.003255Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.003177Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.032510Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.032126Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="st">'GCGTATGC'</span></span>
@@ -410,7 +415,7 @@ D[i,j] = min\begin{cases}
 <section id="filling-the-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="filling-the-matrix">Filling the matrix</h2>
 <p>Now we can fill the entire matrix by using two nested loops: one iterating over <span class="math inline">\(i\)</span> coordinate (sequence <span class="math inline">\(x\)</span>) and the other iterating over <span class="math inline">\(j\)</span> coordinate (sequence <span class="math inline">\(y\)</span>):</p>
-<div id="cell-7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:01.463460Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:01.463367Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:01.465355Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:01.465097Z&quot;}}" data-execution_count="2">
+<div id="cell-7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.033634Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.033551Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.035439Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.035139Z&quot;}}" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        delta <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> x[i<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> y[j<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">0</span></span>
@@ -431,7 +436,7 @@ D[i,j] = min\begin{cases}
 </div>
 <p>The lower rightmost cell is special. It contains the value for the edit distance between the two strings.</p>
 <p>The following Python script implements this idea as a function:</p>
-<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:01.466332Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:01.466270Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:01.468110Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:01.467858Z&quot;}}" data-execution_count="3">
+<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.036286Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.036229Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.038100Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.037809Z&quot;}}" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> edDistDp(x, y):</span>
@@ -446,7 +451,7 @@ D[i,j] = min\begin{cases}
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            D[i, j] <span class="op">=</span> <span class="bu">min</span>(D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>]<span class="op">+</span>delta, D[i<span class="op">-</span><span class="dv">1</span>, j]<span class="op">+</span><span class="dv">1</span>, D[i, j<span class="op">-</span><span class="dv">1</span>]<span class="op">+</span><span class="dv">1</span>)</span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> D, D[<span class="bu">len</span>(x), <span class="bu">len</span>(y)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-10" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:01.468921Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:01.468870Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:01.470570Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:01.470249Z&quot;}}" data-execution_count="4">
+<div id="cell-10" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.038889Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.038827Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.040392Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.040160Z&quot;}}" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test the function</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>D, distance <span class="op">=</span> edDistDp(<span class="st">'GCGTATGC'</span>, <span class="st">'GCTATAC'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Edit distance: </span><span class="sc">{</span>distance<span class="sc">}</span><span class="ss">"</span>)</span>
@@ -465,7 +470,7 @@ D[i,j] = min\begin{cases}
 </div>
 </div>
 <p>A graphical representation of the matrix between <code>GCGTATGCACGC</code> and <code>GCTATGCCACGC</code> looks like this:</p>
-<div id="cell-12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:01.471398Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:01.471344Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.002528Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.002132Z&quot;}}" data-execution_count="5">
+<div id="cell-12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.041200Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.041132Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.455131Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.453495Z&quot;}}" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -492,7 +497,7 @@ D[i,j] = min\begin{cases}
 <section id="using-dictionaries-to-translate-dna" class="level2">
 <h2 class="anchored" data-anchor-id="using-dictionaries-to-translate-dna">Using dictionaries to translate DNA</h2>
 <p>The genetic code maps codons (triplets of nucleotides) to amino acids. We define it once as a constant that can be reused across all our translation functions:</p>
-<div id="cell-14" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.003591Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.003478Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.005911Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.005605Z&quot;}}" data-execution_count="6">
+<div id="cell-14" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.459997Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.459294Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.465024Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.464361Z&quot;}}" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the genetic code as a constant (codon -&gt; amino acid)</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>GENETIC_CODE <span class="op">=</span> {</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ATA'</span>:<span class="st">'I'</span>, <span class="st">'ATC'</span>:<span class="st">'I'</span>, <span class="st">'ATT'</span>:<span class="st">'I'</span>, <span class="st">'ATG'</span>:<span class="st">'M'</span>,</span>
@@ -514,16 +519,16 @@ D[i,j] = min\begin{cases}
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s generate a random DNA sequence:</p>
-<div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.006861Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.006798Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.008482Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.008184Z&quot;}}" data-execution_count="7">
+<div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.466479Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.466404Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.469343Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.468973Z&quot;}}" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>seq <span class="op">=</span> <span class="st">""</span>.join([random.choice(<span class="st">'atcg'</span>) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)])</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>seq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>'tgtctagatggataggcggaactattagagctcgctaatgagcttaggttgaagtgcttctctagatgacgtcccgatgcttataagtatgcaacgagtc'</code></pre>
+<pre><code>'cctcatcttccatacaactgtcacagtgttgctcaaagcggcgaaaaagtgtgggagttttgttaggaggtgtttcgtatacaggaatatattcgctatt'</code></pre>
 </div>
 </div>
 <p>To translate this sequence we write a code that uses a <code>for</code> loop that iterates over the DNA sequence in steps of 3, creating a codon at each iteration. If the codon is less than 3 letters long, the loop is broken. The resulting amino acid is then added to the <code>translation</code> string:</p>
-<div id="cell-18" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.009240Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.009174Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.010862Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.010499Z&quot;}}" data-execution_count="8">
+<div id="cell-18" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.470332Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.470253Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.473576Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.473155Z&quot;}}" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>translation <span class="op">=</span> <span class="st">""</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(seq), <span class="dv">3</span>):</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    codon <span class="op">=</span> seq[i:i<span class="op">+</span><span class="dv">3</span>].upper()</span>
@@ -535,12 +540,12 @@ D[i,j] = min\begin{cases}
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Translation:"</span>, translation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Translation: CLDG_AELLELANELRLKCFSR_RPDAYKYATS</code></pre>
+<pre><code>Translation: PHLPYNCHSVAQSGEKVWEFC_EVFRIQEYIRY</code></pre>
 </div>
 </div>
 <p>Note that the code uses the <code>upper()</code> method to ensure the codon is in uppercase since the table dictionary is case-sensitive. Additionally, the code checks if the codon is in the table dictionary and if not, it adds the letter “X” to the translation. This is a common way to represent unknown or stop codons in a protein sequence.</p>
 <p>Now we define a function that would perform translation so that we can reuse it later:</p>
-<div id="cell-20" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.011876Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.011809Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.013661Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.013344Z&quot;}}" data-execution_count="9">
+<div id="cell-20" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.475161Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.474914Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.478797Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.477817Z&quot;}}" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translate(seq):</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Translate a DNA sequence to protein using the standard genetic code."""</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    translation <span class="op">=</span> <span class="st">''</span></span>
@@ -553,17 +558,17 @@ D[i,j] = min\begin{cases}
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            translation <span class="op">+=</span> <span class="st">"X"</span></span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> translation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.014398Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.014335Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.015984Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.015735Z&quot;}}" data-execution_count="10">
+<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.480026Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.479947Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.483625Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.483269Z&quot;}}" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>translate(seq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
-<pre><code>'CLDG_AELLELANELRLKCFSR_RPDAYKYATS'</code></pre>
+<pre><code>'PHLPYNCHSVAQSGEKVWEFC_EVFRIQEYIRY'</code></pre>
 </div>
 </div>
 </section>
 <section id="expanding-to-multiple-phases-frames" class="level2">
 <h2 class="anchored" data-anchor-id="expanding-to-multiple-phases-frames">Expanding to multiple phases (frames)</h2>
 <p>We can further modify the function by adding a <code>phase</code> parameter that would allow translating in any of the three phases:</p>
-<div id="cell-23" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.016885Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.016827Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.018450Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.018137Z&quot;}}" data-execution_count="11">
+<div id="cell-23" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.484894Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.484817Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.486694Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.486419Z&quot;}}" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translate_phase(seq, phase):</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Translate a DNA sequence to protein starting at a given phase (0, 1, or 2)."""</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="dv">0</span> <span class="op">&lt;=</span> phase <span class="op">&lt;=</span> <span class="dv">2</span>, <span class="ss">f"Phase must be 0, 1, or 2, got </span><span class="sc">{</span>phase<span class="sc">}</span><span class="ss">"</span></span>
@@ -577,27 +582,27 @@ D[i,j] = min\begin{cases}
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            translation <span class="op">+=</span> <span class="st">"X"</span></span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> translation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-24" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.019242Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.019192Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.020805Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.020479Z&quot;}}" data-execution_count="12">
+<div id="cell-24" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.487965Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.487909Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.489632Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.489335Z&quot;}}" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>translate_phase(seq, <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
-<pre><code>'CLDG_AELLELANELRLKCFSR_RPDAYKYATS'</code></pre>
+<pre><code>'PHLPYNCHSVAQSGEKVWEFC_EVFRIQEYIRY'</code></pre>
 </div>
 </div>
-<div id="cell-25" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.021792Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.021726Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.023328Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.023077Z&quot;}}" data-execution_count="13">
+<div id="cell-25" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.490426Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.490342Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.492148Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.491906Z&quot;}}" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>translate_phase(seq, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>'V_MDRRNY_SSLMSLG_SASLDDVPMLISMQRV'</code></pre>
+<pre><code>'LIFHTTVTVLLKAAKKCGSFVRRCFVYRNIFAI'</code></pre>
 </div>
 </div>
-<div id="cell-26" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.024091Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.024044Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.025623Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.025313Z&quot;}}" data-execution_count="14">
+<div id="cell-26" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.492999Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.492943Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.494595Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.494352Z&quot;}}" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>translate_phase(seq, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>'SRWIGGTIRAR__A_VEVLL_MTSRCL_VCNE'</code></pre>
+<pre><code>'SSSIQLSQCCSKRRKSVGVLLGGVSYTGIYSL'</code></pre>
 </div>
 </div>
 <p>To translate in all six reading frames (three of the “+” strand and three of the “-” strand) we need to be able to create a reverse complement of the sequence. Let’s write a simple function for that.</p>
 <p>The cell below implements a function <code>revcomp</code> that takes a DNA sequence as input and returns its reverse complement. It works by first reversing the sequence using the slice notation <code>seq[::-1]</code>, which returns the sequence in reverse order. Then, the <code>translate</code> method is used with the <code>str.maketrans</code> function to replace each occurrence of ‘a’, ‘t’, ‘g’, ‘c’, ‘A’, ‘T’, ‘G’, and ‘C’ in the reversed sequence with ‘t’, ‘a’, ‘c’, ‘g’, ‘T’, ‘A’, ‘C’, and ‘G’, respectively:</p>
-<div id="cell-28" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.026500Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.026458Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.027877Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.027573Z&quot;}}" data-execution_count="15">
+<div id="cell-28" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.495678Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.495622Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.497246Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.496918Z&quot;}}" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-compute the complement translation table for efficiency</span></span>
@@ -608,7 +613,7 @@ D[i,j] = min\begin{cases}
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> seq[::<span class="op">-</span><span class="dv">1</span>].translate(_COMPLEMENT_TABLE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now let’s use this function to create translation in all six reading frames. The cell below uses a <code>for</code> loop that iterates over the range <code>(0, 3)</code>, representing the different phases (or starting positions) of the translation. At each iteration, the <code>translate_phase</code> function is called with the DNA sequence and the current phase, and the resulting protein sequence is appended to the <code>translations</code> list along with the <code>phase</code> and the <code>strand</code> orientation (+ or -):</p>
-<div id="cell-30" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.028730Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.028659Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.030509Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.030261Z&quot;}}" data-execution_count="16">
+<div id="cell-30" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.498086Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.498033Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.499952Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.499724Z&quot;}}" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>translations <span class="op">=</span> []</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">3</span>):</span>
@@ -617,19 +622,19 @@ D[i,j] = min\begin{cases}
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>translations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
-<pre><code>[('CLDG_AELLELANELRLKCFSR_RPDAYKYATS', '0', '+'),
- ('DSLHTYKHRDVI_RSTST_AH_RALIVPPIHLD', '0', '-'),
- ('V_MDRRNY_SSLMSLG_SASLDDVPMLISMQRV', '1', '+'),
- ('TRCILISIGTSSREALQPKLISEL__FRLSI_T', '1', '-'),
- ('SRWIGGTIRAR__A_VEVLL_MTSRCL_VCNE', '2', '+'),
- ('LVAYL_ASGRHLEKHFNLSSLASSNSSAYPSR', '2', '-')]</code></pre>
+<pre><code>[('PHLPYNCHSVAQSGEKVWEFC_EVFRIQEYIRY', '0', '+'),
+ ('NSEYIPVYETPPNKTPTLFRRFEQHCDSCMEDE', '0', '-'),
+ ('LIFHTTVTVLLKAAKKCGSFVRRCFVYRNIFAI', '1', '+'),
+ ('IANIFLYTKHLLTKLPHFFAALSNTVTVVWKMR', '1', '-'),
+ ('SSSIQLSQCCSKRRKSVGVLLGGVSYTGIYSL', '2', '+'),
+ ('_RIYSCIRNTS_QNSHTFSPL_ATL_QLYGR_', '2', '-')]</code></pre>
 </div>
 </div>
 </section>
 <section id="finding-coordinates-of-continuous-translations" class="level2">
 <h2 class="anchored" data-anchor-id="finding-coordinates-of-continuous-translations">Finding coordinates of continuous translations</h2>
 <p>The translation we’ve generated above contains stops (e.g., <code>_</code> symbols). The actual biologically relevant protein sequences are between stops. We now need to split translation strings into meaningful peptide sequences and compute their coordinates. Let’s begin by splitting a string on <code>_</code> and computing the start and end positions of each peptide:</p>
-<div id="cell-32" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.031397Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.031356Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.032891Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.032616Z&quot;}}" data-execution_count="17">
+<div id="cell-32" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.500870Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.500778Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.502760Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.502449Z&quot;}}" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>string <span class="op">=</span> <span class="st">"aadsds_dsds_dsds"</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>split_indices <span class="op">=</span> []</span>
@@ -643,7 +648,7 @@ D[i,j] = min\begin{cases}
 </div>
 <p>The code above generates a list of split indices for a string. The list contains the indices of the characters in the string that match a specified character (in this case, the underscore <code>_</code> character).</p>
 <p>But we actually need coordinates of peptides bound by <code>_</code> characters. To get to this let’s first modify <code>split_indices</code> by adding the beginning and end:</p>
-<div id="cell-34" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.033756Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.033709Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.035237Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.034982Z&quot;}}" data-execution_count="18">
+<div id="cell-34" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.504235Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.504159Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.506133Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.505636Z&quot;}}" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>string <span class="op">=</span> <span class="st">"aadsds_dsds_dsds"</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>split_indices <span class="op">=</span> []</span>
@@ -659,7 +664,7 @@ D[i,j] = min\begin{cases}
 </div>
 </div>
 <p>Now, let’s convert these to ranges and also stick the peptide sequence in:</p>
-<div id="cell-36" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.036115Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.036062Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.037599Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.037352Z&quot;}}" data-execution_count="19">
+<div id="cell-36" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.507480Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.507422Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.509249Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.508971Z&quot;}}" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>string <span class="op">=</span> <span class="st">"aadsds_dsds_dsds"</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>split_indices <span class="op">=</span> []</span>
@@ -682,7 +687,7 @@ D[i,j] = min\begin{cases}
 </div>
 </div>
 <p>Now let’s convert this to function:</p>
-<div id="cell-38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.038373Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.038323Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.039903Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.039633Z&quot;}}" data-execution_count="20">
+<div id="cell-38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.510086Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.510030Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.511701Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.511403Z&quot;}}" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_coords(translation):</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    split_indices <span class="op">=</span> []</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(translation):</span>
@@ -698,14 +703,14 @@ D[i,j] = min\begin{cases}
 <span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(parts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-39" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.040758Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.040714Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.042251Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.042013Z&quot;}}" data-execution_count="21">
+<div id="cell-39" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.512428Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.512377Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.513917Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.513693Z&quot;}}" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>extract_coords(string)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>[('aadsds', 0, 6), ('dsds', 7, 11), ('dsds', 12, 16)]</code></pre>
 </div>
 </div>
 <p>And specify the right parameters to make it truly generic:</p>
-<div id="cell-41" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.043033Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.042991Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.044540Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.044294Z&quot;}}" data-execution_count="22">
+<div id="cell-41" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.515121Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.515059Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.517007Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.516735Z&quot;}}" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_coords_with_annotation(separator, translation, phase, strand):</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    split_indices <span class="op">=</span> []</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(translation):</span>
@@ -721,7 +726,7 @@ D[i,j] = min\begin{cases}
 <span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(parts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-42" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.045466Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.045416Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.046992Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.046732Z&quot;}}" data-execution_count="23">
+<div id="cell-42" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.517943Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.517889Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.519716Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.519426Z&quot;}}" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>extract_coords_with_annotation(<span class="st">'_'</span>, string, <span class="st">'0'</span>, <span class="st">'+'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
 <pre><code>[('aadsds', '0', '+', 0, 6),
@@ -733,39 +738,29 @@ D[i,j] = min\begin{cases}
 <section id="analyzing-all-translations-of-a-given-sequence" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-all-translations-of-a-given-sequence">Analyzing all translations of a given sequence</h2>
 <p>We begin by parsing the <code>translations</code> list we defined above:</p>
-<div id="cell-44" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.047724Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.047682Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.049740Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.049377Z&quot;}}" data-execution_count="24">
+<div id="cell-44" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.520524Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.520469Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.523822Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.523549Z&quot;}}" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>all_translations <span class="op">=</span> []</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> translations:</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    all_translations.append(extract_coords_with_annotation(<span class="st">'_'</span>, item[<span class="dv">0</span>], item[<span class="dv">1</span>], item[<span class="dv">2</span>]))</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>all_translations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="24">
-<pre><code>[[('CLDG', '0', '+', 0, 4),
-  ('AELLELANELRLKCFSR', '0', '+', 5, 22),
-  ('RPDAYKYATS', '0', '+', 23, 33)],
- [('DSLHTYKHRDVI', '0', '-', 0, 12),
-  ('RSTST', '0', '-', 13, 18),
-  ('AH', '0', '-', 19, 21),
-  ('RALIVPPIHLD', '0', '-', 22, 33)],
- [('V', '1', '+', 0, 1),
-  ('MDRRNY', '1', '+', 2, 8),
-  ('SSLMSLG', '1', '+', 9, 16),
-  ('SASLDDVPMLISMQRV', '1', '+', 17, 33)],
- [('TRCILISIGTSSREALQPKLISEL', '1', '-', 0, 24),
-  ('', '1', '-', 25, 25),
-  ('FRLSI', '1', '-', 26, 31),
-  ('T', '1', '-', 32, 33)],
- [('SRWIGGTIRAR', '2', '+', 0, 11),
-  ('', '2', '+', 12, 12),
-  ('A', '2', '+', 13, 14),
-  ('VEVLL', '2', '+', 15, 20),
-  ('MTSRCL', '2', '+', 21, 27),
-  ('VCNE', '2', '+', 28, 32)],
- [('LVAYL', '2', '-', 0, 5), ('ASGRHLEKHFNLSSLASSNSSAYPSR', '2', '-', 6, 32)]]</code></pre>
+<pre><code>[[('PHLPYNCHSVAQSGEKVWEFC', '0', '+', 0, 21),
+  ('EVFRIQEYIRY', '0', '+', 22, 33)],
+ [('NSEYIPVYETPPNKTPTLFRRFEQHCDSCMEDE', '0', '-', 0, 33)],
+ [('LIFHTTVTVLLKAAKKCGSFVRRCFVYRNIFAI', '1', '+', 0, 33)],
+ [('IANIFLYTKHLLTKLPHFFAALSNTVTVVWKMR', '1', '-', 0, 33)],
+ [('SSSIQLSQCCSKRRKSVGVLLGGVSYTGIYSL', '2', '+', 0, 32)],
+ [('', '2', '-', 0, 0),
+  ('RIYSCIRNTS', '2', '-', 1, 11),
+  ('QNSHTFSPL', '2', '-', 12, 21),
+  ('ATL', '2', '-', 22, 25),
+  ('QLYGR', '2', '-', 26, 31),
+  ('', '2', '-', 32, 32)]]</code></pre>
 </div>
 </div>
 <p>Now the problem with this list is that it is nested. However, we need to make it flat:</p>
-<div id="cell-46" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.050529Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.050487Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.052295Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.052042Z&quot;}}" data-execution_count="25">
+<div id="cell-46" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.524961Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.524887Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.527154Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.526888Z&quot;}}" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>flat_list <span class="op">=</span> []</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sublist <span class="kw">in</span> all_translations:</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> sublist:</span>
@@ -773,33 +768,22 @@ D[i,j] = min\begin{cases}
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>flat_list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
-<pre><code>[('CLDG', '0', '+', 0, 4),
- ('AELLELANELRLKCFSR', '0', '+', 5, 22),
- ('RPDAYKYATS', '0', '+', 23, 33),
- ('DSLHTYKHRDVI', '0', '-', 0, 12),
- ('RSTST', '0', '-', 13, 18),
- ('AH', '0', '-', 19, 21),
- ('RALIVPPIHLD', '0', '-', 22, 33),
- ('V', '1', '+', 0, 1),
- ('MDRRNY', '1', '+', 2, 8),
- ('SSLMSLG', '1', '+', 9, 16),
- ('SASLDDVPMLISMQRV', '1', '+', 17, 33),
- ('TRCILISIGTSSREALQPKLISEL', '1', '-', 0, 24),
- ('', '1', '-', 25, 25),
- ('FRLSI', '1', '-', 26, 31),
- ('T', '1', '-', 32, 33),
- ('SRWIGGTIRAR', '2', '+', 0, 11),
- ('', '2', '+', 12, 12),
- ('A', '2', '+', 13, 14),
- ('VEVLL', '2', '+', 15, 20),
- ('MTSRCL', '2', '+', 21, 27),
- ('VCNE', '2', '+', 28, 32),
- ('LVAYL', '2', '-', 0, 5),
- ('ASGRHLEKHFNLSSLASSNSSAYPSR', '2', '-', 6, 32)]</code></pre>
+<pre><code>[('PHLPYNCHSVAQSGEKVWEFC', '0', '+', 0, 21),
+ ('EVFRIQEYIRY', '0', '+', 22, 33),
+ ('NSEYIPVYETPPNKTPTLFRRFEQHCDSCMEDE', '0', '-', 0, 33),
+ ('LIFHTTVTVLLKAAKKCGSFVRRCFVYRNIFAI', '1', '+', 0, 33),
+ ('IANIFLYTKHLLTKLPHFFAALSNTVTVVWKMR', '1', '-', 0, 33),
+ ('SSSIQLSQCCSKRRKSVGVLLGGVSYTGIYSL', '2', '+', 0, 32),
+ ('', '2', '-', 0, 0),
+ ('RIYSCIRNTS', '2', '-', 1, 11),
+ ('QNSHTFSPL', '2', '-', 12, 21),
+ ('ATL', '2', '-', 22, 25),
+ ('QLYGR', '2', '-', 26, 31),
+ ('', '2', '-', 32, 32)]</code></pre>
 </div>
 </div>
 <p>Now we can load the list into <code>Pandas</code> and plot away:</p>
-<div id="cell-48" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.053061Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.053020Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.056618Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.056382Z&quot;}}" data-execution_count="26">
+<div id="cell-48" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.527967Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.527919Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.532579Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.532287Z&quot;}}" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(flat_list, columns<span class="op">=</span>[<span class="st">'aa'</span>, <span class="st">'frame'</span>, <span class="st">'strand'</span>, <span class="st">'start'</span>, <span class="st">'end'</span>])</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -821,186 +805,98 @@ D[i,j] = min\begin{cases}
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>CLDG</td>
+<td>PHLPYNCHSVAQSGEKVWEFC</td>
 <td>0</td>
 <td>+</td>
 <td>0</td>
-<td>4</td>
+<td>21</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>AELLELANELRLKCFSR</td>
+<td>EVFRIQEYIRY</td>
 <td>0</td>
 <td>+</td>
-<td>5</td>
 <td>22</td>
+<td>33</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>RPDAYKYATS</td>
+<td>NSEYIPVYETPPNKTPTLFRRFEQHCDSCMEDE</td>
 <td>0</td>
-<td>+</td>
-<td>23</td>
+<td>-</td>
+<td>0</td>
 <td>33</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>DSLHTYKHRDVI</td>
+<td>LIFHTTVTVLLKAAKKCGSFVRRCFVYRNIFAI</td>
+<td>1</td>
+<td>+</td>
 <td>0</td>
-<td>-</td>
-<td>0</td>
-<td>12</td>
+<td>33</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>RSTST</td>
-<td>0</td>
+<td>IANIFLYTKHLLTKLPHFFAALSNTVTVVWKMR</td>
+<td>1</td>
 <td>-</td>
-<td>13</td>
-<td>18</td>
+<td>0</td>
+<td>33</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
-<td>AH</td>
+<td>SSSIQLSQCCSKRRKSVGVLLGGVSYTGIYSL</td>
+<td>2</td>
+<td>+</td>
 <td>0</td>
-<td>-</td>
-<td>19</td>
-<td>21</td>
+<td>32</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
-<td>RALIVPPIHLD</td>
-<td>0</td>
+<td></td>
+<td>2</td>
 <td>-</td>
-<td>22</td>
-<td>33</td>
+<td>0</td>
+<td>0</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
-<td>V</td>
+<td>RIYSCIRNTS</td>
+<td>2</td>
+<td>-</td>
 <td>1</td>
-<td>+</td>
-<td>0</td>
-<td>1</td>
+<td>11</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">8</th>
-<td>MDRRNY</td>
-<td>1</td>
-<td>+</td>
+<td>QNSHTFSPL</td>
 <td>2</td>
-<td>8</td>
+<td>-</td>
+<td>12</td>
+<td>21</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
-<td>SSLMSLG</td>
-<td>1</td>
-<td>+</td>
-<td>9</td>
-<td>16</td>
+<td>ATL</td>
+<td>2</td>
+<td>-</td>
+<td>22</td>
+<td>25</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">10</th>
-<td>SASLDDVPMLISMQRV</td>
-<td>1</td>
-<td>+</td>
-<td>17</td>
-<td>33</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">11</th>
-<td>TRCILISIGTSSREALQPKLISEL</td>
-<td>1</td>
-<td>-</td>
-<td>0</td>
-<td>24</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">12</th>
-<td></td>
-<td>1</td>
-<td>-</td>
-<td>25</td>
-<td>25</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">13</th>
-<td>FRLSI</td>
-<td>1</td>
+<td>QLYGR</td>
+<td>2</td>
 <td>-</td>
 <td>26</td>
 <td>31</td>
 </tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">14</th>
-<td>T</td>
-<td>1</td>
-<td>-</td>
-<td>32</td>
-<td>33</td>
-</tr>
 <tr class="even">
-<th data-quarto-table-cell-role="th">15</th>
-<td>SRWIGGTIRAR</td>
-<td>2</td>
-<td>+</td>
-<td>0</td>
-<td>11</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">16</th>
+<th data-quarto-table-cell-role="th">11</th>
 <td></td>
 <td>2</td>
-<td>+</td>
-<td>12</td>
-<td>12</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">17</th>
-<td>A</td>
-<td>2</td>
-<td>+</td>
-<td>13</td>
-<td>14</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">18</th>
-<td>VEVLL</td>
-<td>2</td>
-<td>+</td>
-<td>15</td>
-<td>20</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">19</th>
-<td>MTSRCL</td>
-<td>2</td>
-<td>+</td>
-<td>21</td>
-<td>27</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">20</th>
-<td>VCNE</td>
-<td>2</td>
-<td>+</td>
-<td>28</td>
+<td>-</td>
 <td>32</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">21</th>
-<td>LVAYL</td>
-<td>2</td>
-<td>-</td>
-<td>0</td>
-<td>5</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">22</th>
-<td>ASGRHLEKHFNLSSLASSNSSAYPSR</td>
-<td>2</td>
-<td>-</td>
-<td>6</td>
 <td>32</td>
 </tr>
 </tbody>
@@ -1010,7 +906,7 @@ D[i,j] = min\begin{cases}
 </div>
 </div>
 <p>Now let’s plot it:</p>
-<div id="cell-50" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T17:41:02.057578Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T17:41:02.057535Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T17:41:02.541303Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T17:41:02.540973Z&quot;}}" data-execution_count="27">
+<div id="cell-50" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.533594Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.533538Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:41.032106Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:41.031501Z&quot;}}" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>plus <span class="op">=</span> alt.Chart(df[df[<span class="st">'strand'</span>]<span class="op">==</span><span class="st">'+'</span>]).mark_rect().encode(</span>
@@ -1041,23 +937,23 @@ D[i,j] = min\begin{cases}
 <div class="cell-output cell-output-display" data-execution_count="27">
 
 <style>
-  #altair-viz-965038b8c7ae4f908ce71e0136a13e81.vega-embed {
+  #altair-viz-b1e728e9486d4c1d9cb8ab07bd4c4524.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-965038b8c7ae4f908ce71e0136a13e81.vega-embed details,
-  #altair-viz-965038b8c7ae4f908ce71e0136a13e81.vega-embed details summary {
+  #altair-viz-b1e728e9486d4c1d9cb8ab07bd4c4524.vega-embed details,
+  #altair-viz-b1e728e9486d4c1d9cb8ab07bd4c4524.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-965038b8c7ae4f908ce71e0136a13e81"></div>
+<div id="altair-viz-b1e728e9486d4c1d9cb8ab07bd4c4524"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-965038b8c7ae4f908ce71e0136a13e81") {
-      outputDiv = document.getElementById("altair-viz-965038b8c7ae4f908ce71e0136a13e81");
+    if (outputDiv.id !== "altair-viz-b1e728e9486d4c1d9cb8ab07bd4c4524") {
+      outputDiv = document.getElementById("altair-viz-b1e728e9486d4c1d9cb8ab07bd4c4524");
     }
 
     const paths = {
@@ -1105,7 +1001,7 @@ D[i,j] = min\begin{cases}
         .catch(showError)
         .then(() => displayChart(vegaEmbed));
     }
-  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "vconcat": [{"data": {"name": "data-c94370518932c30f1d50b00a4c5740dc"}, "mark": {"type": "rect"}, "encoding": {"color": {"field": "frame", "type": "nominal"}, "tooltip": {"field": "aa", "type": "nominal"}, "x": {"field": "start", "type": "quantitative"}, "x2": {"field": "end"}, "y": {"field": "frame", "type": "nominal"}}, "height": 100, "title": "Plus strand", "width": 600}, {"data": {"name": "data-d1d0e34845abc9af30f0d441477963f6"}, "mark": {"type": "rect"}, "encoding": {"color": {"field": "frame", "type": "nominal"}, "tooltip": {"field": "aa", "type": "nominal"}, "x": {"field": "start", "sort": {"field": "start:Q", "order": "descending"}, "type": "quantitative"}, "x2": {"field": "end"}, "y": {"field": "frame", "type": "nominal"}}, "height": 100, "title": "Minus strand", "width": 600}], "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-c94370518932c30f1d50b00a4c5740dc": [{"aa": "CLDG", "frame": "0", "strand": "+", "start": 0, "end": 4}, {"aa": "AELLELANELRLKCFSR", "frame": "0", "strand": "+", "start": 5, "end": 22}, {"aa": "RPDAYKYATS", "frame": "0", "strand": "+", "start": 23, "end": 33}, {"aa": "V", "frame": "1", "strand": "+", "start": 0, "end": 1}, {"aa": "MDRRNY", "frame": "1", "strand": "+", "start": 2, "end": 8}, {"aa": "SSLMSLG", "frame": "1", "strand": "+", "start": 9, "end": 16}, {"aa": "SASLDDVPMLISMQRV", "frame": "1", "strand": "+", "start": 17, "end": 33}, {"aa": "SRWIGGTIRAR", "frame": "2", "strand": "+", "start": 0, "end": 11}, {"aa": "", "frame": "2", "strand": "+", "start": 12, "end": 12}, {"aa": "A", "frame": "2", "strand": "+", "start": 13, "end": 14}, {"aa": "VEVLL", "frame": "2", "strand": "+", "start": 15, "end": 20}, {"aa": "MTSRCL", "frame": "2", "strand": "+", "start": 21, "end": 27}, {"aa": "VCNE", "frame": "2", "strand": "+", "start": 28, "end": 32}], "data-d1d0e34845abc9af30f0d441477963f6": [{"aa": "DSLHTYKHRDVI", "frame": "0", "strand": "-", "start": 0, "end": 12}, {"aa": "RSTST", "frame": "0", "strand": "-", "start": 13, "end": 18}, {"aa": "AH", "frame": "0", "strand": "-", "start": 19, "end": 21}, {"aa": "RALIVPPIHLD", "frame": "0", "strand": "-", "start": 22, "end": 33}, {"aa": "TRCILISIGTSSREALQPKLISEL", "frame": "1", "strand": "-", "start": 0, "end": 24}, {"aa": "", "frame": "1", "strand": "-", "start": 25, "end": 25}, {"aa": "FRLSI", "frame": "1", "strand": "-", "start": 26, "end": 31}, {"aa": "T", "frame": "1", "strand": "-", "start": 32, "end": 33}, {"aa": "LVAYL", "frame": "2", "strand": "-", "start": 0, "end": 5}, {"aa": "ASGRHLEKHFNLSSLASSNSSAYPSR", "frame": "2", "strand": "-", "start": 6, "end": 32}]}}, {"mode": "vega-lite"});
+  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "vconcat": [{"data": {"name": "data-a8b90d8c4a87e1da3f4954a68b23ef46"}, "mark": {"type": "rect"}, "encoding": {"color": {"field": "frame", "type": "nominal"}, "tooltip": {"field": "aa", "type": "nominal"}, "x": {"field": "start", "type": "quantitative"}, "x2": {"field": "end"}, "y": {"field": "frame", "type": "nominal"}}, "height": 100, "title": "Plus strand", "width": 600}, {"data": {"name": "data-6e15ccd6662cd456560d63e36f74f30b"}, "mark": {"type": "rect"}, "encoding": {"color": {"field": "frame", "type": "nominal"}, "tooltip": {"field": "aa", "type": "nominal"}, "x": {"field": "start", "sort": {"field": "start:Q", "order": "descending"}, "type": "quantitative"}, "x2": {"field": "end"}, "y": {"field": "frame", "type": "nominal"}}, "height": 100, "title": "Minus strand", "width": 600}], "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-a8b90d8c4a87e1da3f4954a68b23ef46": [{"aa": "PHLPYNCHSVAQSGEKVWEFC", "frame": "0", "strand": "+", "start": 0, "end": 21}, {"aa": "EVFRIQEYIRY", "frame": "0", "strand": "+", "start": 22, "end": 33}, {"aa": "LIFHTTVTVLLKAAKKCGSFVRRCFVYRNIFAI", "frame": "1", "strand": "+", "start": 0, "end": 33}, {"aa": "SSSIQLSQCCSKRRKSVGVLLGGVSYTGIYSL", "frame": "2", "strand": "+", "start": 0, "end": 32}], "data-6e15ccd6662cd456560d63e36f74f30b": [{"aa": "NSEYIPVYETPPNKTPTLFRRFEQHCDSCMEDE", "frame": "0", "strand": "-", "start": 0, "end": 33}, {"aa": "IANIFLYTKHLLTKLPHFFAALSNTVTVVWKMR", "frame": "1", "strand": "-", "start": 0, "end": 33}, {"aa": "", "frame": "2", "strand": "-", "start": 0, "end": 0}, {"aa": "RIYSCIRNTS", "frame": "2", "strand": "-", "start": 1, "end": 11}, {"aa": "QNSHTFSPL", "frame": "2", "strand": "-", "start": 12, "end": 21}, {"aa": "ATL", "frame": "2", "strand": "-", "start": 22, "end": 25}, {"aa": "QLYGR", "frame": "2", "strand": "-", "start": 26, "end": 31}, {"aa": "", "frame": "2", "strand": "-", "start": 32, "end": 32}]}}, {"mode": "vega-lite"});
 </script>
 </div>
 </div>
