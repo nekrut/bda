@@ -6,6 +6,7 @@ _site/
 
 # JupyterLite
 .jupyterlite.doit.db
+lite_content/
 
 # OS files
 .DS_Store

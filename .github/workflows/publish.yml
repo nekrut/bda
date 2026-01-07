@@ -25,13 +25,21 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel pandas altair
+          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel pandas numpy altair seaborn matplotlib nbconvert
 
       - name: Render Quarto Project
         run: quarto render
 
+      - name: Create clean notebooks for JupyterLite
+        run: |
+          mkdir -p lite_content
+          for f in lectures/lecture*.ipynb; do
+            jupyter nbconvert --clear-output --to notebook --output "../lite_content/$(basename $f)" "$f"
+          done
+          cp lectures/*.fq lectures/*.fa lectures/*.csv lectures/*.gz lectures/*.sam lectures/*.txt lectures/*.png lite_content/ 2>/dev/null || true
+
       - name: Build JupyterLite
-        run: jupyter lite build --contents lectures --output-dir _site/lite
+        run: jupyter lite build --contents lite_content --output-dir _site/lite
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

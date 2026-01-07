@@ -21,6 +21,14 @@ website:
             text: "1. Python basics"
           - href: lectures/lecture2.qmd
             text: "2. Introduction to Bash"
+          - href: lectures/lecture3.ipynb
+            text: "3. FASTQ and Quality Scores"
+          - href: lectures/lecture4.ipynb
+            text: "4. Lists and Dictionaries"
+          - href: lectures/lecture5.ipynb
+            text: "5. File I/O in Python"
+          - href: lectures/lecture6.ipynb
+            text: "6. Data Manipulation with Pandas"
 
 format:
   html:
