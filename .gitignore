@@ -15,3 +15,13 @@ lite_content/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# Data files generated during notebook execution
+lectures/*.fq
+lectures/*.fa
+lectures/*.csv
+lectures/*.gz
+lectures/*.sam
+lectures/*.txt
+lectures/*.png
+images/
