@@ -2,7 +2,7 @@
 title: "Lecture 1: Getting Started with GitHub"
 ---
 
-This lecture will guide you through setting up GitHub and Git for version control. These tools are essential for modern software development and scientific computing.
+This lecture will guide you through setting up GitHub and GitHub Codespaces. We'll use Codespaces as our development environment - it works on **any computer** (Chromebook, Windows, Mac) with just a web browser.
 
 # Why Version Control?
 
@@ -40,162 +40,76 @@ Using your `.edu` email gives you access to [GitHub Education](https://education
 2. Click the verification link
 3. You now have a GitHub account!
 
-## Step 3: Set Up Your Profile
+---
 
-1. Click your profile icon (top right) → **Settings**
-2. Add a profile picture
-3. Add your name and bio
-4. Click **Update profile**
+# Section 2: Create Your First Repository
+
+A **repository** (or "repo") is a folder that Git tracks. Let's create one:
+
+1. Go to [github.com](https://github.com) and log in
+2. Click the **+** icon in the top right → **New repository**
+3. Enter a repository name: `my-first-repo`
+4. Add a description (optional)
+5. Select **Public**
+6. Check **Add a README file**
+7. Click **Create repository**
+
+You now have a repository on GitHub!
 
 ---
 
-# Section 2: Configure Git
+# Section 3: Open a Codespace
 
-Git needs to know who you are so it can label your commits. Open a terminal and run:
+GitHub Codespaces gives you a complete development environment in your browser. No software installation needed!
 
-## Set Your Name
+## Step 1: Open Codespace
+
+1. Go to your new repository on GitHub
+2. Click the green **Code** button
+3. Select the **Codespaces** tab
+4. Click **Create codespace on main**
+
+Wait about 30 seconds for your Codespace to start. You'll see VS Code running in your browser!
+
+## Step 2: Explore the Interface
+
+Your Codespace has:
+
+- **File Explorer** (left sidebar) - browse and create files
+- **Editor** (center) - write and edit code
+- **Terminal** (bottom) - run commands
+
+## Step 3: Open the Terminal
+
+If the terminal isn't visible:
+
+1. Click **Terminal** in the menu bar
+2. Select **New Terminal**
+
+Or press `` Ctrl+` `` (backtick)
+
+---
+
+# Section 4: Configure Git
+
+Git needs to know who you are. In the terminal, run:
 
 ```bash
 git config --global user.name "Your Name"
-```
-
-## Set Your Email
-
-Use the same email you used for GitHub:
-
-```bash
 git config --global user.email "your.email@psu.edu"
 ```
 
-## Set Default Branch Name
+Replace with your actual name and PSU email.
 
-Modern convention uses `main` instead of `master`:
-
-```bash
-git config --global init.defaultBranch main
-```
-
-## Verify Your Configuration
+Verify it worked:
 
 ```bash
 git config --list
 ```
 
-You should see your name and email listed.
-
----
-
-# Section 3: Set Up SSH Authentication
-
-SSH keys allow you to connect to GitHub without entering your password every time.
-
-## Step 1: Check for Existing SSH Keys
-
-```bash
-ls -la ~/.ssh
-```
-
-If you see files like `id_rsa.pub` or `id_ed25519.pub`, you already have SSH keys.
-
-## Step 2: Generate a New SSH Key
-
-If you don't have existing keys, generate one:
-
-```bash
-ssh-keygen -t ed25519 -C "your.email@psu.edu"
-```
-
-When prompted:
-- Press **Enter** to accept the default file location
-- Enter a passphrase (optional but recommended)
-
-## Step 3: Start the SSH Agent
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-## Step 4: Add Your Key to the SSH Agent
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-## Step 5: Copy Your Public Key
-
-**On macOS:**
-```bash
-pbcopy < ~/.ssh/id_ed25519.pub
-```
-
-**On Linux:**
-```bash
-cat ~/.ssh/id_ed25519.pub
-```
-Then manually copy the output.
-
-**On Windows (Git Bash):**
-```bash
-clip < ~/.ssh/id_ed25519.pub
-```
-
-## Step 6: Add SSH Key to GitHub
-
-1. Go to [github.com](https://github.com) and log in
-2. Click your profile icon → **Settings**
-3. In the left sidebar, click **SSH and GPG keys**
-4. Click **New SSH key**
-5. Give it a descriptive title (e.g., "My Laptop")
-6. Paste your public key in the "Key" field
-7. Click **Add SSH key**
-
-## Step 7: Test Your Connection
-
-```bash
-ssh -T git@github.com
-```
-
-You should see: "Hi username! You've successfully authenticated..."
-
----
-
-# Section 4: Create Your First Repository
-
-## Option A: Create on GitHub (Recommended for Beginners)
-
-1. Go to [github.com](https://github.com)
-2. Click the **+** icon → **New repository**
-3. Enter a repository name (e.g., `my-first-repo`)
-4. Add a description (optional)
-5. Choose **Public** or **Private**
-6. Check **Add a README file**
-7. Click **Create repository**
-
-## Clone to Your Computer
-
-```bash
-git clone git@github.com:YOUR-USERNAME/my-first-repo.git
-cd my-first-repo
-```
-
-## Option B: Create Locally First
-
-```bash
-mkdir my-project
-cd my-project
-git init
-```
-
-Then connect to GitHub:
-
-1. Create an empty repository on GitHub (don't add README)
-2. Run:
-
-```bash
-git remote add origin git@github.com:YOUR-USERNAME/my-project.git
-git branch -M main
-git push -u origin main
-```
+::: {.callout-note}
+In Codespaces, Git is already installed and connected to your GitHub account. No SSH setup needed!
+:::
 
 ---
 
@@ -207,23 +121,31 @@ The basic Git workflow follows this pattern:
 Edit files → Stage changes → Commit → Push
 ```
 
+## Make a Change
+
+1. Click on `README.md` in the file explorer
+2. Add some text, like: "This is my first repository!"
+3. Save the file (Ctrl+S or Cmd+S)
+
 ## Check Status
 
-See what files have changed:
+In the terminal, see what changed:
 
 ```bash
 git status
 ```
 
+You'll see `README.md` listed as modified.
+
 ## Stage Changes
 
-Add specific files:
+Add the file to be committed:
 
 ```bash
-git add filename.txt
+git add README.md
 ```
 
-Add all changes:
+Or add all changes:
 
 ```bash
 git add .
@@ -231,10 +153,10 @@ git add .
 
 ## Commit Changes
 
-Save your staged changes with a message:
+Save your changes with a message:
 
 ```bash
-git commit -m "Add initial project files"
+git commit -m "Update README with description"
 ```
 
 ::: {.callout-tip}
@@ -242,65 +164,25 @@ git commit -m "Add initial project files"
 
 - Use present tense: "Add feature" not "Added feature"
 - Be specific: "Fix login button color" not "Fix bug"
-- Keep it short (50 characters or less for the subject line)
+- Keep it short (50 characters or less)
 :::
 
 ## Push to GitHub
 
-Upload your commits to GitHub:
+Upload your commit to GitHub:
 
 ```bash
 git push
 ```
 
+Go to your repository on GitHub and refresh - you'll see your changes!
+
 ## Pull from GitHub
 
-Download changes from GitHub:
+If changes were made elsewhere, download them:
 
 ```bash
 git pull
-```
-
----
-
-# Section 6: Working with Branches
-
-Branches let you work on features without affecting the main code.
-
-## Create a New Branch
-
-```bash
-git checkout -b feature-name
-```
-
-## Switch Between Branches
-
-```bash
-git checkout main
-git checkout feature-name
-```
-
-## List All Branches
-
-```bash
-git branch
-```
-
-## Merge a Branch
-
-First, switch to the branch you want to merge into:
-
-```bash
-git checkout main
-git merge feature-name
-```
-
-## Delete a Branch
-
-After merging:
-
-```bash
-git branch -d feature-name
 ```
 
 ---
@@ -312,27 +194,22 @@ You've learned:
 | Command | Description |
 |---------|-------------|
 | `git config` | Set up your identity |
-| `git clone` | Copy a repository |
-| `git init` | Create a new repository |
 | `git status` | Check what's changed |
 | `git add` | Stage changes |
 | `git commit` | Save changes |
 | `git push` | Upload to GitHub |
 | `git pull` | Download from GitHub |
-| `git branch` | Work with branches |
 
 ## Key Points
 
-- GitHub is a cloud platform for Git repositories
-- SSH keys provide secure, password-free authentication
+- GitHub Codespaces works on any computer with a browser
+- No software installation needed - everything runs in the cloud
 - The basic workflow is: edit → stage → commit → push
-- Branches let you work on features independently
 - Good commit messages help you and others understand changes
 
 ## Next Steps
 
 - Complete the [GitHub Hello World](https://docs.github.com/en/get-started/quickstart/hello-world) tutorial
-- Explore [GitHub Desktop](https://desktop.github.com/) for a visual interface
 - Learn about [Pull Requests](https://docs.github.com/en/pull-requests) for collaboration
 
 ---
