@@ -587,7 +587,7 @@ Select your answer for each question. Your answers are saved automatically in yo
 <button id="submitBtn" onclick="submitQuiz()">Submit Answers</button>
 
 <div id="resultBox">
-<p><strong>Copy this code and email it to your instructor:</strong></p>
+<p><strong>Copy this code and email it to your instructor at <a href="mailto:aun1@psu.edu">aun1@psu.edu</a>:</strong></p>
 <div id="submissionCode"></div>
 <button onclick="copyCode()">Copy to Clipboard</button>
 </div>
