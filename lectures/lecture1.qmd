@@ -1,0 +1,336 @@
+---
+title: "Lecture 1: Getting Started with GitHub"
+---
+
+This lecture will guide you through setting up GitHub and Git for version control. These tools are essential for modern software development and scientific computing.
+
+# Why Version Control?
+
+Version control systems track changes to your files over time. This allows you to:
+
+- **Revert** to previous versions if something goes wrong
+- **Collaborate** with others without overwriting each other's work
+- **Track** who made what changes and when
+- **Backup** your work to the cloud automatically
+
+Git is the most popular version control system, and GitHub is a cloud platform for hosting Git repositories.
+
+---
+
+# Section 1: Create a GitHub Account
+
+## Step 1: Sign Up
+
+1. Go to [github.com](https://github.com)
+2. Click **Sign up**
+3. Enter your email address (use your **PSU email** for educational benefits)
+4. Create a password
+5. Choose a username (this will be visible publicly)
+6. Complete the verification puzzle
+7. Click **Create account**
+
+::: {.callout-tip}
+## Educational Benefits
+Using your `.edu` email gives you access to [GitHub Education](https://education.github.com/), which includes free GitHub Pro features, free access to various developer tools, and GitHub Copilot.
+:::
+
+## Step 2: Verify Your Email
+
+1. Check your email inbox for a verification email from GitHub
+2. Click the verification link
+3. You now have a GitHub account!
+
+## Step 3: Set Up Your Profile
+
+1. Click your profile icon (top right) → **Settings**
+2. Add a profile picture
+3. Add your name and bio
+4. Click **Update profile**
+
+---
+
+# Section 2: Configure Git
+
+Git needs to know who you are so it can label your commits. Open a terminal and run:
+
+## Set Your Name
+
+```bash
+git config --global user.name "Your Name"
+```
+
+## Set Your Email
+
+Use the same email you used for GitHub:
+
+```bash
+git config --global user.email "your.email@psu.edu"
+```
+
+## Set Default Branch Name
+
+Modern convention uses `main` instead of `master`:
+
+```bash
+git config --global init.defaultBranch main
+```
+
+## Verify Your Configuration
+
+```bash
+git config --list
+```
+
+You should see your name and email listed.
+
+---
+
+# Section 3: Set Up SSH Authentication
+
+SSH keys allow you to connect to GitHub without entering your password every time.
+
+## Step 1: Check for Existing SSH Keys
+
+```bash
+ls -la ~/.ssh
+```
+
+If you see files like `id_rsa.pub` or `id_ed25519.pub`, you already have SSH keys.
+
+## Step 2: Generate a New SSH Key
+
+If you don't have existing keys, generate one:
+
+```bash
+ssh-keygen -t ed25519 -C "your.email@psu.edu"
+```
+
+When prompted:
+- Press **Enter** to accept the default file location
+- Enter a passphrase (optional but recommended)
+
+## Step 3: Start the SSH Agent
+
+```bash
+eval "$(ssh-agent -s)"
+```
+
+## Step 4: Add Your Key to the SSH Agent
+
+```bash
+ssh-add ~/.ssh/id_ed25519
+```
+
+## Step 5: Copy Your Public Key
+
+**On macOS:**
+```bash
+pbcopy < ~/.ssh/id_ed25519.pub
+```
+
+**On Linux:**
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+Then manually copy the output.
+
+**On Windows (Git Bash):**
+```bash
+clip < ~/.ssh/id_ed25519.pub
+```
+
+## Step 6: Add SSH Key to GitHub
+
+1. Go to [github.com](https://github.com) and log in
+2. Click your profile icon → **Settings**
+3. In the left sidebar, click **SSH and GPG keys**
+4. Click **New SSH key**
+5. Give it a descriptive title (e.g., "My Laptop")
+6. Paste your public key in the "Key" field
+7. Click **Add SSH key**
+
+## Step 7: Test Your Connection
+
+```bash
+ssh -T git@github.com
+```
+
+You should see: "Hi username! You've successfully authenticated..."
+
+---
+
+# Section 4: Create Your First Repository
+
+## Option A: Create on GitHub (Recommended for Beginners)
+
+1. Go to [github.com](https://github.com)
+2. Click the **+** icon → **New repository**
+3. Enter a repository name (e.g., `my-first-repo`)
+4. Add a description (optional)
+5. Choose **Public** or **Private**
+6. Check **Add a README file**
+7. Click **Create repository**
+
+## Clone to Your Computer
+
+```bash
+git clone git@github.com:YOUR-USERNAME/my-first-repo.git
+cd my-first-repo
+```
+
+## Option B: Create Locally First
+
+```bash
+mkdir my-project
+cd my-project
+git init
+```
+
+Then connect to GitHub:
+
+1. Create an empty repository on GitHub (don't add README)
+2. Run:
+
+```bash
+git remote add origin git@github.com:YOUR-USERNAME/my-project.git
+git branch -M main
+git push -u origin main
+```
+
+---
+
+# Section 5: Basic Git Workflow
+
+The basic Git workflow follows this pattern:
+
+```
+Edit files → Stage changes → Commit → Push
+```
+
+## Check Status
+
+See what files have changed:
+
+```bash
+git status
+```
+
+## Stage Changes
+
+Add specific files:
+
+```bash
+git add filename.txt
+```
+
+Add all changes:
+
+```bash
+git add .
+```
+
+## Commit Changes
+
+Save your staged changes with a message:
+
+```bash
+git commit -m "Add initial project files"
+```
+
+::: {.callout-tip}
+## Writing Good Commit Messages
+
+- Use present tense: "Add feature" not "Added feature"
+- Be specific: "Fix login button color" not "Fix bug"
+- Keep it short (50 characters or less for the subject line)
+:::
+
+## Push to GitHub
+
+Upload your commits to GitHub:
+
+```bash
+git push
+```
+
+## Pull from GitHub
+
+Download changes from GitHub:
+
+```bash
+git pull
+```
+
+---
+
+# Section 6: Working with Branches
+
+Branches let you work on features without affecting the main code.
+
+## Create a New Branch
+
+```bash
+git checkout -b feature-name
+```
+
+## Switch Between Branches
+
+```bash
+git checkout main
+git checkout feature-name
+```
+
+## List All Branches
+
+```bash
+git branch
+```
+
+## Merge a Branch
+
+First, switch to the branch you want to merge into:
+
+```bash
+git checkout main
+git merge feature-name
+```
+
+## Delete a Branch
+
+After merging:
+
+```bash
+git branch -d feature-name
+```
+
+---
+
+# Summary
+
+You've learned:
+
+| Command | Description |
+|---------|-------------|
+| `git config` | Set up your identity |
+| `git clone` | Copy a repository |
+| `git init` | Create a new repository |
+| `git status` | Check what's changed |
+| `git add` | Stage changes |
+| `git commit` | Save changes |
+| `git push` | Upload to GitHub |
+| `git pull` | Download from GitHub |
+| `git branch` | Work with branches |
+
+## Key Points
+
+- GitHub is a cloud platform for Git repositories
+- SSH keys provide secure, password-free authentication
+- The basic workflow is: edit → stage → commit → push
+- Branches let you work on features independently
+- Good commit messages help you and others understand changes
+
+## Next Steps
+
+- Complete the [GitHub Hello World](https://docs.github.com/en/get-started/quickstart/hello-world) tutorial
+- Explore [GitHub Desktop](https://desktop.github.com/) for a visual interface
+- Learn about [Pull Requests](https://docs.github.com/en/pull-requests) for collaboration

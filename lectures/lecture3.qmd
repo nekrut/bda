@@ -1,5 +1,5 @@
 ---
-title: "Lecture 2: Introduction to Bash"
+title: "Lecture 3: Introduction to Bash"
 ---
 
 This lecture introduces you to the Unix command line (bash shell). You'll learn how to navigate files and directories, manipulate files, and use powerful tools like pipes, loops, and pattern matching.
