@@ -581,8 +581,8 @@ Select your answer for each question. Your answers are saved automatically in yo
 
 <div class="submit-section">
 <h3>Submit Your Answers</h3>
-<p>Enter your name and click Submit to generate your submission code.</p>
-<input type="text" id="studentName" placeholder="Your full name">
+<p>Enter your student ID and click Submit to generate your submission code.</p>
+<input type="text" id="studentName" placeholder="Your student ID">
 <br>
 <button id="submitBtn" onclick="submitQuiz()">Submit Answers</button>
 
@@ -622,7 +622,7 @@ document.getElementById('studentName').addEventListener('input', function() {
 function submitQuiz() {
   const name = document.getElementById('studentName').value.trim();
   if (!name) {
-    alert('Please enter your name');
+    alert('Please enter your student ID');
     return;
   }
 
@@ -648,7 +648,7 @@ function submitQuiz() {
   // Create submission code: name|timestamp|answers
   const timestamp = new Date().toISOString();
   const code = btoa(JSON.stringify({
-    name: name,
+    studentId: name,
     time: timestamp,
     answers: answers.join('')
   }));

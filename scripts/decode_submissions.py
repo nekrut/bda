@@ -61,7 +61,7 @@ def main():
             print("ERROR: Invalid submission code")
             continue
 
-        print(f"Name: {data['name']}")
+        print(f"Student ID: {data.get('studentId', data.get('name', 'N/A'))}")
         print(f"Time: {data['time']}")
         print(f"Answers: {data['answers']}")
 
