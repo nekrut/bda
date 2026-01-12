@@ -1,0 +1,49 @@
+---
+title: "Test 1: Answer Key"
+---
+
+# Answer Key: Foundations Test
+
+## Python Questions
+
+| Q# | Answer | Explanation |
+|----|--------|-------------|
+| 1 | **B) `TC`** | String slicing `[1:3]` returns characters at index 1 and 2 (not including 3). Index 1 is 'T', index 2 is 'C'. |
+| 2 | **B) `{"name": "Alice", "age": 25}`** | Dictionaries use curly braces `{}` with key-value pairs separated by colons. |
+| 3 | **B) `[6, 8, 10]`** | The list comprehension filters values > 2 (getting 3, 4, 5) then multiplies each by 2. |
+| 4 | **B) `11`** | The string has 11 characters: H-e-l-l-o-\n-W-o-r-l-d. The `\n` counts as one character. |
+
+## Bash Questions
+
+| Q# | Answer | Explanation |
+|----|--------|-------------|
+| 5 | **C) `pwd`** | `pwd` = "print working directory" |
+| 6 | **B) List all files including hidden ones in long format** | `-l` = long format, `-a` = all files (including hidden) |
+| 7 | **B) `cp *.txt backup/`** | `cp` copies files, `*` is a wildcard matching any characters |
+| 8 | **B) Counts the number of lines containing "error"** | `cat` outputs file, `grep` filters for "error", `wc -l` counts lines |
+
+## Git Questions
+
+| Q# | Answer | Explanation |
+|----|--------|-------------|
+| 9 | **B) `git add .`** | The `.` adds all changes in current directory. `git commit -a` only stages tracked files. |
+| 10 | **C) `git add` → `git commit` → `git push`** | Stage changes, save them locally, then upload to remote. |
+| 11 | **C) `git checkout -b feature`** | The `-b` flag creates a new branch and switches to it in one command. |
+| 12 | **C) Modified, staged, and untracked files** | `git status` shows the working tree status. |
+
+## Agentic CLI Questions
+
+| Q# | Answer | Explanation |
+|----|--------|-------------|
+| 13 | **B) An AI assistant that can read files, run commands, and make code changes autonomously** | Agentic tools can take actions on your behalf, not just respond to queries. |
+| 14 | **C) "Add input validation..."** | Specific, actionable prompts with clear requirements produce better results. |
+| 15 | **B) Review the proposed changes to ensure they match your intent** | Always verify AI-generated changes before accepting them. |
+
+---
+
+## Scoring
+
+- **15 correct**: Excellent
+- **12-14 correct**: Good
+- **9-11 correct**: Satisfactory
+- **Below 9**: Review the material
