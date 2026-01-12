@@ -24,4 +24,6 @@ lectures/*.gz
 lectures/*.sam
 lectures/*.txt
 lectures/*.png
+# Ignore downloaded images, but keep test images
 images/
+!images/test1/

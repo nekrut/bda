@@ -341,150 +341,38 @@ You've learned:
 
 ## Python Questions
 
-**1.** What is the output of the following code?
-```python
-x = "ATCG"
-print(x[1:3])
-```
+![Question 1](../images/test1/q01.png)
 
-A) `AT`
-B) `TC`
-C) `TCG`
-D) `ATC`
+![Question 2](../images/test1/q02.png)
 
----
+![Question 3](../images/test1/q03.png)
 
-**2.** Which of the following correctly creates a dictionary in Python?
-
-A) `my_dict = ["name": "Alice", "age": 25]`
-B) `my_dict = {"name": "Alice", "age": 25}`
-C) `my_dict = ("name": "Alice", "age": 25)`
-D) `my_dict = <"name": "Alice", "age": 25>`
-
----
-
-**3.** What does the following code print?
-```python
-nums = [1, 2, 3, 4, 5]
-result = [x * 2 for x in nums if x > 2]
-print(result)
-```
-
-A) `[2, 4, 6, 8, 10]`
-B) `[6, 8, 10]`
-C) `[3, 4, 5]`
-D) `[1, 2]`
-
----
-
-**4.** What is the result of `len("Hello\nWorld")`?
-
-A) `10`
-B) `11`
-C) `12`
-D) `5`
-
----
+![Question 4](../images/test1/q04.png)
 
 ## Bash Questions
 
-**5.** Which command displays your current working directory?
+![Question 5](../images/test1/q05.png)
 
-A) `cd`
-B) `ls`
-C) `pwd`
-D) `dir`
+![Question 6](../images/test1/q06.png)
 
----
+![Question 7](../images/test1/q07.png)
 
-**6.** What does `ls -la` do?
-
-A) List only hidden files
-B) List all files including hidden ones in long format
-C) List files sorted by size
-D) List only directories
-
----
-
-**7.** Which command would copy all `.txt` files from the current directory to a folder called `backup`?
-
-A) `mv *.txt backup/`
-B) `cp *.txt backup/`
-C) `copy *.txt backup/`
-D) `cat *.txt > backup/`
-
----
-
-**8.** What does the command `cat file1.txt | grep "error" | wc -l` do?
-
-A) Displays all lines containing "error" from file1.txt
-B) Counts the number of lines containing "error" in file1.txt
-C) Replaces "error" with line numbers in file1.txt
-D) Deletes lines containing "error" from file1.txt
-
----
+![Question 8](../images/test1/q08.png)
 
 ## Git Questions
 
-**9.** Which command stages all changed files for the next commit?
+![Question 9](../images/test1/q09.png)
 
-A) `git commit -a`
-B) `git add .`
-C) `git push --all`
-D) `git stage *`
+![Question 10](../images/test1/q10.png)
 
----
+![Question 11](../images/test1/q11.png)
 
-**10.** What is the correct order of commands to save and upload your changes to GitHub?
-
-A) `git push` → `git commit` → `git add`
-B) `git commit` → `git add` → `git push`
-C) `git add` → `git commit` → `git push`
-D) `git add` → `git push` → `git commit`
-
----
-
-**11.** Which command creates a new branch called `feature` and switches to it?
-
-A) `git branch feature`
-B) `git checkout feature`
-C) `git checkout -b feature`
-D) `git switch --new feature`
-
----
-
-**12.** What does `git status` show?
-
-A) The commit history
-B) The list of remote repositories
-C) Modified, staged, and untracked files
-D) The difference between two commits
-
----
+![Question 12](../images/test1/q12.png)
 
 ## Agentic CLI Questions
 
-**13.** What is an "agentic" CLI tool like Claude Code?
+![Question 13](../images/test1/q13.png)
 
-A) A tool that only executes pre-written scripts
-B) An AI assistant that can read files, run commands, and make code changes autonomously
-C) A graphical user interface for coding
-D) A compiler for multiple programming languages
+![Question 14](../images/test1/q14.png)
 
----
-
-**14.** Which is the BEST prompt when asking an agentic CLI to help with code?
-
-A) "Fix it"
-B) "Make my code better"
-C) "Add input validation to the `parse_fastq` function that raises ValueError if the file doesn't start with @"
-D) "Do something with the function"
-
----
-
-**15.** When using an agentic CLI tool, what should you do before accepting changes?
-
-A) Always accept changes immediately without review
-B) Review the proposed changes to ensure they match your intent
-C) Delete all your original code first
-D) Disconnect from the internet
+![Question 15](../images/test1/q15.png)
