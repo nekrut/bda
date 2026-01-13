@@ -171,37 +171,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">1. Python basics</span></a>
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">2. Introduction to Bash</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">3. FASTQ and Quality Scores</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">4. Lists and Dictionaries</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">5. File I/O in Python</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">6. Data Manipulation with Pandas</span></a>
   </div>
 </li>
       </ul>
@@ -259,12 +235,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-pipe-operator" id="toc-the-pipe-operator" class="nav-link" data-scroll-target="#the-pipe-operator">The Pipe Operator <code>|</code></a></li>
   <li><a href="#cat---concatenate" id="toc-cat---concatenate" class="nav-link" data-scroll-target="#cat---concatenate"><code>cat</code> - Concatenate</a></li>
   </ul></li>
-  <li><a href="#loops" id="toc-loops" class="nav-link" data-scroll-target="#loops">Loops</a>
-  <ul class="collapse">
-  <li><a href="#loop-syntax" id="toc-loop-syntax" class="nav-link" data-scroll-target="#loop-syntax">Loop Syntax</a></li>
-  <li><a href="#practical-example-backup-files" id="toc-practical-example-backup-files" class="nav-link" data-scroll-target="#practical-example-backup-files">Practical Example: Backup Files</a></li>
-  <li><a href="#dry-run-with-echo" id="toc-dry-run-with-echo" class="nav-link" data-scroll-target="#dry-run-with-echo">Dry Run with <code>echo</code></a></li>
-  </ul></li>
   <li><a href="#finding-things" id="toc-finding-things" class="nav-link" data-scroll-target="#finding-things">Finding Things</a>
   <ul class="collapse">
   <li><a href="#grep---search-file-contents" id="toc-grep---search-file-contents" class="nav-link" data-scroll-target="#grep---search-file-contents"><code>grep</code> - Search File Contents</a></li>
@@ -310,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This lecture introduces you to the Unix command line (bash shell). You’ll learn how to navigate files and directories, manipulate files, and use powerful tools like pipes, loops, and pattern matching.</p>
+<p>This lecture introduces you to the Unix command line (bash shell). You’ll learn how to navigate files and directories, manipulate files, and use powerful tools like pipes and pattern matching.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -626,7 +596,7 @@ Important
 </section>
 <section id="section-3-more-bash" class="level1">
 <h1>Section 3: More Bash</h1>
-<p>Now let’s explore more powerful features: pipes, filters, loops, and searching.</p>
+<p>Now let’s explore more powerful features: pipes, filters, and searching.</p>
 <section id="pipes-and-filters" class="level2">
 <h2 class="anchored" data-anchor-id="pipes-and-filters">Pipes and Filters</h2>
 <section id="wc---word-count" class="level3">
@@ -686,60 +656,13 @@ Warning
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> file1.txt file2.txt <span class="op">&gt;</span> combined.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="loops" class="level2">
-<h2 class="anchored" data-anchor-id="loops">Loops</h2>
-<p>Loops repeat commands for each item in a list:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/shell-lesson-data/creatures</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> basilisk.dat minotaur.dat unicorn.dat</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span> <span class="at">-n</span> 2 <span class="va">$filename</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-n</span> 1</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Using wildcards:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.dat</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"Processing </span><span class="va">$file</span><span class="st">"</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">$file</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="loop-syntax" class="level3">
-<h3 class="anchored" data-anchor-id="loop-syntax">Loop Syntax</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> variable <span class="kw">in</span> list</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">commands</span> using <span class="va">$variable</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>$</code> before a variable name retrieves its value.</p>
-</section>
-<section id="practical-example-backup-files" class="level3">
-<h3 class="anchored" data-anchor-id="practical-example-backup-files">Practical Example: Backup Files</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> <span class="pp">*</span>.dat</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cp</span> <span class="va">$filename</span> original-<span class="va">$filename</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="dry-run-with-echo" class="level3">
-<h3 class="anchored" data-anchor-id="dry-run-with-echo">Dry Run with <code>echo</code></h3>
-<p>Test what a loop would do before running it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> <span class="pp">*</span>.dat</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"cp </span><span class="va">$filename</span><span class="st"> backup-</span><span class="va">$filename</span><span class="st">"</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Here’s how a for loop executes:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../images/bash/shell_script_for_loop_flow_chart.svg" class="img-fluid figure-img"></p>
-<figcaption>The for loop assigns filenames to a variable and executes commands for each file</figcaption>
-</figure>
-</div>
-</section>
-</section>
 <section id="finding-things" class="level2">
 <h2 class="anchored" data-anchor-id="finding-things">Finding Things</h2>
 <section id="grep---search-file-contents" class="level3">
 <h3 class="anchored" data-anchor-id="grep---search-file-contents"><code>grep</code> - Search File Contents</h3>
 <p>Find lines matching a pattern:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/shell-lesson-data/writing</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">"not"</span> haiku.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Desktop/shell-lesson-data/writing</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">"not"</span> haiku.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Useful options:</p>
 <table class="caption-top table">
 <thead>
@@ -772,10 +695,10 @@ Warning
 </tbody>
 </table>
 <p>Examples:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-n</span> <span class="st">"the"</span> haiku.txt</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-w</span> <span class="st">"The"</span> haiku.txt</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-i</span> <span class="st">"the"</span> haiku.txt</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-r</span> <span class="st">"Yesterday"</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-n</span> <span class="st">"the"</span> haiku.txt</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-w</span> <span class="st">"The"</span> haiku.txt</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-i</span> <span class="st">"the"</span> haiku.txt</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-r</span> <span class="st">"Yesterday"</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="find---search-for-files" class="level3">
 <h3 class="anchored" data-anchor-id="find---search-for-files"><code>find</code> - Search for Files</h3>
@@ -787,14 +710,14 @@ Warning
 </figure>
 </div>
 <p>Find files by name or properties:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-type</span> f              <span class="co"># All files</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-type</span> d              <span class="co"># All directories</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> <span class="st">"*.txt"</span>        <span class="co"># Files ending in .txt</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-type</span> f              <span class="co"># All files</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-type</span> d              <span class="co"># All directories</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-name</span> <span class="st">"*.txt"</span>        <span class="co"># Files ending in .txt</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="combining-find-and-grep" class="level3">
 <h3 class="anchored" data-anchor-id="combining-find-and-grep">Combining <code>find</code> and <code>grep</code></h3>
 <p>Find files, then search within them:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">"FE"</span> <span class="va">$(</span><span class="fu">find</span> .. <span class="at">-name</span> <span class="st">"*.pdb"</span><span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">"FE"</span> <span class="va">$(</span><span class="fu">find</span> .. <span class="at">-name</span> <span class="st">"*.pdb"</span><span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The <code>$()</code> runs the command inside and substitutes its output.</p>
 <hr>
 </section>
@@ -836,7 +759,6 @@ Warning
 <li><strong>Viewing files</strong>: <code>cat</code>, <code>head</code>, <code>tail</code></li>
 <li><strong>Redirection</strong>: <code>&gt;</code>, <code>&gt;&gt;</code>, <code>|</code></li>
 <li><strong>Processing</strong>: <code>wc</code>, <code>sort</code>, <code>grep</code>, <code>find</code></li>
-<li><strong>Automation</strong>: <code>for</code> loops</li>
 <li><strong>Version control</strong>: Committing with VS Code</li>
 </ul>
 <p>These commands form the foundation for working efficiently on the command line. The more you practice, the more natural they become!</p>
@@ -849,7 +771,6 @@ Warning
 <li><code>cp</code>, <code>mv</code>, and <code>rm</code> manage files and directories</li>
 <li><code>*</code> and <code>?</code> are wildcards that match filenames</li>
 <li><code>|</code> pipes connect commands together</li>
-<li><code>for</code> loops automate repetitive tasks</li>
 <li><code>grep</code> finds patterns in files; <code>find</code> finds files by name</li>
 </ul>
 
