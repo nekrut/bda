@@ -1,8 +1,8 @@
 ---
-title: "Lecture 3: Introduction to Bash"
+title: "Lecture 2: Introduction to Bash"
 ---
 
-This lecture introduces you to the Unix command line (bash shell). You'll learn how to navigate files and directories, manipulate files, and use powerful tools like pipes, loops, and pattern matching.
+This lecture introduces you to the Unix command line (bash shell). You'll learn how to navigate files and directories, manipulate files, and use powerful tools like pipes and pattern matching.
 
 ::: {.callout-note}
 This tutorial is based on [The Carpentries](https://carpentries.org) ["The Unix Shell"](https://swcarpentry.github.io/shell-novice/) lesson, licensed CC-BY 4.0.
@@ -332,7 +332,7 @@ ls ???ane.pdb     # Three characters + 'ane.pdb'
 
 # Section 3: More Bash
 
-Now let's explore more powerful features: pipes, filters, loops, and searching.
+Now let's explore more powerful features: pipes, filters, and searching.
 
 ## Pipes and Filters
 
@@ -400,65 +400,6 @@ Combine multiple files:
 ```bash
 cat file1.txt file2.txt > combined.txt
 ```
-
-## Loops
-
-Loops repeat commands for each item in a list:
-
-```bash
-cd ~/Desktop/shell-lesson-data/creatures
-
-for filename in basilisk.dat minotaur.dat unicorn.dat
-do
-    head -n 2 $filename | tail -n 1
-done
-```
-
-Using wildcards:
-
-```bash
-for file in *.dat
-do
-    echo "Processing $file"
-    head -n 3 $file
-done
-```
-
-### Loop Syntax
-
-```bash
-for variable in list
-do
-    commands using $variable
-done
-```
-
-The `$` before a variable name retrieves its value.
-
-### Practical Example: Backup Files
-
-```bash
-for filename in *.dat
-do
-    cp $filename original-$filename
-done
-ls
-```
-
-### Dry Run with `echo`
-
-Test what a loop would do before running it:
-
-```bash
-for filename in *.dat
-do
-    echo "cp $filename backup-$filename"
-done
-```
-
-Here's how a for loop executes:
-
-![The for loop assigns filenames to a variable and executes commands for each file](../images/bash/shell_script_for_loop_flow_chart.svg)
 
 ## Finding Things
 
@@ -555,7 +496,6 @@ You've learned:
 - **Viewing files**: `cat`, `head`, `tail`
 - **Redirection**: `>`, `>>`, `|`
 - **Processing**: `wc`, `sort`, `grep`, `find`
-- **Automation**: `for` loops
 - **Version control**: Committing with VS Code
 
 These commands form the foundation for working efficiently on the command line. The more you practice, the more natural they become!
@@ -567,5 +507,4 @@ These commands form the foundation for working efficiently on the command line. 
 - `cp`, `mv`, and `rm` manage files and directories
 - `*` and `?` are wildcards that match filenames
 - `|` pipes connect commands together
-- `for` loops automate repetitive tasks
 - `grep` finds patterns in files; `find` finds files by name

@@ -19,18 +19,19 @@ website:
         contents:
           - href: lectures/lecture1.qmd
             text: "1. Getting Started with GitHub"
-          - href: lectures/lecture2.ipynb
-            text: "2. Data analysis ecosystem"
-          - href: lectures/lecture3.qmd
-            text: "3. Introduction to Bash"
-          - href: lectures/lecture4.ipynb
-            text: "4. FASTQ and Quality Scores"
-          - href: lectures/lecture5.ipynb
-            text: "5. Lists and Dictionaries"
-          - href: lectures/lecture6.ipynb
-            text: "6. File I/O in Python"
-          - href: lectures/lecture7.ipynb
-            text: "7. Data Manipulation with Pandas"
+          - href: lectures/lecture2.qmd
+            text: "2. Introduction to Bash"
+          # Hidden for now - uncomment when ready to publish
+          # - href: lectures/lecture3.ipynb
+          #   text: "3. Data analysis ecosystem"
+          # - href: lectures/lecture4.ipynb
+          #   text: "4. FASTQ and Quality Scores"
+          # - href: lectures/lecture5.ipynb
+          #   text: "5. Lists and Dictionaries"
+          # - href: lectures/lecture6.ipynb
+          #   text: "6. File I/O in Python"
+          # - href: lectures/lecture7.ipynb
+          #   text: "7. Data Manipulation with Pandas"
 
 format:
   html:

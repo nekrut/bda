@@ -2,7 +2,12 @@
 title: "Lecture 1: Getting Started with GitHub"
 ---
 
-This lecture will guide you through setting up GitHub and GitHub Codespaces. We'll use Codespaces as our development environment - it works on **any computer** (Chromebook, Windows, Mac) with just a web browser.
+In this lectures I will give overview of the course: what we will cover and what we will learn. This lecture will also guide you through setting up GitHub and GitHub Codespaces. We'll use Codespaces as our development environment - it works on **any computer** (Chromebook, Windows, Mac) with just a web browser.
+
+::: {.callout-tip}
+## Get Gemini
+We will use agentic AI extensively. Get [Gemini for Stundets](https://gemini.google/students/) now. 
+:::
 
 # Why Version Control?
 
