@@ -6,7 +6,7 @@ import json
 import sys
 
 # Correct answers for Test 1
-CORRECT_ANSWERS = "BBBCBCBBBC" + "CCCBC"  # 15 answers: B,B,B,C,B,C,B,B,B,C,C,C,C,B,C
+CORRECT_ANSWERS = "BBBCCBBBBC" + "CCBCB"  # 15 answers: B,B,B,C,C,B,B,B,B,C,C,C,B,C,B
 
 def decode_submission(code):
     """Decode a base64 submission code."""
