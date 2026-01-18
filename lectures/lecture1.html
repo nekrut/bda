@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,7 +72,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -103,6 +103,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -220,7 +222,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points">Key Points</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   </ul></li>
-  <li><a href="#in-class-test-foundations" id="toc-in-class-test-foundations" class="nav-link" data-scroll-target="#in-class-test-foundations">In-Class Test: Foundations</a></li>
+  <li><a href="#in-class-test-foundations" id="toc-in-class-test-foundations" class="nav-link" data-scroll-target="#in-class-test-foundations">In-Class Test: Foundations</a>
+  <ul class="collapse">
+  <li><a href="#test-results-summary" id="toc-test-results-summary" class="nav-link" data-scroll-target="#test-results-summary">Test Results Summary</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -537,6 +542,11 @@ Note
 .quiz-options label:hover {
   background-color: #f5f5f5;
 }
+.quiz-options label.correct-answer {
+  background-color: #d4edda;
+  border: 2px solid #28a745;
+  font-weight: bold;
+}
 .quiz-options input[type="radio"] {
   width: 1.2rem;
   height: 1.2rem;
@@ -588,30 +598,30 @@ Note
 </style>
 <div id="quiz-container">
 <div class="quiz-question">
-<h3 class="anchored" data-anchor-id="in-class-test-foundations">
+<h3 class="anchored">
 Python Questions
 </h3>
 <img src="../images/test1/q01.png" alt="Question 1">
 <div class="quiz-options">
-<p><label><input type="radio" name="q1" value="A"> A</label> <label><input type="radio" name="q1" value="B"> B</label> <label><input type="radio" name="q1" value="C"> C</label> <label><input type="radio" name="q1" value="D"> D</label></p>
+<p><label><input type="radio" name="q1" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q1" value="B"> B ✓</label> <label><input type="radio" name="q1" value="C"> C</label> <label><input type="radio" name="q1" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q02.png" alt="Question 2">
 <div class="quiz-options">
-<p><label><input type="radio" name="q2" value="A"> A</label> <label><input type="radio" name="q2" value="B"> B</label> <label><input type="radio" name="q2" value="C"> C</label> <label><input type="radio" name="q2" value="D"> D</label></p>
+<p><label><input type="radio" name="q2" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q2" value="B"> B ✓</label> <label><input type="radio" name="q2" value="C"> C</label> <label><input type="radio" name="q2" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q03.png" alt="Question 3">
 <div class="quiz-options">
-<p><label><input type="radio" name="q3" value="A"> A</label> <label><input type="radio" name="q3" value="B"> B</label> <label><input type="radio" name="q3" value="C"> C</label> <label><input type="radio" name="q3" value="D"> D</label></p>
+<p><label><input type="radio" name="q3" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q3" value="B"> B ✓</label> <label><input type="radio" name="q3" value="C"> C</label> <label><input type="radio" name="q3" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q04.png" alt="Question 4">
 <div class="quiz-options">
-<p><label><input type="radio" name="q4" value="A"> A</label> <label><input type="radio" name="q4" value="B"> B</label> <label><input type="radio" name="q4" value="C"> C</label> <label><input type="radio" name="q4" value="D"> D</label></p>
+<p><label><input type="radio" name="q4" value="A"> A</label> <label><input type="radio" name="q4" value="B"> B</label> <label class="correct-answer"><input type="radio" name="q4" value="C"> C ✓</label> <label><input type="radio" name="q4" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
@@ -620,25 +630,25 @@ Bash Questions
 </h3>
 <img src="../images/test1/q05.png" alt="Question 5">
 <div class="quiz-options">
-<p><label><input type="radio" name="q5" value="A"> A</label> <label><input type="radio" name="q5" value="B"> B</label> <label><input type="radio" name="q5" value="C"> C</label> <label><input type="radio" name="q5" value="D"> D</label></p>
+<p><label><input type="radio" name="q5" value="A"> A</label> <label><input type="radio" name="q5" value="B"> B</label> <label class="correct-answer"><input type="radio" name="q5" value="C"> C ✓</label> <label><input type="radio" name="q5" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q06.png" alt="Question 6">
 <div class="quiz-options">
-<p><label><input type="radio" name="q6" value="A"> A</label> <label><input type="radio" name="q6" value="B"> B</label> <label><input type="radio" name="q6" value="C"> C</label> <label><input type="radio" name="q6" value="D"> D</label></p>
+<p><label><input type="radio" name="q6" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q6" value="B"> B ✓</label> <label><input type="radio" name="q6" value="C"> C</label> <label><input type="radio" name="q6" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q07.png" alt="Question 7">
 <div class="quiz-options">
-<p><label><input type="radio" name="q7" value="A"> A</label> <label><input type="radio" name="q7" value="B"> B</label> <label><input type="radio" name="q7" value="C"> C</label> <label><input type="radio" name="q7" value="D"> D</label></p>
+<p><label><input type="radio" name="q7" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q7" value="B"> B ✓</label> <label><input type="radio" name="q7" value="C"> C</label> <label><input type="radio" name="q7" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q08.png" alt="Question 8">
 <div class="quiz-options">
-<p><label><input type="radio" name="q8" value="A"> A</label> <label><input type="radio" name="q8" value="B"> B</label> <label><input type="radio" name="q8" value="C"> C</label> <label><input type="radio" name="q8" value="D"> D</label></p>
+<p><label><input type="radio" name="q8" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q8" value="B"> B ✓</label> <label><input type="radio" name="q8" value="C"> C</label> <label><input type="radio" name="q8" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
@@ -647,25 +657,25 @@ Git Questions
 </h3>
 <img src="../images/test1/q09.png" alt="Question 9">
 <div class="quiz-options">
-<p><label><input type="radio" name="q9" value="A"> A</label> <label><input type="radio" name="q9" value="B"> B</label> <label><input type="radio" name="q9" value="C"> C</label> <label><input type="radio" name="q9" value="D"> D</label></p>
+<p><label><input type="radio" name="q9" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q9" value="B"> B ✓</label> <label><input type="radio" name="q9" value="C"> C</label> <label><input type="radio" name="q9" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q10.png" alt="Question 10">
 <div class="quiz-options">
-<p><label><input type="radio" name="q10" value="A"> A</label> <label><input type="radio" name="q10" value="B"> B</label> <label><input type="radio" name="q10" value="C"> C</label> <label><input type="radio" name="q10" value="D"> D</label></p>
+<p><label><input type="radio" name="q10" value="A"> A</label> <label><input type="radio" name="q10" value="B"> B</label> <label class="correct-answer"><input type="radio" name="q10" value="C"> C ✓</label> <label><input type="radio" name="q10" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q11.png" alt="Question 11">
 <div class="quiz-options">
-<p><label><input type="radio" name="q11" value="A"> A</label> <label><input type="radio" name="q11" value="B"> B</label> <label><input type="radio" name="q11" value="C"> C</label> <label><input type="radio" name="q11" value="D"> D</label></p>
+<p><label><input type="radio" name="q11" value="A"> A</label> <label><input type="radio" name="q11" value="B"> B</label> <label class="correct-answer"><input type="radio" name="q11" value="C"> C ✓</label> <label><input type="radio" name="q11" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q12.png" alt="Question 12">
 <div class="quiz-options">
-<p><label><input type="radio" name="q12" value="A"> A</label> <label><input type="radio" name="q12" value="B"> B</label> <label><input type="radio" name="q12" value="C"> C</label> <label><input type="radio" name="q12" value="D"> D</label></p>
+<p><label><input type="radio" name="q12" value="A"> A</label> <label><input type="radio" name="q12" value="B"> B</label> <label class="correct-answer"><input type="radio" name="q12" value="C"> C ✓</label> <label><input type="radio" name="q12" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
@@ -674,19 +684,19 @@ Agentic CLI Questions
 </h3>
 <img src="../images/test1/q13.png" alt="Question 13">
 <div class="quiz-options">
-<p><label><input type="radio" name="q13" value="A"> A</label> <label><input type="radio" name="q13" value="B"> B</label> <label><input type="radio" name="q13" value="C"> C</label> <label><input type="radio" name="q13" value="D"> D</label></p>
+<p><label><input type="radio" name="q13" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q13" value="B"> B ✓</label> <label><input type="radio" name="q13" value="C"> C</label> <label><input type="radio" name="q13" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q14.png" alt="Question 14">
 <div class="quiz-options">
-<p><label><input type="radio" name="q14" value="A"> A</label> <label><input type="radio" name="q14" value="B"> B</label> <label><input type="radio" name="q14" value="C"> C</label> <label><input type="radio" name="q14" value="D"> D</label></p>
+<p><label><input type="radio" name="q14" value="A"> A</label> <label><input type="radio" name="q14" value="B"> B</label> <label class="correct-answer"><input type="radio" name="q14" value="C"> C ✓</label> <label><input type="radio" name="q14" value="D"> D</label></p>
 </div>
 </div>
 <div class="quiz-question">
 <img src="../images/test1/q15.png" alt="Question 15">
 <div class="quiz-options">
-<p><label><input type="radio" name="q15" value="A"> A</label> <label><input type="radio" name="q15" value="B"> B</label> <label><input type="radio" name="q15" value="C"> C</label> <label><input type="radio" name="q15" value="D"> D</label></p>
+<p><label><input type="radio" name="q15" value="A"> A</label> <label class="correct-answer"><input type="radio" name="q15" value="B"> B ✓</label> <label><input type="radio" name="q15" value="C"> C</label> <label><input type="radio" name="q15" value="D"> D</label></p>
 </div>
 </div>
 </div>
@@ -781,11 +791,173 @@ function copyCode() {
   });
 }
 </script>
+<hr>
+<section id="test-results-summary" class="level2">
+<h2 class="anchored" data-anchor-id="test-results-summary">Test Results Summary</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb10" data-startfrom="561" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 560;"><span id="cb10-561"><a href="#cb10-561" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [</span>
+<span id="cb10-562"><a href="#cb10-562" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">score</span><span class="op">:</span> <span class="st">"0-3"</span><span class="op">,</span> <span class="dt">count</span><span class="op">:</span> <span class="dv">0</span>}<span class="op">,</span></span>
+<span id="cb10-563"><a href="#cb10-563" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">score</span><span class="op">:</span> <span class="st">"4-6"</span><span class="op">,</span> <span class="dt">count</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb10-564"><a href="#cb10-564" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">score</span><span class="op">:</span> <span class="st">"7-9"</span><span class="op">,</span> <span class="dt">count</span><span class="op">:</span> <span class="dv">5</span>}<span class="op">,</span></span>
+<span id="cb10-565"><a href="#cb10-565" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">score</span><span class="op">:</span> <span class="st">"10-12"</span><span class="op">,</span> <span class="dt">count</span><span class="op">:</span> <span class="dv">4</span>}<span class="op">,</span></span>
+<span id="cb10-566"><a href="#cb10-566" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">score</span><span class="op">:</span> <span class="st">"13-15"</span><span class="op">,</span> <span class="dt">count</span><span class="op">:</span> <span class="dv">1</span>}</span>
+<span id="cb10-567"><a href="#cb10-567" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb10-568"><a href="#cb10-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-569"><a href="#cb10-569" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb10-570"><a href="#cb10-570" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb10-571"><a href="#cb10-571" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">barY</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"score"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#4a90d9"</span>})<span class="op">,</span></span>
+<span id="cb10-572"><a href="#cb10-572" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])</span>
+<span id="cb10-573"><a href="#cb10-573" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb10-574"><a href="#cb10-574" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Score Range"</span>}<span class="op">,</span></span>
+<span id="cb10-575"><a href="#cb10-575" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Number of Students"</span>}<span class="op">,</span></span>
+<span id="cb10-576"><a href="#cb10-576" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span><span class="op">:</span> <span class="st">"Test 1 Score Distribution (n=15)"</span><span class="op">,</span></span>
+<span id="cb10-577"><a href="#cb10-577" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> <span class="dv">500</span><span class="op">,</span></span>
+<span id="cb10-578"><a href="#cb10-578" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">300</span></span>
+<span id="cb10-579"><a href="#cb10-579" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p><strong>Summary Statistics:</strong></p>
+<ul>
+<li>Students: 15</li>
+<li>Average: 8.1/15 (54.2%)</li>
+<li>Median: 8/15</li>
+<li>Range: 5-13/15</li>
+</ul>
+<p><strong>Per-Question Analysis:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Question</th>
+<th style="text-align: center;">Correct</th>
+<th style="text-align: center;">Incorrect</th>
+<th style="text-align: center;">% Correct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">20%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">60%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">87%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">33%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">33%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">67%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">80%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">20%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">27%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">40%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">40%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">60%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">80%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">73%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">93%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analysis by Topic:</strong></p>
+<p>Students performed strongest on <strong>Agentic CLI</strong> concepts (Q13-15, avg 82%), with excellent understanding of reviewing changes before accepting them (Q15, 93%) and writing good prompts (Q14, 73%). <strong>Python</strong> questions (Q1-4, avg 50%) showed solid results on list comprehensions (Q3, 87%) and dictionary syntax (Q2, 60%), though string slicing (Q1, 20%) needs review. <strong>Bash</strong> performance (Q5-8, avg 50%) was mixed—students understood file copying (Q7, 80%) and <code>ls -la</code> (Q6, 67%), but pipe commands (Q8, 20%) need reinforcement. <strong>Git</strong> questions (Q9-12, avg 42%) were the weakest area, with students grasping <code>git status</code> (Q12, 60%) but struggling with <code>git add .</code> (Q9, 27%) and the add-commit-push workflow (Q10, 40%).</p>
 
 
 </section>
+</section>
 
 </main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRhdGEgPSBbXG4gIHtzY29yZTogXCIwLTNcIiwgY291bnQ6IDB9LFxuICB7c2NvcmU6IFwiNC02XCIsIGNvdW50OiA1fSxcbiAge3Njb3JlOiBcIjctOVwiLCBjb3VudDogNX0sXG4gIHtzY29yZTogXCIxMC0xMlwiLCBjb3VudDogNH0sXG4gIHtzY29yZTogXCIxMy0xNVwiLCBjb3VudDogMX1cbl1cblxuUGxvdC5wbG90KHtcbiAgbWFya3M6IFtcbiAgICBQbG90LmJhclkoZGF0YSwge3g6IFwic2NvcmVcIiwgeTogXCJjb3VudFwiLCBmaWxsOiBcIiM0YTkwZDlcIn0pLFxuICAgIFBsb3QucnVsZVkoWzBdKVxuICBdLFxuICB4OiB7bGFiZWw6IFwiU2NvcmUgUmFuZ2VcIn0sXG4gIHk6IHtsYWJlbDogXCJOdW1iZXIgb2YgU3R1ZGVudHNcIn0sXG4gIHRpdGxlOiBcIlRlc3QgMSBTY29yZSBEaXN0cmlidXRpb24gKG49MTUpXCIsXG4gIHdpZHRoOiA1MDAsXG4gIGhlaWdodDogMzAwXG59KVxuIn1dfQ==
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../lectures";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
