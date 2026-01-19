@@ -150,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture3.html">3. Data analysis ecosystem</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -183,6 +183,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">2. Introduction to Bash</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">3. Data analysis ecosystem</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -195,7 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#lecture-3-data-analysis-ecosystemlanguage-dataframes-viz-preclass-prep-chapters-1-2-3-from-think-python" id="toc-lecture-3-data-analysis-ecosystemlanguage-dataframes-viz-preclass-prep-chapters-1-2-3-from-think-python" class="nav-link active" data-scroll-target="#lecture-3-data-analysis-ecosystemlanguage-dataframes-viz-preclass-prep-chapters-1-2-3-from-think-python">Lecture 3: Data analysis ecosystemLanguage + Dataframes + Viz—-Preclass prep: Chapters 1, 2, 3 from “Think Python”</a>
+  <li><a href="#lecture-3-data-analysis-ecosystem" id="toc-lecture-3-data-analysis-ecosystem" class="nav-link active" data-scroll-target="#lecture-3-data-analysis-ecosystem">Lecture 3: Data analysis ecosystem</a>
   <ul class="collapse">
   <li><a href="#generate-a-random-sequence" id="toc-generate-a-random-sequence" class="nav-link" data-scroll-target="#generate-a-random-sequence">Generate a random sequence</a></li>
   <li><a href="#simulate-one-polymerase-molecule" id="toc-simulate-one-polymerase-molecule" class="nav-link" data-scroll-target="#simulate-one-polymerase-molecule">Simulate one polymerase molecule</a></li>
@@ -205,12 +211,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#a-bit-about-dictionaries" id="toc-a-bit-about-dictionaries" class="nav-link" data-scroll-target="#a-bit-about-dictionaries">A bit about dictionaries</a></li>
   <li><a href="#drawing-a-sequencing-gel" id="toc-drawing-a-sequencing-gel" class="nav-link" data-scroll-target="#drawing-a-sequencing-gel">Drawing a sequencing gel</a></li>
   <li><a href="#putting-everything-together" id="toc-putting-everything-together" class="nav-link" data-scroll-target="#putting-everything-together">Putting everything together</a></li>
+  <li><a href="#homework" id="toc-homework" class="nav-link" data-scroll-target="#homework">Homework</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture3.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture3.html">3. Data analysis ecosystem</a></li></ol></nav></header>
 
 
 
@@ -221,8 +228,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Open In Colab</figcaption>
 </figure>
 </div>
-<section id="lecture-3-data-analysis-ecosystemlanguage-dataframes-viz-preclass-prep-chapters-1-2-3-from-think-python" class="level1">
-<h1>Lecture 3: Data analysis ecosystemLanguage + Dataframes + Viz—-Preclass prep: Chapters <a href="https://greenteapress.com/thinkpython2/html/thinkpython2002.html">1</a>, <a href="https://greenteapress.com/thinkpython2/html/thinkpython2003.html">2</a>, <a href="https://greenteapress.com/thinkpython2/html/thinkpython2004.html">3</a> from “Think Python”</h1>
+<section id="lecture-3-data-analysis-ecosystem" class="level1">
+<h1>Lecture 3: Data analysis ecosystem</h1>
+<p>Language + Dataframes + Viz</p>
 <p>First we import a module called <a href="https://docs.python.org/3/library/random.html"><code>random</code></a> which contains a number of functions for generating and working with random numbers</p>
 <div id="1abc8870-5f4a-42a8-b4ee-bf8175ad0149" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-02T19:32:02.571929Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-02T19:32:02.571808Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-02T19:32:02.575098Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-02T19:32:02.574624Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1516,6 +1524,11 @@ GCCTa</code></pre>
 </script>
 </div>
 </div>
+</section>
+<section id="homework" class="level2">
+<h2 class="anchored" data-anchor-id="homework">Homework</h2>
+<hr>
+<p>Chapters <a href="https://greenteapress.com/thinkpython2/html/thinkpython2002.html">1</a>, <a href="https://greenteapress.com/thinkpython2/html/thinkpython2003.html">2</a>, <a href="https://greenteapress.com/thinkpython2/html/thinkpython2004.html">3</a> from “Think Python”</p>
 
 
 </section>

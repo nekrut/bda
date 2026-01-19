@@ -180,6 +180,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">2. Introduction to Bash</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Data analysis ecosystem</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -192,7 +198,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#lecture-7-data-manipulation-with-pandas-sars-cov-2-as-a-research-problemto-learn-about-pandas-we-will-use-sars-cov-2-data.-before-actually-jumping-to-pandas-lets-learn-about-the-coronavirus-molecular-biology.the-following-summary-is-based-on-these-publications--masters2006--fehr-and-perlman2015--sola2015--kirchdoerfer2016--walls2020--jackson2022" id="toc-lecture-7-data-manipulation-with-pandas-sars-cov-2-as-a-research-problemto-learn-about-pandas-we-will-use-sars-cov-2-data.-before-actually-jumping-to-pandas-lets-learn-about-the-coronavirus-molecular-biology.the-following-summary-is-based-on-these-publications--masters2006--fehr-and-perlman2015--sola2015--kirchdoerfer2016--walls2020--jackson2022" class="nav-link active" data-scroll-target="#lecture-7-data-manipulation-with-pandas-sars-cov-2-as-a-research-problemto-learn-about-pandas-we-will-use-sars-cov-2-data.-before-actually-jumping-to-pandas-lets-learn-about-the-coronavirus-molecular-biology.the-following-summary-is-based-on-these-publications--masters2006--fehr-and-perlman2015--sola2015--kirchdoerfer2016--walls2020--jackson2022">Lecture 7: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022</a>
+  <li><a href="#lecture-7-data-manipulation-with-pandas" id="toc-lecture-7-data-manipulation-with-pandas" class="nav-link active" data-scroll-target="#lecture-7-data-manipulation-with-pandas">Lecture 7: Data Manipulation with Pandas</a></li>
+  <li><a href="#sars-cov-2-as-a-research-problem" id="toc-sars-cov-2-as-a-research-problem" class="nav-link" data-scroll-target="#sars-cov-2-as-a-research-problem">SARS-CoV-2 as a research problem</a>
   <ul class="collapse">
   <li><a href="#genome-organization" id="toc-genome-organization" class="nav-link" data-scroll-target="#genome-organization">Genome organization</a></li>
   <li><a href="#virion-structure" id="toc-virion-structure" class="nav-link" data-scroll-target="#virion-structure">Virion structure</a></li>
@@ -250,8 +257,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Open In Colab</figcaption>
 </figure>
 </div>
-<section id="lecture-7-data-manipulation-with-pandas-sars-cov-2-as-a-research-problemto-learn-about-pandas-we-will-use-sars-cov-2-data.-before-actually-jumping-to-pandas-lets-learn-about-the-coronavirus-molecular-biology.the-following-summary-is-based-on-these-publications--masters2006--fehr-and-perlman2015--sola2015--kirchdoerfer2016--walls2020--jackson2022" class="level1">
-<h1>Lecture 7: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- <a href="http://dx.doi.org/10.1016/S0065-3527(06)66005-3">Masters:2006</a>- <a href="http://dx.doi.org/10.1007/978-1-4939-2438-7_1">Fehr and Perlman:2015</a>- <a href="https://www.annualreviews.org/doi/full/10.1146/annurev-virology-100114-055218">Sola:2015</a>- <a href="http://dx.doi.org/10.1038/nature17200">Kirchdoerfer:2016</a>- <a href="http://dx.doi.org/10.1016/j.cell.2020.02.058">Walls:2020</a>- <a href="https://www.nature.com/articles/s41580-021-00418-x">Jackson:2022</a></h1>
+<section id="lecture-7-data-manipulation-with-pandas" class="level1">
+<h1>Lecture 7: Data Manipulation with Pandas</h1>
+</section>
+<section id="sars-cov-2-as-a-research-problem" class="level1">
+<h1>SARS-CoV-2 as a research problem</h1>
+<p>To learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.</p>
+<p>The following summary is based on these publications:</p>
+<ul>
+<li><a href="http://dx.doi.org/10.1016/S0065-3527(06)66005-3">Masters:2006</a></li>
+<li><a href="http://dx.doi.org/10.1007/978-1-4939-2438-7_1">Fehr and Perlman:2015</a></li>
+<li><a href="https://www.annualreviews.org/doi/full/10.1146/annurev-virology-100114-055218">Sola:2015</a></li>
+<li><a href="http://dx.doi.org/10.1038/nature17200">Kirchdoerfer:2016</a></li>
+<li><a href="http://dx.doi.org/10.1016/j.cell.2020.02.058">Walls:2020</a></li>
+<li><a href="https://www.nature.com/articles/s41580-021-00418-x">Jackson:2022</a></li>
+</ul>
 <section id="genome-organization" class="level2">
 <h2 class="anchored" data-anchor-id="genome-organization">Genome organization</h2>
 <p>All coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.</p>
@@ -333,7 +353,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Access a single value</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Run'</span>][<span class="dv">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>However, it’s better to use <code>.loc</code> for accessing data. This gives the location in the data frame we want.&gt; <strong>💡 <code>loc</code> versus <code>iloc</code>:</strong> <code>loc</code> uses label-based indexing (actual row and column labels), while <code>iloc</code> uses integer-based indexing (integer positions).</p>
+<p>However, it’s better to use <code>.loc</code> for accessing data. This gives the location in the data frame we want.</p>
+<blockquote class="blockquote">
+<p><strong>💡 <code>loc</code> versus <code>iloc</code>:</strong> <code>loc</code> uses label-based indexing (actual row and column labels), while <code>iloc</code> uses integer-based indexing (integer positions).</p>
+</blockquote>
 <div id="cell-17" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:43:02.734319Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:43:02.734276Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:43:02.736046Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:43:02.735738Z&quot;}}">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">4</span>, <span class="st">'Run'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>

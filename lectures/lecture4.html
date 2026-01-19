@@ -180,6 +180,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">2. Introduction to Bash</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Data analysis ecosystem</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -192,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#lecture-4-fastq-and-quality-scoresxkcd353preclass-prep-chapters-8-and-10-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" id="toc-lecture-4-fastq-and-quality-scoresxkcd353preclass-prep-chapters-8-and-10-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" class="nav-link active" data-scroll-target="#lecture-4-fastq-and-quality-scoresxkcd353preclass-prep-chapters-8-and-10-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead">Lecture 4: FASTQ and Quality Scores<img src="https://imgs.xkcd.com/comics/python.png" class="img-fluid" alt="XKCD353"><strong>Preclass prep:</strong> Chapters 8 and 10 from “Think Python”&gt; <strong>💡 Attribution:</strong> This material uses examples from notebooks developed by Ben Langmead</a>
+  <li><a href="#lecture-4-fastq-and-quality-scores" id="toc-lecture-4-fastq-and-quality-scores" class="nav-link active" data-scroll-target="#lecture-4-fastq-and-quality-scores">Lecture 4: FASTQ and Quality Scores</a>
   <ul class="collapse">
   <li><a href="#prep" id="toc-prep" class="nav-link" data-scroll-target="#prep">Prep</a></li>
   </ul></li>
@@ -228,8 +234,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Open In Colab</figcaption>
 </figure>
 </div>
-<section id="lecture-4-fastq-and-quality-scoresxkcd353preclass-prep-chapters-8-and-10-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" class="level1">
-<h1>Lecture 4: FASTQ and Quality Scores<a href="https://xkcd.com/353/"><img src="https://imgs.xkcd.com/comics/python.png" class="img-fluid" alt="XKCD353"></a><strong>Preclass prep:</strong> Chapters <a href="https://greenteapress.com/thinkpython2/html/thinkpython2009.html">8</a> and <a href="https://greenteapress.com/thinkpython2/html/thinkpython2011.html">10</a> from “Think Python”&gt; <strong>💡 Attribution:</strong> This material uses examples from notebooks developed by <a href="https://langmead-lab.org/teaching-materials/">Ben Langmead</a></h1>
+<section id="lecture-4-fastq-and-quality-scores" class="level1">
+<h1>Lecture 4: FASTQ and Quality Scores</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://xkcd.com/353/"><img src="https://imgs.xkcd.com/comics/python.png" class="img-fluid figure-img"></a></p>
+<figcaption>XKCD353</figcaption>
+</figure>
+</div>
+<p><strong>Preclass prep:</strong> Chapters <a href="https://greenteapress.com/thinkpython2/html/thinkpython2009.html">8</a> and <a href="https://greenteapress.com/thinkpython2/html/thinkpython2011.html">10</a> from “Think Python”</p>
+<blockquote class="blockquote">
+<p><strong>💡 Attribution:</strong> This material uses examples from notebooks developed by <a href="https://langmead-lab.org/teaching-materials/">Ben Langmead</a></p>
+</blockquote>
 <section id="prep" class="level2">
 <h2 class="anchored" data-anchor-id="prep">Prep</h2>
 <ol type="1">
@@ -447,7 +463,10 @@ BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFF
 <span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> read <span class="kw">in</span> reads:</span>
 <span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(read)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The nucleotide string can sometimes contain the character “<code>N</code>”. <code>N</code> essentially means “no confidence.” The sequencer knows there’s a nucleotide there but doesn’t know whether it’s an A, C, G or T.&gt; <strong>📝 A note on <code>while True</code>:</strong> In Python, the while loop is used to repeatedly execute a block of code as long as a certain condition is true. The <code>while True</code> statement is a special case where the loop will run indefinitely until a <code>break</code> statement is encountered inside the loop. It is important to be careful when using while True loops, as they will run indefinitely if a break statement is not included. This can cause the program to crash or hang, if not handled properly.</p>
+<p>The nucleotide string can sometimes contain the character “<code>N</code>”. <code>N</code> essentially means “no confidence.” The sequencer knows there’s a nucleotide there but doesn’t know whether it’s an A, C, G or T.</p>
+<blockquote class="blockquote">
+<p><strong>📝 A note on <code>while True</code>:</strong> In Python, the while loop is used to repeatedly execute a block of code as long as a certain condition is true. The <code>while True</code> statement is a special case where the loop will run indefinitely until a <code>break</code> statement is encountered inside the loop. It is important to be careful when using while True loops, as they will run indefinitely if a break statement is not included. This can cause the program to crash or hang, if not handled properly.</p>
+</blockquote>
 </section>
 <section id="read-name" class="level2">
 <h2 class="anchored" data-anchor-id="read-name">Read name</h2>
@@ -512,7 +531,11 @@ BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFF
 <span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(q_string)</span>
 <span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(p_string)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You might wonder how the sequencer and its software can <em>know</em> the probability that a nucleotide is incorrectly called. It can’t; this number is just an estimate. To describe exactly how it’s estimated is beyond the scope of this notebook; if you’re interested, search for academic papers with “base calling” in the title. Here’s a helpful <a href="http://www.youtube.com/watch?v=eXkjlopwIH4">video by Rafa Irizarry</a>.A final note: other ways of encoding quality values were proposed and used in the past. For example, Phred64 uses an ASCII offset of 64 instead of 33, and Solexa64 uses “odds” instead of the probability <em>p</em>. But Phred33 is by far the most common today and you will likely never have to worry about this.&gt; <strong>📝 A note on <code>map()</code>:</strong> In Python, the <code>map()</code> function is used to apply a given function to all elements of an iterable (such as a list, tuple, or string) and return an iterator that yields the results. The <code>map()</code> function takes two arguments: a function that is to be applied to each element of the iterable, and an iterable on which the function is to be applied. Example: <code>squared_numbers = map(lambda x: x**2, [1, 2, 3, 4, 5])</code> returns <code>[1, 4, 9, 16, 25]</code>.</p>
+<p>You might wonder how the sequencer and its software can <em>know</em> the probability that a nucleotide is incorrectly called. It can’t; this number is just an estimate. To describe exactly how it’s estimated is beyond the scope of this notebook; if you’re interested, search for academic papers with “base calling” in the title. Here’s a helpful <a href="http://www.youtube.com/watch?v=eXkjlopwIH4">video by Rafa Irizarry</a>.</p>
+<p>A final note: other ways of encoding quality values were proposed and used in the past. For example, Phred64 uses an ASCII offset of 64 instead of 33, and Solexa64 uses “odds” instead of the probability <em>p</em>. But Phred33 is by far the most common today and you will likely never have to worry about this.</p>
+<blockquote class="blockquote">
+<p><strong>📝 A note on <code>map()</code>:</strong> In Python, the <code>map()</code> function is used to apply a given function to all elements of an iterable (such as a list, tuple, or string) and return an iterator that yields the results. The <code>map()</code> function takes two arguments: a function that is to be applied to each element of the iterable, and an iterable on which the function is to be applied. Example: <code>squared_numbers = map(lambda x: x**2, [1, 2, 3, 4, 5])</code> returns <code>[1, 4, 9, 16, 25]</code>.</p>
+</blockquote>
 </section>
 <section id="paired-end-reads" class="level2">
 <h2 class="anchored" data-anchor-id="paired-end-reads">Paired-end reads</h2>
