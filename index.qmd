@@ -27,7 +27,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 |---|------|-------|-------------|
 | 1 | Jan 14 | [Getting Started with GitHub](lectures/lecture1.qmd) | |
 | 2 | Jan 16 | [Introduction to Bash](lectures/lecture2.qmd) | |
-| 3 | Jan 21 | Data analysis ecosystem | |
+| 3 | Jan 21 | [Data analysis ecosystem](lectures/lecture3.ipynb) | |
 | 4 | Jan 23 | FASTQ and Quality Scores | |
 | 5 | Jan 28 | Lists and Dictionaries | |
 | 6 | Jan 30 | File I/O in Python | |

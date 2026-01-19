@@ -21,9 +21,8 @@ website:
             text: "1. Getting Started with GitHub"
           - href: lectures/lecture2.qmd
             text: "2. Introduction to Bash"
-          # Hidden for now - uncomment when ready to publish
-          # - href: lectures/lecture3.ipynb
-          #   text: "3. Data analysis ecosystem"
+          - href: lectures/lecture3.ipynb
+            text: "3. Data analysis ecosystem"
           # - href: lectures/lecture4.ipynb
           #   text: "4. FASTQ and Quality Scores"
           # - href: lectures/lecture5.ipynb

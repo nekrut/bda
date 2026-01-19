@@ -27,3 +27,7 @@ lectures/*.png
 # Ignore downloaded images, but keep test images
 images/
 !images/test1/
+
+# Test files (keep answers private)
+lectures/test2*.qmd
+lectures/test2*.pdf
