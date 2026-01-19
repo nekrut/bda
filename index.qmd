@@ -25,24 +25,23 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 
 | # | Date | Topic | Description |
 |---|------|-------|-------------|
-| 1 | Jan 14 | [Getting Started with GitHub](lectures/lecture1.qmd) | |
-| 2 | Jan 16 | [Introduction to Bash](lectures/lecture2.qmd) | |
-| 3 | Jan 21 | [Data analysis ecosystem](lectures/lecture3.ipynb) | |
-| 4 | Jan 23 | FASTQ and Quality Scores | |
-| 5 | Jan 28 | Lists and Dictionaries | |
-| 6 | Jan 30 | File I/O in Python | |
-| 7 | Feb 4 | Data Manipulation with Pandas | |
-| 8 | Feb 6 | - | |
-| 8 | Feb 6 | - | |
-| 9 | Feb 11 | - | |
-| 10 | Feb 13 | - | |
-| 11 | Feb 18 | - | |
-| 12 | Feb 20 | TBD | |
-| 13 | Feb 25 | TBD | |
-| 14 | Feb 27 | TBD | |
-| 15 | Mar 4 | TBD | |
-| 16 | Mar 6 | TBD | |
-| - | - | Spring break |
+| 1 | Jan 13 | [Getting Started with GitHub](lectures/lecture1.qmd) | |
+| 2 | Jan 15 | [Introduction to Bash](lectures/lecture2.qmd) | |
+| 3 | Jan 20 | [Data analysis ecosystem](lectures/lecture3.ipynb) | |
+| 4 | Jan 22 | FASTQ and Quality Scores | |
+| 5 | Jan 27 | Lists and Dictionaries | |
+| 6 | Jan 29 | File I/O in Python | |
+| 7 | Feb 3 | Data Manipulation with Pandas | |
+| 8 | Feb 5 | - | |
+| 9 | Feb 10 | - | |
+| 10 | Feb 12 | - | |
+| 11 | Feb 17 | - | |
+| 12 | Feb 19 | TBD | |
+| 13 | Feb 24 | TBD | |
+| 14 | Feb 26 | TBD | |
+| 15 | Mar 3 | TBD | |
+| 16 | Mar 5 | TBD | |
+| - | - | Spring break | |
 | 17 | Mar 17 | TBD | |
 | 18 | Mar 19 | TBD | |
 | 19 | Mar 24 | TBD | |
@@ -56,7 +55,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 27 | Apr 21 | TBD | |
 | 28 | Apr 23 | TBD | |
 | 29 | Apr 28 | TBD | |
-| 30 | Apr 29 | TBD | |
+| 30 | Apr 30 | TBD | |
 
 ## Academic integrity
 
