@@ -44,6 +44,21 @@ jobs:
           done
           cp lectures/*.fq lectures/*.fa lectures/*.csv lectures/*.gz lectures/*.sam lectures/*.txt lectures/*.png lite_content/ 2>/dev/null || true
 
+      - name: Push clean notebooks to colab branch
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          mkdir -p colab_lectures
+          cp lite_content/*.ipynb colab_lectures/
+          git checkout --orphan colab-temp
+          git reset
+          mkdir -p lectures
+          mv colab_lectures/* lectures/
+          git add lectures/*.ipynb
+          git commit -m "Update clean notebooks for Colab"
+          git push origin colab-temp:colab --force
+          git checkout main
+
       - name: Build JupyterLite
         run: jupyter lite build --contents lite_content --output-dir _site/lite
 
