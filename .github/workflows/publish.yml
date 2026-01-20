@@ -50,15 +50,14 @@ jobs:
           git config user.email "actions@github.com"
 
           # Build tree entries for notebooks in lectures/ directory
-          TREE_ENTRIES=""
           for f in lite_content/*.ipynb; do
             HASH=$(git hash-object -w "$f")
             NAME=$(basename "$f")
-            TREE_ENTRIES="$TREE_ENTRIES$(printf '100644 blob %s\tlectures/%s\n' "$HASH" "$NAME")"
-          done
+            printf '100644 blob %s\t%s\n' "$HASH" "$NAME"
+          done > /tmp/tree_entries.txt
 
           # Create lectures subtree
-          LECTURES_TREE=$(echo "$TREE_ENTRIES" | git mktree)
+          LECTURES_TREE=$(git mktree < /tmp/tree_entries.txt)
 
           # Create root tree with lectures directory
           ROOT_TREE=$(printf '040000 tree %s\tlectures\n' "$LECTURES_TREE" | git mktree)
