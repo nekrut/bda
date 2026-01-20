@@ -510,6 +510,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 
 </main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

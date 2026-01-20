@@ -953,6 +953,39 @@ function copyCode() {
 </section>
 
 </main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
 <script type="ojs-module-contents">
 eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRhdGEgPSBbXG4gIHtzY29yZTogXCIwLTNcIiwgY291bnQ6IDB9LFxuICB7c2NvcmU6IFwiNC02XCIsIGNvdW50OiA1fSxcbiAge3Njb3JlOiBcIjctOVwiLCBjb3VudDogNX0sXG4gIHtzY29yZTogXCIxMC0xMlwiLCBjb3VudDogNH0sXG4gIHtzY29yZTogXCIxMy0xNVwiLCBjb3VudDogMX1cbl1cblxuUGxvdC5wbG90KHtcbiAgbWFya3M6IFtcbiAgICBQbG90LmJhclkoZGF0YSwge3g6IFwic2NvcmVcIiwgeTogXCJjb3VudFwiLCBmaWxsOiBcIiM0YTkwZDlcIn0pLFxuICAgIFBsb3QucnVsZVkoWzBdKVxuICBdLFxuICB4OiB7bGFiZWw6IFwiU2NvcmUgUmFuZ2VcIn0sXG4gIHk6IHtsYWJlbDogXCJOdW1iZXIgb2YgU3R1ZGVudHNcIn0sXG4gIHRpdGxlOiBcIlRlc3QgMSBTY29yZSBEaXN0cmlidXRpb24gKG49MTUpXCIsXG4gIHdpZHRoOiA1MDAsXG4gIGhlaWdodDogMzAwXG59KVxuIn1dfQ==
 </script>
