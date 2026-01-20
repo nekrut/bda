@@ -39,6 +39,7 @@ format:
       - brand
     css: styles.css
     toc: true
+    include-after-body: _commit-info.html
 
 
 
