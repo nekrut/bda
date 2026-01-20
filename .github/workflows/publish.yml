@@ -30,6 +30,12 @@ jobs:
       - name: Render Quarto Project
         run: quarto render
 
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress '_site/**/*.html'
+          fail: false
+
       - name: Create clean notebooks for JupyterLite
         run: |
           mkdir -p lite_content
