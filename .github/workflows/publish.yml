@@ -48,16 +48,26 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          mkdir -p colab_lectures
-          cp lite_content/*.ipynb colab_lectures/
-          git checkout --orphan colab-temp
-          git reset
-          mkdir -p lectures
-          mv colab_lectures/* lectures/
-          git add lectures/*.ipynb
-          git commit -m "Update clean notebooks for Colab"
-          git push origin colab-temp:colab --force
-          git checkout main
+
+          # Build tree entries for notebooks in lectures/ directory
+          TREE_ENTRIES=""
+          for f in lite_content/*.ipynb; do
+            HASH=$(git hash-object -w "$f")
+            NAME=$(basename "$f")
+            TREE_ENTRIES="$TREE_ENTRIES$(printf '100644 blob %s\tlectures/%s\n' "$HASH" "$NAME")"
+          done
+
+          # Create lectures subtree
+          LECTURES_TREE=$(echo "$TREE_ENTRIES" | git mktree)
+
+          # Create root tree with lectures directory
+          ROOT_TREE=$(printf '040000 tree %s\tlectures\n' "$LECTURES_TREE" | git mktree)
+
+          # Create commit
+          COMMIT=$(echo "Update clean notebooks for Colab" | git commit-tree "$ROOT_TREE")
+
+          # Push to colab branch
+          git push origin "$COMMIT":refs/heads/colab --force
 
       - name: Build JupyterLite
         run: jupyter lite build --contents lite_content --output-dir _site/lite
