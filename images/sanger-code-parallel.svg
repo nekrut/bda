@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 720">
+  <defs>
+    <style>
+      .title { font: bold 18px sans-serif; fill: #333; }
+      .header { font: bold 14px sans-serif; fill: white; }
+      .section { font: bold 12px sans-serif; fill: #333; }
+      .label { font: bold 11px sans-serif; fill: #444; }
+      .detail { font: 10px sans-serif; fill: #666; }
+      .code { font: 10px monospace; fill: #2d5016; }
+      .arrow { stroke: #888; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+      .num { font: bold 11px sans-serif; fill: white; }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#888"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="850" height="720" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="425" y="28" text-anchor="middle" class="title">From Biology to Code: Simulating Sanger Sequencing</text>
+
+  <!-- Column Headers -->
+  <rect x="70" y="45" width="360" height="30" rx="5" fill="#1565c0"/>
+  <text x="250" y="65" text-anchor="middle" class="header">BIOLOGY</text>
+
+  <rect x="450" y="45" width="360" height="30" rx="5" fill="#2e7d32"/>
+  <text x="630" y="65" text-anchor="middle" class="header">PYTHON</text>
+
+  <!-- Row 1: Generate a random sequence -->
+  <circle cx="45" cy="107" r="14" fill="#1565c0"/>
+  <text x="45" y="112" text-anchor="middle" class="num">1</text>
+
+  <rect x="70" y="85" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="103" class="label">DNA Template</text>
+  <text x="85" y="118" class="detail">Unknown sequence we want to determine</text>
+  <text x="85" y="133" style="font: 9px monospace; fill: #1565c0;">5'-GCCTACCGCCAAACCGCCT...-3'</text>
+
+  <rect x="450" y="85" width="360" height="55" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="465" y="103" class="label">String</text>
+  <text x="465" y="118" class="code">seq = ''</text>
+  <text x="465" y="133" class="code">for _ in range(100): seq += random.choice('ATCG')</text>
+
+  <!-- Arrow -->
+  <path d="M 250 145 L 250 155" class="arrow"/>
+  <path d="M 630 145 L 630 155" class="arrow"/>
+
+  <!-- Row 2: Simulate one polymerase molecule -->
+  <circle cx="45" cy="182" r="14" fill="#1565c0"/>
+  <text x="45" y="187" text-anchor="middle" class="num">2</text>
+
+  <rect x="70" y="160" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="178" class="label">One Polymerase + ddATP</text>
+  <text x="85" y="193" class="detail">Enzyme copies DNA until it randomly incorporates</text>
+  <text x="85" y="208" class="detail">a chain-terminating ddATP instead of dATP</text>
+
+  <rect x="450" y="160" width="360" height="55" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="465" y="178" class="label">Loop + Conditional + break</text>
+  <text x="465" y="193" class="code">for nucleotide in seq:</text>
+  <text x="465" y="208" class="code">  if nuc=='A' and random()>0.5: break</text>
+
+  <!-- Arrow -->
+  <path d="M 250 220 L 250 230" class="arrow"/>
+  <path d="M 630 220 L 630 230" class="arrow"/>
+
+  <!-- Row 3: Simulating multiple molecules -->
+  <circle cx="45" cy="257" r="14" fill="#1565c0"/>
+  <text x="45" y="262" text-anchor="middle" class="num">3</text>
+
+  <rect x="70" y="235" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="253" class="label">Many Polymerase Molecules</text>
+  <text x="85" y="268" class="detail">Run 10+ molecules in same reaction</text>
+  <text x="85" y="283" class="detail">Each terminates at different A positions</text>
+
+  <rect x="450" y="235" width="360" height="55" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="465" y="253" class="label">Nested Loops</text>
+  <text x="465" y="268" class="code">for _ in range(10):  # outer loop</text>
+  <text x="465" y="283" class="code">  for nucleotide in seq:  # inner loop</text>
+
+  <!-- Arrow -->
+  <path d="M 250 295 L 250 305" class="arrow"/>
+  <path d="M 630 295 L 630 305" class="arrow"/>
+
+  <!-- Row 4: All nucleotides (anti-pattern) -->
+  <circle cx="45" cy="332" r="14" fill="#1565c0"/>
+  <text x="45" y="337" text-anchor="middle" class="num">4</text>
+
+  <rect x="70" y="310" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="328" class="label">Four Separate Reactions (A, T, C, G)</text>
+  <text x="85" y="343" class="detail">Repeat for ddATP, ddTTP, ddCTP, ddGTP</text>
+  <text x="85" y="358" class="detail">4 tubes × 10 molecules = 40 fragments</text>
+
+  <rect x="450" y="310" width="360" height="55" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1"/>
+  <text x="465" y="328" class="label" style="fill: #e65100;">Code Repetition (Don't Do This!)</text>
+  <text x="465" y="343" class="code" style="fill: #bf360c;">for _ in range(10): ... if nuc=='A' ...</text>
+  <text x="465" y="358" class="code" style="fill: #bf360c;">for _ in range(10): ... if nuc=='T' ... # 4x!</text>
+
+  <!-- Arrow -->
+  <path d="M 250 370 L 250 380" class="arrow"/>
+  <path d="M 630 370 L 630 380" class="arrow"/>
+
+  <!-- Row 5: Functions -->
+  <circle cx="45" cy="407" r="14" fill="#2e7d32"/>
+  <text x="45" y="412" text-anchor="middle" class="num">5</text>
+
+  <rect x="70" y="385" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="403" class="label">Same Protocol, Different Reagent</text>
+  <text x="85" y="418" class="detail">The procedure is identical—only the ddNTP changes</text>
+  <text x="85" y="433" class="detail">Reusable protocol = reusable code</text>
+
+  <rect x="450" y="385" width="360" height="55" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="465" y="403" class="label">Function + List</text>
+  <text x="465" y="418" class="code">def ddN(template, base): → list</text>
+  <text x="465" y="433" class="code">results.append(synthesized_strand)</text>
+
+  <!-- Arrow -->
+  <path d="M 250 445 L 250 455" class="arrow"/>
+  <path d="M 630 445 L 630 455" class="arrow"/>
+
+  <!-- Row 6: Dictionaries -->
+  <circle cx="45" cy="482" r="14" fill="#2e7d32"/>
+  <text x="45" y="487" text-anchor="middle" class="num">6</text>
+
+  <rect x="70" y="460" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="478" class="label">Organize by Terminator Type</text>
+  <text x="85" y="493" class="detail">Group fragments: "A-terminated", "T-terminated", etc.</text>
+  <text x="85" y="508" class="detail">Label → Collection of fragments</text>
+
+  <rect x="450" y="460" width="360" height="55" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="465" y="478" class="label">Dictionary (key:value)</text>
+  <text x="465" y="493" class="code">seq_run = {}</text>
+  <text x="465" y="508" class="code">seq_run['A'] = ddN(seq, 'A')  # key → list</text>
+
+  <!-- Arrow -->
+  <path d="M 250 520 L 250 530" class="arrow"/>
+  <path d="M 630 520 L 630 530" class="arrow"/>
+
+  <!-- Row 7: Drawing gel -->
+  <circle cx="45" cy="557" r="14" fill="#2e7d32"/>
+  <text x="45" y="562" text-anchor="middle" class="num">7</text>
+
+  <rect x="70" y="535" width="360" height="55" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="85" y="553" class="label">Gel Electrophoresis</text>
+  <text x="85" y="568" class="detail">Separate fragments by length (smaller = faster)</text>
+  <text x="85" y="583" class="detail">4 lanes, bands at positions matching fragment sizes</text>
+
+  <rect x="450" y="535" width="360" height="55" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="465" y="553" class="label">pandas DataFrame + altair</text>
+  <text x="465" y="568" class="code">df = pd.DataFrame({'base':[], 'length':[]})</text>
+  <text x="465" y="583" class="code">alt.Chart(df).mark_tick().encode(x, y, color)</text>
+
+  <!-- Arrow -->
+  <path d="M 250 595 L 250 605" class="arrow"/>
+  <path d="M 630 595 L 630 605" class="arrow"/>
+
+  <!-- Row 8: Putting together -->
+  <circle cx="45" cy="632" r="14" fill="#7b1fa2"/>
+  <text x="45" y="637" text-anchor="middle" class="num">8</text>
+
+  <rect x="70" y="610" width="360" height="55" rx="4" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1"/>
+  <text x="85" y="628" class="label">Read the Sequence!</text>
+  <text x="85" y="643" class="detail">Read bands bottom→top across all 4 lanes</text>
+  <text x="85" y="658" class="detail">Each band position reveals the next nucleotide</text>
+
+  <rect x="450" y="610" width="360" height="55" rx="4" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1"/>
+  <text x="465" y="628" class="label">Complete Pipeline</text>
+  <text x="465" y="643" class="code">seq → ddN() → dict → DataFrame → Chart</text>
+  <text x="465" y="658" class="detail">All concepts combined into working simulation</text>
+
+  <!-- Legend -->
+  <rect x="70" y="680" width="12" height="12" fill="#1565c0" rx="2"/>
+  <text x="88" y="690" class="detail">Biology concept</text>
+  <rect x="180" y="680" width="12" height="12" fill="#2e7d32" rx="2"/>
+  <text x="198" y="690" class="detail">Python concept</text>
+  <rect x="290" y="680" width="12" height="12" fill="#e65100" rx="2"/>
+  <text x="308" y="690" class="detail">Anti-pattern (avoid)</text>
+  <rect x="420" y="680" width="12" height="12" fill="#7b1fa2" rx="2"/>
+  <text x="438" y="690" class="detail">Final integration</text>
+</svg>

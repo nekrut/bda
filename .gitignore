@@ -24,9 +24,10 @@ lectures/*.gz
 lectures/*.sam
 lectures/*.txt
 lectures/*.png
-# Ignore downloaded images, but keep test images
+# Ignore downloaded images, but keep test images and diagrams
 images/
 !images/test1/
+!images/*.svg
 
 # Test files (keep answers private)
 lectures/test2*.qmd
