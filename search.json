@@ -112,6 +112,617 @@
     "text": "15 correct: Excellent\n12-14 correct: Good\n9-11 correct: Satisfactory\nBelow 9: Review the material"
   },
   {
+    "objectID": "lectures/lecture7.html",
+    "href": "lectures/lecture7.html",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "",
+    "text": "Open In Colab"
+  },
+  {
+    "objectID": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
+    "href": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)",
+    "text": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)"
+  },
+  {
+    "objectID": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
+    "href": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)",
+    "text": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)"
+  },
+  {
+    "objectID": "lectures/lecture7.html#pandas-learning-resources",
+    "href": "lectures/lecture7.html#pandas-learning-resources",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Pandas learning resources",
+    "text": "Pandas learning resources\n\nGetting started - official introduction from Pandas.\nData Science Tools - Data Science for Biologists from Duke University.\nData Carpentry - a collection of lessons à la Software Carpentry.\n\n\n# Pandas, conventionally imported as pd\nimport pandas as pd\n\nThroughout your research career, you will undoubtedly need to handle data, possibly lots of data. The data comes in lots of formats, and you will spend much of your time wrangling the data to get it into a usable form.\nPandas is the primary tool in the Python ecosystem for handling data. Its primary object, the DataFrame is extremely useful in wrangling data."
+  },
+  {
+    "objectID": "lectures/lecture7.html#the-data-set",
+    "href": "lectures/lecture7.html#the-data-set",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "The data set",
+    "text": "The data set\nThe dataset we will be using is a subset of metadata describing SARS-CoV-2 datasets from the Sequence Read Archive.\nIt is obtained by going to https://www.ncbi.nlm.nih.gov/sra and performing a query with the following search terms: txid2697049[Organism:noexp].\n\n!curl -sLO https://zenodo.org/records/10680001/files/sra_ncov.csv.gz\n\n\n!gunzip -c sra_ncov.csv.gz | head -3"
+  },
+  {
+    "objectID": "lectures/lecture7.html#reading-in-data",
+    "href": "lectures/lecture7.html#reading-in-data",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Reading in data",
+    "text": "Reading in data\nPandas has a very powerful function, pd.read_csv() that can read in a CSV file and store the contents in a convenient data structure called a data frame.\n\ndf = pd.read_csv('sra_ncov.csv.gz')\n\n\n# View the first few rows\ndf.head()"
+  },
+  {
+    "objectID": "lectures/lecture7.html#indexing-data-frames",
+    "href": "lectures/lecture7.html#indexing-data-frames",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Indexing data frames",
+    "text": "Indexing data frames\nThe data frame is a convenient data structure for many reasons. Let’s start by looking at how data frames are indexed.\nImportant: We index DataFrames by columns, not rows!\n\n# This gives us a column\ndf['Run'].head()\n\n\n# Access a single value\ndf['Run'][4]\n\nHowever, it’s better to use .loc for accessing data. This gives the location in the data frame we want.\n\n💡 loc versus iloc: loc uses label-based indexing (actual row and column labels), while iloc uses integer-based indexing (integer positions).\n\n\ndf.loc[4, 'Run']\n\n\ndf.iloc[4:6]\n\n\ndf.iloc[4:6, [0, 2, 4]]\n\n\ndf.loc[4:6, ['Run', 'size_MB', 'LibraryStrategy']]"
+  },
+  {
+    "objectID": "lectures/lecture7.html#filtering-boolean-indexing-of-data-frames",
+    "href": "lectures/lecture7.html#filtering-boolean-indexing-of-data-frames",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Filtering: Boolean indexing of data frames",
+    "text": "Filtering: Boolean indexing of data frames\nLet’s say I wanted to pull out accession numbers of runs produced by Pacific Biosciences machines (labeled as PACBIO_SMRT). I can use Boolean indexing to specify the row.\n\ndf.loc[df['Platform'] == 'PACBIO_SMRT', 'Run']\n\n\n# Pull the whole record\ndf.loc[df['Platform'] == 'PACBIO_SMRT', :].head(10)\n\nNow, let’s pull out all PacBio records that were obtained from Amplicon sequencing. We can use the & operator:\n\ndf.loc[(df['Platform'] == 'PACBIO_SMRT') & (df['LibraryStrategy'] == 'AMPLICON'), :].head(3)\n\n\n# See how many match\nimport numpy as np\ninds = (df['Platform'] == 'PACBIO_SMRT') & (df['LibraryStrategy'] == 'AMPLICON')\nnp.unique(inds, return_counts=True)"
+  },
+  {
+    "objectID": "lectures/lecture7.html#calculating-with-data-frames",
+    "href": "lectures/lecture7.html#calculating-with-data-frames",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Calculating with data frames",
+    "text": "Calculating with data frames\nLet’s add a column that specifies whether or not the corresponding run is above 100 MB:\n\n# Add the column to the DataFrame\ndf['Over100Mb'] = df['size_MB'] &gt;= 100\n\n# Take a look\ndf.head()"
+  },
+  {
+    "objectID": "lectures/lecture7.html#a-note-about-vectorization",
+    "href": "lectures/lecture7.html#a-note-about-vectorization",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "A note about vectorization",
+    "text": "A note about vectorization\nNotice how applying the &gt;= operator to a Series resulted in elementwise application. This is called vectorization. It means that we do not have to write a for loop to do operations on the elements of a Series.\nVectorized code is almost always faster because the looping is done with compiled code under the hood."
+  },
+  {
+    "objectID": "lectures/lecture7.html#outputting-a-new-csv-file",
+    "href": "lectures/lecture7.html#outputting-a-new-csv-file",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Outputting a new CSV file",
+    "text": "Outputting a new CSV file\n\ndf.to_csv('over100Mb_data.csv', index=False)\n\n\n!head -3 over100Mb_data.csv"
+  },
+  {
+    "objectID": "lectures/lecture7.html#finding-unique-values-and-counts",
+    "href": "lectures/lecture7.html#finding-unique-values-and-counts",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Finding unique values and counts",
+    "text": "Finding unique values and counts\n\n# Re-read the data (using local file downloaded earlier)\ndf = pd.read_csv('sra_ncov.csv.gz')\ndf = df[df['size_MB'] &gt; 0].reset_index(drop=True)\n\n\ndf['Platform'].unique()\n\n\ndf['Platform'].value_counts()"
+  },
+  {
+    "objectID": "lectures/lecture7.html#sorting",
+    "href": "lectures/lecture7.html#sorting",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Sorting",
+    "text": "Sorting\n\ndf_subset = df.sample(n=10)\ndf_subset\n\n\ndf_subset.sort_index()\n\n\ndf_subset.sort_values(by=['LibraryLayout', 'size_MB'])\n\n\ndf_subset.sort_values(by=['LibraryLayout', 'size_MB'], ascending=[True, False])"
+  },
+  {
+    "objectID": "lectures/lecture7.html#aggregation",
+    "href": "lectures/lecture7.html#aggregation",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Aggregation",
+    "text": "Aggregation\n\ngrouped = df.groupby(['BioProject'])\ngrouped\n\n\ndf_sum = pd.DataFrame(grouped['size_MB'].sum())\ndf_sum.head(10)\n\n\ndf_sum = df_sum.reset_index()\ndf_sum.head()\n\n\n# Multiple columns in groupby\ndf.groupby(['BioProject', 'Platform']).sum(numeric_only=True).reset_index().head(10)\n\n\n# Descriptive statistics\ndf.groupby(['BioProject', 'Platform'])['size_MB'].describe().head(10)\n\n\n# Custom aggregations\ndf.groupby(['BioProject', 'Platform']).agg({'size_MB': np.mean, 'Run': 'nunique'}).head(10)"
+  },
+  {
+    "objectID": "lectures/lecture7.html#tidying-a-data-set-with-melt",
+    "href": "lectures/lecture7.html#tidying-a-data-set-with-melt",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Tidying a data set with melt",
+    "text": "Tidying a data set with melt\nThe most useful function for tidying data is pd.melt(). Let’s demonstrate with a coverage dataset:\n\ndf_cov = pd.read_csv('https://zenodo.org/records/10680470/files/coverage.tsv.gz', sep='\\t')\ndf_cov.head()\n\nThese data are not tidy. When we melt the data frame, the data within it (called values) become a single column. The headers (called variables) also become new columns.\n\nmelted = pd.melt(df_cov, \n                 value_name='coverage', \n                 var_name='sample',\n                 value_vars=df_cov.columns[3:],\n                 id_vars=['start', 'end'])\n\nmelted.head()\n\n\nmelted.groupby(['sample'])['coverage'].describe()\n\nTo get back from melted (narrow) format to wide format, use pivot():\n\nmelted.pivot(index=['start', 'end'], columns='sample', values='coverage').head()\n\n—# Working with multiple tablesWorking with multiple tables often involves joining them on a common key.\n\ndf1 = pd.DataFrame({\"key\": [\"A\", \"B\", \"C\", \"D\"], \"value\": np.random.randn(4)})\ndf2 = pd.DataFrame({\"key\": [\"B\", \"D\", \"D\", \"E\"], \"value\": np.random.randn(4)})\n\n\ndf1\n\n\ndf2"
+  },
+  {
+    "objectID": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
+    "href": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Inner join",
+    "text": "Inner join\n\npd.merge(df1, df2, on=\"key\")"
+  },
+  {
+    "objectID": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
+    "href": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Left join",
+    "text": "Left join\n\npd.merge(df1, df2, on=\"key\", how=\"left\").fillna('.')"
+  },
+  {
+    "objectID": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
+    "href": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Right join",
+    "text": "Right join\n\npd.merge(df1, df2, on=\"key\", how=\"right\").fillna('.')"
+  },
+  {
+    "objectID": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
+    "href": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Full (outer) join",
+    "text": "Full (outer) join\n\npd.merge(df1, df2, on=\"key\", how=\"outer\").fillna('.')"
+  },
+  {
+    "objectID": "lectures/lecture7.html#understanding-altair",
+    "href": "lectures/lecture7.html#understanding-altair",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Understanding Altair",
+    "text": "Understanding Altair\nVega-Altair is a declarative statistical visualization library for Python. It offers a powerful and concise grammar that enables you to quickly build a wide range of statistical visualizations.\n\nimport pandas as pd\nimport altair as alt\nfrom datetime import date\ntoday = date.today()\n\n\n# Read a larger dataset\nsra = pd.read_csv(\n    \"https://zenodo.org/records/10680776/files/ena.tsv.gz\",\n    compression='gzip',\n    sep=\"\\t\",\n    low_memory=False,\n    nrows=100000  # Limit rows for faster loading\n)\n\n\nlen(sra)\n\n\nsra.sample(5)"
+  },
+  {
+    "objectID": "lectures/lecture7.html#cleaning-the-data",
+    "href": "lectures/lecture7.html#cleaning-the-data",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Cleaning the data",
+    "text": "Cleaning the data\n\n# Convert collection_date to datetime\n# Note: errors='coerce' converts unparseable dates to NaT (Not a Time)\n# This is acceptable here because we will filter out invalid dates in the next step\nsra = sra.assign(collection_date=pd.to_datetime(sra[\"collection_date\"], errors='coerce'))\n\n\nprint('Earliest entry:', sra['collection_date'].min())\nprint('Latest entry:', sra['collection_date'].max())\n\n\n⚠️ Data Quality: Don’t get surprised here - the metadata is only as good as the person who entered it. So, when you enter metadata for your sequencing data – pay attention!!!\n\n\n# Filter to valid date range using explicit Timestamp objects for clarity\nsra = sra[\n    (sra['collection_date'] &gt;= pd.Timestamp('2020-01-01')) \n    & \n    (sra['collection_date'] &lt;= pd.Timestamp('2023-12-31'))\n]\n\n\n# Aggregate data for heatmap\nheatmap_2d = sra.groupby(\n    ['instrument_platform', 'library_strategy']\n).agg(\n    {'run_accession': 'nunique'}\n).reset_index()\n\nheatmap_2d"
+  },
+  {
+    "objectID": "lectures/lecture7.html#plotting-the-data",
+    "href": "lectures/lecture7.html#plotting-the-data",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Plotting the data",
+    "text": "Plotting the data\n\nback = alt.Chart(heatmap_2d).mark_rect(opacity=1).encode(\n    x=alt.X(\n        \"instrument_platform:N\",\n        title=\"Instrument\"\n    ),\n    y=alt.Y(\n        \"library_strategy:N\",\n        title=\"Strategy\",\n        axis=alt.Axis(orient='right')\n    ),\n    color=alt.Color(\n        \"run_accession:Q\",\n        title=\"# Samples\",\n        scale=alt.Scale(\n            scheme=\"goldred\",\n            type=\"log\"\n        ),\n    ),\n    tooltip=[\n        alt.Tooltip(\n            \"instrument_platform:N\",\n            title=\"Machine\"\n        ),\n        alt.Tooltip(\n            \"run_accession:Q\",\n            title=\"Number of runs\"\n        ),\n        alt.Tooltip(\n            \"library_strategy:N\",\n            title=\"Protocol\"\n        )\n    ]\n).properties(\n    width=500,\n    height=150,\n    title={\n        \"text\": [\"Breakdown of datasets from ENA\",\n                 \"by Platform and Library Strategy\"],\n        \"subtitle\": \"(Sample of 100k records)\"\n    }\n)\n\nback\n\n\n# Add text labels\nfront = back.mark_text(\n    align=\"center\",\n    baseline=\"middle\",\n    fontSize=12,\n    fontWeight=\"bold\",\n).encode(\n    text=alt.Text(\"run_accession:Q\", format=\",.0f\"),\n    color=alt.condition(\n        alt.datum.run_accession &gt; 200,\n        alt.value(\"white\"),\n        alt.value(\"black\")\n    )\n)\n\n# Combine layers\nback + front"
+  },
+  {
+    "objectID": "lectures/lecture7.html#summary",
+    "href": "lectures/lecture7.html#summary",
+    "title": "Lecture 7: Data Manipulation with Pandas",
+    "section": "Summary",
+    "text": "Summary\nIn this lecture, we covered:\n\nPandas basics: DataFrames, indexing with loc and iloc\nBoolean indexing: Filtering data with conditions\nCalculations: Vectorized operations on columns\nTidy data: Principles of data organization\nSplit-apply-combine: Using groupby() for aggregations\nReshaping: melt() and pivot() for transforming data\nJoins: Combining tables with merge()\nVisualization: Creating plots with Altair\n\nThese skills form the foundation of data analysis in Python!"
+  },
+  {
+    "objectID": "lectures/lecture6.html",
+    "href": "lectures/lecture6.html",
+    "title": "Lecture 6: File I/O in Python",
+    "section": "",
+    "text": "Open In Colab"
+  },
+  {
+    "objectID": "lectures/lecture6.html#fasta",
+    "href": "lectures/lecture6.html#fasta",
+    "title": "Lecture 6: File I/O in Python",
+    "section": "FASTA",
+    "text": "FASTA\nFASTA is a file format that is commonly used to store biological sequences, such as DNA or protein sequences. In Python, you can read a FASTA file by opening the file, reading the lines one by one, and processing the data as needed.\nHere’s an example of how you might read a FASTA file in Python:\n\nsequences = {}\nwith open(\"mt_cds.fa\", \"r\") as file:\n    header = \"\"\n    sequence = \"\"\n    for line in file:\n        line = line.rstrip()\n        if line.startswith('&gt;'):\n            if header != \"\":\n                sequences[header] = sequence\n                sequence = \"\"\n            header = line[1:]\n        else:\n            sequence += line\n    if header != \"\":\n        sequences[header] = sequence\n\n\n# Let's see what we got\nprint(f\"Number of sequences: {len(sequences)}\")\nprint(\"\\nHeaders:\")\nfor header in list(sequences.keys())[:5]:  # Show first 5\n    print(f\"  {header[:60]}...\")\n\n\n# Look at one sequence\nfirst_header = list(sequences.keys())[0]\nprint(f\"Header: {first_header}\")\nprint(f\"Sequence length: {len(sequences[first_header])}\")\nprint(f\"First 100 bp: {sequences[first_header][:100]}\")\n\nThe code above uses a with statement to open the file and read the lines one by one. If a line starts with a \"&gt;\", it is assumed to be a header, and the current sequence is stored in the dictionary using the current header as the key. If the line does not start with a \"&gt;\", it is assumed to be part of the current sequence."
+  },
+  {
+    "objectID": "lectures/lecture6.html#fastq",
+    "href": "lectures/lecture6.html#fastq",
+    "title": "Lecture 6: File I/O in Python",
+    "section": "FASTQ",
+    "text": "FASTQ\nLet’s download a sample FASTQ file:\n\n!curl -sLO https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/reads.fq\n\nFASTQ is a file format that is commonly used to store high-throughput sequencing data. It consists of a series of records, each of which includes a header, a sequence, a quality score header, and a quality score string. In Python, you can read a FASTQ file by opening the file, reading the lines four at a time, and processing the data as needed.\nHere’s an example of how you might read a FASTQ file in Python:\n\ndef read_fastq(file_path):\n    records = []\n    with open(file_path, \"r\") as f:\n        while True:\n            header = f.readline().strip()\n            if header == \"\":\n                break\n            sequence = f.readline().strip()\n            quality_header = f.readline().strip()\n            quality = f.readline().strip()\n            records.append((header, sequence, quality))\n    return records\n\nIn this example, the read_fastq function takes a file path as an argument, and returns a list of records, where each record is a tuple of three strings: the header, the sequence, and the quality score string. The function uses a while loop to read the lines four at a time until the end of the file is reached.\nYou can use this function to read a FASTQ file like this:\n\nrecords = read_fastq(\"reads.fq\")\nprint(f\"Number of reads: {len(records)}\")\nprint(\"\\nFirst 3 records:\")\nfor header, sequence, quality in records[:3]:\n    print(f\"Header: {header}\")\n    print(f\"Sequence: {sequence[:50]}...\")\n    print(f\"Quality: {quality[:50]}...\")\n    print()\n\nYou can modify the read_fastq function to process the data in any way you need."
+  },
+  {
+    "objectID": "lectures/lecture6.html#sam",
+    "href": "lectures/lecture6.html#sam",
+    "title": "Lecture 6: File I/O in Python",
+    "section": "SAM",
+    "text": "SAM\nLet’s download an example SAM file:\n\n!curl -sLO https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/sam_example.sam\n\nSAM (Sequence Alignment/Map) is a file format that is used to store the results of DNA sequencing alignments. In Python, you can read a SAM file by opening the file, reading the lines one by one, and processing the data as needed.\nHere’s an example of how you might read a SAM file in Python:\n\ndef read_sam(file_path):\n    records = []\n    with open(file_path, \"r\") as f:\n        for line in f:\n            if line.startswith(\"@\"):\n                continue  # Skip header lines\n            fields = line.strip().split(\"\\t\")\n            records.append(fields)\n    return records\n\nIn this example, the read_sam function takes a file path as an argument, and returns a list of records, where each record is a list of fields. The function uses a with statement to open the file and read the lines one by one. If a line starts with an \"@\", it is assumed to be a header and is ignored. If the line does not start with an \"@\", it is assumed to be a record, and the fields are extracted by splitting the line on tabs.\nYou can use this function to read a SAM file like this:\n\nrecords = read_sam(\"sam_example.sam\")\nprint(f\"Number of alignment records: {len(records)}\")\nprint(\"\\nFirst record fields:\")\nfor i, field in enumerate(records[0][:6]):  # Show first 6 fields\n    print(f\"  Field {i}: {field}\")\n\nThe SAM format has 11 mandatory fields:\n\n\n\nField\nDescription\n\n\n\n\nQNAME\nQuery template name\n\n\nFLAG\nBitwise flag\n\n\nRNAME\nReference sequence name\n\n\nPOS\n1-based leftmost mapping position\n\n\nMAPQ\nMapping quality\n\n\nCIGAR\nCIGAR string\n\n\nRNEXT\nReference name of mate/next read\n\n\nPNEXT\nPosition of mate/next read\n\n\nTLEN\nTemplate length\n\n\nSEQ\nSegment sequence\n\n\nQUAL\nQuality scores\n\n\n\nYou can modify the read_sam function to process the data in any way you need. For example, you might want to extract specific fields, such as the reference name, the start position, and the CIGAR string.\n\n# Example: Extract specific fields\nfor record in records[:5]:\n    qname = record[0]\n    flag = record[1]\n    rname = record[2]\n    pos = record[3]\n    cigar = record[5]\n    print(f\"Read: {qname}, Ref: {rname}, Pos: {pos}, CIGAR: {cigar}\")"
+  },
+  {
+    "objectID": "lectures/lecture6.html#writing-files-in-bioinformatics-formats",
+    "href": "lectures/lecture6.html#writing-files-in-bioinformatics-formats",
+    "title": "Lecture 6: File I/O in Python",
+    "section": "Writing files in bioinformatics formats",
+    "text": "Writing files in bioinformatics formats\nNow let’s practice writing files. We’ll write a simple FASTA file:\n\ndef write_fasta(sequences, file_path):\n    \"\"\"Write sequences dictionary to a FASTA file.\n    \n    Args:\n        sequences: dict with headers as keys and sequences as values\n        file_path: output file path\n    \"\"\"\n    with open(file_path, \"w\") as f:\n        for header, sequence in sequences.items():\n            f.write(f\"&gt;{header}\\n\")\n            # Write sequence in lines of 60 characters\n            for i in range(0, len(sequence), 60):\n                f.write(sequence[i:i+60] + \"\\n\")\n\n\n# Create a small test dictionary\ntest_sequences = {\n    \"seq1 test sequence\": \"ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG\",\n    \"seq2 another sequence\": \"GCTAGCTAGCTAGCTAGCTAGCTAGCTA\"\n}\n\n# Write to file\nwrite_fasta(test_sequences, \"test_output.fa\")\n\n# Verify\nwith open(\"test_output.fa\", \"r\") as f:\n    print(f.read())"
+  },
+  {
+    "objectID": "lectures/lecture6.html#summary",
+    "href": "lectures/lecture6.html#summary",
+    "title": "Lecture 6: File I/O in Python",
+    "section": "Summary",
+    "text": "Summary\nIn this lecture, we covered:\n\nBasic file I/O: Opening, reading, and writing files using open(), read(), write(), and the with statement\nFASTA format: Reading and writing sequence files with headers starting with &gt;\nFASTQ format: Reading sequencing reads with quality scores (4 lines per record)\nSAM format: Reading alignment files (tab-separated fields, headers start with @)\n\nThese are the foundational skills for handling bioinformatics data in Python!"
+  },
+  {
+    "objectID": "lectures/lecture4.html",
+    "href": "lectures/lecture4.html",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "",
+    "text": "Open In Colab",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#dna-as-a-string",
+    "href": "lectures/lecture4.html#dna-as-a-string",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "DNA as a String",
+    "text": "DNA as a String\nIn Python, we can represent a DNA sequence as a string—a sequence of characters. Let’s start with a short sequence from the E. coli genome:\n\n# Store a DNA sequence as a string variable\ndna = \"ATGCGATCGATCGATCGATCGATCG\"\n\n# Display the sequence\ndna\n\n'ATGCGATCGATCGATCGATCGATCG'\n\n\nWe can use built-in functions to learn about our sequence:\n\n# What type of data is this?\nprint(type(dna))\n\n# How long is the sequence?\nprint(len(dna))\n\n&lt;class 'str'&gt;\n25\n\n\n\nString Operations\nWe can concatenate (join) strings using + and repeat them using *:\n\n# Concatenation: joining two sequences\nupstream = \"TATAAA\"    # A promoter motif\ngene = \"ATGCGATCG\"     # Start of a gene\n\nfull_sequence = upstream + gene\nprint(\"Full sequence:\", full_sequence)\n\n# Repetition: creating a poly-A tail\npoly_a_tail = \"A\" * 20\nprint(\"Poly-A tail:\", poly_a_tail)\n\nFull sequence: TATAAAATGCGATCG\nPoly-A tail: AAAAAAAAAAAAAAAAAAAA",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#counting-nucleotides",
+    "href": "lectures/lecture4.html#counting-nucleotides",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Counting Nucleotides",
+    "text": "Counting Nucleotides\nA fundamental task in sequence analysis is counting how many of each nucleotide (A, T, G, C) appear in a sequence. We can use the .count() method:\n\n# A longer sequence to analyze\ndna = \"ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\"\n\n# Count each nucleotide\na_count = dna.count('A')\nt_count = dna.count('T')\ng_count = dna.count('G')\nc_count = dna.count('C')\n\nprint(\"A:\", a_count)\nprint(\"T:\", t_count)\nprint(\"G:\", g_count)\nprint(\"C:\", c_count)\n\nA: 10\nT: 10\nG: 11\nC: 10\n\n\n\nVerifying Our Counts\nThe total of all nucleotides should equal the sequence length. Let’s use arithmetic operators to verify:\n\n# Sum of all counts\ntotal = a_count + t_count + g_count + c_count\n\nprint(\"Sum of counts:\", total)\nprint(\"Sequence length:\", len(dna))\nprint(\"Match:\", total == len(dna))\n\nSum of counts: 41\nSequence length: 41\nMatch: True",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#gc-content-calculation",
+    "href": "lectures/lecture4.html#gc-content-calculation",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "GC Content Calculation",
+    "text": "GC Content Calculation\nGC content is the percentage of nucleotides that are either G or C. This is biologically important because: - Higher GC content = more stable DNA (3 hydrogen bonds vs 2 for AT) - GC content varies between species and genomic regions - Used in gene prediction and genome analysis\nFormula: GC% = (G + C) / total × 100\n\n# Calculate GC content\ngc_count = g_count + c_count\ngc_percent = gc_count / len(dna) * 100\n\nprint(\"GC content:\", gc_percent, \"%\")\n\nGC content: 51.21951219512195 %\n\n\nWe can use round() to clean up the output:\n\n# Round to 1 decimal place\ngc_percent_rounded = round(gc_percent, 1)\n\nprint(\"GC content:\", gc_percent_rounded, \"%\")\n\nGC content: 51.2 %\n\n\nThe print() function can take multiple arguments, separated by spaces:\n\n# Print multiple values\nprint(\"Sequence has\", len(dna), \"nucleotides with\", gc_percent_rounded, \"% GC content\")\n\nSequence has 41 nucleotides with 51.2 % GC content",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#using-the-math-module",
+    "href": "lectures/lecture4.html#using-the-math-module",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Using the Math Module",
+    "text": "Using the Math Module\nPython’s math module provides mathematical functions. We can use it to calculate Shannon entropy—a measure of sequence complexity from information theory.\n\nimport math\n\n# The math module provides constants like pi\nprint(\"Pi =\", math.pi)\n\n# And functions like sqrt and log\nprint(\"Square root of 16:\", math.sqrt(16))\nprint(\"Log base 2 of 8:\", math.log2(8))\n\nPi = 3.141592653589793\nSquare root of 16: 4.0\nLog base 2 of 8: 3.0\n\n\n\nShannon Entropy of a DNA Sequence\nShannon entropy measures how “random” or “complex” a sequence is. A sequence with equal proportions of A, T, G, C has maximum entropy (2 bits), while a sequence of all A’s has entropy of 0.\nFormula: H = -Σ p(x) × log₂(p(x))\n\n# Calculate frequencies (proportions)\nfreq_a = a_count / len(dna)\nfreq_t = t_count / len(dna)\nfreq_g = g_count / len(dna)\nfreq_c = c_count / len(dna)\n\nprint(\"Frequencies:\")\nprint(\"A:\", round(freq_a, 3))\nprint(\"T:\", round(freq_t, 3))\nprint(\"G:\", round(freq_g, 3))\nprint(\"C:\", round(freq_c, 3))\n\nFrequencies:\nA: 0.244\nT: 0.244\nG: 0.268\nC: 0.244\n\n\n\n# Calculate entropy (handling the case where frequency is 0)\nentropy = 0\nfor freq in [freq_a, freq_t, freq_g, freq_c]:\n    if freq &gt; 0:  # log(0) is undefined\n        entropy = entropy - freq * math.log2(freq)\n\nprint(\"Shannon entropy:\", round(entropy, 3), \"bits\")\nprint(\"Maximum possible:\", 2.0, \"bits\")\n\nShannon entropy: 1.999 bits\nMaximum possible: 2.0 bits",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#writing-your-first-function",
+    "href": "lectures/lecture4.html#writing-your-first-function",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Writing Your First Function",
+    "text": "Writing Your First Function\nA function is a reusable block of code. Let’s create a function to calculate GC content so we can easily apply it to any sequence:\n\ndef gc_content(sequence):\n    \"\"\"\n    Calculate GC content as a percentage.\n    \n    Args:\n        sequence: A DNA sequence string\n        \n    Returns:\n        GC content as a percentage (0-100)\n    \"\"\"\n    g = sequence.count('G')\n    c = sequence.count('C')\n    return (g + c) / len(sequence) * 100\n\nLet’s break down the function: - def gc_content(sequence): — defines the function name and parameter - The docstring (\"\"\"...\"\"\") explains what the function does - The body is indented (4 spaces) - return specifies what value the function gives back\n\n# Test the function with different sequences\nprint(\"Test 1:\", gc_content(\"ATGCATGC\"))  # 50%\nprint(\"Test 2:\", gc_content(\"GGGGCCCC\"))  # 100%\nprint(\"Test 3:\", gc_content(\"AAAATTTT\"))  # 0%\n\nTest 1: 50.0\nTest 2: 100.0\nTest 3: 0.0\n\n\nNow let’s create a function for Shannon entropy—wrapping our earlier calculation into a reusable form:\n\ndef shannon_entropy(sequence):\n    \"\"\"\n    Calculate Shannon entropy of a DNA sequence.\n    \n    Args:\n        sequence: A DNA sequence string\n        \n    Returns:\n        Entropy in bits (0 to 2 for DNA)\n    \"\"\"\n    length = len(sequence)\n    entropy = 0\n    \n    for nucleotide in ['A', 'T', 'G', 'C']:\n        count = sequence.count(nucleotide)\n        if count &gt; 0:\n            freq = count / length\n            entropy = entropy - freq * math.log2(freq)\n    \n    return entropy\n\n\n# Test the entropy function\nprint(\"Test 1 (balanced):\", round(shannon_entropy(\"ATGC\"), 3))      # 2.0 - max entropy\nprint(\"Test 2 (all A's):\", round(shannon_entropy(\"AAAA\"), 3))       # 0.0 - min entropy\nprint(\"Test 3 (AT only):\", round(shannon_entropy(\"AATTAATT\"), 3))   # 1.0 - half max\n\nTest 1 (balanced): 2.0\nTest 2 (all A's): 0.0\nTest 3 (AT only): 1.0",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#iterating-through-a-sequence",
+    "href": "lectures/lecture4.html#iterating-through-a-sequence",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Iterating Through a Sequence",
+    "text": "Iterating Through a Sequence\nA for loop lets us examine each character in a sequence one at a time. Let’s implement our own nucleotide counter to understand what .count() does internally:\n\n# Print each nucleotide\nshort_seq = \"ATGC\"\n\nfor nucleotide in short_seq:\n    print(nucleotide)\n\nA\nT\nG\nC\n\n\n\n# Count G's manually\ndna = \"ATGCGATCGATCGATCG\"\n\ng_count = 0\nfor nucleotide in dna:\n    if nucleotide == 'G':\n        g_count = g_count + 1\n\nprint(\"Number of G's:\", g_count)\nprint(\"Verify with .count():\", dna.count('G'))\n\nNumber of G's: 5\nVerify with .count(): 5",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#functions-with-multiple-parameters",
+    "href": "lectures/lecture4.html#functions-with-multiple-parameters",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Functions with Multiple Parameters",
+    "text": "Functions with Multiple Parameters\nLet’s create a more flexible counting function that takes both the sequence and the target nucleotide as parameters:\n\ndef count_nucleotide(sequence, target):\n    \"\"\"\n    Count occurrences of a nucleotide in a sequence.\n    \n    Args:\n        sequence: A DNA sequence string\n        target: The nucleotide to count ('A', 'T', 'G', or 'C')\n        \n    Returns:\n        The count of the target nucleotide\n    \"\"\"\n    count = 0\n    for nucleotide in sequence:\n        if nucleotide == target:\n            count = count + 1\n    return count\n\n\n# Test our function\ndna = \"ATGCGATCGATCGATCG\"\n\nprint(\"A count:\", count_nucleotide(dna, 'A'))\nprint(\"T count:\", count_nucleotide(dna, 'T'))\nprint(\"G count:\", count_nucleotide(dna, 'G'))\nprint(\"C count:\", count_nucleotide(dna, 'C'))\n\nA count: 4\nT count: 4\nG count: 5\nC count: 4",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#functions-calling-functions",
+    "href": "lectures/lecture4.html#functions-calling-functions",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Functions Calling Functions",
+    "text": "Functions Calling Functions\nWe can build more complex functions by combining simpler ones. Let’s rewrite gc_content to use our count_nucleotide function:\n\ndef gc_content_v2(sequence):\n    \"\"\"\n    Calculate GC content using our count_nucleotide function.\n    \"\"\"\n    g = count_nucleotide(sequence, 'G')\n    c = count_nucleotide(sequence, 'C')\n    total = len(sequence)\n    return (g + c) / total * 100\n\n# Test it\nprint(\"GC content:\", gc_content_v2(\"ATGCGATCGATCGATCG\"))\n\nGC content: 52.94117647058824\n\n\n\nLocal Variables and Scope\nVariables created inside a function are local—they only exist within that function:\n\ndef demo_function():\n    local_var = \"I only exist inside this function\"\n    print(\"Inside function:\", local_var)\n\ndemo_function()\n\n# This would cause an error:\n# print(local_var)  # NameError: name 'local_var' is not defined\n\nInside function: I only exist inside this function",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#analyzing-multiple-sequences",
+    "href": "lectures/lecture4.html#analyzing-multiple-sequences",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Analyzing Multiple Sequences",
+    "text": "Analyzing Multiple Sequences\nLet’s compare GC content across sequences from different organisms:\n\n# Sample sequences (promoter regions)\nsequences = [\n    (\"E. coli\", \"ATGCGATCGATCGATCGATCGATCGAATTCCGG\"),\n    (\"Yeast\", \"ATATATATGCATGCATATATGCATGC\"),\n    (\"Human\", \"GCGCGCATATATGCGCGCATATGCGC\"),\n    (\"Plasmodium\", \"ATATATATATATATATATATATAT\"),  # Malaria parasite - very AT-rich\n]\n\n\n# Analyze each sequence\nprint(\"GC Content Comparison\")\nprint(\"=\" * 40)\n\nfor name, seq in sequences:\n    gc = gc_content(seq)\n    print(name + \":\", round(gc, 1), \"%\")\n\nGC Content Comparison\n========================================\nE. coli: 51.5 %\nYeast: 30.8 %\nHuman: 61.5 %\nPlasmodium: 0.0 %\n\n\n\nUsing range() for Numbered Loops\nThe range() function generates a sequence of numbers, useful when you need to count:\n\n# Count from 0 to 4\nfor i in range(5):\n    print(\"Number:\", i)\n\nNumber: 0\nNumber: 1\nNumber: 2\nNumber: 3\nNumber: 4\n\n\n\n# Calculate GC content in sliding windows\ndna = \"ATGCGCGCATATATATGCGCGCATATATAT\"\nwindow_size = 10\n\nprint(\"Position\\tGC%\")\nfor i in range(len(dna) - window_size + 1):\n    window = dna[i:i + window_size]\n    gc = gc_content(window)\n    print(i, \"\\t\", round(gc, 1))\n\nPosition    GC%\n0    60.0\n1    60.0\n2    60.0\n3    50.0\n4    40.0\n5    30.0\n6    20.0\n7    20.0\n8    20.0\n9    30.0\n10   40.0\n11   50.0\n12   60.0\n13   60.0\n14   60.0\n15   60.0\n16   60.0\n17   50.0\n18   40.0\n19   30.0\n20   20.0",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#visualizing-gc-content",
+    "href": "lectures/lecture4.html#visualizing-gc-content",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Visualizing GC Content",
+    "text": "Visualizing GC Content\nTo create charts, we need two libraries: - Pandas — for organizing data into tables (DataFrames) - Altair — for creating visualizations\n\nimport altair as alt\nimport pandas as pd\n\nThe as keyword creates a shorter alias: instead of writing altair.Chart(...), we can write alt.Chart(...).\n\nBuilding a List of Dictionaries\nBefore we can plot, we need to organize our results. We’ll build a list of dictionaries where each dictionary represents one row of data:\n\n# Start with an empty list\ndata = []\n\n# Loop through each organism and its sequence\nfor name, seq in sequences:\n    # Create a dictionary for this organism\n    row = {\n        \"Organism\": name,\n        \"GC Content (%)\": round(gc_content(seq), 1),\n        \"Shannon Entropy (bits)\": round(shannon_entropy(seq), 3)\n    }\n    # Add it to our list\n    data.append(row)\n\n# Look at what we built\ndata\n\n[{'Organism': 'E. coli',\n  'GC Content (%)': 51.5,\n  'Shannon Entropy (bits)': 1.998},\n {'Organism': 'Yeast', 'GC Content (%)': 30.8, 'Shannon Entropy (bits)': 1.89},\n {'Organism': 'Human',\n  'GC Content (%)': 61.5,\n  'Shannon Entropy (bits)': 1.961},\n {'Organism': 'Plasmodium',\n  'GC Content (%)': 0.0,\n  'Shannon Entropy (bits)': 1.0}]\n\n\nEach dictionary has the same keys (\"Organism\", \"GC Content (%)\", \"Shannon Entropy (bits)\"), which will become column names.\n\n\nConverting to a DataFrame\nA DataFrame is a table—like a spreadsheet. Pandas can convert our list of dictionaries directly into a DataFrame:\n\n# Convert list of dictionaries to a DataFrame\ndf = pd.DataFrame(data)\ndf\n\n\n\n\n\n\n\n\nOrganism\nGC Content (%)\nShannon Entropy (bits)\n\n\n\n\n0\nE. coli\n51.5\n1.998\n\n\n1\nYeast\n30.8\n1.890\n\n\n2\nHuman\n61.5\n1.961\n\n\n3\nPlasmodium\n0.0\n1.000\n\n\n\n\n\n\n\n\n\nCreating Charts with Altair\nAltair uses a declarative approach: you describe what you want, not how to draw it: - alt.Chart(df) — use this DataFrame - .mark_bar() — draw bars - .encode(x=..., y=...) — map columns to visual properties\n\n# GC Content bar chart\ngc_chart = alt.Chart(df).mark_bar().encode(\n    x=\"Organism\",\n    y=\"GC Content (%)\",\n    color=\"Organism\"\n).properties(\n    title=\"GC Content Comparison\",\n    width=300,\n    height=200\n)\n\n\n# Shannon Entropy chart\nse_chart = alt.Chart(df).mark_circle(size=100).encode(\n    x=\"Organism\",\n    y=\"Shannon Entropy (bits)\",\n    color=\"Organism\"\n).properties(\n    title=\"Shannon Entropy Comparison\",\n    width=300,\n    height=200\n)\n\nLet’s put them together:\n\n# Combine charts side by side and display\ncombined = gc_chart | se_chart\n\n# Display as PNG (works in all environments)\nimport tempfile\nfrom IPython.display import Image\nwith tempfile.NamedTemporaryFile(suffix='.png', delete=False) as f:\n    combined.save(f.name, scale_factor=2)\n    display(Image(f.name))",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4.html#homework",
+    "href": "lectures/lecture4.html#homework",
+    "title": "Lecture 4: Simple sequence manipulation",
+    "section": "Homework",
+    "text": "Homework\n\nChapters 5, 7, 8 from “Think Python” 3rd edition",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "4. Python Fundamentals with DNA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html",
+    "href": "lectures/lecture1.html",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "",
+    "text": "In this lectures I will give overview of the course: what we will cover and what we will learn. This lecture will also guide you through setting up GitHub and GitHub Codespaces. We’ll use Codespaces as our development environment - it works on any computer (Chromebook, Windows, Mac) with just a web browser.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-1-sign-up",
+    "href": "lectures/lecture1.html#step-1-sign-up",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 1: Sign Up",
+    "text": "Step 1: Sign Up\n\nGo to github.com\nClick Sign up\nEnter your email address (use your PSU email for educational benefits)\nCreate a password\nChoose a username (this will be visible publicly)\nComplete the verification puzzle\nClick Create account\n\n\n\n\n\n\n\nTipEducational Benefits\n\n\n\nUsing your .edu email gives you access to GitHub Education, which includes free GitHub Pro features, free access to various developer tools, and GitHub Copilot.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-2-verify-your-email",
+    "href": "lectures/lecture1.html#step-2-verify-your-email",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 2: Verify Your Email",
+    "text": "Step 2: Verify Your Email\n\nCheck your email inbox for a verification email from GitHub\nClick the verification link\nYou now have a GitHub account!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-1-open-codespace",
+    "href": "lectures/lecture1.html#step-1-open-codespace",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 1: Open Codespace",
+    "text": "Step 1: Open Codespace\n\nGo to your new repository on GitHub\nClick the green Code button\nSelect the Codespaces tab\nClick Create codespace on main\n\nWait about 30 seconds for your Codespace to start. You’ll see VS Code running in your browser!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-2-explore-the-interface",
+    "href": "lectures/lecture1.html#step-2-explore-the-interface",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 2: Explore the Interface",
+    "text": "Step 2: Explore the Interface\nYour Codespace has:\n\nFile Explorer (left sidebar) - browse and create files\nEditor (center) - write and edit code\nTerminal (bottom) - run commands",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-3-open-the-terminal",
+    "href": "lectures/lecture1.html#step-3-open-the-terminal",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 3: Open the Terminal",
+    "text": "Step 3: Open the Terminal\nIf the terminal isn’t visible:\n\nClick Terminal in the menu bar\nSelect New Terminal\n\nOr press Ctrl+` (backtick)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#make-a-change",
+    "href": "lectures/lecture1.html#make-a-change",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Make a Change",
+    "text": "Make a Change\n\nClick on README.md in the file explorer\nAdd some text, like: “This is my first repository!”\nSave the file (Ctrl+S or Cmd+S)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#check-status",
+    "href": "lectures/lecture1.html#check-status",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Check Status",
+    "text": "Check Status\nIn the terminal, see what changed:\ngit status\nYou’ll see README.md listed as modified.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#stage-changes",
+    "href": "lectures/lecture1.html#stage-changes",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Stage Changes",
+    "text": "Stage Changes\nAdd the file to be committed:\ngit add README.md\nOr add all changes:\ngit add .",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#commit-changes",
+    "href": "lectures/lecture1.html#commit-changes",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Commit Changes",
+    "text": "Commit Changes\nSave your changes with a message:\ngit commit -m \"Update README with description\"\n\n\n\n\n\n\nTipWriting Good Commit Messages\n\n\n\n\nUse present tense: “Add feature” not “Added feature”\nBe specific: “Fix login button color” not “Fix bug”\nKeep it short (50 characters or less)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#push-to-github",
+    "href": "lectures/lecture1.html#push-to-github",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Push to GitHub",
+    "text": "Push to GitHub\nUpload your commit to GitHub:\ngit push\nGo to your repository on GitHub and refresh - you’ll see your changes!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#pull-from-github",
+    "href": "lectures/lecture1.html#pull-from-github",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Pull from GitHub",
+    "text": "Pull from GitHub\nIf changes were made elsewhere, download them:\ngit pull",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#key-points",
+    "href": "lectures/lecture1.html#key-points",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Key Points",
+    "text": "Key Points\n\nGitHub Codespaces works on any computer with a browser\nNo software installation needed - everything runs in the cloud\nThe basic workflow is: edit → stage → commit → push\nGood commit messages help you and others understand changes",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#next-steps",
+    "href": "lectures/lecture1.html#next-steps",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nComplete the GitHub Hello World tutorial\nLearn about Pull Requests for collaboration",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#test-results-summary",
+    "href": "lectures/lecture1.html#test-results-summary",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Test Results Summary",
+    "text": "Test Results Summary\n\ndata = [\n  {score: \"0-3\", count: 0},\n  {score: \"4-6\", count: 5},\n  {score: \"7-9\", count: 5},\n  {score: \"10-12\", count: 4},\n  {score: \"13-15\", count: 1}\n]\n\nPlot.plot({\n  marks: [\n    Plot.barY(data, {x: \"score\", y: \"count\", fill: \"#4a90d9\"}),\n    Plot.ruleY([0])\n  ],\n  x: {label: \"Score Range\"},\n  y: {label: \"Number of Students\"},\n  title: \"Test 1 Score Distribution (n=15)\",\n  width: 500,\n  height: 300\n})\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSummary Statistics:\n\nStudents: 15\nAverage: 8.1/15 (54.2%)\nMedian: 8/15\nRange: 5-13/15\n\nPer-Question Analysis:\n\n\n\nQuestion\nCorrect\nIncorrect\n% Correct\n\n\n\n\n1\n3\n12\n20%\n\n\n2\n9\n6\n60%\n\n\n3\n13\n2\n87%\n\n\n4\n5\n10\n33%\n\n\n5\n5\n10\n33%\n\n\n6\n10\n5\n67%\n\n\n7\n12\n3\n80%\n\n\n8\n3\n12\n20%\n\n\n9\n4\n11\n27%\n\n\n10\n6\n9\n40%\n\n\n11\n6\n9\n40%\n\n\n12\n9\n6\n60%\n\n\n13\n12\n3\n80%\n\n\n14\n11\n4\n73%\n\n\n15\n14\n1\n93%\n\n\n\nAnalysis by Topic:\nStudents performed strongest on Agentic CLI concepts (Q13-15, avg 82%), with excellent understanding of reviewing changes before accepting them (Q15, 93%) and writing good prompts (Q14, 73%). Python questions (Q1-4, avg 50%) showed solid results on list comprehensions (Q3, 87%) and dictionary syntax (Q2, 60%), though string slicing (Q1, 20%) needs review. Bash performance (Q5-8, avg 50%) was mixed—students understood file copying (Q7, 80%) and ls -la (Q6, 67%), but pipe commands (Q8, 20%) need reinforcement. Git questions (Q9-12, avg 42%) were the weakest area, with students grasping git status (Q12, 60%) but struggling with git add . (Q9, 27%) and the add-commit-push workflow (Q10, 40%).",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture4_old.html",
+    "href": "lectures/lecture4_old.html",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "",
+    "text": "Open In Colab"
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#string-indexing",
+    "href": "lectures/lecture4_old.html#string-indexing",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "String indexing",
+    "text": "String indexing\nIn Python, strings are sequences of characters, and each character has a corresponding index, starting from 0. This means that we can access individual characters in a string using their index. This is called “string indexing”.\nHere is an example:\n\nstring = \"Hello World!\"\nprint(string[0])  # Output: H\nprint(string[1])  # Output: e\nprint(string[-1])  # Output: !\n\nYou can also use negative indexing to access characters from the end of the string, with -1 being the last character, -2 the second to last and so on.\nYou can also use slicing to extract a substring from a string. The syntax is string[start:end:step], where start is the starting index, end is the ending index (not included), and step is the number of characters to skip between each index.\n\nstring = \"Hello World!\"\nprint(string[0:5])  # Output: Hello\nprint(string[6:11])  # Output: World\nprint(string[::2])  # Output: HloWrd\n\nYou can also use the string formatting method to get the string at the specific index.\n\nstring = \"Hello World!\"\nindex = 3\nprint(f\"The character at index {index} is: {string[index]}\")"
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#string-functions",
+    "href": "lectures/lecture4_old.html#string-functions",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "String functions",
+    "text": "String functions\nIn Python, many built-in string methods can be used to manipulate and extract information from strings. Here are some of the most commonly used ones:\n\nupper(): Converts the string to uppercase\nlower(): Converts the string to lowercase\nreplace(old, new): Replaces all occurrences of the old substring with the new substring\nsplit(separator): Splits the string into a list of substrings using the specified separator\nfind(substring): Returns the index of the first occurrence of the substring, or -1 if the substring is not found\nindex(substring): Returns the index of the first occurrence of the substring or raises a ValueError if the substring is not found\ncount(substring): Returns the number of occurrences of the substring\njoin(iterable): Concatenates the elements of an iterable (such as a list or tuple) with the string as the separator\nstrip(): Removes leading and trailing whitespaces from the string\nlstrip(): Removes leading whitespaces from the string\nrstrip(): Removes trailing whitespaces from the string\nstartswith(substring): Returns True if the string starts with the specified substring, False otherwise\nendswith(substring): Returns True if the string ends with the specified substring, False otherwise\nisalpha(): Returns True if the string contains only alphabetic characters, False otherwise\nisdigit(): Returns True if the string contains only digits, False otherwise\nisalnum(): Returns True if the string contains only alphanumeric characters, False otherwise\nformat(): Formats the string by replacing placeholders with specified values\nlen(): Returns the length of the string\n\nHere is an example of some of these methods:\n\nstring = \"Hello World!\"\n\nprint(string.upper())  # Output: HELLO WORLD!\nprint(string.lower())  # Output: hello world!\nprint(string.replace(\"H\", \"J\"))  # Output: Jello World!\nprint(string.split(\" \"))  # Output: ['Hello', 'World!']\nprint(string.find(\"World\"))  # Output: 6\nprint(string.count(\"l\"))  # Output: 3\nprint(string.strip())  # Output: \"Hello World!\"\nprint(string.startswith(\"Hello\"))  # Output: True\nprint(string.endswith(\"World!\"))  # Output: True\nprint(string.isalpha())  # Output: False\nprint(string.isalnum())  # Output: False\nprint(string.format())  # Output: Hello World!\nprint(len(string))  # Output: 12"
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#playing-with-strings",
+    "href": "lectures/lecture4_old.html#playing-with-strings",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Playing with strings",
+    "text": "Playing with strings\n\nst = 'ACGT'\n\n\nlen(st) # getting the length of a string\n\n\n'' # empty string (epsilon)\n\n\nlen('')\n\n\nimport random\nrandom.choice('ACGT') # generating a random nucleotide\n\n\n# now I'll make a random nucleotide string by concatenating random nucleotides\nst = ''.join([random.choice('ACGT') for _ in range(40)])\nst\n\n\nst[1:3] # substring, starting at position 1 and extending up to but not including position 3\n# note that the first position is numbered 0\n\n\nst[0:3] # prefix of length 3\n\n\nst[:3] # another way of getting the prefix of length 3\n\n\nst[len(st)-3:len(st)] # suffix of length 3\n\n\nst[-3:] # another way of getting the suffix of length 3\n\n\nst1, st2 = 'CAT', 'ATAC'\n\n\nst1\n\n\nst2\n\n\nst1 + st2 # concatenation of 2 strings"
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#basic-format",
+    "href": "lectures/lecture4_old.html#basic-format",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Basic format",
+    "text": "Basic format\nHere’s a single sequencing read in FASTQ format:\n@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1\nAGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATGAGAGCTCAGAAGTAACAGTTGCTTTCAGTCCCATAAAAACAGTCCTACAA\n+\nBDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFFEHGGFGGDGHGFEEHFFHGE\nIt’s spread across four lines. The four lines are:\n\n“@” followed by a read name\nNucleotide sequence\n“+”, possibly followed by some info, but ignored by virtually all tools\nQuality sequence (explained below)"
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#reading-fastq-with-python",
+    "href": "lectures/lecture4_old.html#reading-fastq-with-python",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Reading FASTQ with python",
+    "text": "Reading FASTQ with python\nDownload a sample small fastq file:\n\n!curl -sLO https://zenodo.org/records/10602772/files/fastq_single_end_short.fq\n\nNow we will use a very simple Python function to read this file and load fastq data into a list:\n\ndef parse_fastq(fh):\n    \"\"\" Parse reads from a FASTQ filehandle.  For each read, we\n        return a name, nucleotide-string, quality-string triple. \"\"\"\n    reads = []\n    while True:\n        first_line = fh.readline()\n        if len(first_line) == 0:\n            break  # end of file\n        if not first_line.startswith('@'):\n            raise ValueError(f\"Expected '@' at start of FASTQ record, got: {first_line[:20]!r}\")\n        name = first_line[1:].rstrip()\n        seq = fh.readline().rstrip()\n        fh.readline()  # ignore line starting with +\n        qual = fh.readline().rstrip()\n        reads.append((name, seq, qual))\n    return reads\n\nwith open('fastq_single_end_short.fq','r') as fq:\n    reads = parse_fastq(fq)\n\nfor read in reads:\n    print(read)\n\nThe nucleotide string can sometimes contain the character “N”. N essentially means “no confidence.” The sequencer knows there’s a nucleotide there but doesn’t know whether it’s an A, C, G or T.\n\n📝 A note on while True: In Python, the while loop is used to repeatedly execute a block of code as long as a certain condition is true. The while True statement is a special case where the loop will run indefinitely until a break statement is encountered inside the loop. It is important to be careful when using while True loops, as they will run indefinitely if a break statement is not included. This can cause the program to crash or hang, if not handled properly."
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#read-name",
+    "href": "lectures/lecture4_old.html#read-name",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Read name",
+    "text": "Read name\nRead names often contain information about:\n\nThe scientific study for which the read was sequenced. E.g. the string ERR294379 (an SRA accession number) in the read names correspond to this study.\nThe sequencing instrument, and the exact part of the sequencing instrument, where the DNA was sequenced. See the FASTQ format Wikipedia article for specifics on how the Illumina software encodes this information.\nWhether the read is part of a paired-end read and, if so, which end it is. Paired-end reads will be discussed further below. The /1 you see at the end of the read names above indicates the read is the first end from a paired-end read."
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#quality-values",
+    "href": "lectures/lecture4_old.html#quality-values",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Quality values",
+    "text": "Quality values\nQuality values are probabilities. Each nucleotide in each sequencing read has an associated quality value. A nucleotide quality value encodes the probability that the nucleotide was incorrectly called by the sequencing instrument and its software. If the nucleotide is A, the corresponding quality value encodes the probability that the nucleotide at that position is actually not an A.\nQuality values are encoded in two senses: first, the relevant probabilities are re-scaled using the Phred scale, which is a negative log scale. In other words if p is the probability that the nucleotide was incorrectly called, we encode this as Q where Q = -10 * log10(p).\nFor example: - If Q = 30, then p = 0.001, a 1-in-1000 chance that the nucleotide is wrong - If Q = 20, then p = 0.01, a 1-in-100 chance - If Q = 10, then p = 0.1, a 1-in-10 chance\nSecond, scaled quality values are rounded to the nearest integer and encoded using ASCII printable characters. For example, using the Phred33 encoding (which is by far the most common), a Q of 30 is encoded as the ASCII character with code 33 + 30 = 63, which is “?”. A Q of 20 is encoded as the ASCII character with code 33 + 20 = 53, which is “5”.\nLet’s define some relevant Python functions:\n\ndef phred33_to_q(qual):\n    \"\"\" Turn Phred+33 ASCII-encoded quality into Phred-scaled integer \"\"\"\n    return ord(qual)-33\n\ndef q_to_phred33(Q):\n    \"\"\" Turn Phred-scaled integer into Phred+33 ASCII-encoded quality \"\"\"\n    return chr(Q + 33)\n\ndef q_to_p(Q):\n    \"\"\" Turn Phred-scaled integer into error probability \"\"\"\n    return 10.0 ** (-0.1 * Q)\n\ndef p_to_q(p):\n    \"\"\" Turn error probability into Phred-scaled integer \"\"\"\n    import math\n    return int(round(-10.0 * math.log10(p)))\n\n\n# Here are the examples discussed above\n\n# Convert Qs into ps\nq_to_p(30), q_to_p(20), q_to_p(10)\n\n\np_to_q(0.00011) # note that the result is rounded\n\n\nq_to_phred33(30), q_to_phred33(20)\n\nTo convert an entire string Phred33-encoded quality values into the corresponding Q or p values, I can do the following:\n\nfrom io import StringIO\n\nfastq_string = '''@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1\nAGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATG\n+\nBDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGF\n'''\n\n# Take the first read from the small example above\nname, seq, qual = parse_fastq(StringIO(fastq_string))[0]\nq_string = list(map(phred33_to_q, qual))\np_string = list(map(q_to_p, q_string))\nprint(q_string)\nprint(p_string)\n\nYou might wonder how the sequencer and its software can know the probability that a nucleotide is incorrectly called. It can’t; this number is just an estimate. To describe exactly how it’s estimated is beyond the scope of this notebook; if you’re interested, search for academic papers with “base calling” in the title. Here’s a helpful video by Rafa Irizarry.\nA final note: other ways of encoding quality values were proposed and used in the past. For example, Phred64 uses an ASCII offset of 64 instead of 33, and Solexa64 uses “odds” instead of the probability p. But Phred33 is by far the most common today and you will likely never have to worry about this.\n\n📝 A note on map(): In Python, the map() function is used to apply a given function to all elements of an iterable (such as a list, tuple, or string) and return an iterator that yields the results. The map() function takes two arguments: a function that is to be applied to each element of the iterable, and an iterable on which the function is to be applied. Example: squared_numbers = map(lambda x: x**2, [1, 2, 3, 4, 5]) returns [1, 4, 9, 16, 25]."
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#paired-end-reads",
+    "href": "lectures/lecture4_old.html#paired-end-reads",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Paired-end reads",
+    "text": "Paired-end reads\nSequencing reads can come in pairs. Basically instead of reporting a single snippet of nucleotides from the genome, the sequencer might report a pair of snippets that appear close to each other in the genome. To accomplish this, the sequencer sequences both ends of a longer fragment of DNA.\nHere is simple Python code that mimics how the sequencer obtains one paired-end read:\n\n# Let's just make a random genome of length 1K\nimport random\nrandom.seed(637485)\ngenome = ''.join([random.choice('ACGT') for _ in range(1000)])\ngenome\n\n\n# The sequencer draws a fragment from the genome of length, say, 250\noffset = random.randint(0, len(genome) - 250)\nfragment = genome[offset:offset+250]\nfragment\n\n\n# Then it reads sequences from either end of the fragment\nend1, end2 = fragment[:75], fragment[-75:]\nend1, end2\n\n\n# And because of how Illumina sequencing works, the\n# second end is always from the opposite strand from the first\n# (this is not the case for 454 and SOLiD data)\n\nimport string\n\n# function for reverse-complementing\nrevcomp_trans = str.maketrans(\"ACGTacgt\", \"TGCAtgca\")\ndef reverse_complement(s):\n    return s[::-1].translate(revcomp_trans)\n\nend2 = reverse_complement(end2)\nend1, end2\n\nFASTQ can be used to store paired-end reads. Say we have 1000 paired-end reads. We should store them in a pair of FASTQ files. The first FASTQ file (say, reads_1.fq) would contain all of the first ends and the second FASTQ file (say, reads_2.fq) would contain all of the second ends. In both files, the ends would appear in corresponding order. That is, the first entry in reads_1.fq is paired with the first entry in reads_2.fq and so on.\nHere is a Python function that parses a pair of files containing paired-end reads.\n\ndef parse_paired_fastq(fh1, fh2):\n    \"\"\" Parse paired-end reads from a pair of FASTQ filehandles\n        For each pair, we return a name, the nucleotide string\n        for the first end, the quality string for the first end,\n        the nucleotide string for the second end, and the\n        quality string for the second end. \"\"\"\n    reads = []\n    while True:\n        first_line_1, first_line_2 = fh1.readline(), fh2.readline()\n        if len(first_line_1) == 0:\n            break  # end of file\n        name_1, name_2 = first_line_1[1:].rstrip(), first_line_2[1:].rstrip()\n        seq_1, seq_2 = fh1.readline().rstrip(), fh2.readline().rstrip()\n        fh1.readline()  # ignore line starting with +\n        fh2.readline()  # ignore line starting with +\n        qual_1, qual_2 = fh1.readline().rstrip(), fh2.readline().rstrip()\n        reads.append(((name_1, seq_1, qual_1), (name_2, seq_2, qual_2)))\n    return reads\n\nfastq_string1 = '''@509.6.64.20524.149722/1\nAGCTCTGGTGACCCATGGGCAGCTGCTAGGGAGCCTTCTCTCCACCCTGA\n+\nHHHHHHHGHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIHHIHFHHF\n@509.4.62.19231.2763/1\nGTTGATAAGCAAGCATCTCATTTTGTGCATATACCTGGTCTTTCGTATTC\n+\nHHHHHHHHHHHHHHEHHHHHHHHHHHHHHHHHHHHHHHDHHHHHHGHGHH'''\n\nfastq_string2 = '''@509.6.64.20524.149722/2\nTAAGTCAGGATACTTTCCCATATCCCAGCCCTGCTCCNTCTTTAAATAAT\n+\nHHHHHHHHHHHHHHHHHHHH@HHFHHHEFHHHHHHFF#FFFFFFFHHHHH\n@509.4.62.19231.2763/2\nCTCTGCTGGTATGGTTGACGCCGGATTTGAGAATCAANAAGAGCTTACTA\n+\nHHHHHHHHHHHHHHHHHHEHEHHHFHGHHHHHHHH&gt;@#@=44465HHHHH'''\n\nparse_paired_fastq(StringIO(fastq_string1), StringIO(fastq_string2))\n\n\n📝 A note on triple quotes: In Python, triple quotes (either single or double) are used to create multi-line strings. They can also be used to create doc-strings, which are used to document a function, class, or module."
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#how-good-are-my-reads",
+    "href": "lectures/lecture4_old.html#how-good-are-my-reads",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "How good are my reads?",
+    "text": "How good are my reads?\nLet’s reuse the parse_fastq function from above:\n\n# Read the file into a list\nwith open('fastq_single_end_short.fq','r') as fq:\n    reads = parse_fastq(fq)\n\nThis will load data into a list called reads containing individual reads (name, nucleotides, and quality values) represented as a tuple.\n\n# Extract qualities and convert them into numerical values\nrun_qualities = []\nfor read in reads:\n    read_qualities = []\n    for quality in read[2]:\n        read_qualities.append(phred33_to_q(quality))\n    run_qualities.append(read_qualities)\n\nThis will take quality string only for each read from reads and convert it into a list of values. The end result, a list of lists called run_qualities, will contain as many elements as there are reads, where each element (also a list) contains all quality values for a read. We need to transpose this list, so that instead of representing every read as a list of quality values we represent every position as a list of quality values for all reads at that position. This can be easily done with numpy’s T:\n\n# Transpose the quality values matrix\n\nimport numpy as np\nbase_qualities = np.array(run_qualities).T\n\nNow we need to extract some key per-position statistics from the base_qualities list generated above. We, again, use numpy for this:\n\n# Prep data for plotting\nplotting_data = {\n    'base':[],\n    'mean':[],\n    'median':[],\n    'q25':[],\n    'q75':[],\n    'min':[],\n    'max':[]\n}\nfor i,base in enumerate(base_qualities):\n    plotting_data['base'].append(i)\n    plotting_data['mean'].append(np.mean(base))\n    plotting_data['median'].append(np.median(base))\n    plotting_data['q25'].append(np.quantile(base,.25))\n    plotting_data['q75'].append(np.quantile(base,.75))\n    plotting_data['min'].append(np.min(base))\n    plotting_data['max'].append(np.max(base))\n\nThe result of this, a dictionary called plotting_data, contains statistics types as keys and corresponding values as lists. Now we load these into Pandas:\n\n# Load into Pandas\nimport pandas as pd\nplotting_data_df = pd.DataFrame(plotting_data)\n\nAnd plot:\n\n# Plot!\nimport altair as alt\n\nbase = alt.Chart(plotting_data_df).encode(\n    alt.X('base:Q', title=\"Position in the read\")\n).properties(\n    width=800,\n    height=200)\n\nmedian = base.mark_tick(color='red',orient='horizontal').encode(\n    alt.Y('median:Q', title=\"Phred quality score\"),\n)\n\nq = base.mark_rule(color='green',opacity=.5,strokeWidth=10).encode(\n    alt.Y('q25:Q'),\n    alt.Y2('q75:Q')\n)\n\nmin_max = base.mark_rule(color='black').encode(\n        alt.Y('min:Q'),\n        alt.Y2('max:Q')\n)\n\nmedian + q + min_max"
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#other-comments",
+    "href": "lectures/lecture4_old.html#other-comments",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Other comments",
+    "text": "Other comments\nIn all the examples above, the reads in the FASTQ file are all the same length. This is not necessarily the case though it is usually true for datasets generated by sequencing-by-synthesis instruments. FASTQ files can contain reads of various lengths.\nFASTQ files often have the extension .fastq or .fq."
+  },
+  {
+    "objectID": "lectures/lecture4_old.html#other-resources",
+    "href": "lectures/lecture4_old.html#other-resources",
+    "title": "Lecture 4: FASTQ and Quality Scores",
+    "section": "Other resources",
+    "text": "Other resources\n\nBioPython\nSeqIO\nSAMtools\nFASTX\nFASTQC\nseqtk"
+  },
+  {
     "objectID": "lectures/lecture2.html",
     "href": "lectures/lecture2.html",
     "title": "Lecture 2: Introduction to Bash",
@@ -316,478 +927,81 @@
     ]
   },
   {
-    "objectID": "lectures/lecture4.html",
-    "href": "lectures/lecture4.html",
-    "title": "Lecture 4: FASTQ and Quality Scores",
+    "objectID": "lectures/lecture4a.html",
+    "href": "lectures/lecture4a.html",
+    "title": "Lecture 4A: Parsing FASTA Files",
     "section": "",
     "text": "Open In Colab"
   },
   {
-    "objectID": "lectures/lecture4.html#prep",
-    "href": "lectures/lecture4.html#prep",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Prep",
-    "text": "Prep\n\nStart JupyterLab\nWithin JupyterLab start a new Python3 notebook\nOpen this page in a new browser tab"
+    "objectID": "lectures/lecture4a.html#what-is-fasta-format",
+    "href": "lectures/lecture4a.html#what-is-fasta-format",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "What is FASTA format?",
+    "text": "What is FASTA format?\nFASTA is one of the most common formats for storing biological sequences. Each sequence entry consists of:\n\nA header line starting with &gt;, followed by the sequence name and optional description\nOne or more lines containing the sequence itself\n\nHere’s an example with three protein sequences:\n\nfasta_data = \"\"\"&gt;seq1 human insulin\nMALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\n&gt;seq2 mouse insulin\nMALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\n&gt;seq3 zebrafish insulin\nMAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\"\"\"\n\nprint(fasta_data)\n\n&gt;seq1 human insulin\nMALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\n&gt;seq2 mouse insulin\nMALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\n&gt;seq3 zebrafish insulin\nMAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\n\n\n\nNote on triple quotes: In Python, triple quotes (\"\"\" or ''') allow you to create multi-line strings. This is perfect for storing FASTA data directly in your code without needing to read from a file."
   },
   {
-    "objectID": "lectures/lecture4.html#string-indexing",
-    "href": "lectures/lecture4.html#string-indexing",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "String indexing",
-    "text": "String indexing\nIn Python, strings are sequences of characters, and each character has a corresponding index, starting from 0. This means that we can access individual characters in a string using their index. This is called “string indexing”.\nHere is an example:\n\nstring = \"Hello World!\"\nprint(string[0])  # Output: H\nprint(string[1])  # Output: e\nprint(string[-1])  # Output: !\n\nYou can also use negative indexing to access characters from the end of the string, with -1 being the last character, -2 the second to last and so on.\nYou can also use slicing to extract a substring from a string. The syntax is string[start:end:step], where start is the starting index, end is the ending index (not included), and step is the number of characters to skip between each index.\n\nstring = \"Hello World!\"\nprint(string[0:5])  # Output: Hello\nprint(string[6:11])  # Output: World\nprint(string[::2])  # Output: HloWrd\n\nYou can also use the string formatting method to get the string at the specific index.\n\nstring = \"Hello World!\"\nindex = 3\nprint(f\"The character at index {index} is: {string[index]}\")"
+    "objectID": "lectures/lecture4a.html#our-goal-a-dictionary",
+    "href": "lectures/lecture4a.html#our-goal-a-dictionary",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "Our Goal: A Dictionary",
+    "text": "Our Goal: A Dictionary\nWe want to convert this FASTA data into a Python dictionary where: - Keys are sequence names (e.g., 'seq1', 'seq2', 'seq3') - Values are the corresponding sequences\n{\n    'seq1': 'MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT',\n    'seq2': 'MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS',\n    'seq3': 'MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF'\n}\nWhy a dictionary? Because it gives us fast lookup by name. If we want the sequence for seq2, we simply write sequences['seq2']."
   },
   {
-    "objectID": "lectures/lecture4.html#string-functions",
-    "href": "lectures/lecture4.html#string-functions",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "String functions",
-    "text": "String functions\nIn Python, many built-in string methods can be used to manipulate and extract information from strings. Here are some of the most commonly used ones:\n\nupper(): Converts the string to uppercase\nlower(): Converts the string to lowercase\nreplace(old, new): Replaces all occurrences of the old substring with the new substring\nsplit(separator): Splits the string into a list of substrings using the specified separator\nfind(substring): Returns the index of the first occurrence of the substring, or -1 if the substring is not found\nindex(substring): Returns the index of the first occurrence of the substring or raises a ValueError if the substring is not found\ncount(substring): Returns the number of occurrences of the substring\njoin(iterable): Concatenates the elements of an iterable (such as a list or tuple) with the string as the separator\nstrip(): Removes leading and trailing whitespaces from the string\nlstrip(): Removes leading whitespaces from the string\nrstrip(): Removes trailing whitespaces from the string\nstartswith(substring): Returns True if the string starts with the specified substring, False otherwise\nendswith(substring): Returns True if the string ends with the specified substring, False otherwise\nisalpha(): Returns True if the string contains only alphabetic characters, False otherwise\nisdigit(): Returns True if the string contains only digits, False otherwise\nisalnum(): Returns True if the string contains only alphanumeric characters, False otherwise\nformat(): Formats the string by replacing placeholders with specified values\nlen(): Returns the length of the string\n\nHere is an example of some of these methods:\n\nstring = \"Hello World!\"\n\nprint(string.upper())  # Output: HELLO WORLD!\nprint(string.lower())  # Output: hello world!\nprint(string.replace(\"H\", \"J\"))  # Output: Jello World!\nprint(string.split(\" \"))  # Output: ['Hello', 'World!']\nprint(string.find(\"World\"))  # Output: 6\nprint(string.count(\"l\"))  # Output: 3\nprint(string.strip())  # Output: \"Hello World!\"\nprint(string.startswith(\"Hello\"))  # Output: True\nprint(string.endswith(\"World!\"))  # Output: True\nprint(string.isalpha())  # Output: False\nprint(string.isalnum())  # Output: False\nprint(string.format())  # Output: Hello World!\nprint(len(string))  # Output: 12"
+    "objectID": "lectures/lecture4a.html#parsing-logic-step-by-step",
+    "href": "lectures/lecture4a.html#parsing-logic-step-by-step",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "Parsing Logic: Step by Step",
+    "text": "Parsing Logic: Step by Step\n\nStep 1: Split into lines\nFirst, we split our FASTA string into individual lines:\n\nlines = fasta_data.strip().split('\\n')\nfor i, line in enumerate(lines):\n    print(f\"Line {i}: {line}\")\n\nLine 0: &gt;seq1 human insulin\nLine 1: MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\nLine 2: &gt;seq2 mouse insulin\nLine 3: MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\nLine 4: &gt;seq3 zebrafish insulin\nLine 5: MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\n\n\n\nStep 2: Identify header lines\nHeader lines start with &gt;. We can detect them using the startswith() method:\n\nfor line in lines:\n    if line.startswith('&gt;'):\n        print(f\"HEADER: {line}\")\n    else:\n        print(f\"SEQUENCE: {line}\")\n\nHEADER: &gt;seq1 human insulin\nSEQUENCE: MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\nHEADER: &gt;seq2 mouse insulin\nSEQUENCE: MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\nHEADER: &gt;seq3 zebrafish insulin\nSEQUENCE: MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\n\n\n\nStep 3: Extract the sequence name\nThe sequence name is the first “word” after the &gt;. We can extract it by: 1. Removing the &gt; character (using line[1:] to skip the first character) 2. Splitting on whitespace and taking the first element\n\nheader = \"&gt;seq1 human insulin\"\n\n# Remove the '&gt;' character\nwithout_gt = header[1:]\nprint(f\"After removing '&gt;': {without_gt}\")\n\n# Split on whitespace\nparts = without_gt.split()\nprint(f\"Split into parts: {parts}\")\n\n# Take the first part (the name)\nname = parts[0]\nprint(f\"Sequence name: {name}\")\n\nAfter removing '&gt;': seq1 human insulin\nSplit into parts: ['seq1', 'human', 'insulin']\nSequence name: seq1"
   },
   {
-    "objectID": "lectures/lecture4.html#playing-with-strings",
-    "href": "lectures/lecture4.html#playing-with-strings",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Playing with strings",
-    "text": "Playing with strings\n\nst = 'ACGT'\n\n\nlen(st) # getting the length of a string\n\n\n'' # empty string (epsilon)\n\n\nlen('')\n\n\nimport random\nrandom.choice('ACGT') # generating a random nucleotide\n\n\n# now I'll make a random nucleotide string by concatenating random nucleotides\nst = ''.join([random.choice('ACGT') for _ in range(40)])\nst\n\n\nst[1:3] # substring, starting at position 1 and extending up to but not including position 3\n# note that the first position is numbered 0\n\n\nst[0:3] # prefix of length 3\n\n\nst[:3] # another way of getting the prefix of length 3\n\n\nst[len(st)-3:len(st)] # suffix of length 3\n\n\nst[-3:] # another way of getting the suffix of length 3\n\n\nst1, st2 = 'CAT', 'ATAC'\n\n\nst1\n\n\nst2\n\n\nst1 + st2 # concatenation of 2 strings"
+    "objectID": "lectures/lecture4a.html#first-attempt-a-naive-parser",
+    "href": "lectures/lecture4a.html#first-attempt-a-naive-parser",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "First Attempt: A Naive Parser",
+    "text": "First Attempt: A Naive Parser\nNow let’s put it together. The basic idea is: - When we see a &gt;, save the previous sequence (if any) and start a new one - When we see a sequence line, append it to the current sequence\nHere’s our first attempt:\n\n# CAUTION: This version has a bug!\n\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nfor line in fasta_data.strip().split('\\n'):\n    if line.startswith('&gt;'):\n        # Save the previous sequence (if there is one)\n        if current_name:\n            sequences[current_name] = current_seq\n        # Start a new sequence\n        current_name = line[1:].split()[0]\n        current_seq = \"\"\n    else:\n        # Append to current sequence\n        current_seq += line\n\nprint(\"Sequences found:\", list(sequences.keys()))\nprint(f\"Number of sequences: {len(sequences)}\")\n\nSequences found: ['seq1', 'seq2']\nNumber of sequences: 2"
   },
   {
-    "objectID": "lectures/lecture4.html#basic-format",
-    "href": "lectures/lecture4.html#basic-format",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Basic format",
-    "text": "Basic format\nHere’s a single sequencing read in FASTQ format:\n@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1\nAGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATGAGAGCTCAGAAGTAACAGTTGCTTTCAGTCCCATAAAAACAGTCCTACAA\n+\nBDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFFEHGGFGGDGHGFEEHFFHGE\nIt’s spread across four lines. The four lines are:\n\n“@” followed by a read name\nNucleotide sequence\n“+”, possibly followed by some info, but ignored by virtually all tools\nQuality sequence (explained below)"
+    "objectID": "lectures/lecture4a.html#the-last-sequence-problem",
+    "href": "lectures/lecture4a.html#the-last-sequence-problem",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "The Last Sequence Problem",
+    "text": "The Last Sequence Problem\nWait! We have 3 sequences in our FASTA data, but only 2 were captured!\nWhat happened to seq3?\nLet’s trace through the logic:\n\n\n\n\n\n\n\n\nLine\nAction\nsequences dict\n\n\n\n\n&gt;seq1 human insulin\nStart seq1\n{}\n\n\nMALWMR...PKT\nAppend to seq1\n{}\n\n\n&gt;seq2 mouse insulin\nSave seq1, start seq2\n{'seq1': '...'}\n\n\nMALWMR...PMS\nAppend to seq2\n{'seq1': '...'}\n\n\n&gt;seq3 zebrafish insulin\nSave seq2, start seq3\n{'seq1': '...', 'seq2': '...'}\n\n\nMAVWLQ...RGF\nAppend to seq3\n{'seq1': '...', 'seq2': '...'}\n\n\n(end of file)\n???\nseq3 never saved!\n\n\n\nThe problem: We only save a sequence when we encounter the NEXT &gt;. But the last sequence has no &gt; after it!"
   },
   {
-    "objectID": "lectures/lecture4.html#reading-fastq-with-python",
-    "href": "lectures/lecture4.html#reading-fastq-with-python",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Reading FASTQ with python",
-    "text": "Reading FASTQ with python\nDownload a sample small fastq file:\n\n!curl -sLO https://zenodo.org/records/10602772/files/fastq_single_end_short.fq\n\nNow we will use a very simple Python function to read this file and load fastq data into a list:\n\ndef parse_fastq(fh):\n    \"\"\" Parse reads from a FASTQ filehandle.  For each read, we\n        return a name, nucleotide-string, quality-string triple. \"\"\"\n    reads = []\n    while True:\n        first_line = fh.readline()\n        if len(first_line) == 0:\n            break  # end of file\n        if not first_line.startswith('@'):\n            raise ValueError(f\"Expected '@' at start of FASTQ record, got: {first_line[:20]!r}\")\n        name = first_line[1:].rstrip()\n        seq = fh.readline().rstrip()\n        fh.readline()  # ignore line starting with +\n        qual = fh.readline().rstrip()\n        reads.append((name, seq, qual))\n    return reads\n\nwith open('fastq_single_end_short.fq','r') as fq:\n    reads = parse_fastq(fq)\n\nfor read in reads:\n    print(read)\n\nThe nucleotide string can sometimes contain the character “N”. N essentially means “no confidence.” The sequencer knows there’s a nucleotide there but doesn’t know whether it’s an A, C, G or T.\n\n📝 A note on while True: In Python, the while loop is used to repeatedly execute a block of code as long as a certain condition is true. The while True statement is a special case where the loop will run indefinitely until a break statement is encountered inside the loop. It is important to be careful when using while True loops, as they will run indefinitely if a break statement is not included. This can cause the program to crash or hang, if not handled properly."
+    "objectID": "lectures/lecture4a.html#the-fix-dont-forget-the-last-sequence",
+    "href": "lectures/lecture4a.html#the-fix-dont-forget-the-last-sequence",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "The Fix: Don’t Forget the Last Sequence",
+    "text": "The Fix: Don’t Forget the Last Sequence\nAfter the loop ends, we need to check if there’s a pending sequence that hasn’t been saved yet:\n\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nfor line in fasta_data.strip().split('\\n'):\n    if line.startswith('&gt;'):\n        # Save the previous sequence (if there is one)\n        if current_name:\n            sequences[current_name] = current_seq\n        # Start a new sequence\n        current_name = line[1:].split()[0]\n        current_seq = \"\"\n    else:\n        # Append to current sequence\n        current_seq += line\n\n# Don't forget the last sequence!\nif current_name:\n    sequences[current_name] = current_seq\n\nprint(\"Sequences found:\", list(sequences.keys()))\nprint(f\"Number of sequences: {len(sequences)}\")\n\nSequences found: ['seq1', 'seq2', 'seq3']\nNumber of sequences: 3\n\n\nNow we have all three sequences! Let’s verify:\n\nfor name, seq in sequences.items():\n    print(f\"{name}: {seq[:20]}... (length: {len(seq)})\")\n\nseq1: MALWMRLLPLLALLALWGPD... (length: 54)\nseq2: MALWMRLLPLLALLALWGPE... (length: 54)\nseq3: MAVWLQAGALLVLLVVSSAT... (length: 60)"
   },
   {
-    "objectID": "lectures/lecture4.html#read-name",
-    "href": "lectures/lecture4.html#read-name",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Read name",
-    "text": "Read name\nRead names often contain information about:\n\nThe scientific study for which the read was sequenced. E.g. the string ERR294379 (an SRA accession number) in the read names correspond to this study.\nThe sequencing instrument, and the exact part of the sequencing instrument, where the DNA was sequenced. See the FASTQ format Wikipedia article for specifics on how the Illumina software encodes this information.\nWhether the read is part of a paired-end read and, if so, which end it is. Paired-end reads will be discussed further below. The /1 you see at the end of the read names above indicates the read is the first end from a paired-end read."
+    "objectID": "lectures/lecture4a.html#wrapping-it-in-a-function",
+    "href": "lectures/lecture4a.html#wrapping-it-in-a-function",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "Wrapping It in a Function",
+    "text": "Wrapping It in a Function\nLet’s create a reusable function:\n\ndef parse_fasta(fasta_string):\n    \"\"\"\n    Parse a FASTA-formatted string into a dictionary.\n    \n    Args:\n        fasta_string: A string containing FASTA-formatted sequences\n        \n    Returns:\n        A dictionary mapping sequence names to sequences\n    \"\"\"\n    sequences = {}\n    current_name = None\n    current_seq = \"\"\n    \n    for line in fasta_string.strip().split('\\n'):\n        if line.startswith('&gt;'):\n            if current_name:\n                sequences[current_name] = current_seq\n            current_name = line[1:].split()[0]\n            current_seq = \"\"\n        else:\n            current_seq += line\n    \n    # Don't forget the last sequence!\n    if current_name:\n        sequences[current_name] = current_seq\n    \n    return sequences\n\n\n# Test our function\nresult = parse_fasta(fasta_data)\nprint(result)\n\n{'seq1': 'MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT', 'seq2': 'MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS', 'seq3': 'MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF'}"
   },
   {
-    "objectID": "lectures/lecture4.html#quality-values",
-    "href": "lectures/lecture4.html#quality-values",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Quality values",
-    "text": "Quality values\nQuality values are probabilities. Each nucleotide in each sequencing read has an associated quality value. A nucleotide quality value encodes the probability that the nucleotide was incorrectly called by the sequencing instrument and its software. If the nucleotide is A, the corresponding quality value encodes the probability that the nucleotide at that position is actually not an A.\nQuality values are encoded in two senses: first, the relevant probabilities are re-scaled using the Phred scale, which is a negative log scale. In other words if p is the probability that the nucleotide was incorrectly called, we encode this as Q where Q = -10 * log10(p).\nFor example: - If Q = 30, then p = 0.001, a 1-in-1000 chance that the nucleotide is wrong - If Q = 20, then p = 0.01, a 1-in-100 chance - If Q = 10, then p = 0.1, a 1-in-10 chance\nSecond, scaled quality values are rounded to the nearest integer and encoded using ASCII printable characters. For example, using the Phred33 encoding (which is by far the most common), a Q of 30 is encoded as the ASCII character with code 33 + 30 = 63, which is “?”. A Q of 20 is encoded as the ASCII character with code 33 + 20 = 53, which is “5”.\nLet’s define some relevant Python functions:\n\ndef phred33_to_q(qual):\n    \"\"\" Turn Phred+33 ASCII-encoded quality into Phred-scaled integer \"\"\"\n    return ord(qual)-33\n\ndef q_to_phred33(Q):\n    \"\"\" Turn Phred-scaled integer into Phred+33 ASCII-encoded quality \"\"\"\n    return chr(Q + 33)\n\ndef q_to_p(Q):\n    \"\"\" Turn Phred-scaled integer into error probability \"\"\"\n    return 10.0 ** (-0.1 * Q)\n\ndef p_to_q(p):\n    \"\"\" Turn error probability into Phred-scaled integer \"\"\"\n    import math\n    return int(round(-10.0 * math.log10(p)))\n\n\n# Here are the examples discussed above\n\n# Convert Qs into ps\nq_to_p(30), q_to_p(20), q_to_p(10)\n\n\np_to_q(0.00011) # note that the result is rounded\n\n\nq_to_phred33(30), q_to_phred33(20)\n\nTo convert an entire string Phred33-encoded quality values into the corresponding Q or p values, I can do the following:\n\nfrom io import StringIO\n\nfastq_string = '''@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1\nAGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATG\n+\nBDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGF\n'''\n\n# Take the first read from the small example above\nname, seq, qual = parse_fastq(StringIO(fastq_string))[0]\nq_string = list(map(phred33_to_q, qual))\np_string = list(map(q_to_p, q_string))\nprint(q_string)\nprint(p_string)\n\nYou might wonder how the sequencer and its software can know the probability that a nucleotide is incorrectly called. It can’t; this number is just an estimate. To describe exactly how it’s estimated is beyond the scope of this notebook; if you’re interested, search for academic papers with “base calling” in the title. Here’s a helpful video by Rafa Irizarry.\nA final note: other ways of encoding quality values were proposed and used in the past. For example, Phred64 uses an ASCII offset of 64 instead of 33, and Solexa64 uses “odds” instead of the probability p. But Phred33 is by far the most common today and you will likely never have to worry about this.\n\n📝 A note on map(): In Python, the map() function is used to apply a given function to all elements of an iterable (such as a list, tuple, or string) and return an iterator that yields the results. The map() function takes two arguments: a function that is to be applied to each element of the iterable, and an iterable on which the function is to be applied. Example: squared_numbers = map(lambda x: x**2, [1, 2, 3, 4, 5]) returns [1, 4, 9, 16, 25]."
+    "objectID": "lectures/lecture4a.html#using-the-dictionary",
+    "href": "lectures/lecture4a.html#using-the-dictionary",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "Using the Dictionary",
+    "text": "Using the Dictionary\nNow we can easily access any sequence by name:\n\n# Get a specific sequence\nprint(\"Human insulin sequence:\")\nprint(result['seq1'])\n\nHuman insulin sequence:\nMALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\n\n\n\n# Compare sequence lengths\nfor name, seq in result.items():\n    print(f\"{name}: {len(seq)} amino acids\")\n\nseq1: 54 amino acids\nseq2: 54 amino acids\nseq3: 60 amino acids"
   },
   {
-    "objectID": "lectures/lecture4.html#paired-end-reads",
-    "href": "lectures/lecture4.html#paired-end-reads",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Paired-end reads",
-    "text": "Paired-end reads\nSequencing reads can come in pairs. Basically instead of reporting a single snippet of nucleotides from the genome, the sequencer might report a pair of snippets that appear close to each other in the genome. To accomplish this, the sequencer sequences both ends of a longer fragment of DNA.\nHere is simple Python code that mimics how the sequencer obtains one paired-end read:\n\n# Let's just make a random genome of length 1K\nimport random\nrandom.seed(637485)\ngenome = ''.join([random.choice('ACGT') for _ in range(1000)])\ngenome\n\n\n# The sequencer draws a fragment from the genome of length, say, 250\noffset = random.randint(0, len(genome) - 250)\nfragment = genome[offset:offset+250]\nfragment\n\n\n# Then it reads sequences from either end of the fragment\nend1, end2 = fragment[:75], fragment[-75:]\nend1, end2\n\n\n# And because of how Illumina sequencing works, the\n# second end is always from the opposite strand from the first\n# (this is not the case for 454 and SOLiD data)\n\nimport string\n\n# function for reverse-complementing\nrevcomp_trans = str.maketrans(\"ACGTacgt\", \"TGCAtgca\")\ndef reverse_complement(s):\n    return s[::-1].translate(revcomp_trans)\n\nend2 = reverse_complement(end2)\nend1, end2\n\nFASTQ can be used to store paired-end reads. Say we have 1000 paired-end reads. We should store them in a pair of FASTQ files. The first FASTQ file (say, reads_1.fq) would contain all of the first ends and the second FASTQ file (say, reads_2.fq) would contain all of the second ends. In both files, the ends would appear in corresponding order. That is, the first entry in reads_1.fq is paired with the first entry in reads_2.fq and so on.\nHere is a Python function that parses a pair of files containing paired-end reads.\n\ndef parse_paired_fastq(fh1, fh2):\n    \"\"\" Parse paired-end reads from a pair of FASTQ filehandles\n        For each pair, we return a name, the nucleotide string\n        for the first end, the quality string for the first end,\n        the nucleotide string for the second end, and the\n        quality string for the second end. \"\"\"\n    reads = []\n    while True:\n        first_line_1, first_line_2 = fh1.readline(), fh2.readline()\n        if len(first_line_1) == 0:\n            break  # end of file\n        name_1, name_2 = first_line_1[1:].rstrip(), first_line_2[1:].rstrip()\n        seq_1, seq_2 = fh1.readline().rstrip(), fh2.readline().rstrip()\n        fh1.readline()  # ignore line starting with +\n        fh2.readline()  # ignore line starting with +\n        qual_1, qual_2 = fh1.readline().rstrip(), fh2.readline().rstrip()\n        reads.append(((name_1, seq_1, qual_1), (name_2, seq_2, qual_2)))\n    return reads\n\nfastq_string1 = '''@509.6.64.20524.149722/1\nAGCTCTGGTGACCCATGGGCAGCTGCTAGGGAGCCTTCTCTCCACCCTGA\n+\nHHHHHHHGHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIHHIHFHHF\n@509.4.62.19231.2763/1\nGTTGATAAGCAAGCATCTCATTTTGTGCATATACCTGGTCTTTCGTATTC\n+\nHHHHHHHHHHHHHHEHHHHHHHHHHHHHHHHHHHHHHHDHHHHHHGHGHH'''\n\nfastq_string2 = '''@509.6.64.20524.149722/2\nTAAGTCAGGATACTTTCCCATATCCCAGCCCTGCTCCNTCTTTAAATAAT\n+\nHHHHHHHHHHHHHHHHHHHH@HHFHHHEFHHHHHHFF#FFFFFFFHHHHH\n@509.4.62.19231.2763/2\nCTCTGCTGGTATGGTTGACGCCGGATTTGAGAATCAANAAGAGCTTACTA\n+\nHHHHHHHHHHHHHHHHHHEHEHHHFHGHHHHHHHH&gt;@#@=44465HHHHH'''\n\nparse_paired_fastq(StringIO(fastq_string1), StringIO(fastq_string2))\n\n\n📝 A note on triple quotes: In Python, triple quotes (either single or double) are used to create multi-line strings. They can also be used to create doc-strings, which are used to document a function, class, or module."
+    "objectID": "lectures/lecture4a.html#handling-multi-line-sequences",
+    "href": "lectures/lecture4a.html#handling-multi-line-sequences",
+    "title": "Lecture 4A: Parsing FASTA Files",
+    "section": "Handling Multi-line Sequences",
+    "text": "Handling Multi-line Sequences\nOur parser already handles sequences that span multiple lines. Let’s test it:\n\nmultiline_fasta = \"\"\"&gt;gene1 a long sequence\nATGCATGCATGCATGCATGC\nGCTAGCTAGCTAGCTAGCTA\nTTTTAAAACCCCGGGG\n&gt;gene2 another sequence\nAAAAAAAAAA\n\"\"\"\n\nresult = parse_fasta(multiline_fasta)\nprint(f\"gene1 length: {len(result['gene1'])}\")\nprint(f\"gene1 sequence: {result['gene1']}\")\n\ngene1 length: 56\ngene1 sequence: ATGCATGCATGCATGCATGCGCTAGCTAGCTAGCTAGCTATTTTAAAACCCCGGGG"
   },
   {
-    "objectID": "lectures/lecture4.html#how-good-are-my-reads",
-    "href": "lectures/lecture4.html#how-good-are-my-reads",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "How good are my reads?",
-    "text": "How good are my reads?\nLet’s reuse the parse_fastq function from above:\n\n# Read the file into a list\nwith open('fastq_single_end_short.fq','r') as fq:\n    reads = parse_fastq(fq)\n\nThis will load data into a list called reads containing individual reads (name, nucleotides, and quality values) represented as a tuple.\n\n# Extract qualities and convert them into numerical values\nrun_qualities = []\nfor read in reads:\n    read_qualities = []\n    for quality in read[2]:\n        read_qualities.append(phred33_to_q(quality))\n    run_qualities.append(read_qualities)\n\nThis will take quality string only for each read from reads and convert it into a list of values. The end result, a list of lists called run_qualities, will contain as many elements as there are reads, where each element (also a list) contains all quality values for a read. We need to transpose this list, so that instead of representing every read as a list of quality values we represent every position as a list of quality values for all reads at that position. This can be easily done with numpy’s T:\n\n# Transpose the quality values matrix\n\nimport numpy as np\nbase_qualities = np.array(run_qualities).T\n\nNow we need to extract some key per-position statistics from the base_qualities list generated above. We, again, use numpy for this:\n\n# Prep data for plotting\nplotting_data = {\n    'base':[],\n    'mean':[],\n    'median':[],\n    'q25':[],\n    'q75':[],\n    'min':[],\n    'max':[]\n}\nfor i,base in enumerate(base_qualities):\n    plotting_data['base'].append(i)\n    plotting_data['mean'].append(np.mean(base))\n    plotting_data['median'].append(np.median(base))\n    plotting_data['q25'].append(np.quantile(base,.25))\n    plotting_data['q75'].append(np.quantile(base,.75))\n    plotting_data['min'].append(np.min(base))\n    plotting_data['max'].append(np.max(base))\n\nThe result of this, a dictionary called plotting_data, contains statistics types as keys and corresponding values as lists. Now we load these into Pandas:\n\n# Load into Pandas\nimport pandas as pd\nplotting_data_df = pd.DataFrame(plotting_data)\n\nAnd plot:\n\n# Plot!\nimport altair as alt\n\nbase = alt.Chart(plotting_data_df).encode(\n    alt.X('base:Q', title=\"Position in the read\")\n).properties(\n    width=800,\n    height=200)\n\nmedian = base.mark_tick(color='red',orient='horizontal').encode(\n    alt.Y('median:Q', title=\"Phred quality score\"),\n)\n\nq = base.mark_rule(color='green',opacity=.5,strokeWidth=10).encode(\n    alt.Y('q25:Q'),\n    alt.Y2('q75:Q')\n)\n\nmin_max = base.mark_rule(color='black').encode(\n        alt.Y('min:Q'),\n        alt.Y2('max:Q')\n)\n\nmedian + q + min_max"
-  },
-  {
-    "objectID": "lectures/lecture4.html#other-comments",
-    "href": "lectures/lecture4.html#other-comments",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Other comments",
-    "text": "Other comments\nIn all the examples above, the reads in the FASTQ file are all the same length. This is not necessarily the case though it is usually true for datasets generated by sequencing-by-synthesis instruments. FASTQ files can contain reads of various lengths.\nFASTQ files often have the extension .fastq or .fq."
-  },
-  {
-    "objectID": "lectures/lecture4.html#other-resources",
-    "href": "lectures/lecture4.html#other-resources",
-    "title": "Lecture 4: FASTQ and Quality Scores",
-    "section": "Other resources",
-    "text": "Other resources\n\nBioPython\nSeqIO\nSAMtools\nFASTX\nFASTQC\nseqtk"
-  },
-  {
-    "objectID": "lectures/lecture1.html",
-    "href": "lectures/lecture1.html",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "",
-    "text": "In this lectures I will give overview of the course: what we will cover and what we will learn. This lecture will also guide you through setting up GitHub and GitHub Codespaces. We’ll use Codespaces as our development environment - it works on any computer (Chromebook, Windows, Mac) with just a web browser.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-1-sign-up",
-    "href": "lectures/lecture1.html#step-1-sign-up",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 1: Sign Up",
-    "text": "Step 1: Sign Up\n\nGo to github.com\nClick Sign up\nEnter your email address (use your PSU email for educational benefits)\nCreate a password\nChoose a username (this will be visible publicly)\nComplete the verification puzzle\nClick Create account\n\n\n\n\n\n\n\nTipEducational Benefits\n\n\n\nUsing your .edu email gives you access to GitHub Education, which includes free GitHub Pro features, free access to various developer tools, and GitHub Copilot.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-2-verify-your-email",
-    "href": "lectures/lecture1.html#step-2-verify-your-email",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 2: Verify Your Email",
-    "text": "Step 2: Verify Your Email\n\nCheck your email inbox for a verification email from GitHub\nClick the verification link\nYou now have a GitHub account!",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-1-open-codespace",
-    "href": "lectures/lecture1.html#step-1-open-codespace",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 1: Open Codespace",
-    "text": "Step 1: Open Codespace\n\nGo to your new repository on GitHub\nClick the green Code button\nSelect the Codespaces tab\nClick Create codespace on main\n\nWait about 30 seconds for your Codespace to start. You’ll see VS Code running in your browser!",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-2-explore-the-interface",
-    "href": "lectures/lecture1.html#step-2-explore-the-interface",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 2: Explore the Interface",
-    "text": "Step 2: Explore the Interface\nYour Codespace has:\n\nFile Explorer (left sidebar) - browse and create files\nEditor (center) - write and edit code\nTerminal (bottom) - run commands",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-3-open-the-terminal",
-    "href": "lectures/lecture1.html#step-3-open-the-terminal",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 3: Open the Terminal",
-    "text": "Step 3: Open the Terminal\nIf the terminal isn’t visible:\n\nClick Terminal in the menu bar\nSelect New Terminal\n\nOr press Ctrl+` (backtick)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#make-a-change",
-    "href": "lectures/lecture1.html#make-a-change",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Make a Change",
-    "text": "Make a Change\n\nClick on README.md in the file explorer\nAdd some text, like: “This is my first repository!”\nSave the file (Ctrl+S or Cmd+S)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#check-status",
-    "href": "lectures/lecture1.html#check-status",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Check Status",
-    "text": "Check Status\nIn the terminal, see what changed:\ngit status\nYou’ll see README.md listed as modified.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#stage-changes",
-    "href": "lectures/lecture1.html#stage-changes",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Stage Changes",
-    "text": "Stage Changes\nAdd the file to be committed:\ngit add README.md\nOr add all changes:\ngit add .",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#commit-changes",
-    "href": "lectures/lecture1.html#commit-changes",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Commit Changes",
-    "text": "Commit Changes\nSave your changes with a message:\ngit commit -m \"Update README with description\"\n\n\n\n\n\n\nTipWriting Good Commit Messages\n\n\n\n\nUse present tense: “Add feature” not “Added feature”\nBe specific: “Fix login button color” not “Fix bug”\nKeep it short (50 characters or less)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#push-to-github",
-    "href": "lectures/lecture1.html#push-to-github",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Push to GitHub",
-    "text": "Push to GitHub\nUpload your commit to GitHub:\ngit push\nGo to your repository on GitHub and refresh - you’ll see your changes!",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#pull-from-github",
-    "href": "lectures/lecture1.html#pull-from-github",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Pull from GitHub",
-    "text": "Pull from GitHub\nIf changes were made elsewhere, download them:\ngit pull",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#key-points",
-    "href": "lectures/lecture1.html#key-points",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Key Points",
-    "text": "Key Points\n\nGitHub Codespaces works on any computer with a browser\nNo software installation needed - everything runs in the cloud\nThe basic workflow is: edit → stage → commit → push\nGood commit messages help you and others understand changes",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#next-steps",
-    "href": "lectures/lecture1.html#next-steps",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Next Steps",
-    "text": "Next Steps\n\nComplete the GitHub Hello World tutorial\nLearn about Pull Requests for collaboration",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#test-results-summary",
-    "href": "lectures/lecture1.html#test-results-summary",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Test Results Summary",
-    "text": "Test Results Summary\n\ndata = [\n  {score: \"0-3\", count: 0},\n  {score: \"4-6\", count: 5},\n  {score: \"7-9\", count: 5},\n  {score: \"10-12\", count: 4},\n  {score: \"13-15\", count: 1}\n]\n\nPlot.plot({\n  marks: [\n    Plot.barY(data, {x: \"score\", y: \"count\", fill: \"#4a90d9\"}),\n    Plot.ruleY([0])\n  ],\n  x: {label: \"Score Range\"},\n  y: {label: \"Number of Students\"},\n  title: \"Test 1 Score Distribution (n=15)\",\n  width: 500,\n  height: 300\n})\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSummary Statistics:\n\nStudents: 15\nAverage: 8.1/15 (54.2%)\nMedian: 8/15\nRange: 5-13/15\n\nPer-Question Analysis:\n\n\n\nQuestion\nCorrect\nIncorrect\n% Correct\n\n\n\n\n1\n3\n12\n20%\n\n\n2\n9\n6\n60%\n\n\n3\n13\n2\n87%\n\n\n4\n5\n10\n33%\n\n\n5\n5\n10\n33%\n\n\n6\n10\n5\n67%\n\n\n7\n12\n3\n80%\n\n\n8\n3\n12\n20%\n\n\n9\n4\n11\n27%\n\n\n10\n6\n9\n40%\n\n\n11\n6\n9\n40%\n\n\n12\n9\n6\n60%\n\n\n13\n12\n3\n80%\n\n\n14\n11\n4\n73%\n\n\n15\n14\n1\n93%\n\n\n\nAnalysis by Topic:\nStudents performed strongest on Agentic CLI concepts (Q13-15, avg 82%), with excellent understanding of reviewing changes before accepting them (Q15, 93%) and writing good prompts (Q14, 73%). Python questions (Q1-4, avg 50%) showed solid results on list comprehensions (Q3, 87%) and dictionary syntax (Q2, 60%), though string slicing (Q1, 20%) needs review. Bash performance (Q5-8, avg 50%) was mixed—students understood file copying (Q7, 80%) and ls -la (Q6, 67%), but pipe commands (Q8, 20%) need reinforcement. Git questions (Q9-12, avg 42%) were the weakest area, with students grasping git status (Q12, 60%) but struggling with git add . (Q9, 27%) and the add-commit-push workflow (Q10, 40%).",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture6.html",
-    "href": "lectures/lecture6.html",
-    "title": "Lecture 6: File I/O in Python",
-    "section": "",
-    "text": "Open In Colab"
-  },
-  {
-    "objectID": "lectures/lecture6.html#fasta",
-    "href": "lectures/lecture6.html#fasta",
-    "title": "Lecture 6: File I/O in Python",
-    "section": "FASTA",
-    "text": "FASTA\nFASTA is a file format that is commonly used to store biological sequences, such as DNA or protein sequences. In Python, you can read a FASTA file by opening the file, reading the lines one by one, and processing the data as needed.\nHere’s an example of how you might read a FASTA file in Python:\n\nsequences = {}\nwith open(\"mt_cds.fa\", \"r\") as file:\n    header = \"\"\n    sequence = \"\"\n    for line in file:\n        line = line.rstrip()\n        if line.startswith('&gt;'):\n            if header != \"\":\n                sequences[header] = sequence\n                sequence = \"\"\n            header = line[1:]\n        else:\n            sequence += line\n    if header != \"\":\n        sequences[header] = sequence\n\n\n# Let's see what we got\nprint(f\"Number of sequences: {len(sequences)}\")\nprint(\"\\nHeaders:\")\nfor header in list(sequences.keys())[:5]:  # Show first 5\n    print(f\"  {header[:60]}...\")\n\n\n# Look at one sequence\nfirst_header = list(sequences.keys())[0]\nprint(f\"Header: {first_header}\")\nprint(f\"Sequence length: {len(sequences[first_header])}\")\nprint(f\"First 100 bp: {sequences[first_header][:100]}\")\n\nThe code above uses a with statement to open the file and read the lines one by one. If a line starts with a \"&gt;\", it is assumed to be a header, and the current sequence is stored in the dictionary using the current header as the key. If the line does not start with a \"&gt;\", it is assumed to be part of the current sequence."
-  },
-  {
-    "objectID": "lectures/lecture6.html#fastq",
-    "href": "lectures/lecture6.html#fastq",
-    "title": "Lecture 6: File I/O in Python",
-    "section": "FASTQ",
-    "text": "FASTQ\nLet’s download a sample FASTQ file:\n\n!curl -sLO https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/reads.fq\n\nFASTQ is a file format that is commonly used to store high-throughput sequencing data. It consists of a series of records, each of which includes a header, a sequence, a quality score header, and a quality score string. In Python, you can read a FASTQ file by opening the file, reading the lines four at a time, and processing the data as needed.\nHere’s an example of how you might read a FASTQ file in Python:\n\ndef read_fastq(file_path):\n    records = []\n    with open(file_path, \"r\") as f:\n        while True:\n            header = f.readline().strip()\n            if header == \"\":\n                break\n            sequence = f.readline().strip()\n            quality_header = f.readline().strip()\n            quality = f.readline().strip()\n            records.append((header, sequence, quality))\n    return records\n\nIn this example, the read_fastq function takes a file path as an argument, and returns a list of records, where each record is a tuple of three strings: the header, the sequence, and the quality score string. The function uses a while loop to read the lines four at a time until the end of the file is reached.\nYou can use this function to read a FASTQ file like this:\n\nrecords = read_fastq(\"reads.fq\")\nprint(f\"Number of reads: {len(records)}\")\nprint(\"\\nFirst 3 records:\")\nfor header, sequence, quality in records[:3]:\n    print(f\"Header: {header}\")\n    print(f\"Sequence: {sequence[:50]}...\")\n    print(f\"Quality: {quality[:50]}...\")\n    print()\n\nYou can modify the read_fastq function to process the data in any way you need."
-  },
-  {
-    "objectID": "lectures/lecture6.html#sam",
-    "href": "lectures/lecture6.html#sam",
-    "title": "Lecture 6: File I/O in Python",
-    "section": "SAM",
-    "text": "SAM\nLet’s download an example SAM file:\n\n!curl -sLO https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/sam_example.sam\n\nSAM (Sequence Alignment/Map) is a file format that is used to store the results of DNA sequencing alignments. In Python, you can read a SAM file by opening the file, reading the lines one by one, and processing the data as needed.\nHere’s an example of how you might read a SAM file in Python:\n\ndef read_sam(file_path):\n    records = []\n    with open(file_path, \"r\") as f:\n        for line in f:\n            if line.startswith(\"@\"):\n                continue  # Skip header lines\n            fields = line.strip().split(\"\\t\")\n            records.append(fields)\n    return records\n\nIn this example, the read_sam function takes a file path as an argument, and returns a list of records, where each record is a list of fields. The function uses a with statement to open the file and read the lines one by one. If a line starts with an \"@\", it is assumed to be a header and is ignored. If the line does not start with an \"@\", it is assumed to be a record, and the fields are extracted by splitting the line on tabs.\nYou can use this function to read a SAM file like this:\n\nrecords = read_sam(\"sam_example.sam\")\nprint(f\"Number of alignment records: {len(records)}\")\nprint(\"\\nFirst record fields:\")\nfor i, field in enumerate(records[0][:6]):  # Show first 6 fields\n    print(f\"  Field {i}: {field}\")\n\nThe SAM format has 11 mandatory fields:\n\n\n\nField\nDescription\n\n\n\n\nQNAME\nQuery template name\n\n\nFLAG\nBitwise flag\n\n\nRNAME\nReference sequence name\n\n\nPOS\n1-based leftmost mapping position\n\n\nMAPQ\nMapping quality\n\n\nCIGAR\nCIGAR string\n\n\nRNEXT\nReference name of mate/next read\n\n\nPNEXT\nPosition of mate/next read\n\n\nTLEN\nTemplate length\n\n\nSEQ\nSegment sequence\n\n\nQUAL\nQuality scores\n\n\n\nYou can modify the read_sam function to process the data in any way you need. For example, you might want to extract specific fields, such as the reference name, the start position, and the CIGAR string.\n\n# Example: Extract specific fields\nfor record in records[:5]:\n    qname = record[0]\n    flag = record[1]\n    rname = record[2]\n    pos = record[3]\n    cigar = record[5]\n    print(f\"Read: {qname}, Ref: {rname}, Pos: {pos}, CIGAR: {cigar}\")"
-  },
-  {
-    "objectID": "lectures/lecture6.html#writing-files-in-bioinformatics-formats",
-    "href": "lectures/lecture6.html#writing-files-in-bioinformatics-formats",
-    "title": "Lecture 6: File I/O in Python",
-    "section": "Writing files in bioinformatics formats",
-    "text": "Writing files in bioinformatics formats\nNow let’s practice writing files. We’ll write a simple FASTA file:\n\ndef write_fasta(sequences, file_path):\n    \"\"\"Write sequences dictionary to a FASTA file.\n    \n    Args:\n        sequences: dict with headers as keys and sequences as values\n        file_path: output file path\n    \"\"\"\n    with open(file_path, \"w\") as f:\n        for header, sequence in sequences.items():\n            f.write(f\"&gt;{header}\\n\")\n            # Write sequence in lines of 60 characters\n            for i in range(0, len(sequence), 60):\n                f.write(sequence[i:i+60] + \"\\n\")\n\n\n# Create a small test dictionary\ntest_sequences = {\n    \"seq1 test sequence\": \"ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG\",\n    \"seq2 another sequence\": \"GCTAGCTAGCTAGCTAGCTAGCTAGCTA\"\n}\n\n# Write to file\nwrite_fasta(test_sequences, \"test_output.fa\")\n\n# Verify\nwith open(\"test_output.fa\", \"r\") as f:\n    print(f.read())"
-  },
-  {
-    "objectID": "lectures/lecture6.html#summary",
-    "href": "lectures/lecture6.html#summary",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture4a.html#summary",
+    "href": "lectures/lecture4a.html#summary",
+    "title": "Lecture 4A: Parsing FASTA Files",
     "section": "Summary",
-    "text": "Summary\nIn this lecture, we covered:\n\nBasic file I/O: Opening, reading, and writing files using open(), read(), write(), and the with statement\nFASTA format: Reading and writing sequence files with headers starting with &gt;\nFASTQ format: Reading sequencing reads with quality scores (4 lines per record)\nSAM format: Reading alignment files (tab-separated fields, headers start with @)\n\nThese are the foundational skills for handling bioinformatics data in Python!"
-  },
-  {
-    "objectID": "lectures/lecture7.html",
-    "href": "lectures/lecture7.html",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "",
-    "text": "Open In Colab"
-  },
-  {
-    "objectID": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
-    "href": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)",
-    "text": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
-    "href": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)",
-    "text": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#pandas-learning-resources",
-    "href": "lectures/lecture7.html#pandas-learning-resources",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Pandas learning resources",
-    "text": "Pandas learning resources\n\nGetting started - official introduction from Pandas.\nData Science Tools - Data Science for Biologists from Duke University.\nData Carpentry - a collection of lessons à la Software Carpentry.\n\n\n# Pandas, conventionally imported as pd\nimport pandas as pd\n\nThroughout your research career, you will undoubtedly need to handle data, possibly lots of data. The data comes in lots of formats, and you will spend much of your time wrangling the data to get it into a usable form.\nPandas is the primary tool in the Python ecosystem for handling data. Its primary object, the DataFrame is extremely useful in wrangling data."
-  },
-  {
-    "objectID": "lectures/lecture7.html#the-data-set",
-    "href": "lectures/lecture7.html#the-data-set",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "The data set",
-    "text": "The data set\nThe dataset we will be using is a subset of metadata describing SARS-CoV-2 datasets from the Sequence Read Archive.\nIt is obtained by going to https://www.ncbi.nlm.nih.gov/sra and performing a query with the following search terms: txid2697049[Organism:noexp].\n\n!curl -sLO https://zenodo.org/records/10680001/files/sra_ncov.csv.gz\n\n\n!gunzip -c sra_ncov.csv.gz | head -3"
-  },
-  {
-    "objectID": "lectures/lecture7.html#reading-in-data",
-    "href": "lectures/lecture7.html#reading-in-data",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Reading in data",
-    "text": "Reading in data\nPandas has a very powerful function, pd.read_csv() that can read in a CSV file and store the contents in a convenient data structure called a data frame.\n\ndf = pd.read_csv('sra_ncov.csv.gz')\n\n\n# View the first few rows\ndf.head()"
-  },
-  {
-    "objectID": "lectures/lecture7.html#indexing-data-frames",
-    "href": "lectures/lecture7.html#indexing-data-frames",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Indexing data frames",
-    "text": "Indexing data frames\nThe data frame is a convenient data structure for many reasons. Let’s start by looking at how data frames are indexed.\nImportant: We index DataFrames by columns, not rows!\n\n# This gives us a column\ndf['Run'].head()\n\n\n# Access a single value\ndf['Run'][4]\n\nHowever, it’s better to use .loc for accessing data. This gives the location in the data frame we want.\n\n💡 loc versus iloc: loc uses label-based indexing (actual row and column labels), while iloc uses integer-based indexing (integer positions).\n\n\ndf.loc[4, 'Run']\n\n\ndf.iloc[4:6]\n\n\ndf.iloc[4:6, [0, 2, 4]]\n\n\ndf.loc[4:6, ['Run', 'size_MB', 'LibraryStrategy']]"
-  },
-  {
-    "objectID": "lectures/lecture7.html#filtering-boolean-indexing-of-data-frames",
-    "href": "lectures/lecture7.html#filtering-boolean-indexing-of-data-frames",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Filtering: Boolean indexing of data frames",
-    "text": "Filtering: Boolean indexing of data frames\nLet’s say I wanted to pull out accession numbers of runs produced by Pacific Biosciences machines (labeled as PACBIO_SMRT). I can use Boolean indexing to specify the row.\n\ndf.loc[df['Platform'] == 'PACBIO_SMRT', 'Run']\n\n\n# Pull the whole record\ndf.loc[df['Platform'] == 'PACBIO_SMRT', :].head(10)\n\nNow, let’s pull out all PacBio records that were obtained from Amplicon sequencing. We can use the & operator:\n\ndf.loc[(df['Platform'] == 'PACBIO_SMRT') & (df['LibraryStrategy'] == 'AMPLICON'), :].head(3)\n\n\n# See how many match\nimport numpy as np\ninds = (df['Platform'] == 'PACBIO_SMRT') & (df['LibraryStrategy'] == 'AMPLICON')\nnp.unique(inds, return_counts=True)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#calculating-with-data-frames",
-    "href": "lectures/lecture7.html#calculating-with-data-frames",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Calculating with data frames",
-    "text": "Calculating with data frames\nLet’s add a column that specifies whether or not the corresponding run is above 100 MB:\n\n# Add the column to the DataFrame\ndf['Over100Mb'] = df['size_MB'] &gt;= 100\n\n# Take a look\ndf.head()"
-  },
-  {
-    "objectID": "lectures/lecture7.html#a-note-about-vectorization",
-    "href": "lectures/lecture7.html#a-note-about-vectorization",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "A note about vectorization",
-    "text": "A note about vectorization\nNotice how applying the &gt;= operator to a Series resulted in elementwise application. This is called vectorization. It means that we do not have to write a for loop to do operations on the elements of a Series.\nVectorized code is almost always faster because the looping is done with compiled code under the hood."
-  },
-  {
-    "objectID": "lectures/lecture7.html#outputting-a-new-csv-file",
-    "href": "lectures/lecture7.html#outputting-a-new-csv-file",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Outputting a new CSV file",
-    "text": "Outputting a new CSV file\n\ndf.to_csv('over100Mb_data.csv', index=False)\n\n\n!head -3 over100Mb_data.csv"
-  },
-  {
-    "objectID": "lectures/lecture7.html#finding-unique-values-and-counts",
-    "href": "lectures/lecture7.html#finding-unique-values-and-counts",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Finding unique values and counts",
-    "text": "Finding unique values and counts\n\n# Re-read the data (using local file downloaded earlier)\ndf = pd.read_csv('sra_ncov.csv.gz')\ndf = df[df['size_MB'] &gt; 0].reset_index(drop=True)\n\n\ndf['Platform'].unique()\n\n\ndf['Platform'].value_counts()"
-  },
-  {
-    "objectID": "lectures/lecture7.html#sorting",
-    "href": "lectures/lecture7.html#sorting",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Sorting",
-    "text": "Sorting\n\ndf_subset = df.sample(n=10)\ndf_subset\n\n\ndf_subset.sort_index()\n\n\ndf_subset.sort_values(by=['LibraryLayout', 'size_MB'])\n\n\ndf_subset.sort_values(by=['LibraryLayout', 'size_MB'], ascending=[True, False])"
-  },
-  {
-    "objectID": "lectures/lecture7.html#aggregation",
-    "href": "lectures/lecture7.html#aggregation",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Aggregation",
-    "text": "Aggregation\n\ngrouped = df.groupby(['BioProject'])\ngrouped\n\n\ndf_sum = pd.DataFrame(grouped['size_MB'].sum())\ndf_sum.head(10)\n\n\ndf_sum = df_sum.reset_index()\ndf_sum.head()\n\n\n# Multiple columns in groupby\ndf.groupby(['BioProject', 'Platform']).sum(numeric_only=True).reset_index().head(10)\n\n\n# Descriptive statistics\ndf.groupby(['BioProject', 'Platform'])['size_MB'].describe().head(10)\n\n\n# Custom aggregations\ndf.groupby(['BioProject', 'Platform']).agg({'size_MB': np.mean, 'Run': 'nunique'}).head(10)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#tidying-a-data-set-with-melt",
-    "href": "lectures/lecture7.html#tidying-a-data-set-with-melt",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Tidying a data set with melt",
-    "text": "Tidying a data set with melt\nThe most useful function for tidying data is pd.melt(). Let’s demonstrate with a coverage dataset:\n\ndf_cov = pd.read_csv('https://zenodo.org/records/10680470/files/coverage.tsv.gz', sep='\\t')\ndf_cov.head()\n\nThese data are not tidy. When we melt the data frame, the data within it (called values) become a single column. The headers (called variables) also become new columns.\n\nmelted = pd.melt(df_cov, \n                 value_name='coverage', \n                 var_name='sample',\n                 value_vars=df_cov.columns[3:],\n                 id_vars=['start', 'end'])\n\nmelted.head()\n\n\nmelted.groupby(['sample'])['coverage'].describe()\n\nTo get back from melted (narrow) format to wide format, use pivot():\n\nmelted.pivot(index=['start', 'end'], columns='sample', values='coverage').head()\n\n—# Working with multiple tablesWorking with multiple tables often involves joining them on a common key.\n\ndf1 = pd.DataFrame({\"key\": [\"A\", \"B\", \"C\", \"D\"], \"value\": np.random.randn(4)})\ndf2 = pd.DataFrame({\"key\": [\"B\", \"D\", \"D\", \"E\"], \"value\": np.random.randn(4)})\n\n\ndf1\n\n\ndf2"
-  },
-  {
-    "objectID": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
-    "href": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Inner join",
-    "text": "Inner join\n\npd.merge(df1, df2, on=\"key\")"
-  },
-  {
-    "objectID": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
-    "href": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Left join",
-    "text": "Left join\n\npd.merge(df1, df2, on=\"key\", how=\"left\").fillna('.')"
-  },
-  {
-    "objectID": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
-    "href": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Right join",
-    "text": "Right join\n\npd.merge(df1, df2, on=\"key\", how=\"right\").fillna('.')"
-  },
-  {
-    "objectID": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
-    "href": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Full (outer) join",
-    "text": "Full (outer) join\n\npd.merge(df1, df2, on=\"key\", how=\"outer\").fillna('.')"
-  },
-  {
-    "objectID": "lectures/lecture7.html#understanding-altair",
-    "href": "lectures/lecture7.html#understanding-altair",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Understanding Altair",
-    "text": "Understanding Altair\nVega-Altair is a declarative statistical visualization library for Python. It offers a powerful and concise grammar that enables you to quickly build a wide range of statistical visualizations.\n\nimport pandas as pd\nimport altair as alt\nfrom datetime import date\ntoday = date.today()\n\n\n# Read a larger dataset\nsra = pd.read_csv(\n    \"https://zenodo.org/records/10680776/files/ena.tsv.gz\",\n    compression='gzip',\n    sep=\"\\t\",\n    low_memory=False,\n    nrows=100000  # Limit rows for faster loading\n)\n\n\nlen(sra)\n\n\nsra.sample(5)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#cleaning-the-data",
-    "href": "lectures/lecture7.html#cleaning-the-data",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Cleaning the data",
-    "text": "Cleaning the data\n\n# Convert collection_date to datetime\n# Note: errors='coerce' converts unparseable dates to NaT (Not a Time)\n# This is acceptable here because we will filter out invalid dates in the next step\nsra = sra.assign(collection_date=pd.to_datetime(sra[\"collection_date\"], errors='coerce'))\n\n\nprint('Earliest entry:', sra['collection_date'].min())\nprint('Latest entry:', sra['collection_date'].max())\n\n\n⚠️ Data Quality: Don’t get surprised here - the metadata is only as good as the person who entered it. So, when you enter metadata for your sequencing data – pay attention!!!\n\n\n# Filter to valid date range using explicit Timestamp objects for clarity\nsra = sra[\n    (sra['collection_date'] &gt;= pd.Timestamp('2020-01-01')) \n    & \n    (sra['collection_date'] &lt;= pd.Timestamp('2023-12-31'))\n]\n\n\n# Aggregate data for heatmap\nheatmap_2d = sra.groupby(\n    ['instrument_platform', 'library_strategy']\n).agg(\n    {'run_accession': 'nunique'}\n).reset_index()\n\nheatmap_2d"
-  },
-  {
-    "objectID": "lectures/lecture7.html#plotting-the-data",
-    "href": "lectures/lecture7.html#plotting-the-data",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Plotting the data",
-    "text": "Plotting the data\n\nback = alt.Chart(heatmap_2d).mark_rect(opacity=1).encode(\n    x=alt.X(\n        \"instrument_platform:N\",\n        title=\"Instrument\"\n    ),\n    y=alt.Y(\n        \"library_strategy:N\",\n        title=\"Strategy\",\n        axis=alt.Axis(orient='right')\n    ),\n    color=alt.Color(\n        \"run_accession:Q\",\n        title=\"# Samples\",\n        scale=alt.Scale(\n            scheme=\"goldred\",\n            type=\"log\"\n        ),\n    ),\n    tooltip=[\n        alt.Tooltip(\n            \"instrument_platform:N\",\n            title=\"Machine\"\n        ),\n        alt.Tooltip(\n            \"run_accession:Q\",\n            title=\"Number of runs\"\n        ),\n        alt.Tooltip(\n            \"library_strategy:N\",\n            title=\"Protocol\"\n        )\n    ]\n).properties(\n    width=500,\n    height=150,\n    title={\n        \"text\": [\"Breakdown of datasets from ENA\",\n                 \"by Platform and Library Strategy\"],\n        \"subtitle\": \"(Sample of 100k records)\"\n    }\n)\n\nback\n\n\n# Add text labels\nfront = back.mark_text(\n    align=\"center\",\n    baseline=\"middle\",\n    fontSize=12,\n    fontWeight=\"bold\",\n).encode(\n    text=alt.Text(\"run_accession:Q\", format=\",.0f\"),\n    color=alt.condition(\n        alt.datum.run_accession &gt; 200,\n        alt.value(\"white\"),\n        alt.value(\"black\")\n    )\n)\n\n# Combine layers\nback + front"
-  },
-  {
-    "objectID": "lectures/lecture7.html#summary",
-    "href": "lectures/lecture7.html#summary",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Summary",
-    "text": "Summary\nIn this lecture, we covered:\n\nPandas basics: DataFrames, indexing with loc and iloc\nBoolean indexing: Filtering data with conditions\nCalculations: Vectorized operations on columns\nTidy data: Principles of data organization\nSplit-apply-combine: Using groupby() for aggregations\nReshaping: melt() and pivot() for transforming data\nJoins: Combining tables with merge()\nVisualization: Creating plots with Altair\n\nThese skills form the foundation of data analysis in Python!"
+    "text": "Summary\nKey takeaways from this lecture:\n\nFASTA format uses &gt; to mark sequence headers\nTriple-quoted strings let us embed multi-line data in Python code\nParsing strategy: Track the “current” sequence name and content as we iterate through lines\nThe last sequence problem: Always check for a pending sequence after the loop ends\nDictionaries provide a natural way to store name→sequence mappings"
   },
   {
     "objectID": "lectures/lecture3.html",
