@@ -9,63 +9,63 @@
   {
     "objectID": "lectures/lecture5.html",
     "href": "lectures/lecture5.html",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "",
     "text": "Open In Colab"
   },
   {
     "objectID": "lectures/lecture5.html#prep",
     "href": "lectures/lecture5.html#prep",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Prep",
     "text": "Prep\n\nStart JupyterLab\nWithin JupyterLab start a new Python3 notebook\nOpen this page in a new browser tab"
   },
   {
     "objectID": "lectures/lecture5.html#dynamic-programming-matrix-as-a-2d-list",
     "href": "lectures/lecture5.html#dynamic-programming-matrix-as-a-2d-list",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Dynamic programming matrix as a 2D list",
     "text": "Dynamic programming matrix as a 2D list\nAn excellent way to illustrate the utility of lists is to implement a dynamic programming algorithm for sequence alignment. Suppose we have two sequences that deliberately have different lengths:\n\\[\n\\texttt{G C T A T A C}\n\\]\nand\n\\[\n\\texttt{G C G T A T G C}\n\\]\nLet’s represent them as the following matrix where the first character \\(\\epsilon\\) represents an empty string:\n\\[\n\\begin{array}{ c | c | c | c | c | c | c}\n& \\epsilon & G & C & T & A & T & A & C\\\\\n\\hline\n\\epsilon \\\\\n\\hline\nG\\\\\n\\hline\nC\\\\\n\\hline\nG\\\\\n\\hline\nT\\\\\n\\hline\nA\\\\\n\\hline\nT\\\\\n\\hline\nG\\\\\n\\hline\nC\n\\end{array}\n\\\\\n\\textbf{Note}: sequence\\ \\texttt{X}\\ is\\ vertical\\ and\\ sequence\\ \\texttt{Y}\\ is\\ horizontal.\n\\]\nIn this matrix, the cells are addressed as shown below. They filled in using the following logic:\n\\[\nD[i,j] = min\\begin{cases}\n          \\color{green}{D[i-1,j] + 1} & \\\\\n          \\color{blue}{D[i,j-1] + 1} & \\\\\n          \\color{red}{D[i-1,j-1] + \\delta(x[i-1],y[j-1])}\n             \\end{cases}\n\\]\nwhere \\(\\color{green}{green}\\) is upper cell, \\(\\color{blue}{blue}\\) is left cell, and \\(\\color{red}{red}\\) is upper-left cell."
   },
   {
     "objectID": "lectures/lecture5.html#initializing-the-matrix",
     "href": "lectures/lecture5.html#initializing-the-matrix",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Initializing the matrix",
     "text": "Initializing the matrix\nLet’s initialize the first column and first row of the matrix. Because the distance between a string and an empty string is equal to the length of the string (e.g., a distance between, say, string \\(\\texttt{TCG}\\) and an empty string is 3) this resulting matrix will look like this:\n\\[\n\\begin{array}{ c | c | c | c | c | c | c}\n& \\epsilon & G & C & T & A & T & A & C\\\\\n            \\hline\n          \\epsilon & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\\\n          \\hline\n          G & 1\\\\\n          \\hline\n          C & 2\\\\\n          \\hline\n          G & 3\\\\\n          \\hline\n          T & 4\\\\\n          \\hline\n          A & 5\\\\\n          \\hline\n          T & 6\\\\\n          \\hline\n          G & 7\\\\\n          \\hline\n          C & 8\n\\end{array}\n\\\\\n\\textbf{Note}: sequence\\ \\texttt{X}\\ is\\ vertical\\ and\\ sequence\\ \\texttt{Y}\\ is\\ horizontal.\n\\]\nThis can be achieved with the following code:\n\nimport numpy as np\n\nx = 'GCGTATGC'\ny = 'GCTATAC'\n\nD = np.zeros((len(x)+1, len(y)+1), dtype=int)\nD[0, 1:] = range(1, len(y)+1)\nD[1:, 0] = range(1, len(x)+1)\n\nprint(D)"
   },
   {
     "objectID": "lectures/lecture5.html#filling-the-matrix",
     "href": "lectures/lecture5.html#filling-the-matrix",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Filling the matrix",
     "text": "Filling the matrix\nNow we can fill the entire matrix by using two nested loops: one iterating over \\(i\\) coordinate (sequence \\(x\\)) and the other iterating over \\(j\\) coordinate (sequence \\(y\\)):\n\nfor i in range(1, len(x)+1):\n    for j in range(1, len(y)+1):\n        delta = 1 if x[i-1] != y[j-1] else 0\n        D[i, j] = min(D[i-1, j-1]+delta, D[i-1, j]+1, D[i, j-1]+1)\n\nprint(D)\n\nThe lower rightmost cell is special. It contains the value for the edit distance between the two strings.\nThe following Python script implements this idea as a function:\n\nimport numpy as np\n\ndef edDistDp(x, y):\n    \"\"\" Calculate edit distance between sequences x and y using\n        matrix dynamic programming.  Return matrix and distance. \"\"\"\n    D = np.zeros((len(x)+1, len(y)+1), dtype=int)\n    D[0, 1:] = range(1, len(y)+1)\n    D[1:, 0] = range(1, len(x)+1)\n    for i in range(1, len(x)+1):\n        for j in range(1, len(y)+1):\n            delta = 1 if x[i-1] != y[j-1] else 0\n            D[i, j] = min(D[i-1, j-1]+delta, D[i-1, j]+1, D[i, j-1]+1)\n    return D, D[len(x), len(y)]\n\n\n# Test the function\nD, distance = edDistDp('GCGTATGC', 'GCTATAC')\nprint(f\"Edit distance: {distance}\")\nprint(D)\n\nA graphical representation of the matrix between GCGTATGCACGC and GCTATGCCACGC looks like this:\n\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\nD, distance = edDistDp('GCGTATGCACGC', 'GCTATGCCACGC')\n\nplt.figure(figsize=(10, 8))\nsns.heatmap(D, annot=True, cmap=\"crest\", fmt='d')\nplt.title(f'Edit Distance Matrix (distance = {distance})')\nplt.show()"
   },
   {
     "objectID": "lectures/lecture5.html#using-dictionaries-to-translate-dna",
     "href": "lectures/lecture5.html#using-dictionaries-to-translate-dna",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Using dictionaries to translate DNA",
     "text": "Using dictionaries to translate DNA\nThe genetic code maps codons (triplets of nucleotides) to amino acids. We define it once as a constant that can be reused across all our translation functions:\n\n# Define the genetic code as a constant (codon -&gt; amino acid)\nGENETIC_CODE = {\n    'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',\n    'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',\n    'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',\n    'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',                \n    'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',\n    'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',\n    'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',\n    'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',\n    'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',\n    'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',\n    'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',\n    'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',\n    'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',\n    'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',\n    'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',\n    'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',\n}\n\nLet’s generate a random DNA sequence:\n\nimport random\nseq = \"\".join([random.choice('atcg') for x in range(100)])\nseq\n\nTo translate this sequence we write a code that uses a for loop that iterates over the DNA sequence in steps of 3, creating a codon at each iteration. If the codon is less than 3 letters long, the loop is broken. The resulting amino acid is then added to the translation string:\n\ntranslation = \"\"\nfor i in range(0, len(seq), 3):\n    codon = seq[i:i+3].upper()\n    if len(codon) &lt; 3: break\n    if codon in GENETIC_CODE:\n        translation += GENETIC_CODE[codon]\n    else:\n        translation += \"X\"\n\nprint(\"Translation:\", translation)\n\nNote that the code uses the upper() method to ensure the codon is in uppercase since the table dictionary is case-sensitive. Additionally, the code checks if the codon is in the table dictionary and if not, it adds the letter “X” to the translation. This is a common way to represent unknown or stop codons in a protein sequence.\nNow we define a function that would perform translation so that we can reuse it later:\n\ndef translate(seq):\n    \"\"\"Translate a DNA sequence to protein using the standard genetic code.\"\"\"\n    translation = ''\n    for i in range(0, len(seq), 3):\n        codon = seq[i:i+3].upper()\n        if len(codon) &lt; 3: break\n        if codon in GENETIC_CODE:\n            translation += GENETIC_CODE[codon]\n        else:\n            translation += \"X\"\n    return translation\n\n\ntranslate(seq)"
   },
   {
     "objectID": "lectures/lecture5.html#expanding-to-multiple-phases-frames",
     "href": "lectures/lecture5.html#expanding-to-multiple-phases-frames",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Expanding to multiple phases (frames)",
     "text": "Expanding to multiple phases (frames)\nWe can further modify the function by adding a phase parameter that would allow translating in any of the three phases:\n\ndef translate_phase(seq, phase):\n    \"\"\"Translate a DNA sequence to protein starting at a given phase (0, 1, or 2).\"\"\"\n    assert 0 &lt;= phase &lt;= 2, f\"Phase must be 0, 1, or 2, got {phase}\"\n    translation = ''\n    for i in range(phase, len(seq), 3):\n        codon = seq[i:i+3].upper()\n        if len(codon) &lt; 3: break\n        if codon in GENETIC_CODE:\n            translation += GENETIC_CODE[codon]\n        else:\n            translation += \"X\"\n    return translation\n\n\ntranslate_phase(seq, 0)\n\n\ntranslate_phase(seq, 1)\n\n\ntranslate_phase(seq, 2)\n\nTo translate in all six reading frames (three of the “+” strand and three of the “-” strand) we need to be able to create a reverse complement of the sequence. Let’s write a simple function for that.\nThe cell below implements a function revcomp that takes a DNA sequence as input and returns its reverse complement. It works by first reversing the sequence using the slice notation seq[::-1], which returns the sequence in reverse order. Then, the translate method is used with the str.maketrans function to replace each occurrence of ‘a’, ‘t’, ‘g’, ‘c’, ‘A’, ‘T’, ‘G’, and ‘C’ in the reversed sequence with ‘t’, ‘a’, ‘c’, ‘g’, ‘T’, ‘A’, ‘C’, and ‘G’, respectively:\n\nimport string\n\n# Pre-compute the complement translation table for efficiency\n_COMPLEMENT_TABLE = str.maketrans('atgcATGC', 'tacgTACG')\n\ndef revcomp(seq):\n    \"\"\"Return the reverse complement of a DNA sequence.\"\"\"\n    return seq[::-1].translate(_COMPLEMENT_TABLE)\n\nNow let’s use this function to create translation in all six reading frames. The cell below uses a for loop that iterates over the range (0, 3), representing the different phases (or starting positions) of the translation. At each iteration, the translate_phase function is called with the DNA sequence and the current phase, and the resulting protein sequence is appended to the translations list along with the phase and the strand orientation (+ or -):\n\ntranslations = []\n\nfor i in range(0,3):\n    translations.append((translate_phase(seq,i),str(i),'+'))\n    translations.append((translate_phase(revcomp(seq),i),str(i),'-'))\n\ntranslations"
   },
   {
     "objectID": "lectures/lecture5.html#finding-coordinates-of-continuous-translations",
     "href": "lectures/lecture5.html#finding-coordinates-of-continuous-translations",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Finding coordinates of continuous translations",
     "text": "Finding coordinates of continuous translations\nThe translation we’ve generated above contains stops (e.g., _ symbols). The actual biologically relevant protein sequences are between stops. We now need to split translation strings into meaningful peptide sequences and compute their coordinates. Let’s begin by splitting a string on _ and computing the start and end positions of each peptide:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\nprint(split_indices)\n\nThe code above generates a list of split indices for a string. The list contains the indices of the characters in the string that match a specified character (in this case, the underscore _ character).\nBut we actually need coordinates of peptides bound by _ characters. To get to this let’s first modify split_indices by adding the beginning and end:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\n        \nsplit_indices.insert(0, -1)\nsplit_indices.append(len(string))\nprint(split_indices)\n\nNow, let’s convert these to ranges and also stick the peptide sequence in:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\n        \nsplit_indices.insert(0, -1)\nsplit_indices.append(len(string))\n\norfs = string.split('_')\n\nparts = []\nfor i in range(len(split_indices)-1):\n    parts.append((orfs[i], split_indices[i]+1, split_indices[i+1]))\n\nprint(parts)\n\nNow let’s convert this to function:\n\ndef extract_coords(translation):\n    split_indices = []\n    for i, char in enumerate(translation):\n        if char == \"_\":\n            split_indices.append(i)\n        \n    split_indices.insert(0, -1)\n    split_indices.append(len(translation))\n\n    parts = []\n    for i in range(len(split_indices)-1):\n        parts.append((translation.split('_')[i], split_indices[i] + 1, split_indices[i + 1]))\n\n    return(parts)\n\n\nextract_coords(string)\n\nAnd specify the right parameters to make it truly generic:\n\ndef extract_coords_with_annotation(separator, translation, phase, strand):\n    split_indices = []\n    for i, char in enumerate(translation):\n        if char == separator:\n            split_indices.append(i)\n        \n    split_indices.insert(0, -1)\n    split_indices.append(len(translation))\n\n    parts = []\n    for i in range(len(split_indices)-1):\n        parts.append((translation.split(separator)[i], phase, strand, split_indices[i]+1, split_indices[i+1]))\n\n    return(parts)\n\n\nextract_coords_with_annotation('_', string, '0', '+')"
   },
   {
     "objectID": "lectures/lecture5.html#analyzing-all-translations-of-a-given-sequence",
     "href": "lectures/lecture5.html#analyzing-all-translations-of-a-given-sequence",
-    "title": "Lecture 5: Lists and Dictionaries",
+    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
     "section": "Analyzing all translations of a given sequence",
     "text": "Analyzing all translations of a given sequence\nWe begin by parsing the translations list we defined above:\n\nall_translations = []\nfor item in translations:\n    all_translations.append(extract_coords_with_annotation('_', item[0], item[1], item[2]))\n\nall_translations\n\nNow the problem with this list is that it is nested. However, we need to make it flat:\n\nflat_list = []\nfor sublist in all_translations:\n    for item in sublist:\n        flat_list.append(item)\n\nflat_list\n\nNow we can load the list into Pandas and plot away:\n\nimport pandas as pd\ndf = pd.DataFrame(flat_list, columns=['aa', 'frame', 'strand', 'start', 'end'])\ndf\n\nNow let’s plot it:\n\nimport altair as alt\n\nplus = alt.Chart(df[df['strand']=='+']).mark_rect().encode(\n    x = alt.X('start:Q'),\n    x2 = alt.X2('end:Q'),\n    y = alt.Y('frame:N'),\n    color='frame',\n    tooltip='aa:N'\n).properties(\n    width=600,\n    height=100,\n    title='Plus strand'\n)\n\nminus = alt.Chart(df[df['strand']=='-']).mark_rect().encode(\n    x = alt.X('start:Q', sort=alt.EncodingSortField('start:Q', order='descending')),\n    x2 = alt.X2('end:Q'),\n    y = alt.Y('frame:N'),\n    color='frame',\n    tooltip='aa:N'\n).properties(\n    width=600,\n    height=100,\n    title='Minus strand'\n)\n\nplus & minus"
   },
@@ -636,18 +636,18 @@
     "text": "Open In Colab"
   },
   {
-    "objectID": "lectures/lecture7.html#genome-organization",
-    "href": "lectures/lecture7.html#genome-organization",
+    "objectID": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
+    "href": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
     "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Genome organization",
-    "text": "Genome organization\nAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.\n\n\n\nGenome organization\n\n\nGenomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)"
+    "section": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)",
+    "text": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)"
   },
   {
-    "objectID": "lectures/lecture7.html#virion-structure",
-    "href": "lectures/lecture7.html#virion-structure",
+    "objectID": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
+    "href": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
     "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Virion structure",
-    "text": "Virion structure\nCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).\n\n\n\nVirion structure\n\n\nSchematic of the coronavirus virion (From Masters:2006)"
+    "section": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)",
+    "text": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)"
   },
   {
     "objectID": "lectures/lecture7.html#pandas-learning-resources",
@@ -731,35 +731,35 @@
     "href": "lectures/lecture7.html#tidying-a-data-set-with-melt",
     "title": "Lecture 7: Data Manipulation with Pandas",
     "section": "Tidying a data set with melt",
-    "text": "Tidying a data set with melt\nThe most useful function for tidying data is pd.melt(). Let’s demonstrate with a coverage dataset:\n\ndf_cov = pd.read_csv('https://zenodo.org/records/10680470/files/coverage.tsv.gz', sep='\\t')\ndf_cov.head()\n\nThese data are not tidy. When we melt the data frame, the data within it (called values) become a single column. The headers (called variables) also become new columns.\n\n\n\nDataframe melt\n\n\n\nmelted = pd.melt(df_cov, \n                 value_name='coverage', \n                 var_name='sample',\n                 value_vars=df_cov.columns[3:],\n                 id_vars=['start', 'end'])\n\nmelted.head()\n\n\nmelted.groupby(['sample'])['coverage'].describe()\n\nTo get back from melted (narrow) format to wide format, use pivot():\n\n\n\nDataframe pivot\n\n\n\nmelted.pivot(index=['start', 'end'], columns='sample', values='coverage').head()"
+    "text": "Tidying a data set with melt\nThe most useful function for tidying data is pd.melt(). Let’s demonstrate with a coverage dataset:\n\ndf_cov = pd.read_csv('https://zenodo.org/records/10680470/files/coverage.tsv.gz', sep='\\t')\ndf_cov.head()\n\nThese data are not tidy. When we melt the data frame, the data within it (called values) become a single column. The headers (called variables) also become new columns.\n\nmelted = pd.melt(df_cov, \n                 value_name='coverage', \n                 var_name='sample',\n                 value_vars=df_cov.columns[3:],\n                 id_vars=['start', 'end'])\n\nmelted.head()\n\n\nmelted.groupby(['sample'])['coverage'].describe()\n\nTo get back from melted (narrow) format to wide format, use pivot():\n\nmelted.pivot(index=['start', 'end'], columns='sample', values='coverage').head()\n\n—# Working with multiple tablesWorking with multiple tables often involves joining them on a common key.\n\ndf1 = pd.DataFrame({\"key\": [\"A\", \"B\", \"C\", \"D\"], \"value\": np.random.randn(4)})\ndf2 = pd.DataFrame({\"key\": [\"B\", \"D\", \"D\", \"E\"], \"value\": np.random.randn(4)})\n\n\ndf1\n\n\ndf2"
   },
   {
-    "objectID": "lectures/lecture7.html#inner-join",
-    "href": "lectures/lecture7.html#inner-join",
+    "objectID": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
+    "href": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
     "title": "Lecture 7: Data Manipulation with Pandas",
     "section": "Inner join",
-    "text": "Inner join\n\n\n\nInner join\n\n\n\npd.merge(df1, df2, on=\"key\")"
+    "text": "Inner join\n\npd.merge(df1, df2, on=\"key\")"
   },
   {
-    "objectID": "lectures/lecture7.html#left-join",
-    "href": "lectures/lecture7.html#left-join",
+    "objectID": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
+    "href": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
     "title": "Lecture 7: Data Manipulation with Pandas",
     "section": "Left join",
-    "text": "Left join\n\n\n\nLeft join\n\n\n\npd.merge(df1, df2, on=\"key\", how=\"left\").fillna('.')"
+    "text": "Left join\n\npd.merge(df1, df2, on=\"key\", how=\"left\").fillna('.')"
   },
   {
-    "objectID": "lectures/lecture7.html#right-join",
-    "href": "lectures/lecture7.html#right-join",
+    "objectID": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
+    "href": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
     "title": "Lecture 7: Data Manipulation with Pandas",
     "section": "Right join",
-    "text": "Right join\n\n\n\nRight join\n\n\n\npd.merge(df1, df2, on=\"key\", how=\"right\").fillna('.')"
+    "text": "Right join\n\npd.merge(df1, df2, on=\"key\", how=\"right\").fillna('.')"
   },
   {
-    "objectID": "lectures/lecture7.html#full-outer-join",
-    "href": "lectures/lecture7.html#full-outer-join",
+    "objectID": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
+    "href": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
     "title": "Lecture 7: Data Manipulation with Pandas",
     "section": "Full (outer) join",
-    "text": "Full (outer) join\n\n\n\nFull join\n\n\n\npd.merge(df1, df2, on=\"key\", how=\"outer\").fillna('.')"
+    "text": "Full (outer) join\n\npd.merge(df1, df2, on=\"key\", how=\"outer\").fillna('.')"
   },
   {
     "objectID": "lectures/lecture7.html#understanding-altair",
@@ -914,7 +914,7 @@
     "href": "index.html",
     "title": "BMMB554 | Biological data analysis",
     "section": "",
-    "text": "Image by Bob Harris"
+    "text": "Abstract artistic visualization of biological data analysis\nImage by Bob Harris"
   },
   {
     "objectID": "index.html#goals-of-this-class",
@@ -928,13 +928,13 @@
     "href": "index.html#lectures",
     "title": "BMMB554 | Biological data analysis",
     "section": "Lectures",
-    "text": "Lectures\n\n\n\n#\nDate\nTopic\nDescription\n\n\n\n\n1\nJan 13\nGetting Started with GitHub\n\n\n\n2\nJan 15\nIntroduction to Bash\n\n\n\n3\nJan 20\nData analysis ecosystem\n\n\n\n4\nJan 22\nFASTQ and Quality Scores\n\n\n\n5\nJan 27\nLists and Dictionaries\n\n\n\n6\nJan 29\nFile I/O in Python\n\n\n\n7\nFeb 3\nData Manipulation with Pandas\n\n\n\n8\nFeb 5\n-\n\n\n\n9\nFeb 10\n-\n\n\n\n10\nFeb 12\n-\n\n\n\n11\nFeb 17\n-\n\n\n\n12\nFeb 19\n-\n\n\n\n13\nFeb 24\n-\n\n\n\n14\nFeb 26\n-\n\n\n\n15\nMar 3\n-\n\n\n\n16\nMar 5\n-\n\n\n\n-\n-\nSpring break\n\n\n\n17\nMar 17\n-\n\n\n\n18\nMar 19\n-\n\n\n\n19\nMar 24\n-\n\n\n\n20\nMar 26\n-\n\n\n\n21\nMar 31\n-\n\n\n\n22\nApr 2\n-\n\n\n\n23\nApr 7\n-\n\n\n\n24\nApr 9\n-\n\n\n\n25\nApr 14\n-\n\n\n\n26\nApr 16\n-\n\n\n\n27\nApr 21\n-\n\n\n\n28\nApr 23\n-\n\n\n\n29\nApr 28\n-\n\n\n\n30\nApr 30\n-"
+    "text": "Lectures\n\n\n\nTable 1: Course schedule\n\n\n\n\n\n#\nDate\nTopic\nDescription\n\n\n\n\n1\nJan 13\nGetting Started with GitHub\n\n\n\n2\nJan 15\nIntroduction to Bash\n\n\n\n3\nJan 20\nData analysis ecosystem\n\n\n\n4\nJan 22\nFASTQ and Quality Scores\n\n\n\n5\nJan 27\nLists and Dictionaries\n\n\n\n6\nJan 29\nFile I/O in Python\n\n\n\n7\nFeb 3\nData Manipulation with Pandas\n\n\n\n8\nFeb 5\n-\n\n\n\n9\nFeb 10\n-\n\n\n\n10\nFeb 12\n-\n\n\n\n11\nFeb 17\n-\n\n\n\n12\nFeb 19\n-\n\n\n\n13\nFeb 24\n-\n\n\n\n14\nFeb 26\n-\n\n\n\n15\nMar 3\n-\n\n\n\n16\nMar 5\n-\n\n\n\n-\n-\nSpring break\n\n\n\n17\nMar 17\n-\n\n\n\n18\nMar 19\n-\n\n\n\n19\nMar 24\n-\n\n\n\n20\nMar 26\n-\n\n\n\n21\nMar 31\n-\n\n\n\n22\nApr 2\n-\n\n\n\n23\nApr 7\n-\n\n\n\n24\nApr 9\n-\n\n\n\n25\nApr 14\n-\n\n\n\n26\nApr 16\n-\n\n\n\n27\nApr 21\n-\n\n\n\n28\nApr 23\n-\n\n\n\n29\nApr 28\n-\n\n\n\n30\nApr 30\n-"
   },
   {
     "objectID": "index.html#academic-integrity",
     "href": "index.html#academic-integrity",
     "title": "BMMB554 | Biological data analysis",
     "section": "Academic integrity",
-    "text": "Academic integrity\n\nAcademic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see Penn State Policy G-9).\nDishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.\nUse of AI Tools: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.\n\nEducational Equity\n\nPenn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.\nReport incidents of bias at https://equity.psu.edu/report-bias.\n\nDisability Accommodations\n\nPenn State welcomes students with disabilities into the University’s educational programs. If you have a disability-related need for reasonable academic adjustments, contact Student Disability Resources at your campus.\n\nCounseling and Mental Health\n\nStudents facing personal or academic stressors may benefit from counseling or other support. Contact Counseling and Psychological Services (CAPS) or the Penn State Crisis Line at 877-229-6400 (24/7)."
+    "text": "Academic integrity\n\nAcademic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see Penn State Policy G-9).\nDishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.\nUse of AI Tools: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.\n\nEducational Equity\nPenn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.\nReport incidents of bias at https://equity.psu.edu/report-bias.\n\n\nDisability Accommodations\nPenn State welcomes students with disabilities into the University’s educational programs. If you have a disability-related need for reasonable academic adjustments, contact Student Disability Resources at your campus.\n\n\nCounseling and Mental Health\nStudents facing personal or academic stressors may benefit from counseling or other support. Contact Counseling and Psychological Services (CAPS) or the Penn State Crisis Line at 877-229-6400 (24/7).\n\n\n\nThis page complies with Penn State accessibility requirements."
   }
 ]
