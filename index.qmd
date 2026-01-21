@@ -2,9 +2,9 @@
 title: "BMMB554 | Biological data analysis"
 ---
 
-![](images/banner.png)
+![Abstract artistic visualization of biological data analysis](images/banner.png)
 
-<small style="font-size: 0.7em; color: gray;">Image by [Bob Harris](https://www.instagram.com/rorschachsflock?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==)</small>
+<small style="font-size: 0.7em; color: #595959;">Image by [Bob Harris](https://www.instagram.com/rorschachsflock?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==)</small>
 
 ## Goals of this class
 
@@ -22,6 +22,8 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 4. **Application | Class projects** - class will be divided into groups with each group given a research project.
 
 ## Lectures
+
+: Course schedule {#tbl-schedule}
 
 | # | Date | Topic | Description |
 |---|------|-------|-------------|
@@ -67,18 +69,22 @@ Dishonest behavior will not be tolerated. Students facing allegations of academi
 
 **Use of AI Tools**: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.
 
-<h4>Educational Equity</h4>
+### Educational Equity
 
 Penn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.
 
 Report incidents of bias at [https://equity.psu.edu/report-bias](https://equity.psu.edu/report-bias).
 
-<h4>Disability Accommodations</h4>
+### Disability Accommodations
 
 Penn State welcomes students with disabilities into the University's educational programs. If you have a disability-related need for reasonable academic adjustments, contact [Student Disability Resources](https://equity.psu.edu/student-disability-resources) at your campus.
 
-<h4>Counseling and Mental Health</h4>
+### Counseling and Mental Health
 
 Students facing personal or academic stressors may benefit from counseling or other support. Contact [Counseling and Psychological Services (CAPS)](https://studentaffairs.psu.edu/caps) or the Penn State Crisis Line at **877-229-6400** (24/7).
 
 </div>
+
+---
+
+*This page complies with [Penn State accessibility requirements](https://accessibility.psu.edu/guidelines/wcaglist/).*
