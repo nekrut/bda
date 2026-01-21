@@ -23,8 +23,10 @@ website:
             text: "2. Introduction to Bash"
           - href: lectures/lecture3.ipynb
             text: "3. Data analysis ecosystem"
-          # - href: lectures/lecture4.ipynb
-          #   text: "4. FASTQ and Quality Scores"
+          - href: lectures/lecture4.ipynb
+            text: "4. Python Fundamentals with DNA"
+          # - href: lectures/lecture4a.ipynb
+          #   text: "4A. Parsing FASTA Files"
           # - href: lectures/lecture5.ipynb
           #   text: "5. Lists and Dictionaries"
           # - href: lectures/lecture6.ipynb
