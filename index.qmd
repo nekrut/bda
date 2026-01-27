@@ -29,12 +29,12 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 |---|------|-------|-------------|
 | 1 | Jan 13 | [Getting Started with GitHub](lectures/lecture1.qmd) | |
 | 2 | Jan 15 | [Introduction to Bash](lectures/lecture2.qmd) | |
-| 3 | Jan 20 | [Data analysis ecosystem](lectures/lecture3.ipynb) | |
-| 4 | Jan 22 | FASTQ and Quality Scores | |
-| 5 | Jan 27 | Lists and Dictionaries | |
-| 6 | Jan 29 | File I/O in Python | |
-| 7 | Feb 3 | Data Manipulation with Pandas | |
-| 8 | Feb 5 | - | |
+| 3 | Jan 20 | [Py1: Data analysis ecosystem - Crunch, load, visualize](lectures/lecture3.ipynb) | |
+| 4 | Jan 22 | [Py2: Simple sequence manipulation](lectures/lecture4.ipynb) | |
+| 5 | Jan 27 | [Py3: Parsing FASTA](lectures/lecture5.ipynb) | |
+| 6 | Jan 29 | Lists and Dictionaries | |
+| 7 | Feb 3 | File I/O in Python | |
+| 8 | Feb 5 | Data Manipulation with Pandas | |
 | 9 | Feb 10 | - | |
 | 10 | Feb 12 | - | |
 | 11 | Feb 17 | - | |

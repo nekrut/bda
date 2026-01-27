@@ -22,17 +22,17 @@ website:
           - href: lectures/lecture2.qmd
             text: "2. Introduction to Bash"
           - href: lectures/lecture3.ipynb
-            text: "3. Data analysis ecosystem"
+            text: "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
           - href: lectures/lecture4.ipynb
-            text: "4. Python Fundamentals with DNA"
-          # - href: lectures/lecture4a.ipynb
-          #   text: "4A. Parsing FASTA Files"
-          # - href: lectures/lecture5.ipynb
-          #   text: "5. Lists and Dictionaries"
+            text: "4. Py2: Simple sequence manipulation"
+          - href: lectures/lecture5.ipynb
+            text: "5. Py3: Parsing FASTA"
           # - href: lectures/lecture6.ipynb
-          #   text: "6. File I/O in Python"
+          #   text: "6. Lists and Dictionaries"
           # - href: lectures/lecture7.ipynb
-          #   text: "7. Data Manipulation with Pandas"
+          #   text: "7. File I/O in Python"
+          # - href: lectures/lecture8.ipynb
+          #   text: "8. Data Manipulation with Pandas"
 
 format:
   html:
