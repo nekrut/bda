@@ -59,6 +59,20 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 29 | Apr 28 | - |
 | 30 | Apr 30 | - |
 
+## Grading
+
+| Component | Weight |
+|-----------|--------|
+| Thursday Quizzes | 10% |
+| Section Exams (3 × 16.7%) | 50% |
+| Final Project | 40% |
+
+**Thursday Quizzes** — Short weekly quizzes covering material from the previous week's lectures. These are designed to ensure that you do read the meterial that is given as as homework.
+
+**Section Exams** — Three take-home exams, one after each major section: (1) Tools, (2) Computational approaches, (3) Datatypes and analysis.
+
+**Final Project** — Group research project applying course concepts to a real biological dataset.
+
 ## Academic integrity
 
 <div style="font-size: 0.8em;">
