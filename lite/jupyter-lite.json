@@ -9,7 +9,7 @@
     "federated_extensions": [
       {
         "extension": "./extension",
-        "load": "static/remoteEntry.fc1011a4f389fd607c52.js",
+        "load": "static/remoteEntry.fd873b8f935e95a9e9fa.js",
         "name": "@jupyter-notebook/lab-extension",
         "style": "./style"
       },

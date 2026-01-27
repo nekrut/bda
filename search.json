@@ -7,312 +7,390 @@
     "text": "About this site"
   },
   {
-    "objectID": "lectures/lecture5.html",
-    "href": "lectures/lecture5.html",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "objectID": "lectures/lecture8.html",
+    "href": "lectures/lecture8.html",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "",
     "text": "Open In Colab"
   },
   {
-    "objectID": "lectures/lecture5.html#prep",
-    "href": "lectures/lecture5.html#prep",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Prep",
-    "text": "Prep\n\nStart JupyterLab\nWithin JupyterLab start a new Python3 notebook\nOpen this page in a new browser tab"
+    "objectID": "lectures/lecture8.html#genome-organization",
+    "href": "lectures/lecture8.html#genome-organization",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
+    "section": "Genome organization",
+    "text": "Genome organization\nAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.\n\n\n\nDiagram showing genomic organization of alpha, beta, and gamma coronaviruses with labeled regions including ORFs, structural proteins S E M N\n\n\nGenomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)"
   },
   {
-    "objectID": "lectures/lecture5.html#dynamic-programming-matrix-as-a-2d-list",
-    "href": "lectures/lecture5.html#dynamic-programming-matrix-as-a-2d-list",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Dynamic programming matrix as a 2D list",
-    "text": "Dynamic programming matrix as a 2D list\nAn excellent way to illustrate the utility of lists is to implement a dynamic programming algorithm for sequence alignment. Suppose we have two sequences that deliberately have different lengths:\n\\[\n\\texttt{G C T A T A C}\n\\]\nand\n\\[\n\\texttt{G C G T A T G C}\n\\]\nLet’s represent them as the following matrix where the first character \\(\\epsilon\\) represents an empty string:\n\\[\n\\begin{array}{ c | c | c | c | c | c | c}\n& \\epsilon & G & C & T & A & T & A & C\\\\\n\\hline\n\\epsilon \\\\\n\\hline\nG\\\\\n\\hline\nC\\\\\n\\hline\nG\\\\\n\\hline\nT\\\\\n\\hline\nA\\\\\n\\hline\nT\\\\\n\\hline\nG\\\\\n\\hline\nC\n\\end{array}\n\\\\\n\\textbf{Note}: sequence\\ \\texttt{X}\\ is\\ vertical\\ and\\ sequence\\ \\texttt{Y}\\ is\\ horizontal.\n\\]\nIn this matrix, the cells are addressed as shown below. They filled in using the following logic:\n\\[\nD[i,j] = min\\begin{cases}\n          \\color{green}{D[i-1,j] + 1} & \\\\\n          \\color{blue}{D[i,j-1] + 1} & \\\\\n          \\color{red}{D[i-1,j-1] + \\delta(x[i-1],y[j-1])}\n             \\end{cases}\n\\]\nwhere \\(\\color{green}{green}\\) is upper cell, \\(\\color{blue}{blue}\\) is left cell, and \\(\\color{red}{red}\\) is upper-left cell."
+    "objectID": "lectures/lecture8.html#virion-structure",
+    "href": "lectures/lecture8.html#virion-structure",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
+    "section": "Virion structure",
+    "text": "Virion structure\nCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).\n\n\n\nCross-section schematic of coronavirus virion showing spike proteins, membrane, envelope, and nucleocapsid surrounding RNA genome\n\n\nSchematic of the coronavirus virion (From Masters:2006)"
   },
   {
-    "objectID": "lectures/lecture5.html#initializing-the-matrix",
-    "href": "lectures/lecture5.html#initializing-the-matrix",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Initializing the matrix",
-    "text": "Initializing the matrix\nLet’s initialize the first column and first row of the matrix. Because the distance between a string and an empty string is equal to the length of the string (e.g., a distance between, say, string \\(\\texttt{TCG}\\) and an empty string is 3) this resulting matrix will look like this:\n\\[\n\\begin{array}{ c | c | c | c | c | c | c}\n& \\epsilon & G & C & T & A & T & A & C\\\\\n            \\hline\n          \\epsilon & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\\\n          \\hline\n          G & 1\\\\\n          \\hline\n          C & 2\\\\\n          \\hline\n          G & 3\\\\\n          \\hline\n          T & 4\\\\\n          \\hline\n          A & 5\\\\\n          \\hline\n          T & 6\\\\\n          \\hline\n          G & 7\\\\\n          \\hline\n          C & 8\n\\end{array}\n\\\\\n\\textbf{Note}: sequence\\ \\texttt{X}\\ is\\ vertical\\ and\\ sequence\\ \\texttt{Y}\\ is\\ horizontal.\n\\]\nThis can be achieved with the following code:\n\nimport numpy as np\n\nx = 'GCGTATGC'\ny = 'GCTATAC'\n\nD = np.zeros((len(x)+1, len(y)+1), dtype=int)\nD[0, 1:] = range(1, len(y)+1)\nD[1:, 0] = range(1, len(x)+1)\n\nprint(D)"
-  },
-  {
-    "objectID": "lectures/lecture5.html#filling-the-matrix",
-    "href": "lectures/lecture5.html#filling-the-matrix",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Filling the matrix",
-    "text": "Filling the matrix\nNow we can fill the entire matrix by using two nested loops: one iterating over \\(i\\) coordinate (sequence \\(x\\)) and the other iterating over \\(j\\) coordinate (sequence \\(y\\)):\n\nfor i in range(1, len(x)+1):\n    for j in range(1, len(y)+1):\n        delta = 1 if x[i-1] != y[j-1] else 0\n        D[i, j] = min(D[i-1, j-1]+delta, D[i-1, j]+1, D[i, j-1]+1)\n\nprint(D)\n\nThe lower rightmost cell is special. It contains the value for the edit distance between the two strings.\nThe following Python script implements this idea as a function:\n\nimport numpy as np\n\ndef edDistDp(x, y):\n    \"\"\" Calculate edit distance between sequences x and y using\n        matrix dynamic programming.  Return matrix and distance. \"\"\"\n    D = np.zeros((len(x)+1, len(y)+1), dtype=int)\n    D[0, 1:] = range(1, len(y)+1)\n    D[1:, 0] = range(1, len(x)+1)\n    for i in range(1, len(x)+1):\n        for j in range(1, len(y)+1):\n            delta = 1 if x[i-1] != y[j-1] else 0\n            D[i, j] = min(D[i-1, j-1]+delta, D[i-1, j]+1, D[i, j-1]+1)\n    return D, D[len(x), len(y)]\n\n\n# Test the function\nD, distance = edDistDp('GCGTATGC', 'GCTATAC')\nprint(f\"Edit distance: {distance}\")\nprint(D)\n\nA graphical representation of the matrix between GCGTATGCACGC and GCTATGCCACGC looks like this:\n\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\nD, distance = edDistDp('GCGTATGCACGC', 'GCTATGCCACGC')\n\nplt.figure(figsize=(10, 8))\nsns.heatmap(D, annot=True, cmap=\"crest\", fmt='d')\nplt.title(f'Edit Distance Matrix (distance = {distance})')\nplt.show()"
-  },
-  {
-    "objectID": "lectures/lecture5.html#using-dictionaries-to-translate-dna",
-    "href": "lectures/lecture5.html#using-dictionaries-to-translate-dna",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Using dictionaries to translate DNA",
-    "text": "Using dictionaries to translate DNA\nThe genetic code maps codons (triplets of nucleotides) to amino acids. We define it once as a constant that can be reused across all our translation functions:\n\n# Define the genetic code as a constant (codon -&gt; amino acid)\nGENETIC_CODE = {\n    'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',\n    'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',\n    'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',\n    'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',                \n    'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',\n    'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',\n    'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',\n    'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',\n    'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',\n    'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',\n    'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',\n    'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',\n    'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',\n    'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',\n    'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',\n    'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',\n}\n\nLet’s generate a random DNA sequence:\n\nimport random\nseq = \"\".join([random.choice('atcg') for x in range(100)])\nseq\n\nTo translate this sequence we write a code that uses a for loop that iterates over the DNA sequence in steps of 3, creating a codon at each iteration. If the codon is less than 3 letters long, the loop is broken. The resulting amino acid is then added to the translation string:\n\ntranslation = \"\"\nfor i in range(0, len(seq), 3):\n    codon = seq[i:i+3].upper()\n    if len(codon) &lt; 3: break\n    if codon in GENETIC_CODE:\n        translation += GENETIC_CODE[codon]\n    else:\n        translation += \"X\"\n\nprint(\"Translation:\", translation)\n\nNote that the code uses the upper() method to ensure the codon is in uppercase since the table dictionary is case-sensitive. Additionally, the code checks if the codon is in the table dictionary and if not, it adds the letter “X” to the translation. This is a common way to represent unknown or stop codons in a protein sequence.\nNow we define a function that would perform translation so that we can reuse it later:\n\ndef translate(seq):\n    \"\"\"Translate a DNA sequence to protein using the standard genetic code.\"\"\"\n    translation = ''\n    for i in range(0, len(seq), 3):\n        codon = seq[i:i+3].upper()\n        if len(codon) &lt; 3: break\n        if codon in GENETIC_CODE:\n            translation += GENETIC_CODE[codon]\n        else:\n            translation += \"X\"\n    return translation\n\n\ntranslate(seq)"
-  },
-  {
-    "objectID": "lectures/lecture5.html#expanding-to-multiple-phases-frames",
-    "href": "lectures/lecture5.html#expanding-to-multiple-phases-frames",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Expanding to multiple phases (frames)",
-    "text": "Expanding to multiple phases (frames)\nWe can further modify the function by adding a phase parameter that would allow translating in any of the three phases:\n\ndef translate_phase(seq, phase):\n    \"\"\"Translate a DNA sequence to protein starting at a given phase (0, 1, or 2).\"\"\"\n    assert 0 &lt;= phase &lt;= 2, f\"Phase must be 0, 1, or 2, got {phase}\"\n    translation = ''\n    for i in range(phase, len(seq), 3):\n        codon = seq[i:i+3].upper()\n        if len(codon) &lt; 3: break\n        if codon in GENETIC_CODE:\n            translation += GENETIC_CODE[codon]\n        else:\n            translation += \"X\"\n    return translation\n\n\ntranslate_phase(seq, 0)\n\n\ntranslate_phase(seq, 1)\n\n\ntranslate_phase(seq, 2)\n\nTo translate in all six reading frames (three of the “+” strand and three of the “-” strand) we need to be able to create a reverse complement of the sequence. Let’s write a simple function for that.\nThe cell below implements a function revcomp that takes a DNA sequence as input and returns its reverse complement. It works by first reversing the sequence using the slice notation seq[::-1], which returns the sequence in reverse order. Then, the translate method is used with the str.maketrans function to replace each occurrence of ‘a’, ‘t’, ‘g’, ‘c’, ‘A’, ‘T’, ‘G’, and ‘C’ in the reversed sequence with ‘t’, ‘a’, ‘c’, ‘g’, ‘T’, ‘A’, ‘C’, and ‘G’, respectively:\n\nimport string\n\n# Pre-compute the complement translation table for efficiency\n_COMPLEMENT_TABLE = str.maketrans('atgcATGC', 'tacgTACG')\n\ndef revcomp(seq):\n    \"\"\"Return the reverse complement of a DNA sequence.\"\"\"\n    return seq[::-1].translate(_COMPLEMENT_TABLE)\n\nNow let’s use this function to create translation in all six reading frames. The cell below uses a for loop that iterates over the range (0, 3), representing the different phases (or starting positions) of the translation. At each iteration, the translate_phase function is called with the DNA sequence and the current phase, and the resulting protein sequence is appended to the translations list along with the phase and the strand orientation (+ or -):\n\ntranslations = []\n\nfor i in range(0,3):\n    translations.append((translate_phase(seq,i),str(i),'+'))\n    translations.append((translate_phase(revcomp(seq),i),str(i),'-'))\n\ntranslations"
-  },
-  {
-    "objectID": "lectures/lecture5.html#finding-coordinates-of-continuous-translations",
-    "href": "lectures/lecture5.html#finding-coordinates-of-continuous-translations",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Finding coordinates of continuous translations",
-    "text": "Finding coordinates of continuous translations\nThe translation we’ve generated above contains stops (e.g., _ symbols). The actual biologically relevant protein sequences are between stops. We now need to split translation strings into meaningful peptide sequences and compute their coordinates. Let’s begin by splitting a string on _ and computing the start and end positions of each peptide:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\nprint(split_indices)\n\nThe code above generates a list of split indices for a string. The list contains the indices of the characters in the string that match a specified character (in this case, the underscore _ character).\nBut we actually need coordinates of peptides bound by _ characters. To get to this let’s first modify split_indices by adding the beginning and end:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\n        \nsplit_indices.insert(0, -1)\nsplit_indices.append(len(string))\nprint(split_indices)\n\nNow, let’s convert these to ranges and also stick the peptide sequence in:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\n        \nsplit_indices.insert(0, -1)\nsplit_indices.append(len(string))\n\norfs = string.split('_')\n\nparts = []\nfor i in range(len(split_indices)-1):\n    parts.append((orfs[i], split_indices[i]+1, split_indices[i+1]))\n\nprint(parts)\n\nNow let’s convert this to function:\n\ndef extract_coords(translation):\n    split_indices = []\n    for i, char in enumerate(translation):\n        if char == \"_\":\n            split_indices.append(i)\n        \n    split_indices.insert(0, -1)\n    split_indices.append(len(translation))\n\n    parts = []\n    for i in range(len(split_indices)-1):\n        parts.append((translation.split('_')[i], split_indices[i] + 1, split_indices[i + 1]))\n\n    return(parts)\n\n\nextract_coords(string)\n\nAnd specify the right parameters to make it truly generic:\n\ndef extract_coords_with_annotation(separator, translation, phase, strand):\n    split_indices = []\n    for i, char in enumerate(translation):\n        if char == separator:\n            split_indices.append(i)\n        \n    split_indices.insert(0, -1)\n    split_indices.append(len(translation))\n\n    parts = []\n    for i in range(len(split_indices)-1):\n        parts.append((translation.split(separator)[i], phase, strand, split_indices[i]+1, split_indices[i+1]))\n\n    return(parts)\n\n\nextract_coords_with_annotation('_', string, '0', '+')"
-  },
-  {
-    "objectID": "lectures/lecture5.html#analyzing-all-translations-of-a-given-sequence",
-    "href": "lectures/lecture5.html#analyzing-all-translations-of-a-given-sequence",
-    "title": "Lecture 5: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
-    "section": "Analyzing all translations of a given sequence",
-    "text": "Analyzing all translations of a given sequence\nWe begin by parsing the translations list we defined above:\n\nall_translations = []\nfor item in translations:\n    all_translations.append(extract_coords_with_annotation('_', item[0], item[1], item[2]))\n\nall_translations\n\nNow the problem with this list is that it is nested. However, we need to make it flat:\n\nflat_list = []\nfor sublist in all_translations:\n    for item in sublist:\n        flat_list.append(item)\n\nflat_list\n\nNow we can load the list into Pandas and plot away:\n\nimport pandas as pd\ndf = pd.DataFrame(flat_list, columns=['aa', 'frame', 'strand', 'start', 'end'])\ndf\n\nNow let’s plot it:\n\nimport altair as alt\n\nplus = alt.Chart(df[df['strand']=='+']).mark_rect().encode(\n    x = alt.X('start:Q'),\n    x2 = alt.X2('end:Q'),\n    y = alt.Y('frame:N'),\n    color='frame',\n    tooltip='aa:N'\n).properties(\n    width=600,\n    height=100,\n    title='Plus strand'\n)\n\nminus = alt.Chart(df[df['strand']=='-']).mark_rect().encode(\n    x = alt.X('start:Q', sort=alt.EncodingSortField('start:Q', order='descending')),\n    x2 = alt.X2('end:Q'),\n    y = alt.Y('frame:N'),\n    color='frame',\n    tooltip='aa:N'\n).properties(\n    width=600,\n    height=100,\n    title='Minus strand'\n)\n\nplus & minus"
-  },
-  {
-    "objectID": "lectures/test1-answers.html",
-    "href": "lectures/test1-answers.html",
-    "title": "Test 1: Answer Key",
-    "section": "",
-    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n1\nB) TC\nString slicing [1:3] returns characters at index 1 and 2 (not including 3). Index 1 is ‘T’, index 2 is ‘C’.\n\n\n2\nB) {\"name\": \"Alice\", \"age\": 25}\nDictionaries use curly braces {} with key-value pairs separated by colons.\n\n\n3\nB) [6, 8, 10]\nThe list comprehension filters values &gt; 2 (getting 3, 4, 5) then multiplies each by 2.\n\n\n4\nB) 11\nThe string has 11 characters: H-e-l-l-o--W-o-r-l-d. The \\n counts as one character.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQ#\nAnswer\nExplanation\n\n\n\n\n5\nC) pwd\npwd = “print working directory”\n\n\n6\nB) List all files including hidden ones in long format\n-l = long format, -a = all files (including hidden)\n\n\n7\nB) cp *.txt backup/\ncp copies files, * is a wildcard matching any characters\n\n\n8\nB) Counts the number of lines containing “error”\ncat outputs file, grep filters for “error”, wc -l counts lines\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQ#\nAnswer\nExplanation\n\n\n\n\n9\nB) git add .\nThe . adds all changes in current directory. git commit -a only stages tracked files.\n\n\n10\nC) git add → git commit → git push\nStage changes, save them locally, then upload to remote.\n\n\n11\nC) git checkout -b feature\nThe -b flag creates a new branch and switches to it in one command.\n\n\n12\nC) Modified, staged, and untracked files\ngit status shows the working tree status.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQ#\nAnswer\nExplanation\n\n\n\n\n13\nB) An AI assistant that can read files, run commands, and make code changes autonomously\nAgentic tools can take actions on your behalf, not just respond to queries.\n\n\n14\nC) “Add input validation…”\nSpecific, actionable prompts with clear requirements produce better results.\n\n\n15\nB) Review the proposed changes to ensure they match your intent\nAlways verify AI-generated changes before accepting them.\n\n\n\n\n\n\n\n\n15 correct: Excellent\n12-14 correct: Good\n9-11 correct: Satisfactory\nBelow 9: Review the material"
-  },
-  {
-    "objectID": "lectures/test1-answers.html#python-questions",
-    "href": "lectures/test1-answers.html#python-questions",
-    "title": "Test 1: Answer Key",
-    "section": "",
-    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n1\nB) TC\nString slicing [1:3] returns characters at index 1 and 2 (not including 3). Index 1 is ‘T’, index 2 is ‘C’.\n\n\n2\nB) {\"name\": \"Alice\", \"age\": 25}\nDictionaries use curly braces {} with key-value pairs separated by colons.\n\n\n3\nB) [6, 8, 10]\nThe list comprehension filters values &gt; 2 (getting 3, 4, 5) then multiplies each by 2.\n\n\n4\nB) 11\nThe string has 11 characters: H-e-l-l-o--W-o-r-l-d. The \\n counts as one character."
-  },
-  {
-    "objectID": "lectures/test1-answers.html#bash-questions",
-    "href": "lectures/test1-answers.html#bash-questions",
-    "title": "Test 1: Answer Key",
-    "section": "",
-    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n5\nC) pwd\npwd = “print working directory”\n\n\n6\nB) List all files including hidden ones in long format\n-l = long format, -a = all files (including hidden)\n\n\n7\nB) cp *.txt backup/\ncp copies files, * is a wildcard matching any characters\n\n\n8\nB) Counts the number of lines containing “error”\ncat outputs file, grep filters for “error”, wc -l counts lines"
-  },
-  {
-    "objectID": "lectures/test1-answers.html#git-questions",
-    "href": "lectures/test1-answers.html#git-questions",
-    "title": "Test 1: Answer Key",
-    "section": "",
-    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n9\nB) git add .\nThe . adds all changes in current directory. git commit -a only stages tracked files.\n\n\n10\nC) git add → git commit → git push\nStage changes, save them locally, then upload to remote.\n\n\n11\nC) git checkout -b feature\nThe -b flag creates a new branch and switches to it in one command.\n\n\n12\nC) Modified, staged, and untracked files\ngit status shows the working tree status."
-  },
-  {
-    "objectID": "lectures/test1-answers.html#agentic-cli-questions",
-    "href": "lectures/test1-answers.html#agentic-cli-questions",
-    "title": "Test 1: Answer Key",
-    "section": "",
-    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n13\nB) An AI assistant that can read files, run commands, and make code changes autonomously\nAgentic tools can take actions on your behalf, not just respond to queries.\n\n\n14\nC) “Add input validation…”\nSpecific, actionable prompts with clear requirements produce better results.\n\n\n15\nB) Review the proposed changes to ensure they match your intent\nAlways verify AI-generated changes before accepting them."
-  },
-  {
-    "objectID": "lectures/test1-answers.html#scoring",
-    "href": "lectures/test1-answers.html#scoring",
-    "title": "Test 1: Answer Key",
-    "section": "",
-    "text": "15 correct: Excellent\n12-14 correct: Good\n9-11 correct: Satisfactory\nBelow 9: Review the material"
-  },
-  {
-    "objectID": "lectures/lecture7.html",
-    "href": "lectures/lecture7.html",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "",
-    "text": "Open In Colab"
-  },
-  {
-    "objectID": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
-    "href": "lectures/lecture7.html#genome-organizationall-coronaviruses-contain-non-segmented-positive-strand-rna-genome-approx.-30-kb-in-length.-it-is-invariably-5-leader-utr-replicase-s-e-m-n-3utr-polya.-in-addition-it-contains-a-variety-of-accessory-proteins-interspersed-throughout-the-genome.diagram-showing-genomic-organization-of-alpha-beta-and-gamma-coronaviruses-with-labeled-regions-including-orfs-structural-proteins-s-e-m-ngenomic-organization-of-representative-α-β-and-γ-covs.-from-fehr-and-perlman2015",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)",
-    "text": "Genome organizationAll coronaviruses contain non-segmented positive-strand RNA genome approx. 30 kb in length. It is invariably 5’-leader-UTR-replicase-S-E-M-N-3’UTR-poly(A). In addition, it contains a variety of accessory proteins interspersed throughout the genome.Genomic organization of representative α, β, and γ CoVs. (From Fehr and Perlman:2015)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
-    "href": "lectures/lecture7.html#virion-structurecoronavirus-is-a-spherical-particle-approx.-125-nm-in-diameter.-it-is-covered-with-s-protein-projections-giving-it-an-appearance-of-solar-corona---hence-the-term-coronavirus.-there-are-four-main-structure-proteins-spike-s-membrane-m-envelope-e-and-nucleocapsid-n.cross-section-schematic-of-coronavirus-virion-showing-spike-proteins-membrane-envelope-and-nucleocapsid-surrounding-rna-genomeschematic-of-the-coronavirus-virion-from-masters2006",
-    "title": "Lecture 7: Data Manipulation with Pandas",
-    "section": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)",
-    "text": "Virion structureCoronavirus is a spherical particle approx. 125 nm in diameter. It is covered with S-protein projections giving it an appearance of solar corona - hence the term coronavirus. There are four main structure proteins: spike (S), membrane (M), envelope (E), and nucleocapsid (N).Schematic of the coronavirus virion (From Masters:2006)"
-  },
-  {
-    "objectID": "lectures/lecture7.html#pandas-learning-resources",
-    "href": "lectures/lecture7.html#pandas-learning-resources",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#pandas-learning-resources",
+    "href": "lectures/lecture8.html#pandas-learning-resources",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Pandas learning resources",
     "text": "Pandas learning resources\n\nGetting started - official introduction from Pandas.\nData Science Tools - Data Science for Biologists from Duke University.\nData Carpentry - a collection of lessons à la Software Carpentry.\n\n\n# Pandas, conventionally imported as pd\nimport pandas as pd\n\nThroughout your research career, you will undoubtedly need to handle data, possibly lots of data. The data comes in lots of formats, and you will spend much of your time wrangling the data to get it into a usable form.\nPandas is the primary tool in the Python ecosystem for handling data. Its primary object, the DataFrame is extremely useful in wrangling data."
   },
   {
-    "objectID": "lectures/lecture7.html#the-data-set",
-    "href": "lectures/lecture7.html#the-data-set",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#the-data-set",
+    "href": "lectures/lecture8.html#the-data-set",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "The data set",
     "text": "The data set\nThe dataset we will be using is a subset of metadata describing SARS-CoV-2 datasets from the Sequence Read Archive.\nIt is obtained by going to https://www.ncbi.nlm.nih.gov/sra and performing a query with the following search terms: txid2697049[Organism:noexp].\n\n!curl -sLO https://zenodo.org/records/10680001/files/sra_ncov.csv.gz\n\n\n!gunzip -c sra_ncov.csv.gz | head -3"
   },
   {
-    "objectID": "lectures/lecture7.html#reading-in-data",
-    "href": "lectures/lecture7.html#reading-in-data",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#reading-in-data",
+    "href": "lectures/lecture8.html#reading-in-data",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Reading in data",
     "text": "Reading in data\nPandas has a very powerful function, pd.read_csv() that can read in a CSV file and store the contents in a convenient data structure called a data frame.\n\ndf = pd.read_csv('sra_ncov.csv.gz')\n\n\n# View the first few rows\ndf.head()"
   },
   {
-    "objectID": "lectures/lecture7.html#indexing-data-frames",
-    "href": "lectures/lecture7.html#indexing-data-frames",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#indexing-data-frames",
+    "href": "lectures/lecture8.html#indexing-data-frames",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Indexing data frames",
     "text": "Indexing data frames\nThe data frame is a convenient data structure for many reasons. Let’s start by looking at how data frames are indexed.\nImportant: We index DataFrames by columns, not rows!\n\n# This gives us a column\ndf['Run'].head()\n\n\n# Access a single value\ndf['Run'][4]\n\nHowever, it’s better to use .loc for accessing data. This gives the location in the data frame we want.\n\n💡 loc versus iloc: loc uses label-based indexing (actual row and column labels), while iloc uses integer-based indexing (integer positions).\n\n\ndf.loc[4, 'Run']\n\n\ndf.iloc[4:6]\n\n\ndf.iloc[4:6, [0, 2, 4]]\n\n\ndf.loc[4:6, ['Run', 'size_MB', 'LibraryStrategy']]"
   },
   {
-    "objectID": "lectures/lecture7.html#filtering-boolean-indexing-of-data-frames",
-    "href": "lectures/lecture7.html#filtering-boolean-indexing-of-data-frames",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#filtering-boolean-indexing-of-data-frames",
+    "href": "lectures/lecture8.html#filtering-boolean-indexing-of-data-frames",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Filtering: Boolean indexing of data frames",
     "text": "Filtering: Boolean indexing of data frames\nLet’s say I wanted to pull out accession numbers of runs produced by Pacific Biosciences machines (labeled as PACBIO_SMRT). I can use Boolean indexing to specify the row.\n\ndf.loc[df['Platform'] == 'PACBIO_SMRT', 'Run']\n\n\n# Pull the whole record\ndf.loc[df['Platform'] == 'PACBIO_SMRT', :].head(10)\n\nNow, let’s pull out all PacBio records that were obtained from Amplicon sequencing. We can use the & operator:\n\ndf.loc[(df['Platform'] == 'PACBIO_SMRT') & (df['LibraryStrategy'] == 'AMPLICON'), :].head(3)\n\n\n# See how many match\nimport numpy as np\ninds = (df['Platform'] == 'PACBIO_SMRT') & (df['LibraryStrategy'] == 'AMPLICON')\nnp.unique(inds, return_counts=True)"
   },
   {
-    "objectID": "lectures/lecture7.html#calculating-with-data-frames",
-    "href": "lectures/lecture7.html#calculating-with-data-frames",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#calculating-with-data-frames",
+    "href": "lectures/lecture8.html#calculating-with-data-frames",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Calculating with data frames",
     "text": "Calculating with data frames\nLet’s add a column that specifies whether or not the corresponding run is above 100 MB:\n\n# Add the column to the DataFrame\ndf['Over100Mb'] = df['size_MB'] &gt;= 100\n\n# Take a look\ndf.head()"
   },
   {
-    "objectID": "lectures/lecture7.html#a-note-about-vectorization",
-    "href": "lectures/lecture7.html#a-note-about-vectorization",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#a-note-about-vectorization",
+    "href": "lectures/lecture8.html#a-note-about-vectorization",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "A note about vectorization",
     "text": "A note about vectorization\nNotice how applying the &gt;= operator to a Series resulted in elementwise application. This is called vectorization. It means that we do not have to write a for loop to do operations on the elements of a Series.\nVectorized code is almost always faster because the looping is done with compiled code under the hood."
   },
   {
-    "objectID": "lectures/lecture7.html#outputting-a-new-csv-file",
-    "href": "lectures/lecture7.html#outputting-a-new-csv-file",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#outputting-a-new-csv-file",
+    "href": "lectures/lecture8.html#outputting-a-new-csv-file",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Outputting a new CSV file",
     "text": "Outputting a new CSV file\n\ndf.to_csv('over100Mb_data.csv', index=False)\n\n\n!head -3 over100Mb_data.csv"
   },
   {
-    "objectID": "lectures/lecture7.html#finding-unique-values-and-counts",
-    "href": "lectures/lecture7.html#finding-unique-values-and-counts",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#finding-unique-values-and-counts",
+    "href": "lectures/lecture8.html#finding-unique-values-and-counts",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Finding unique values and counts",
     "text": "Finding unique values and counts\n\n# Re-read the data (using local file downloaded earlier)\ndf = pd.read_csv('sra_ncov.csv.gz')\ndf = df[df['size_MB'] &gt; 0].reset_index(drop=True)\n\n\ndf['Platform'].unique()\n\n\ndf['Platform'].value_counts()"
   },
   {
-    "objectID": "lectures/lecture7.html#sorting",
-    "href": "lectures/lecture7.html#sorting",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#sorting",
+    "href": "lectures/lecture8.html#sorting",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Sorting",
     "text": "Sorting\n\ndf_subset = df.sample(n=10)\ndf_subset\n\n\ndf_subset.sort_index()\n\n\ndf_subset.sort_values(by=['LibraryLayout', 'size_MB'])\n\n\ndf_subset.sort_values(by=['LibraryLayout', 'size_MB'], ascending=[True, False])"
   },
   {
-    "objectID": "lectures/lecture7.html#aggregation",
-    "href": "lectures/lecture7.html#aggregation",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#aggregation",
+    "href": "lectures/lecture8.html#aggregation",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Aggregation",
     "text": "Aggregation\n\ngrouped = df.groupby(['BioProject'])\ngrouped\n\n\ndf_sum = pd.DataFrame(grouped['size_MB'].sum())\ndf_sum.head(10)\n\n\ndf_sum = df_sum.reset_index()\ndf_sum.head()\n\n\n# Multiple columns in groupby\ndf.groupby(['BioProject', 'Platform']).sum(numeric_only=True).reset_index().head(10)\n\n\n# Descriptive statistics\ndf.groupby(['BioProject', 'Platform'])['size_MB'].describe().head(10)\n\n\n# Custom aggregations\ndf.groupby(['BioProject', 'Platform']).agg({'size_MB': np.mean, 'Run': 'nunique'}).head(10)"
   },
   {
-    "objectID": "lectures/lecture7.html#tidying-a-data-set-with-melt",
-    "href": "lectures/lecture7.html#tidying-a-data-set-with-melt",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#tidying-a-data-set-with-melt",
+    "href": "lectures/lecture8.html#tidying-a-data-set-with-melt",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Tidying a data set with melt",
-    "text": "Tidying a data set with melt\nThe most useful function for tidying data is pd.melt(). Let’s demonstrate with a coverage dataset:\n\ndf_cov = pd.read_csv('https://zenodo.org/records/10680470/files/coverage.tsv.gz', sep='\\t')\ndf_cov.head()\n\nThese data are not tidy. When we melt the data frame, the data within it (called values) become a single column. The headers (called variables) also become new columns.\n\nmelted = pd.melt(df_cov, \n                 value_name='coverage', \n                 var_name='sample',\n                 value_vars=df_cov.columns[3:],\n                 id_vars=['start', 'end'])\n\nmelted.head()\n\n\nmelted.groupby(['sample'])['coverage'].describe()\n\nTo get back from melted (narrow) format to wide format, use pivot():\n\nmelted.pivot(index=['start', 'end'], columns='sample', values='coverage').head()\n\n—# Working with multiple tablesWorking with multiple tables often involves joining them on a common key.\n\ndf1 = pd.DataFrame({\"key\": [\"A\", \"B\", \"C\", \"D\"], \"value\": np.random.randn(4)})\ndf2 = pd.DataFrame({\"key\": [\"B\", \"D\", \"D\", \"E\"], \"value\": np.random.randn(4)})\n\n\ndf1\n\n\ndf2"
+    "text": "Tidying a data set with melt\nThe most useful function for tidying data is pd.melt(). Let’s demonstrate with a coverage dataset:\n\ndf_cov = pd.read_csv('https://zenodo.org/records/10680470/files/coverage.tsv.gz', sep='\\t')\ndf_cov.head()\n\nThese data are not tidy. When we melt the data frame, the data within it (called values) become a single column. The headers (called variables) also become new columns.\n\n\n\nPandas melt operation diagram showing wide format table transformed to long format with id_vars, variable, and value columns\n\n\n\nmelted = pd.melt(df_cov, \n                 value_name='coverage', \n                 var_name='sample',\n                 value_vars=df_cov.columns[3:],\n                 id_vars=['start', 'end'])\n\nmelted.head()\n\n\nmelted.groupby(['sample'])['coverage'].describe()\n\nTo get back from melted (narrow) format to wide format, use pivot():\n\n\n\nPandas pivot operation diagram showing long format table transformed back to wide format\n\n\n\nmelted.pivot(index=['start', 'end'], columns='sample', values='coverage').head()"
   },
   {
-    "objectID": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
-    "href": "lectures/lecture7.html#inner-joinvenn-diagram-showing-inner-join---intersection-of-sets-a-and-b-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#inner-join",
+    "href": "lectures/lecture8.html#inner-join",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Inner join",
-    "text": "Inner join\n\npd.merge(df1, df2, on=\"key\")"
+    "text": "Inner join\n\n\n\nVenn diagram showing inner join - intersection of sets A and B highlighted\n\n\n\npd.merge(df1, df2, on=\"key\")"
   },
   {
-    "objectID": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
-    "href": "lectures/lecture7.html#left-joinvenn-diagram-showing-left-join---all-of-set-a-plus-intersection-with-b-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#left-join",
+    "href": "lectures/lecture8.html#left-join",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Left join",
-    "text": "Left join\n\npd.merge(df1, df2, on=\"key\", how=\"left\").fillna('.')"
+    "text": "Left join\n\n\n\nVenn diagram showing left join - all of set A plus intersection with B highlighted\n\n\n\npd.merge(df1, df2, on=\"key\", how=\"left\").fillna('.')"
   },
   {
-    "objectID": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
-    "href": "lectures/lecture7.html#right-joinvenn-diagram-showing-right-join---all-of-set-b-plus-intersection-with-a-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#right-join",
+    "href": "lectures/lecture8.html#right-join",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Right join",
-    "text": "Right join\n\npd.merge(df1, df2, on=\"key\", how=\"right\").fillna('.')"
+    "text": "Right join\n\n\n\nVenn diagram showing right join - all of set B plus intersection with A highlighted\n\n\n\npd.merge(df1, df2, on=\"key\", how=\"right\").fillna('.')"
   },
   {
-    "objectID": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
-    "href": "lectures/lecture7.html#full-outer-joinvenn-diagram-showing-full-outer-join---all-of-both-sets-a-and-b-highlighted",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#full-outer-join",
+    "href": "lectures/lecture8.html#full-outer-join",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Full (outer) join",
-    "text": "Full (outer) join\n\npd.merge(df1, df2, on=\"key\", how=\"outer\").fillna('.')"
+    "text": "Full (outer) join\n\n\n\nVenn diagram showing full outer join - all of both sets A and B highlighted\n\n\n\npd.merge(df1, df2, on=\"key\", how=\"outer\").fillna('.')"
   },
   {
-    "objectID": "lectures/lecture7.html#understanding-altair",
-    "href": "lectures/lecture7.html#understanding-altair",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#understanding-altair",
+    "href": "lectures/lecture8.html#understanding-altair",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Understanding Altair",
     "text": "Understanding Altair\nVega-Altair is a declarative statistical visualization library for Python. It offers a powerful and concise grammar that enables you to quickly build a wide range of statistical visualizations.\n\nimport pandas as pd\nimport altair as alt\nfrom datetime import date\ntoday = date.today()\n\n\n# Read a larger dataset\nsra = pd.read_csv(\n    \"https://zenodo.org/records/10680776/files/ena.tsv.gz\",\n    compression='gzip',\n    sep=\"\\t\",\n    low_memory=False,\n    nrows=100000  # Limit rows for faster loading\n)\n\n\nlen(sra)\n\n\nsra.sample(5)"
   },
   {
-    "objectID": "lectures/lecture7.html#cleaning-the-data",
-    "href": "lectures/lecture7.html#cleaning-the-data",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#cleaning-the-data",
+    "href": "lectures/lecture8.html#cleaning-the-data",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Cleaning the data",
     "text": "Cleaning the data\n\n# Convert collection_date to datetime\n# Note: errors='coerce' converts unparseable dates to NaT (Not a Time)\n# This is acceptable here because we will filter out invalid dates in the next step\nsra = sra.assign(collection_date=pd.to_datetime(sra[\"collection_date\"], errors='coerce'))\n\n\nprint('Earliest entry:', sra['collection_date'].min())\nprint('Latest entry:', sra['collection_date'].max())\n\n\n⚠️ Data Quality: Don’t get surprised here - the metadata is only as good as the person who entered it. So, when you enter metadata for your sequencing data – pay attention!!!\n\n\n# Filter to valid date range using explicit Timestamp objects for clarity\nsra = sra[\n    (sra['collection_date'] &gt;= pd.Timestamp('2020-01-01')) \n    & \n    (sra['collection_date'] &lt;= pd.Timestamp('2023-12-31'))\n]\n\n\n# Aggregate data for heatmap\nheatmap_2d = sra.groupby(\n    ['instrument_platform', 'library_strategy']\n).agg(\n    {'run_accession': 'nunique'}\n).reset_index()\n\nheatmap_2d"
   },
   {
-    "objectID": "lectures/lecture7.html#plotting-the-data",
-    "href": "lectures/lecture7.html#plotting-the-data",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#plotting-the-data",
+    "href": "lectures/lecture8.html#plotting-the-data",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Plotting the data",
     "text": "Plotting the data\n\nback = alt.Chart(heatmap_2d).mark_rect(opacity=1).encode(\n    x=alt.X(\n        \"instrument_platform:N\",\n        title=\"Instrument\"\n    ),\n    y=alt.Y(\n        \"library_strategy:N\",\n        title=\"Strategy\",\n        axis=alt.Axis(orient='right')\n    ),\n    color=alt.Color(\n        \"run_accession:Q\",\n        title=\"# Samples\",\n        scale=alt.Scale(\n            scheme=\"goldred\",\n            type=\"log\"\n        ),\n    ),\n    tooltip=[\n        alt.Tooltip(\n            \"instrument_platform:N\",\n            title=\"Machine\"\n        ),\n        alt.Tooltip(\n            \"run_accession:Q\",\n            title=\"Number of runs\"\n        ),\n        alt.Tooltip(\n            \"library_strategy:N\",\n            title=\"Protocol\"\n        )\n    ]\n).properties(\n    width=500,\n    height=150,\n    title={\n        \"text\": [\"Breakdown of datasets from ENA\",\n                 \"by Platform and Library Strategy\"],\n        \"subtitle\": \"(Sample of 100k records)\"\n    }\n)\n\nback\n\n\n# Add text labels\nfront = back.mark_text(\n    align=\"center\",\n    baseline=\"middle\",\n    fontSize=12,\n    fontWeight=\"bold\",\n).encode(\n    text=alt.Text(\"run_accession:Q\", format=\",.0f\"),\n    color=alt.condition(\n        alt.datum.run_accession &gt; 200,\n        alt.value(\"white\"),\n        alt.value(\"black\")\n    )\n)\n\n# Combine layers\nback + front"
   },
   {
-    "objectID": "lectures/lecture7.html#summary",
-    "href": "lectures/lecture7.html#summary",
-    "title": "Lecture 7: Data Manipulation with Pandas",
+    "objectID": "lectures/lecture8.html#summary",
+    "href": "lectures/lecture8.html#summary",
+    "title": "Lecture 8: Data Manipulation with Pandas# SARS-CoV-2 as a research problemTo learn about Pandas we will use SARS-CoV-2 data. Before actually jumping to Pandas let’s learn about the coronavirus molecular biology.The following summary is based on these publications:- Masters:2006- Fehr and Perlman:2015- Sola:2015- Kirchdoerfer:2016- Walls:2020- Jackson:2022",
     "section": "Summary",
     "text": "Summary\nIn this lecture, we covered:\n\nPandas basics: DataFrames, indexing with loc and iloc\nBoolean indexing: Filtering data with conditions\nCalculations: Vectorized operations on columns\nTidy data: Principles of data organization\nSplit-apply-combine: Using groupby() for aggregations\nReshaping: melt() and pivot() for transforming data\nJoins: Combining tables with merge()\nVisualization: Creating plots with Altair\n\nThese skills form the foundation of data analysis in Python!"
   },
   {
-    "objectID": "lectures/lecture6.html",
-    "href": "lectures/lecture6.html",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture3.html",
+    "href": "lectures/lecture3.html",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "",
+    "text": "Open In Colab",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#generate-a-random-sequence",
+    "href": "lectures/lecture3.html#generate-a-random-sequence",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Generate a random sequence",
+    "text": "Generate a random sequence\nNext, we will write a simple loop that generates a sequence of a preset length:\n\nseq = ''\nfor _ in range(100):\n    seq += random.choice('ATCG')\n\n\nseq\n\n'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT'",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#simulate-one-polymerase-molecule",
+    "href": "lectures/lecture3.html#simulate-one-polymerase-molecule",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Simulate one polymerase molecule",
+    "text": "Simulate one polymerase molecule\nThe code below iterates through each nucleotide in seq. When it encounters an ‘A’, it generates a random number between 0 and 1 using random.random(). If this number is smaller or equal than 0.5, the polymerase “terminates”—it adds a lowercase ‘a’ (representing incorporation of a ddNTP) to synthesized_strand and stops synthesis by breaking out of the loop. If the random number is greater than 0.5, synthesis continues normally.\nFor all other nucleotides (and for ‘A’ when synthesis continues), the uppercase nucleotide is added to synthesized_strand.\nThis simulates Sanger sequencing, where ddNTPs randomly terminate DNA synthesis at positions matching a specific base.\n\nsynthesized_strand = ''\n\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        d_or_dd = random.random()\n        if d_or_dd &gt; 0.5:\n            None\n        else:\n            synthesized_strand += 'a'\n            break\n    synthesized_strand += nucleotide\n\nThis can be simplified by first removing d_or_dd variable:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        if random.random() &gt; 0.5:\n            None\n        else:\n            synthesized_strand += 'a'\n            break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCAa\n\n\nand removing unnecessary group of if ... else statements:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A' and random.random() &gt; 0.5:\n        synthesized_strand += 'a'\n        break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCa\n\n\nfinally let’s make synthesized_strand += 'a' a bit more generic:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A' and random.random() &gt; 0.5:\n        synthesized_strand += nucleotide.lower()\n        break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCa",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#simulating-multiple-molecules",
+    "href": "lectures/lecture3.html#simulating-multiple-molecules",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Simulating multiple molecules",
+    "text": "Simulating multiple molecules\nTo simulate 10 polymerase molecules, we simply wrap the code from above into a for loop:\n\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    print(synthesized_strand)\n\nGCCTACCGCCa\nGCCTACCGCCAAa\nGCCTACCGCCAa\nGCCTa\nGCCTa\nGCCTa\nGCCTa\nGCCTa\nGCCTACCGCCAa\nGCCTa\n\n\nOne problem with this code is that it does not actually save the newly synthesized strand: it simply prints it. To fix this we will create a list (or an array) called new_strands and initialize it by assigning an empty list to it:\n\nnew_strands = []\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n\n\nnew_strands\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCa',\n 'GCCTa',\n 'GCCTACCGCCa']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#simulating-multiple-molecules-and-all-nucleotides",
+    "href": "lectures/lecture3.html#simulating-multiple-molecules-and-all-nucleotides",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Simulating multiple molecules and all nucleotides",
+    "text": "Simulating multiple molecules and all nucleotides\nAnd to repeat this for the remaining three nucleotides we will do the following crazy thing:\n\nnew_strands = []\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'C' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'G' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'T' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n\n\nlen(new_strands)\n\n40\n\n\nRepeating the same code four times is just plain stupid, so instead we will write a function called ddN. Here we need to understand the scope of variables. The scope of a variable refers to the regions of the code where the variable can be accessed or modified. Variables that are defined within a certain block of code (such as a function) are said to have a local scope, meaning that they can only be accessed within that block of code. Variables that are defined outside of any function are said to have a global scope, meaning that they can be accessed from anywhere in the code.\nIn most programming languages, a variable defined within a function has a local scope and can only be accessed within that function. If a variable with the same name is defined outside the function, it will have a global scope. However, if a variable with the same name is defined within the function, it will take precedence over the global variable.\nIn Python, variables defined in the main module have global scope and can be accessed from any function or module. Variables defined within a function have local scope and can only be accessed within that function. Unlike some other languages (like C++ or Java), Python does NOT have block scope—variables defined within a loop or if statement remain accessible after the block ends.\n\ndef ddN(number_of_iterations, template, base, ddN_ratio):\n    new_strands = []\n    for _ in range(number_of_iterations):\n        synthesized_strand = ''\n        for nucleotide in template:\n            if nucleotide == base and random.random() &gt; ddN_ratio:\n                synthesized_strand += nucleotide.lower()\n                break\n            synthesized_strand += nucleotide\n        new_strands.append(synthesized_strand)\n    return(new_strands)\n\n\nddN(10,seq,'A',0.5)\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTACCGCCa',\n 'GCCTACCGCCa']\n\n\nTo execute this function on all four types of ddNTPs, we need to wrap it in a for loop iterating over the four possibilities:\n\nfor nt in 'ATCG':\n    ddN(10,seq,nt,0.5)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#a-bit-about-lists",
+    "href": "lectures/lecture3.html#a-bit-about-lists",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "A bit about lists",
+    "text": "A bit about lists\nTo store the sequences being generated in the previous loop we will create and initialize a list called seq_run:\n\nseq_run = []\nfor nt in 'ATCG':\n    seq_run.append(ddN(10,seq,nt,0.5))\n\nyou will see that the seq run is a two-dimensional list:\n\nseq_run\n\n[['GCCTa',\n  'GCCTa',\n  'GCCTACCGCCAa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n  'GCCTa',\n  'GCCTa'],\n ['GCCt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGt',\n  'GCCTACCGCCAAACCGCCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCt'],\n ['Gc',\n  'Gc',\n  'Gc',\n  'GCCTACCGCc',\n  'GCCTAc',\n  'GCCTAc',\n  'GCCTACc',\n  'GCc',\n  'GCc',\n  'GCCTACCGCCAAAc'],\n ['GCCTACCg',\n  'GCCTACCg',\n  'GCCTACCGCCAAACCg',\n  'g',\n  'g',\n  'GCCTACCGCCAAACCg',\n  'g',\n  'g',\n  'g',\n  'GCCTACCg']]\n\n\nas you will read in your next home assignment list elements can be addressed by “index”. The first element has number 0:\n\nseq_run[0]\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n 'GCCTa',\n 'GCCTa']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#a-bit-about-dictionaries",
+    "href": "lectures/lecture3.html#a-bit-about-dictionaries",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "A bit about dictionaries",
+    "text": "A bit about dictionaries\nAnother way to store these data is in a dictionary, which is a collection of key:value pairs where a key and value can be anything:\n\nseq_run = {}\nfor nt in 'ATCG':\n    seq_run[nt] = ddN(10,seq,nt,0.90)\n\n\nseq_run\n\n{'A': ['GCCTACCGCCAAACCGCCTCCAGTGTTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n  'GCCTACCGCCAa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCa',\n  'GCCTACCGCCAAa'],\n 'T': ['GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGt',\n  'GCCTACCGCCAAACCGCCTCCAGTGt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCTCCAGt'],\n 'C': ['GCCTACCGCCAAACCGCCTCCAGTGTTAc',\n  'GCCTACCGCCAAACc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCCAAACCGc',\n  'GCc',\n  'GCCTACCGCc',\n  'GCc'],\n 'G': ['GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGg',\n  'GCCTACCGCCAAACCGCCTCCAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGg',\n  'GCCTACCg']}\n\n\ndictionary elements can be retrieved using a key:\n\nseq_run['A']\n\n['GCCTACCGCCAAACCGCCTCCAGTGTTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCa',\n 'GCCTACCGCCAAa']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#drawing-a-sequencing-gel",
+    "href": "lectures/lecture3.html#drawing-a-sequencing-gel",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Drawing a sequencing gel",
+    "text": "Drawing a sequencing gel\nNow that we can simulate and store newly synthesized sequencing strands terminated with ddNTPs, let us try to draw a realistic representation of the sequencing gel. For this we will use several components that will be discussed in much greater detail in the upcoming lectures. These components are:\n\npandas - a dataframe manipulation tool\naltair - a statistical visualization library built on top of the vega-lite visualization grammar\n\nThese two libraries will be used in almost all lectures concerning Python in this class.\nGel electrophoresis separates molecules based on mass, shape, or charge. In the case of DNA, all molecules are universally negatively charged and thus will always migrate toward the (+) electrode. All our molecules are linear single-stranded pieces (our gel is denaturing), and so the only physical/chemical characteristic that distinguishes them is length. Therefore, the first thing we will do is convert our sequences into their lengths. For this we will initialize a new dictionary called seq_lengths:\n\nseq_lengths = {'base':[],'length':[]}\nfor key in seq_run.keys():\n    for sequence in seq_run[key]:\n        seq_lengths['base'].append(key)\n        seq_lengths['length'].append(len(sequence))\n\n\nseq_lengths\n\n{'base': ['A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G'],\n 'length': [28,\n  32,\n  5,\n  75,\n  100,\n  12,\n  5,\n  100,\n  74,\n  13,\n  41,\n  41,\n  55,\n  41,\n  40,\n  24,\n  94,\n  26,\n  4,\n  24,\n  29,\n  15,\n  14,\n  14,\n  10,\n  14,\n  17,\n  3,\n  10,\n  3,\n  78,\n  43,\n  53,\n  78,\n  37,\n  23,\n  53,\n  43,\n  93,\n  8]}\n\n\nnow let’s import pandas:\n\nimport pandas as pd\n\nand inject seq_lengths into a pandas dataframe:\n\nsequences = pd.DataFrame(seq_lengths)\n\nit looks pretty:\n\nsequences\n\n\n\n\n\n\n\n\nbase\nlength\n\n\n\n\n0\nA\n28\n\n\n1\nA\n32\n\n\n2\nA\n5\n\n\n3\nA\n75\n\n\n4\nA\n100\n\n\n5\nA\n12\n\n\n6\nA\n5\n\n\n7\nA\n100\n\n\n8\nA\n74\n\n\n9\nA\n13\n\n\n10\nT\n41\n\n\n11\nT\n41\n\n\n12\nT\n55\n\n\n13\nT\n41\n\n\n14\nT\n40\n\n\n15\nT\n24\n\n\n16\nT\n94\n\n\n17\nT\n26\n\n\n18\nT\n4\n\n\n19\nT\n24\n\n\n20\nC\n29\n\n\n21\nC\n15\n\n\n22\nC\n14\n\n\n23\nC\n14\n\n\n24\nC\n10\n\n\n25\nC\n14\n\n\n26\nC\n17\n\n\n27\nC\n3\n\n\n28\nC\n10\n\n\n29\nC\n3\n\n\n30\nG\n78\n\n\n31\nG\n43\n\n\n32\nG\n53\n\n\n33\nG\n78\n\n\n34\nG\n37\n\n\n35\nG\n23\n\n\n36\nG\n53\n\n\n37\nG\n43\n\n\n38\nG\n93\n\n\n39\nG\n8\n\n\n\n\n\n\n\nIn our data there is a number of DNA fragments that have identical length (just look at the dataframe above). We can condense these by grouping dataframe entries first by nucleotide (['base']) and then by length (['length']). For each group we will then compute count and put it into a new column named, unsurprisngly, count:\n\nsequences_grouped_by_length = sequences.groupby(\n    ['base','length']\n).agg(\n    count=pd.NamedAgg(\n        column='length',\n        aggfunc='count'\n    )\n).reset_index()\n\n\nsequences_grouped_by_length\n\n\n\n\n\n\n\n\nbase\nlength\ncount\n\n\n\n\n0\nA\n5\n2\n\n\n1\nA\n12\n1\n\n\n2\nA\n13\n1\n\n\n3\nA\n28\n1\n\n\n4\nA\n32\n1\n\n\n5\nA\n74\n1\n\n\n6\nA\n75\n1\n\n\n7\nA\n100\n2\n\n\n8\nC\n3\n2\n\n\n9\nC\n10\n2\n\n\n10\nC\n14\n3\n\n\n11\nC\n15\n1\n\n\n12\nC\n17\n1\n\n\n13\nC\n29\n1\n\n\n14\nG\n8\n1\n\n\n15\nG\n23\n1\n\n\n16\nG\n37\n1\n\n\n17\nG\n43\n2\n\n\n18\nG\n53\n2\n\n\n19\nG\n78\n2\n\n\n20\nG\n93\n1\n\n\n21\nT\n4\n1\n\n\n22\nT\n24\n2\n\n\n23\nT\n26\n1\n\n\n24\nT\n40\n1\n\n\n25\nT\n41\n3\n\n\n26\nT\n55\n1\n\n\n27\nT\n94\n1\n\n\n\n\n\n\n\nThe following chart is created using the alt.Chart() function and passing the data as an argument. The mark_tick() function is used to create a tick chart with a thickness of 4 pixels.\nThe chart is encoded with two main axis:\n\ny-axis which represents the length of the data and it is encoded by the 'length' field of the data.\nx-axis which represents the base of the data and it is encoded by the 'base' field of the data. The chart also encodes a color, it encodes the 'count' field of the data and it sets the legend to None and it uses the 'greys' scale from the Altair library.\n\nFinally, the chart properties are set to a width of 100 pixels and a height of 800 pixels.\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q'),\n    x = alt.X('base'),\n    color=alt.Color('count:Q',legend=None,\n                    scale=alt.Scale(scheme=\"greys\"))\n).properties(\n    width=100,\n    height=800)\n\n\n\n\n\n\n\nAnd here is a color version of the same graph using just one line of the gel:\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q'),\n    color=alt.Color('base:N',#legend=None,\n                    scale=alt.Scale(scheme=\"set1\"))\n).properties(\n    width=20,\n    height=800)\n\n\n\n\n\n\n\n\n# Generate random sequences\n\nseq = ''\nfor _ in range(300):\n    seq += random.choice('ATCG')",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#putting-everything-together",
+    "href": "lectures/lecture3.html#putting-everything-together",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Putting everything together",
+    "text": "Putting everything together\n\nseq\n\n'TTTCGACCGAGTGGACTTCGTGTACAGAGCAAAACCAGCTGAGGACGCGTGAACCCACTGCCCGTGTGCGCGCGGTCTTCACACATAAATTGCTGAGATCCTTGCACCCCGGTATGACCAGCGTCCCACGTGCCTGTCATACTATAATGTGTATAGAATTTACAGTGGCATAAGCTATCCAGACAAGTGCCGTCGCATTCCACCTGCACGGGTTATGTCCATGGTTATATTCCAAGAAAAGATGATGGAACATATTGGACACAATGTGATTGAGTCCTTCCTGGGCGAAGGTGTTCTATG'\n\n\n\n# Function simulating a single run of a single polymerase molecule\n\ndef ddN(number_of_iterations, template, base, ddN_ratio):\n    new_strands = []\n    for _ in range(number_of_iterations):\n        synthesized_strand = ''\n        for nucleotide in template:\n            if nucleotide == base and random.random() &gt; ddN_ratio:\n                synthesized_strand += nucleotide.lower()\n                break\n            synthesized_strand += nucleotide\n        new_strands.append(synthesized_strand)\n    return(new_strands)\n\n\n# Generating simulated sequencing run\n\nseq_run = {}\nfor nt in 'ATCG':\n    seq_run[nt] = ddN(100000,seq,nt,0.95)\n\n\n# Computing lengths\n\nseq_lengths = {'base':[],'length':[]}\nfor key in seq_run.keys():\n    for sequence in seq_run[key]:\n        seq_lengths['base'].append(key)\n        seq_lengths['length'].append(len(sequence))\n\n\n# Converting dictionary into Pandas dataframe\n\nsequences = pd.DataFrame(seq_lengths)\n\n\n# Grouping by nucleotide and length\n\nsequences_grouped_by_length = sequences.groupby(\n    ['base','length']\n).agg(\n    count=pd.NamedAgg(\n        column='length',\n        aggfunc='count'\n    )\n).reset_index()\n\n\n# Plotting (note the quadratic scale for realism)\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q',scale=alt.Scale(type='sqrt')),\n    x = alt.X('base'),\n    color=alt.Color('count:Q',legend=None,\n                    scale=alt.Scale(type='log',scheme=\"greys\")),\n    tooltip='count:Q'\n).properties(\n    width=100,\n    height=800)\n\n\n\n\n\n\n\n\n# Plotting using color\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q',scale=alt.Scale(type=\"sqrt\")),\n    color=alt.Color('base:N',#legend=None,\n                    scale=alt.Scale(scheme=\"set1\")),\n    opacity=alt.Opacity('count:N',legend=None),\n    tooltip='count:Q'\n).properties(\n    width=20,\n    height=800)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture3.html#homework",
+    "href": "lectures/lecture3.html#homework",
+    "title": "Lecture 3: Data analysis ecosystem",
+    "section": "Homework",
+    "text": "Homework\n\nChapters 1, 2, 3 from “Think Python”",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "3. Py1: Data analysis ecosystem - Crunch, load, visualize"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture7.html",
+    "href": "lectures/lecture7.html",
+    "title": "Lecture 7: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.",
     "section": "",
     "text": "Open In Colab"
   },
   {
-    "objectID": "lectures/lecture6.html#fasta",
-    "href": "lectures/lecture6.html#fasta",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture7.html#fasta",
+    "href": "lectures/lecture7.html#fasta",
+    "title": "Lecture 7: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.",
     "section": "FASTA",
     "text": "FASTA\nFASTA is a file format that is commonly used to store biological sequences, such as DNA or protein sequences. In Python, you can read a FASTA file by opening the file, reading the lines one by one, and processing the data as needed.\nHere’s an example of how you might read a FASTA file in Python:\n\nsequences = {}\nwith open(\"mt_cds.fa\", \"r\") as file:\n    header = \"\"\n    sequence = \"\"\n    for line in file:\n        line = line.rstrip()\n        if line.startswith('&gt;'):\n            if header != \"\":\n                sequences[header] = sequence\n                sequence = \"\"\n            header = line[1:]\n        else:\n            sequence += line\n    if header != \"\":\n        sequences[header] = sequence\n\n\n# Let's see what we got\nprint(f\"Number of sequences: {len(sequences)}\")\nprint(\"\\nHeaders:\")\nfor header in list(sequences.keys())[:5]:  # Show first 5\n    print(f\"  {header[:60]}...\")\n\n\n# Look at one sequence\nfirst_header = list(sequences.keys())[0]\nprint(f\"Header: {first_header}\")\nprint(f\"Sequence length: {len(sequences[first_header])}\")\nprint(f\"First 100 bp: {sequences[first_header][:100]}\")\n\nThe code above uses a with statement to open the file and read the lines one by one. If a line starts with a \"&gt;\", it is assumed to be a header, and the current sequence is stored in the dictionary using the current header as the key. If the line does not start with a \"&gt;\", it is assumed to be part of the current sequence."
   },
   {
-    "objectID": "lectures/lecture6.html#fastq",
-    "href": "lectures/lecture6.html#fastq",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture7.html#fastq",
+    "href": "lectures/lecture7.html#fastq",
+    "title": "Lecture 7: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.",
     "section": "FASTQ",
     "text": "FASTQ\nLet’s download a sample FASTQ file:\n\n!curl -sLO https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/reads.fq\n\nFASTQ is a file format that is commonly used to store high-throughput sequencing data. It consists of a series of records, each of which includes a header, a sequence, a quality score header, and a quality score string. In Python, you can read a FASTQ file by opening the file, reading the lines four at a time, and processing the data as needed.\nHere’s an example of how you might read a FASTQ file in Python:\n\ndef read_fastq(file_path):\n    records = []\n    with open(file_path, \"r\") as f:\n        while True:\n            header = f.readline().strip()\n            if header == \"\":\n                break\n            sequence = f.readline().strip()\n            quality_header = f.readline().strip()\n            quality = f.readline().strip()\n            records.append((header, sequence, quality))\n    return records\n\nIn this example, the read_fastq function takes a file path as an argument, and returns a list of records, where each record is a tuple of three strings: the header, the sequence, and the quality score string. The function uses a while loop to read the lines four at a time until the end of the file is reached.\nYou can use this function to read a FASTQ file like this:\n\nrecords = read_fastq(\"reads.fq\")\nprint(f\"Number of reads: {len(records)}\")\nprint(\"\\nFirst 3 records:\")\nfor header, sequence, quality in records[:3]:\n    print(f\"Header: {header}\")\n    print(f\"Sequence: {sequence[:50]}...\")\n    print(f\"Quality: {quality[:50]}...\")\n    print()\n\nYou can modify the read_fastq function to process the data in any way you need."
   },
   {
-    "objectID": "lectures/lecture6.html#sam",
-    "href": "lectures/lecture6.html#sam",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture7.html#sam",
+    "href": "lectures/lecture7.html#sam",
+    "title": "Lecture 7: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.",
     "section": "SAM",
     "text": "SAM\nLet’s download an example SAM file:\n\n!curl -sLO https://raw.githubusercontent.com/nekrut/BMMB554/master/2023/data/l9/sam_example.sam\n\nSAM (Sequence Alignment/Map) is a file format that is used to store the results of DNA sequencing alignments. In Python, you can read a SAM file by opening the file, reading the lines one by one, and processing the data as needed.\nHere’s an example of how you might read a SAM file in Python:\n\ndef read_sam(file_path):\n    records = []\n    with open(file_path, \"r\") as f:\n        for line in f:\n            if line.startswith(\"@\"):\n                continue  # Skip header lines\n            fields = line.strip().split(\"\\t\")\n            records.append(fields)\n    return records\n\nIn this example, the read_sam function takes a file path as an argument, and returns a list of records, where each record is a list of fields. The function uses a with statement to open the file and read the lines one by one. If a line starts with an \"@\", it is assumed to be a header and is ignored. If the line does not start with an \"@\", it is assumed to be a record, and the fields are extracted by splitting the line on tabs.\nYou can use this function to read a SAM file like this:\n\nrecords = read_sam(\"sam_example.sam\")\nprint(f\"Number of alignment records: {len(records)}\")\nprint(\"\\nFirst record fields:\")\nfor i, field in enumerate(records[0][:6]):  # Show first 6 fields\n    print(f\"  Field {i}: {field}\")\n\nThe SAM format has 11 mandatory fields:\n\n\n\nField\nDescription\n\n\n\n\nQNAME\nQuery template name\n\n\nFLAG\nBitwise flag\n\n\nRNAME\nReference sequence name\n\n\nPOS\n1-based leftmost mapping position\n\n\nMAPQ\nMapping quality\n\n\nCIGAR\nCIGAR string\n\n\nRNEXT\nReference name of mate/next read\n\n\nPNEXT\nPosition of mate/next read\n\n\nTLEN\nTemplate length\n\n\nSEQ\nSegment sequence\n\n\nQUAL\nQuality scores\n\n\n\nYou can modify the read_sam function to process the data in any way you need. For example, you might want to extract specific fields, such as the reference name, the start position, and the CIGAR string.\n\n# Example: Extract specific fields\nfor record in records[:5]:\n    qname = record[0]\n    flag = record[1]\n    rname = record[2]\n    pos = record[3]\n    cigar = record[5]\n    print(f\"Read: {qname}, Ref: {rname}, Pos: {pos}, CIGAR: {cigar}\")"
   },
   {
-    "objectID": "lectures/lecture6.html#writing-files-in-bioinformatics-formats",
-    "href": "lectures/lecture6.html#writing-files-in-bioinformatics-formats",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture7.html#writing-files-in-bioinformatics-formats",
+    "href": "lectures/lecture7.html#writing-files-in-bioinformatics-formats",
+    "title": "Lecture 7: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.",
     "section": "Writing files in bioinformatics formats",
     "text": "Writing files in bioinformatics formats\nNow let’s practice writing files. We’ll write a simple FASTA file:\n\ndef write_fasta(sequences, file_path):\n    \"\"\"Write sequences dictionary to a FASTA file.\n    \n    Args:\n        sequences: dict with headers as keys and sequences as values\n        file_path: output file path\n    \"\"\"\n    with open(file_path, \"w\") as f:\n        for header, sequence in sequences.items():\n            f.write(f\"&gt;{header}\\n\")\n            # Write sequence in lines of 60 characters\n            for i in range(0, len(sequence), 60):\n                f.write(sequence[i:i+60] + \"\\n\")\n\n\n# Create a small test dictionary\ntest_sequences = {\n    \"seq1 test sequence\": \"ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG\",\n    \"seq2 another sequence\": \"GCTAGCTAGCTAGCTAGCTAGCTAGCTA\"\n}\n\n# Write to file\nwrite_fasta(test_sequences, \"test_output.fa\")\n\n# Verify\nwith open(\"test_output.fa\", \"r\") as f:\n    print(f.read())"
   },
   {
-    "objectID": "lectures/lecture6.html#summary",
-    "href": "lectures/lecture6.html#summary",
-    "title": "Lecture 6: File I/O in Python",
+    "objectID": "lectures/lecture7.html#summary",
+    "href": "lectures/lecture7.html#summary",
+    "title": "Lecture 7: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.",
     "section": "Summary",
     "text": "Summary\nIn this lecture, we covered:\n\nBasic file I/O: Opening, reading, and writing files using open(), read(), write(), and the with statement\nFASTA format: Reading and writing sequence files with headers starting with &gt;\nFASTQ format: Reading sequencing reads with quality scores (4 lines per record)\nSAM format: Reading alignment files (tab-separated fields, headers start with @)\n\nThese are the foundational skills for handling bioinformatics data in Python!"
+  },
+  {
+    "objectID": "lectures/lecture6.html",
+    "href": "lectures/lecture6.html",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "",
+    "text": "Open In Colab"
+  },
+  {
+    "objectID": "lectures/lecture6.html#prep",
+    "href": "lectures/lecture6.html#prep",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Prep",
+    "text": "Prep\n\nStart JupyterLab\nWithin JupyterLab start a new Python3 notebook\nOpen this page in a new browser tab"
+  },
+  {
+    "objectID": "lectures/lecture6.html#dynamic-programming-matrix-as-a-2d-list",
+    "href": "lectures/lecture6.html#dynamic-programming-matrix-as-a-2d-list",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Dynamic programming matrix as a 2D list",
+    "text": "Dynamic programming matrix as a 2D list\nAn excellent way to illustrate the utility of lists is to implement a dynamic programming algorithm for sequence alignment. Suppose we have two sequences that deliberately have different lengths:\n\\[\n\\texttt{G C T A T A C}\n\\]\nand\n\\[\n\\texttt{G C G T A T G C}\n\\]\nLet’s represent them as the following matrix where the first character \\(\\epsilon\\) represents an empty string:\n\\[\n\\begin{array}{ c | c | c | c | c | c | c}\n& \\epsilon & G & C & T & A & T & A & C\\\\\n\\hline\n\\epsilon \\\\\n\\hline\nG\\\\\n\\hline\nC\\\\\n\\hline\nG\\\\\n\\hline\nT\\\\\n\\hline\nA\\\\\n\\hline\nT\\\\\n\\hline\nG\\\\\n\\hline\nC\n\\end{array}\n\\\\\n\\textbf{Note}: sequence\\ \\texttt{X}\\ is\\ vertical\\ and\\ sequence\\ \\texttt{Y}\\ is\\ horizontal.\n\\]\nIn this matrix, the cells are addressed as shown below. They filled in using the following logic:\n\\[\nD[i,j] = min\\begin{cases}\n          \\color{green}{D[i-1,j] + 1} & \\\\\n          \\color{blue}{D[i,j-1] + 1} & \\\\\n          \\color{red}{D[i-1,j-1] + \\delta(x[i-1],y[j-1])}\n             \\end{cases}\n\\]\nwhere \\(\\color{green}{green}\\) is upper cell, \\(\\color{blue}{blue}\\) is left cell, and \\(\\color{red}{red}\\) is upper-left cell."
+  },
+  {
+    "objectID": "lectures/lecture6.html#initializing-the-matrix",
+    "href": "lectures/lecture6.html#initializing-the-matrix",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Initializing the matrix",
+    "text": "Initializing the matrix\nLet’s initialize the first column and first row of the matrix. Because the distance between a string and an empty string is equal to the length of the string (e.g., a distance between, say, string \\(\\texttt{TCG}\\) and an empty string is 3) this resulting matrix will look like this:\n\\[\n\\begin{array}{ c | c | c | c | c | c | c}\n& \\epsilon & G & C & T & A & T & A & C\\\\\n            \\hline\n          \\epsilon & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\\\n          \\hline\n          G & 1\\\\\n          \\hline\n          C & 2\\\\\n          \\hline\n          G & 3\\\\\n          \\hline\n          T & 4\\\\\n          \\hline\n          A & 5\\\\\n          \\hline\n          T & 6\\\\\n          \\hline\n          G & 7\\\\\n          \\hline\n          C & 8\n\\end{array}\n\\\\\n\\textbf{Note}: sequence\\ \\texttt{X}\\ is\\ vertical\\ and\\ sequence\\ \\texttt{Y}\\ is\\ horizontal.\n\\]\nThis can be achieved with the following code:\n\nimport numpy as np\n\nx = 'GCGTATGC'\ny = 'GCTATAC'\n\nD = np.zeros((len(x)+1, len(y)+1), dtype=int)\nD[0, 1:] = range(1, len(y)+1)\nD[1:, 0] = range(1, len(x)+1)\n\nprint(D)"
+  },
+  {
+    "objectID": "lectures/lecture6.html#filling-the-matrix",
+    "href": "lectures/lecture6.html#filling-the-matrix",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Filling the matrix",
+    "text": "Filling the matrix\nNow we can fill the entire matrix by using two nested loops: one iterating over \\(i\\) coordinate (sequence \\(x\\)) and the other iterating over \\(j\\) coordinate (sequence \\(y\\)):\n\nfor i in range(1, len(x)+1):\n    for j in range(1, len(y)+1):\n        delta = 1 if x[i-1] != y[j-1] else 0\n        D[i, j] = min(D[i-1, j-1]+delta, D[i-1, j]+1, D[i, j-1]+1)\n\nprint(D)\n\nThe lower rightmost cell is special. It contains the value for the edit distance between the two strings.\nThe following Python script implements this idea as a function:\n\nimport numpy as np\n\ndef edDistDp(x, y):\n    \"\"\" Calculate edit distance between sequences x and y using\n        matrix dynamic programming.  Return matrix and distance. \"\"\"\n    D = np.zeros((len(x)+1, len(y)+1), dtype=int)\n    D[0, 1:] = range(1, len(y)+1)\n    D[1:, 0] = range(1, len(x)+1)\n    for i in range(1, len(x)+1):\n        for j in range(1, len(y)+1):\n            delta = 1 if x[i-1] != y[j-1] else 0\n            D[i, j] = min(D[i-1, j-1]+delta, D[i-1, j]+1, D[i, j-1]+1)\n    return D, D[len(x), len(y)]\n\n\n# Test the function\nD, distance = edDistDp('GCGTATGC', 'GCTATAC')\nprint(f\"Edit distance: {distance}\")\nprint(D)\n\nA graphical representation of the matrix between GCGTATGCACGC and GCTATGCCACGC looks like this:\n\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\nD, distance = edDistDp('GCGTATGCACGC', 'GCTATGCCACGC')\n\nplt.figure(figsize=(10, 8))\nsns.heatmap(D, annot=True, cmap=\"crest\", fmt='d')\nplt.title(f'Edit Distance Matrix (distance = {distance})')\nplt.show()"
+  },
+  {
+    "objectID": "lectures/lecture6.html#using-dictionaries-to-translate-dna",
+    "href": "lectures/lecture6.html#using-dictionaries-to-translate-dna",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Using dictionaries to translate DNA",
+    "text": "Using dictionaries to translate DNA\nThe genetic code maps codons (triplets of nucleotides) to amino acids. We define it once as a constant that can be reused across all our translation functions:\n\n# Define the genetic code as a constant (codon -&gt; amino acid)\nGENETIC_CODE = {\n    'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',\n    'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',\n    'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',\n    'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',                \n    'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',\n    'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',\n    'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',\n    'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',\n    'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',\n    'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',\n    'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',\n    'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',\n    'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',\n    'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',\n    'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',\n    'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W',\n}\n\nLet’s generate a random DNA sequence:\n\nimport random\nseq = \"\".join([random.choice('atcg') for x in range(100)])\nseq\n\nTo translate this sequence we write a code that uses a for loop that iterates over the DNA sequence in steps of 3, creating a codon at each iteration. If the codon is less than 3 letters long, the loop is broken. The resulting amino acid is then added to the translation string:\n\ntranslation = \"\"\nfor i in range(0, len(seq), 3):\n    codon = seq[i:i+3].upper()\n    if len(codon) &lt; 3: break\n    if codon in GENETIC_CODE:\n        translation += GENETIC_CODE[codon]\n    else:\n        translation += \"X\"\n\nprint(\"Translation:\", translation)\n\nNote that the code uses the upper() method to ensure the codon is in uppercase since the table dictionary is case-sensitive. Additionally, the code checks if the codon is in the table dictionary and if not, it adds the letter “X” to the translation. This is a common way to represent unknown or stop codons in a protein sequence.\nNow we define a function that would perform translation so that we can reuse it later:\n\ndef translate(seq):\n    \"\"\"Translate a DNA sequence to protein using the standard genetic code.\"\"\"\n    translation = ''\n    for i in range(0, len(seq), 3):\n        codon = seq[i:i+3].upper()\n        if len(codon) &lt; 3: break\n        if codon in GENETIC_CODE:\n            translation += GENETIC_CODE[codon]\n        else:\n            translation += \"X\"\n    return translation\n\n\ntranslate(seq)"
+  },
+  {
+    "objectID": "lectures/lecture6.html#expanding-to-multiple-phases-frames",
+    "href": "lectures/lecture6.html#expanding-to-multiple-phases-frames",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Expanding to multiple phases (frames)",
+    "text": "Expanding to multiple phases (frames)\nWe can further modify the function by adding a phase parameter that would allow translating in any of the three phases:\n\ndef translate_phase(seq, phase):\n    \"\"\"Translate a DNA sequence to protein starting at a given phase (0, 1, or 2).\"\"\"\n    assert 0 &lt;= phase &lt;= 2, f\"Phase must be 0, 1, or 2, got {phase}\"\n    translation = ''\n    for i in range(phase, len(seq), 3):\n        codon = seq[i:i+3].upper()\n        if len(codon) &lt; 3: break\n        if codon in GENETIC_CODE:\n            translation += GENETIC_CODE[codon]\n        else:\n            translation += \"X\"\n    return translation\n\n\ntranslate_phase(seq, 0)\n\n\ntranslate_phase(seq, 1)\n\n\ntranslate_phase(seq, 2)\n\nTo translate in all six reading frames (three of the “+” strand and three of the “-” strand) we need to be able to create a reverse complement of the sequence. Let’s write a simple function for that.\nThe cell below implements a function revcomp that takes a DNA sequence as input and returns its reverse complement. It works by first reversing the sequence using the slice notation seq[::-1], which returns the sequence in reverse order. Then, the translate method is used with the str.maketrans function to replace each occurrence of ‘a’, ‘t’, ‘g’, ‘c’, ‘A’, ‘T’, ‘G’, and ‘C’ in the reversed sequence with ‘t’, ‘a’, ‘c’, ‘g’, ‘T’, ‘A’, ‘C’, and ‘G’, respectively:\n\nimport string\n\n# Pre-compute the complement translation table for efficiency\n_COMPLEMENT_TABLE = str.maketrans('atgcATGC', 'tacgTACG')\n\ndef revcomp(seq):\n    \"\"\"Return the reverse complement of a DNA sequence.\"\"\"\n    return seq[::-1].translate(_COMPLEMENT_TABLE)\n\nNow let’s use this function to create translation in all six reading frames. The cell below uses a for loop that iterates over the range (0, 3), representing the different phases (or starting positions) of the translation. At each iteration, the translate_phase function is called with the DNA sequence and the current phase, and the resulting protein sequence is appended to the translations list along with the phase and the strand orientation (+ or -):\n\ntranslations = []\n\nfor i in range(0,3):\n    translations.append((translate_phase(seq,i),str(i),'+'))\n    translations.append((translate_phase(revcomp(seq),i),str(i),'-'))\n\ntranslations"
+  },
+  {
+    "objectID": "lectures/lecture6.html#finding-coordinates-of-continuous-translations",
+    "href": "lectures/lecture6.html#finding-coordinates-of-continuous-translations",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Finding coordinates of continuous translations",
+    "text": "Finding coordinates of continuous translations\nThe translation we’ve generated above contains stops (e.g., _ symbols). The actual biologically relevant protein sequences are between stops. We now need to split translation strings into meaningful peptide sequences and compute their coordinates. Let’s begin by splitting a string on _ and computing the start and end positions of each peptide:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\nprint(split_indices)\n\nThe code above generates a list of split indices for a string. The list contains the indices of the characters in the string that match a specified character (in this case, the underscore _ character).\nBut we actually need coordinates of peptides bound by _ characters. To get to this let’s first modify split_indices by adding the beginning and end:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\n        \nsplit_indices.insert(0, -1)\nsplit_indices.append(len(string))\nprint(split_indices)\n\nNow, let’s convert these to ranges and also stick the peptide sequence in:\n\nstring = \"aadsds_dsds_dsds\"\n\nsplit_indices = []\nfor i, char in enumerate(string):\n    if char == \"_\":\n        split_indices.append(i)\n        \nsplit_indices.insert(0, -1)\nsplit_indices.append(len(string))\n\norfs = string.split('_')\n\nparts = []\nfor i in range(len(split_indices)-1):\n    parts.append((orfs[i], split_indices[i]+1, split_indices[i+1]))\n\nprint(parts)\n\nNow let’s convert this to function:\n\ndef extract_coords(translation):\n    split_indices = []\n    for i, char in enumerate(translation):\n        if char == \"_\":\n            split_indices.append(i)\n        \n    split_indices.insert(0, -1)\n    split_indices.append(len(translation))\n\n    parts = []\n    for i in range(len(split_indices)-1):\n        parts.append((translation.split('_')[i], split_indices[i] + 1, split_indices[i + 1]))\n\n    return(parts)\n\n\nextract_coords(string)\n\nAnd specify the right parameters to make it truly generic:\n\ndef extract_coords_with_annotation(separator, translation, phase, strand):\n    split_indices = []\n    for i, char in enumerate(translation):\n        if char == separator:\n            split_indices.append(i)\n        \n    split_indices.insert(0, -1)\n    split_indices.append(len(translation))\n\n    parts = []\n    for i in range(len(split_indices)-1):\n        parts.append((translation.split(separator)[i], phase, strand, split_indices[i]+1, split_indices[i+1]))\n\n    return(parts)\n\n\nextract_coords_with_annotation('_', string, '0', '+')"
+  },
+  {
+    "objectID": "lectures/lecture6.html#analyzing-all-translations-of-a-given-sequence",
+    "href": "lectures/lecture6.html#analyzing-all-translations-of-a-given-sequence",
+    "title": "Lecture 6: Lists and DictionariesPreclass prep: Chapters 5 and 7 from “Think Python”> 💡 Attribution: This material uses examples from notebooks developed by Ben Langmead",
+    "section": "Analyzing all translations of a given sequence",
+    "text": "Analyzing all translations of a given sequence\nWe begin by parsing the translations list we defined above:\n\nall_translations = []\nfor item in translations:\n    all_translations.append(extract_coords_with_annotation('_', item[0], item[1], item[2]))\n\nall_translations\n\nNow the problem with this list is that it is nested. However, we need to make it flat:\n\nflat_list = []\nfor sublist in all_translations:\n    for item in sublist:\n        flat_list.append(item)\n\nflat_list\n\nNow we can load the list into Pandas and plot away:\n\nimport pandas as pd\ndf = pd.DataFrame(flat_list, columns=['aa', 'frame', 'strand', 'start', 'end'])\ndf\n\nNow let’s plot it:\n\nimport altair as alt\n\nplus = alt.Chart(df[df['strand']=='+']).mark_rect().encode(\n    x = alt.X('start:Q'),\n    x2 = alt.X2('end:Q'),\n    y = alt.Y('frame:N'),\n    color='frame',\n    tooltip='aa:N'\n).properties(\n    width=600,\n    height=100,\n    title='Plus strand'\n)\n\nminus = alt.Chart(df[df['strand']=='-']).mark_rect().encode(\n    x = alt.X('start:Q', sort=alt.EncodingSortField('start:Q', order='descending')),\n    x2 = alt.X2('end:Q'),\n    y = alt.Y('frame:N'),\n    color='frame',\n    tooltip='aa:N'\n).properties(\n    width=600,\n    height=100,\n    title='Minus strand'\n)\n\nplus & minus"
   },
   {
     "objectID": "lectures/lecture4.html",
@@ -323,7 +401,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -335,7 +413,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -347,7 +425,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -359,7 +437,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -371,7 +449,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -383,7 +461,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -395,7 +473,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -407,7 +485,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -419,7 +497,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -431,7 +509,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -443,7 +521,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -455,7 +533,7 @@
     "crumbs": [
       "Home",
       "Lectures",
-      "4. Python Fundamentals with DNA"
+      "4. Py2: Simple sequence manipulation"
     ]
   },
   {
@@ -927,200 +1005,225 @@
     ]
   },
   {
-    "objectID": "lectures/lecture4a.html",
-    "href": "lectures/lecture4a.html",
-    "title": "Lecture 4A: Parsing FASTA Files",
+    "objectID": "lectures/test1-answers.html",
+    "href": "lectures/test1-answers.html",
+    "title": "Test 1: Answer Key",
     "section": "",
-    "text": "Open In Colab"
+    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n1\nB) TC\nString slicing [1:3] returns characters at index 1 and 2 (not including 3). Index 1 is ‘T’, index 2 is ‘C’.\n\n\n2\nB) {\"name\": \"Alice\", \"age\": 25}\nDictionaries use curly braces {} with key-value pairs separated by colons.\n\n\n3\nB) [6, 8, 10]\nThe list comprehension filters values &gt; 2 (getting 3, 4, 5) then multiplies each by 2.\n\n\n4\nB) 11\nThe string has 11 characters: H-e-l-l-o--W-o-r-l-d. The \\n counts as one character.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQ#\nAnswer\nExplanation\n\n\n\n\n5\nC) pwd\npwd = “print working directory”\n\n\n6\nB) List all files including hidden ones in long format\n-l = long format, -a = all files (including hidden)\n\n\n7\nB) cp *.txt backup/\ncp copies files, * is a wildcard matching any characters\n\n\n8\nB) Counts the number of lines containing “error”\ncat outputs file, grep filters for “error”, wc -l counts lines\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQ#\nAnswer\nExplanation\n\n\n\n\n9\nB) git add .\nThe . adds all changes in current directory. git commit -a only stages tracked files.\n\n\n10\nC) git add → git commit → git push\nStage changes, save them locally, then upload to remote.\n\n\n11\nC) git checkout -b feature\nThe -b flag creates a new branch and switches to it in one command.\n\n\n12\nC) Modified, staged, and untracked files\ngit status shows the working tree status.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQ#\nAnswer\nExplanation\n\n\n\n\n13\nB) An AI assistant that can read files, run commands, and make code changes autonomously\nAgentic tools can take actions on your behalf, not just respond to queries.\n\n\n14\nC) “Add input validation…”\nSpecific, actionable prompts with clear requirements produce better results.\n\n\n15\nB) Review the proposed changes to ensure they match your intent\nAlways verify AI-generated changes before accepting them.\n\n\n\n\n\n\n\n\n15 correct: Excellent\n12-14 correct: Good\n9-11 correct: Satisfactory\nBelow 9: Review the material"
   },
   {
-    "objectID": "lectures/lecture4a.html#what-is-fasta-format",
-    "href": "lectures/lecture4a.html#what-is-fasta-format",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "What is FASTA format?",
-    "text": "What is FASTA format?\nFASTA is one of the most common formats for storing biological sequences. Each sequence entry consists of:\n\nA header line starting with &gt;, followed by the sequence name and optional description\nOne or more lines containing the sequence itself\n\nHere’s an example with three protein sequences:\n\nfasta_data = \"\"\"&gt;seq1 human insulin\nMALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\n&gt;seq2 mouse insulin\nMALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\n&gt;seq3 zebrafish insulin\nMAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\"\"\"\n\nprint(fasta_data)\n\n&gt;seq1 human insulin\nMALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\n&gt;seq2 mouse insulin\nMALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\n&gt;seq3 zebrafish insulin\nMAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\n\n\n\nNote on triple quotes: In Python, triple quotes (\"\"\" or ''') allow you to create multi-line strings. This is perfect for storing FASTA data directly in your code without needing to read from a file."
+    "objectID": "lectures/test1-answers.html#python-questions",
+    "href": "lectures/test1-answers.html#python-questions",
+    "title": "Test 1: Answer Key",
+    "section": "",
+    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n1\nB) TC\nString slicing [1:3] returns characters at index 1 and 2 (not including 3). Index 1 is ‘T’, index 2 is ‘C’.\n\n\n2\nB) {\"name\": \"Alice\", \"age\": 25}\nDictionaries use curly braces {} with key-value pairs separated by colons.\n\n\n3\nB) [6, 8, 10]\nThe list comprehension filters values &gt; 2 (getting 3, 4, 5) then multiplies each by 2.\n\n\n4\nB) 11\nThe string has 11 characters: H-e-l-l-o--W-o-r-l-d. The \\n counts as one character."
   },
   {
-    "objectID": "lectures/lecture4a.html#our-goal-a-dictionary",
-    "href": "lectures/lecture4a.html#our-goal-a-dictionary",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "Our Goal: A Dictionary",
-    "text": "Our Goal: A Dictionary\nWe want to convert this FASTA data into a Python dictionary where: - Keys are sequence names (e.g., 'seq1', 'seq2', 'seq3') - Values are the corresponding sequences\n{\n    'seq1': 'MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT',\n    'seq2': 'MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS',\n    'seq3': 'MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF'\n}\nWhy a dictionary? Because it gives us fast lookup by name. If we want the sequence for seq2, we simply write sequences['seq2']."
+    "objectID": "lectures/test1-answers.html#bash-questions",
+    "href": "lectures/test1-answers.html#bash-questions",
+    "title": "Test 1: Answer Key",
+    "section": "",
+    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n5\nC) pwd\npwd = “print working directory”\n\n\n6\nB) List all files including hidden ones in long format\n-l = long format, -a = all files (including hidden)\n\n\n7\nB) cp *.txt backup/\ncp copies files, * is a wildcard matching any characters\n\n\n8\nB) Counts the number of lines containing “error”\ncat outputs file, grep filters for “error”, wc -l counts lines"
   },
   {
-    "objectID": "lectures/lecture4a.html#parsing-logic-step-by-step",
-    "href": "lectures/lecture4a.html#parsing-logic-step-by-step",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "Parsing Logic: Step by Step",
-    "text": "Parsing Logic: Step by Step\n\nStep 1: Split into lines\nFirst, we split our FASTA string into individual lines:\n\nlines = fasta_data.strip().split('\\n')\nfor i, line in enumerate(lines):\n    print(f\"Line {i}: {line}\")\n\nLine 0: &gt;seq1 human insulin\nLine 1: MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\nLine 2: &gt;seq2 mouse insulin\nLine 3: MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\nLine 4: &gt;seq3 zebrafish insulin\nLine 5: MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\n\n\n\nStep 2: Identify header lines\nHeader lines start with &gt;. We can detect them using the startswith() method:\n\nfor line in lines:\n    if line.startswith('&gt;'):\n        print(f\"HEADER: {line}\")\n    else:\n        print(f\"SEQUENCE: {line}\")\n\nHEADER: &gt;seq1 human insulin\nSEQUENCE: MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\nHEADER: &gt;seq2 mouse insulin\nSEQUENCE: MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS\nHEADER: &gt;seq3 zebrafish insulin\nSEQUENCE: MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF\n\n\n\n\nStep 3: Extract the sequence name\nThe sequence name is the first “word” after the &gt;. We can extract it by: 1. Removing the &gt; character (using line[1:] to skip the first character) 2. Splitting on whitespace and taking the first element\n\nheader = \"&gt;seq1 human insulin\"\n\n# Remove the '&gt;' character\nwithout_gt = header[1:]\nprint(f\"After removing '&gt;': {without_gt}\")\n\n# Split on whitespace\nparts = without_gt.split()\nprint(f\"Split into parts: {parts}\")\n\n# Take the first part (the name)\nname = parts[0]\nprint(f\"Sequence name: {name}\")\n\nAfter removing '&gt;': seq1 human insulin\nSplit into parts: ['seq1', 'human', 'insulin']\nSequence name: seq1"
+    "objectID": "lectures/test1-answers.html#git-questions",
+    "href": "lectures/test1-answers.html#git-questions",
+    "title": "Test 1: Answer Key",
+    "section": "",
+    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n9\nB) git add .\nThe . adds all changes in current directory. git commit -a only stages tracked files.\n\n\n10\nC) git add → git commit → git push\nStage changes, save them locally, then upload to remote.\n\n\n11\nC) git checkout -b feature\nThe -b flag creates a new branch and switches to it in one command.\n\n\n12\nC) Modified, staged, and untracked files\ngit status shows the working tree status."
   },
   {
-    "objectID": "lectures/lecture4a.html#first-attempt-a-naive-parser",
-    "href": "lectures/lecture4a.html#first-attempt-a-naive-parser",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "First Attempt: A Naive Parser",
-    "text": "First Attempt: A Naive Parser\nNow let’s put it together. The basic idea is: - When we see a &gt;, save the previous sequence (if any) and start a new one - When we see a sequence line, append it to the current sequence\nHere’s our first attempt:\n\n# CAUTION: This version has a bug!\n\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nfor line in fasta_data.strip().split('\\n'):\n    if line.startswith('&gt;'):\n        # Save the previous sequence (if there is one)\n        if current_name:\n            sequences[current_name] = current_seq\n        # Start a new sequence\n        current_name = line[1:].split()[0]\n        current_seq = \"\"\n    else:\n        # Append to current sequence\n        current_seq += line\n\nprint(\"Sequences found:\", list(sequences.keys()))\nprint(f\"Number of sequences: {len(sequences)}\")\n\nSequences found: ['seq1', 'seq2']\nNumber of sequences: 2"
+    "objectID": "lectures/test1-answers.html#agentic-cli-questions",
+    "href": "lectures/test1-answers.html#agentic-cli-questions",
+    "title": "Test 1: Answer Key",
+    "section": "",
+    "text": "Q#\nAnswer\nExplanation\n\n\n\n\n13\nB) An AI assistant that can read files, run commands, and make code changes autonomously\nAgentic tools can take actions on your behalf, not just respond to queries.\n\n\n14\nC) “Add input validation…”\nSpecific, actionable prompts with clear requirements produce better results.\n\n\n15\nB) Review the proposed changes to ensure they match your intent\nAlways verify AI-generated changes before accepting them."
   },
   {
-    "objectID": "lectures/lecture4a.html#the-last-sequence-problem",
-    "href": "lectures/lecture4a.html#the-last-sequence-problem",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "The Last Sequence Problem",
-    "text": "The Last Sequence Problem\nWait! We have 3 sequences in our FASTA data, but only 2 were captured!\nWhat happened to seq3?\nLet’s trace through the logic:\n\n\n\n\n\n\n\n\nLine\nAction\nsequences dict\n\n\n\n\n&gt;seq1 human insulin\nStart seq1\n{}\n\n\nMALWMR...PKT\nAppend to seq1\n{}\n\n\n&gt;seq2 mouse insulin\nSave seq1, start seq2\n{'seq1': '...'}\n\n\nMALWMR...PMS\nAppend to seq2\n{'seq1': '...'}\n\n\n&gt;seq3 zebrafish insulin\nSave seq2, start seq3\n{'seq1': '...', 'seq2': '...'}\n\n\nMAVWLQ...RGF\nAppend to seq3\n{'seq1': '...', 'seq2': '...'}\n\n\n(end of file)\n???\nseq3 never saved!\n\n\n\nThe problem: We only save a sequence when we encounter the NEXT &gt;. But the last sequence has no &gt; after it!"
+    "objectID": "lectures/test1-answers.html#scoring",
+    "href": "lectures/test1-answers.html#scoring",
+    "title": "Test 1: Answer Key",
+    "section": "",
+    "text": "15 correct: Excellent\n12-14 correct: Good\n9-11 correct: Satisfactory\nBelow 9: Review the material"
   },
   {
-    "objectID": "lectures/lecture4a.html#the-fix-dont-forget-the-last-sequence",
-    "href": "lectures/lecture4a.html#the-fix-dont-forget-the-last-sequence",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "The Fix: Don’t Forget the Last Sequence",
-    "text": "The Fix: Don’t Forget the Last Sequence\nAfter the loop ends, we need to check if there’s a pending sequence that hasn’t been saved yet:\n\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nfor line in fasta_data.strip().split('\\n'):\n    if line.startswith('&gt;'):\n        # Save the previous sequence (if there is one)\n        if current_name:\n            sequences[current_name] = current_seq\n        # Start a new sequence\n        current_name = line[1:].split()[0]\n        current_seq = \"\"\n    else:\n        # Append to current sequence\n        current_seq += line\n\n# Don't forget the last sequence!\nif current_name:\n    sequences[current_name] = current_seq\n\nprint(\"Sequences found:\", list(sequences.keys()))\nprint(f\"Number of sequences: {len(sequences)}\")\n\nSequences found: ['seq1', 'seq2', 'seq3']\nNumber of sequences: 3\n\n\nNow we have all three sequences! Let’s verify:\n\nfor name, seq in sequences.items():\n    print(f\"{name}: {seq[:20]}... (length: {len(seq)})\")\n\nseq1: MALWMRLLPLLALLALWGPD... (length: 54)\nseq2: MALWMRLLPLLALLALWGPE... (length: 54)\nseq3: MAVWLQAGALLVLLVVSSAT... (length: 60)"
-  },
-  {
-    "objectID": "lectures/lecture4a.html#wrapping-it-in-a-function",
-    "href": "lectures/lecture4a.html#wrapping-it-in-a-function",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "Wrapping It in a Function",
-    "text": "Wrapping It in a Function\nLet’s create a reusable function:\n\ndef parse_fasta(fasta_string):\n    \"\"\"\n    Parse a FASTA-formatted string into a dictionary.\n    \n    Args:\n        fasta_string: A string containing FASTA-formatted sequences\n        \n    Returns:\n        A dictionary mapping sequence names to sequences\n    \"\"\"\n    sequences = {}\n    current_name = None\n    current_seq = \"\"\n    \n    for line in fasta_string.strip().split('\\n'):\n        if line.startswith('&gt;'):\n            if current_name:\n                sequences[current_name] = current_seq\n            current_name = line[1:].split()[0]\n            current_seq = \"\"\n        else:\n            current_seq += line\n    \n    # Don't forget the last sequence!\n    if current_name:\n        sequences[current_name] = current_seq\n    \n    return sequences\n\n\n# Test our function\nresult = parse_fasta(fasta_data)\nprint(result)\n\n{'seq1': 'MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT', 'seq2': 'MALWMRLLPLLALLALWGPEPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPMS', 'seq3': 'MAVWLQAGALLVLLVVSSATSAAPLQTCRKDLQLLKGVVDGLLHTLALALEYKCNTCRGF'}"
-  },
-  {
-    "objectID": "lectures/lecture4a.html#using-the-dictionary",
-    "href": "lectures/lecture4a.html#using-the-dictionary",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "Using the Dictionary",
-    "text": "Using the Dictionary\nNow we can easily access any sequence by name:\n\n# Get a specific sequence\nprint(\"Human insulin sequence:\")\nprint(result['seq1'])\n\nHuman insulin sequence:\nMALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT\n\n\n\n# Compare sequence lengths\nfor name, seq in result.items():\n    print(f\"{name}: {len(seq)} amino acids\")\n\nseq1: 54 amino acids\nseq2: 54 amino acids\nseq3: 60 amino acids"
-  },
-  {
-    "objectID": "lectures/lecture4a.html#handling-multi-line-sequences",
-    "href": "lectures/lecture4a.html#handling-multi-line-sequences",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "Handling Multi-line Sequences",
-    "text": "Handling Multi-line Sequences\nOur parser already handles sequences that span multiple lines. Let’s test it:\n\nmultiline_fasta = \"\"\"&gt;gene1 a long sequence\nATGCATGCATGCATGCATGC\nGCTAGCTAGCTAGCTAGCTA\nTTTTAAAACCCCGGGG\n&gt;gene2 another sequence\nAAAAAAAAAA\n\"\"\"\n\nresult = parse_fasta(multiline_fasta)\nprint(f\"gene1 length: {len(result['gene1'])}\")\nprint(f\"gene1 sequence: {result['gene1']}\")\n\ngene1 length: 56\ngene1 sequence: ATGCATGCATGCATGCATGCGCTAGCTAGCTAGCTAGCTATTTTAAAACCCCGGGG"
-  },
-  {
-    "objectID": "lectures/lecture4a.html#summary",
-    "href": "lectures/lecture4a.html#summary",
-    "title": "Lecture 4A: Parsing FASTA Files",
-    "section": "Summary",
-    "text": "Summary\nKey takeaways from this lecture:\n\nFASTA format uses &gt; to mark sequence headers\nTriple-quoted strings let us embed multi-line data in Python code\nParsing strategy: Track the “current” sequence name and content as we iterate through lines\nThe last sequence problem: Always check for a pending sequence after the loop ends\nDictionaries provide a natural way to store name→sequence mappings"
-  },
-  {
-    "objectID": "lectures/lecture3.html",
-    "href": "lectures/lecture3.html",
-    "title": "Lecture 3: Data analysis ecosystem",
+    "objectID": "lectures/lecture5.html",
+    "href": "lectures/lecture5.html",
+    "title": "Lecture 5: Parsing FASTA Files",
     "section": "",
     "text": "Open In Colab",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#generate-a-random-sequence",
-    "href": "lectures/lecture3.html#generate-a-random-sequence",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "Generate a random sequence",
-    "text": "Generate a random sequence\nNext, we will write a simple loop that generates a sequence of a preset length:\n\nseq = ''\nfor _ in range(100):\n    seq += random.choice('ATCG')\n\n\nseq\n\n'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT'",
+    "objectID": "lectures/lecture5.html#working-with-biological-sequences",
+    "href": "lectures/lecture5.html#working-with-biological-sequences",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Working with Biological Sequences",
+    "text": "Working with Biological Sequences\nWorking with biological sequence data using strings, conditionals, and iteration\n\nThis lecture demonstrates concepts from Think Python chapters 5, 7, and 8.\n\n\nMethods vs Functions: A function is called by name: len(seq), print(x). A method is called on an object using dot notation: seq.count('A'), line.startswith('&gt;'). Methods are functions that “belong to” a specific type—string methods work on strings, list methods work on lists, etc.",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#simulate-one-polymerase-molecule",
-    "href": "lectures/lecture3.html#simulate-one-polymerase-molecule",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "Simulate one polymerase molecule",
-    "text": "Simulate one polymerase molecule\nThe code below iterates through each nucleotide in seq. When it encounters an ‘A’, it generates a random number between 0 and 1 using random.random(). If this number is smaller or equal than 0.5, the polymerase “terminates”—it adds a lowercase ‘a’ (representing incorporation of a ddNTP) to synthesized_strand and stops synthesis by breaking out of the loop. If the random number is greater than 0.5, synthesis continues normally.\nFor all other nucleotides (and for ‘A’ when synthesis continues), the uppercase nucleotide is added to synthesized_strand.\nThis simulates Sanger sequencing, where ddNTPs randomly terminate DNA synthesis at positions matching a specific base.\n\nsynthesized_strand = ''\n\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        d_or_dd = random.random()\n        if d_or_dd &gt; 0.5:\n            None\n        else:\n            synthesized_strand += 'a'\n            break\n    synthesized_strand += nucleotide\n\nThis can be simplified by first removing d_or_dd variable:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        if random.random() &gt; 0.5:\n            None\n        else:\n            synthesized_strand += 'a'\n            break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCAa\n\n\nand removing unnecessary group of if ... else statements:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A' and random.random() &gt; 0.5:\n        synthesized_strand += 'a'\n        break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCa\n\n\nfinally let’s make synthesized_strand += 'a' a bit more generic:\n\nsynthesized_strand = ''\nfor nucleotide in seq:\n    if nucleotide == 'A' and random.random() &gt; 0.5:\n        synthesized_strand += nucleotide.lower()\n        break\n    synthesized_strand += nucleotide\nprint(synthesized_strand)\n\nGCCTACCGCCa",
+    "objectID": "lectures/lecture5.html#what-is-fasta-format",
+    "href": "lectures/lecture5.html#what-is-fasta-format",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "What is FASTA format?",
+    "text": "What is FASTA format?\nFASTA is one of the most common formats for storing biological sequences. Each sequence entry consists of:\n\nA header line starting with &gt;, followed by the sequence name and optional description\nOne or more lines containing the sequence itself\n\nHere’s an example with three DNA sequences:\n\nfasta_data = \"\"\"&gt;seq1 E. coli promoter region\nATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\n&gt;seq2 Yeast regulatory element\nATATATATGCATGCATATATGCATGCATATATATAT\n&gt;seq3 Human CpG island\nGCGCGCATATATGCGCGCATATGCGCGCGCATATAT\n\"\"\"\n\nprint(fasta_data)\n\n&gt;seq1 E. coli promoter region\nATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\n&gt;seq2 Yeast regulatory element\nATATATATGCATGCATATATGCATGCATATATATAT\n&gt;seq3 Human CpG island\nGCGCGCATATATGCGCGCATATGCGCGCGCATATAT\n\n\n\n\nNote on triple quotes: In Python, triple quotes (\"\"\" or ''') allow you to create multi-line strings. This is perfect for storing FASTA data directly in your code without needing to read from a file.",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#simulating-multiple-molecules",
-    "href": "lectures/lecture3.html#simulating-multiple-molecules",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "Simulating multiple molecules",
-    "text": "Simulating multiple molecules\nTo simulate 10 polymerase molecules, we simply wrap the code from above into a for loop:\n\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    print(synthesized_strand)\n\nGCCTACCGCCa\nGCCTACCGCCAAa\nGCCTACCGCCAa\nGCCTa\nGCCTa\nGCCTa\nGCCTa\nGCCTa\nGCCTACCGCCAa\nGCCTa\n\n\nOne problem with this code is that it does not actually save the newly synthesized strand: it simply prints it. To fix this we will create a list (or an array) called new_strands and initialize it by assigning an empty list to it:\n\nnew_strands = []\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n\n\nnew_strands\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCa',\n 'GCCTa',\n 'GCCTACCGCCa']",
+    "objectID": "lectures/lecture5.html#our-goal-a-dictionary",
+    "href": "lectures/lecture5.html#our-goal-a-dictionary",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Our Goal: A Dictionary",
+    "text": "Our Goal: A Dictionary\nWe want to convert this FASTA data into a Python dictionary where: - Keys are sequence names (e.g., 'seq1', 'seq2', 'seq3') - Values are the corresponding sequences\n{\n    'seq1': 'ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG',\n    'seq2': 'ATATATATGCATGCATATATGCATGCATATATATAT',\n    'seq3': 'GCGCGCATATATGCGCGCATATGCGCGCGCATATAT'\n}\nWhy a dictionary? Because it gives us fast lookup by name. If we want the sequence for seq2, we simply write sequences['seq2'].",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#simulating-multiple-molecules-and-all-nucleotides",
-    "href": "lectures/lecture3.html#simulating-multiple-molecules-and-all-nucleotides",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "Simulating multiple molecules and all nucleotides",
-    "text": "Simulating multiple molecules and all nucleotides\nAnd to repeat this for the remaining three nucleotides we will do the following crazy thing:\n\nnew_strands = []\nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'A' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'C' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'G' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n    \nfor _ in range(10):\n    synthesized_strand = ''\n    for nucleotide in seq:\n        if nucleotide == 'T' and random.random() &gt; 0.5:\n            synthesized_strand += nucleotide.lower()\n            break\n        synthesized_strand += nucleotide\n    new_strands.append(synthesized_strand)\n\n\nlen(new_strands)\n\n40\n\n\nRepeating the same code four times is just plain stupid, so instead we will write a function called ddN. Here we need to understand the scope of variables. The scope of a variable refers to the regions of the code where the variable can be accessed or modified. Variables that are defined within a certain block of code (such as a function) are said to have a local scope, meaning that they can only be accessed within that block of code. Variables that are defined outside of any function are said to have a global scope, meaning that they can be accessed from anywhere in the code.\nIn most programming languages, a variable defined within a function has a local scope and can only be accessed within that function. If a variable with the same name is defined outside the function, it will have a global scope. However, if a variable with the same name is defined within the function, it will take precedence over the global variable.\nIn Python, variables defined in the main module have global scope and can be accessed from any function or module. Variables defined within a function have local scope and can only be accessed within that function. Unlike some other languages (like C++ or Java), Python does NOT have block scope—variables defined within a loop or if statement remain accessible after the block ends.\n\ndef ddN(number_of_iterations, template, base, ddN_ratio):\n    new_strands = []\n    for _ in range(number_of_iterations):\n        synthesized_strand = ''\n        for nucleotide in template:\n            if nucleotide == base and random.random() &gt; ddN_ratio:\n                synthesized_strand += nucleotide.lower()\n                break\n            synthesized_strand += nucleotide\n        new_strands.append(synthesized_strand)\n    return(new_strands)\n\n\nddN(10,seq,'A',0.5)\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTACCGCCa',\n 'GCCTACCGCCa']\n\n\nTo execute this function on all four types of ddNTPs, we need to wrap it in a for loop iterating over the four possibilities:\n\nfor nt in 'ATCG':\n    ddN(10,seq,nt,0.5)",
+    "objectID": "lectures/lecture5.html#formatted-string-literals-f-strings",
+    "href": "lectures/lecture5.html#formatted-string-literals-f-strings",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Formatted String Literals (f-strings)",
+    "text": "Formatted String Literals (f-strings)\nBefore we start parsing, let’s learn about f-strings—a convenient way to embed variables and expressions inside strings. An f-string starts with f before the opening quote, and uses curly braces {} to insert values:\n\n# Basic f-string usage\nname = \"seq1\"\nlength = 42\n\n# Without f-strings (concatenation)\nprint(\"Sequence \" + name + \" has length \" + str(length))\n\n# With f-strings (cleaner!)\nprint(f\"Sequence {name} has length {length}\")\n\nSequence seq1 has length 42\nSequence seq1 has length 42\n\n\n\n# F-strings can contain expressions, not just variables\nsequence = \"ATGCGATC\"\n\nprint(f\"Sequence: {sequence}\")\nprint(f\"Length: {len(sequence)}\")\nprint(f\"First 4 bases: {sequence[:4]}\")\nprint(f\"GC count: {sequence.count('G') + sequence.count('C')}\")\n\nSequence: ATGCGATC\nLength: 8\nFirst 4 bases: ATGC\nGC count: 4\n\n\n\nWhy f-strings? They’re more readable than string concatenation (\"text\" + var + \"more\"), and you don’t need to manually convert numbers to strings with str(). We’ll use f-strings throughout this lecture for output.",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#a-bit-about-lists",
-    "href": "lectures/lecture3.html#a-bit-about-lists",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "A bit about lists",
-    "text": "A bit about lists\nTo store the sequences being generated in the previous loop we will create and initialize a list called seq_run:\n\nseq_run = []\nfor nt in 'ATCG':\n    seq_run.append(ddN(10,seq,nt,0.5))\n\nyou will see that the seq run is a two-dimensional list:\n\nseq_run\n\n[['GCCTa',\n  'GCCTa',\n  'GCCTACCGCCAa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n  'GCCTa',\n  'GCCTa'],\n ['GCCt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGt',\n  'GCCTACCGCCAAACCGCCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCt'],\n ['Gc',\n  'Gc',\n  'Gc',\n  'GCCTACCGCc',\n  'GCCTAc',\n  'GCCTAc',\n  'GCCTACc',\n  'GCc',\n  'GCc',\n  'GCCTACCGCCAAAc'],\n ['GCCTACCg',\n  'GCCTACCg',\n  'GCCTACCGCCAAACCg',\n  'g',\n  'g',\n  'GCCTACCGCCAAACCg',\n  'g',\n  'g',\n  'g',\n  'GCCTACCg']]\n\n\nas you will read in your next home assignment list elements can be addressed by “index”. The first element has number 0:\n\nseq_run[0]\n\n['GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n 'GCCTa',\n 'GCCTa']",
+    "objectID": "lectures/lecture5.html#parsing-logic-step-by-step",
+    "href": "lectures/lecture5.html#parsing-logic-step-by-step",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Parsing Logic: Step by Step",
+    "text": "Parsing Logic: Step by Step\n\nStep 1: Split into lines\nFirst, we split our FASTA string into individual lines. We use two string methods chained together:\n\n.strip() removes any leading/trailing whitespace (spaces, tabs, newlines) from the string. This is important because our multi-line string might have extra blank lines at the beginning or end.\n.split('\\n') breaks the string at each newline character (\\n), returning a list of strings—one for each line.\n\nThe \\n is an escape sequence representing a newline (line break). When you press Enter in a text file, it inserts a \\n character.\n\n# Let's see what strip() does\ntext_with_whitespace = \"   \\n\\n  Hello World  \\n\\n   \"\nprint(f\"Before strip: '{text_with_whitespace}'\")\nprint(f\"After strip:  '{text_with_whitespace.strip()}'\")\n\n# And what split('\\n') does\nmultiline = \"Line 1\\nLine 2\\nLine 3\"\nprint(f\"\\nOriginal: {multiline}\")\nprint(f\"After split: {multiline.split('\\n')}\")\n\nBefore strip: '   \n\n  Hello World  \n\n   '\nAfter strip:  'Hello World'\n\nOriginal: Line 1\nLine 2\nLine 3\nAfter split: ['Line 1', 'Line 2', 'Line 3']\n\n\nNow let’s apply this to our FASTA data. The enumerate() function gives us both the index and value as we loop:\n\nlines = fasta_data.strip().split('\\n')\nfor i, line in enumerate(lines):\n    print(f\"Line {i}: {line}\")\n\nLine 0: &gt;seq1 E. coli promoter region\nLine 1: ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\nLine 2: &gt;seq2 Yeast regulatory element\nLine 3: ATATATATGCATGCATATATGCATGCATATATATAT\nLine 4: &gt;seq3 Human CpG island\nLine 5: GCGCGCATATATGCGCGCATATGCGCGCGCATATAT\n\n\n\n\nStep 2: Identify header lines\nHeader lines start with &gt;. We can detect them using the .startswith() method, which returns True if a string begins with the specified prefix, and False otherwise.\nThis is cleaner than checking line[0] == '&gt;' because: - It’s more readable - It won’t crash on empty strings (whereas line[0] would raise an IndexError)\n\nfor line in lines:\n    if line.startswith('&gt;'):\n        print(f\"HEADER: {line}\")\n    else:\n        print(f\"SEQUENCE: {line}\")\n\nHEADER: &gt;seq1 E. coli promoter region\nSEQUENCE: ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\nHEADER: &gt;seq2 Yeast regulatory element\nSEQUENCE: ATATATATGCATGCATATATGCATGCATATATATAT\nHEADER: &gt;seq3 Human CpG island\nSEQUENCE: GCGCGCATATATGCGCGCATATGCGCGCGCATATAT\n\n\n\n\nStep 3: Extract the sequence name\nThe sequence name is the first “word” after the &gt;. We can extract it by: 1. Removing the &gt; character (using line[1:] to skip the first character) 2. Splitting on whitespace and taking the first element\nAbout line[1:]: This is called slicing. The syntax string[start:end] extracts characters from index start up to (but not including) index end. When we omit end, it means “go to the end of the string.” So line[1:] means “everything from index 1 onwards”—i.e., skip the first character (the &gt;).\nAbout .split(): When called with no arguments, .split() splits on any whitespace (spaces, tabs, multiple spaces) and removes empty strings. This is more robust than .split(' ') which only splits on single spaces.\n\nheader = \"&gt;seq1 E. coli promoter region\"\n\n# Remove the '&gt;' character\nwithout_gt = header[1:]\nprint(f\"After removing '&gt;': {without_gt}\")\n\n# Split on whitespace\nparts = without_gt.split()\nprint(f\"Split into parts: {parts}\")\n\n# Take the first part (the name)\nname = parts[0]\nprint(f\"Sequence name: {name}\")\n\nAfter removing '&gt;': seq1 E. coli promoter region\nSplit into parts: ['seq1', 'E.', 'coli', 'promoter', 'region']\nSequence name: seq1",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#a-bit-about-dictionaries",
-    "href": "lectures/lecture3.html#a-bit-about-dictionaries",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "A bit about dictionaries",
-    "text": "A bit about dictionaries\nAnother way to store these data is in a dictionary, which is a collection of key:value pairs where a key and value can be anything:\n\nseq_run = {}\nfor nt in 'ATCG':\n    seq_run[nt] = ddN(10,seq,nt,0.90)\n\n\nseq_run\n\n{'A': ['GCCTACCGCCAAACCGCCTCCAGTGTTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n  'GCCTACCGCCAa',\n  'GCCTa',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCa',\n  'GCCTACCGCCAAa'],\n 'T': ['GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACt',\n  'GCCTACCGCCAAACCGCCTCCAGt',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGt',\n  'GCCTACCGCCAAACCGCCTCCAGTGt',\n  'GCCt',\n  'GCCTACCGCCAAACCGCCTCCAGt'],\n 'C': ['GCCTACCGCCAAACCGCCTCCAGTGTTAc',\n  'GCCTACCGCCAAACc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCc',\n  'GCCTACCGCCAAAc',\n  'GCCTACCGCCAAACCGc',\n  'GCc',\n  'GCCTACCGCc',\n  'GCc'],\n 'G': ['GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGg',\n  'GCCTACCGCCAAACCGCCTCCAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCg',\n  'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGg',\n  'GCCTACCg']}\n\n\ndictionary elements can be retrieved using a key:\n\nseq_run['A']\n\n['GCCTACCGCCAAACCGCCTCCAGTGTTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n 'GCCTACCGCCAa',\n 'GCCTa',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCAACAGACTGAGTAGTCGAGGTCTTAGT',\n 'GCCTACCGCCAAACCGCCTCCAGTGTTACAAATCAGGACTTCGCTTAGTACAGCTCTGTAGGCGTGTCAAGTCa',\n 'GCCTACCGCCAAa']",
+    "objectID": "lectures/lecture5.html#first-attempt-a-naive-parser",
+    "href": "lectures/lecture5.html#first-attempt-a-naive-parser",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "First Attempt: A Naive Parser",
+    "text": "First Attempt: A Naive Parser\nNow let’s put it together. The basic idea is: - When we see a &gt;, save the previous sequence (if any) and start a new one - When we see a sequence line, append it to the current sequence\nTwo important patterns to notice:\n\nTruthiness test: if current_name: checks if current_name has a “truthy” value. In Python, None and empty strings \"\" are “falsy” (evaluate to False), while non-empty strings are “truthy”. This is cleaner than writing if current_name != None and current_name != \"\":\nAugmented assignment: current_seq += line is shorthand for current_seq = current_seq + line. It appends line to the end of current_seq.\n\nHere’s our first attempt:\n\n# fasta_data = \"\"\"&gt;seq1 E. coli promoter region\n# ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\n# &gt;seq2 Yeast regulatory element\n# ATATATATGCATGCATATATGCATGCATATATATAT\n# &gt;seq3 Human CpG island\n# GCGCGCATATATGCGCGCATATGCGCGCGCATATAT\n# \"\"\"\n\n# CAUTION: This version has a bug!\n\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nfor line in fasta_data.strip().split('\\n'):\n    if line.startswith('&gt;'):\n        # Save the previous sequence (if there is one)\n        if current_name:\n            sequences[current_name] = current_seq\n        # Start a new sequence\n        current_name = line[1:].split()[0]\n        current_seq = \"\"\n    else:\n        # Append to current sequence\n        current_seq += line\n\nprint(\"Sequences found:\", list(sequences.keys()))\nprint(f\"Number of sequences: {len(sequences)}\")\n\nSequences found: ['seq1', 'seq2']\nNumber of sequences: 2",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#drawing-a-sequencing-gel",
-    "href": "lectures/lecture3.html#drawing-a-sequencing-gel",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "Drawing a sequencing gel",
-    "text": "Drawing a sequencing gel\nNow that we can simulate and store newly synthesized sequencing strands terminated with ddNTPs, let us try to draw a realistic representation of the sequencing gel. For this we will use several components that will be discussed in much greater detail in the upcoming lectures. These components are:\n\npandas - a dataframe manipulation tool\naltair - a statistical visualization library built on top of the vega-lite visualization grammar\n\nThese two libraries will be used in almost all lectures concerning Python in this class.\nGel electrophoresis separates molecules based on mass, shape, or charge. In the case of DNA, all molecules are universally negatively charged and thus will always migrate toward the (+) electrode. All our molecules are linear single-stranded pieces (our gel is denaturing), and so the only physical/chemical characteristic that distinguishes them is length. Therefore, the first thing we will do is convert our sequences into their lengths. For this we will initialize a new dictionary called seq_lengths:\n\nseq_lengths = {'base':[],'length':[]}\nfor key in seq_run.keys():\n    for sequence in seq_run[key]:\n        seq_lengths['base'].append(key)\n        seq_lengths['length'].append(len(sequence))\n\n\nseq_lengths\n\n{'base': ['A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'A',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'T',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'C',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G',\n  'G'],\n 'length': [28,\n  32,\n  5,\n  75,\n  100,\n  12,\n  5,\n  100,\n  74,\n  13,\n  41,\n  41,\n  55,\n  41,\n  40,\n  24,\n  94,\n  26,\n  4,\n  24,\n  29,\n  15,\n  14,\n  14,\n  10,\n  14,\n  17,\n  3,\n  10,\n  3,\n  78,\n  43,\n  53,\n  78,\n  37,\n  23,\n  53,\n  43,\n  93,\n  8]}\n\n\nnow let’s import pandas:\n\nimport pandas as pd\n\nand inject seq_lengths into a pandas dataframe:\n\nsequences = pd.DataFrame(seq_lengths)\n\nit looks pretty:\n\nsequences\n\n\n\n\n\n\n\n\nbase\nlength\n\n\n\n\n0\nA\n28\n\n\n1\nA\n32\n\n\n2\nA\n5\n\n\n3\nA\n75\n\n\n4\nA\n100\n\n\n5\nA\n12\n\n\n6\nA\n5\n\n\n7\nA\n100\n\n\n8\nA\n74\n\n\n9\nA\n13\n\n\n10\nT\n41\n\n\n11\nT\n41\n\n\n12\nT\n55\n\n\n13\nT\n41\n\n\n14\nT\n40\n\n\n15\nT\n24\n\n\n16\nT\n94\n\n\n17\nT\n26\n\n\n18\nT\n4\n\n\n19\nT\n24\n\n\n20\nC\n29\n\n\n21\nC\n15\n\n\n22\nC\n14\n\n\n23\nC\n14\n\n\n24\nC\n10\n\n\n25\nC\n14\n\n\n26\nC\n17\n\n\n27\nC\n3\n\n\n28\nC\n10\n\n\n29\nC\n3\n\n\n30\nG\n78\n\n\n31\nG\n43\n\n\n32\nG\n53\n\n\n33\nG\n78\n\n\n34\nG\n37\n\n\n35\nG\n23\n\n\n36\nG\n53\n\n\n37\nG\n43\n\n\n38\nG\n93\n\n\n39\nG\n8\n\n\n\n\n\n\n\nIn our data there is a number of DNA fragments that have identical length (just look at the dataframe above). We can condense these by grouping dataframe entries first by nucleotide (['base']) and then by length (['length']). For each group we will then compute count and put it into a new column named, unsurprisngly, count:\n\nsequences_grouped_by_length = sequences.groupby(\n    ['base','length']\n).agg(\n    count=pd.NamedAgg(\n        column='length',\n        aggfunc='count'\n    )\n).reset_index()\n\n\nsequences_grouped_by_length\n\n\n\n\n\n\n\n\nbase\nlength\ncount\n\n\n\n\n0\nA\n5\n2\n\n\n1\nA\n12\n1\n\n\n2\nA\n13\n1\n\n\n3\nA\n28\n1\n\n\n4\nA\n32\n1\n\n\n5\nA\n74\n1\n\n\n6\nA\n75\n1\n\n\n7\nA\n100\n2\n\n\n8\nC\n3\n2\n\n\n9\nC\n10\n2\n\n\n10\nC\n14\n3\n\n\n11\nC\n15\n1\n\n\n12\nC\n17\n1\n\n\n13\nC\n29\n1\n\n\n14\nG\n8\n1\n\n\n15\nG\n23\n1\n\n\n16\nG\n37\n1\n\n\n17\nG\n43\n2\n\n\n18\nG\n53\n2\n\n\n19\nG\n78\n2\n\n\n20\nG\n93\n1\n\n\n21\nT\n4\n1\n\n\n22\nT\n24\n2\n\n\n23\nT\n26\n1\n\n\n24\nT\n40\n1\n\n\n25\nT\n41\n3\n\n\n26\nT\n55\n1\n\n\n27\nT\n94\n1\n\n\n\n\n\n\n\nThe following chart is created using the alt.Chart() function and passing the data as an argument. The mark_tick() function is used to create a tick chart with a thickness of 4 pixels.\nThe chart is encoded with two main axis:\n\ny-axis which represents the length of the data and it is encoded by the 'length' field of the data.\nx-axis which represents the base of the data and it is encoded by the 'base' field of the data. The chart also encodes a color, it encodes the 'count' field of the data and it sets the legend to None and it uses the 'greys' scale from the Altair library.\n\nFinally, the chart properties are set to a width of 100 pixels and a height of 800 pixels.\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q'),\n    x = alt.X('base'),\n    color=alt.Color('count:Q',legend=None,\n                    scale=alt.Scale(scheme=\"greys\"))\n).properties(\n    width=100,\n    height=800)\n\n\n\n\n\n\n\nAnd here is a color version of the same graph using just one line of the gel:\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q'),\n    color=alt.Color('base:N',#legend=None,\n                    scale=alt.Scale(scheme=\"set1\"))\n).properties(\n    width=20,\n    height=800)\n\n\n\n\n\n\n\n\n# Generate random sequences\n\nseq = ''\nfor _ in range(300):\n    seq += random.choice('ATCG')",
+    "objectID": "lectures/lecture5.html#the-last-sequence-problem",
+    "href": "lectures/lecture5.html#the-last-sequence-problem",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "The Last Sequence Problem",
+    "text": "The Last Sequence Problem\nWait! We have 3 sequences in our FASTA data, but only 2 were captured!\nWhat happened to seq3?\nLet’s trace through the logic:\n\n\n\n\n\n\n\n\nLine\nAction\nsequences dict\n\n\n\n\n&gt;seq1 E. coli promoter\nStart seq1\n{}\n\n\nATGCGATC...\nAppend to seq1\n{}\n\n\n&gt;seq2 Yeast regulatory\nSave seq1, start seq2\n{'seq1': '...'}\n\n\nATATATA...\nAppend to seq2\n{'seq1': '...'}\n\n\n&gt;seq3 Human CpG island\nSave seq2, start seq3\n{'seq1': '...', 'seq2': '...'}\n\n\nGCGCGCA...\nAppend to seq3\n{'seq1': '...', 'seq2': '...'}\n\n\n(end of file)\n???\nseq3 never saved!\n\n\n\nThe problem: We only save a sequence when we encounter the NEXT &gt;. But the last sequence has no &gt; after it!",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#putting-everything-together",
-    "href": "lectures/lecture3.html#putting-everything-together",
-    "title": "Lecture 3: Data analysis ecosystem",
-    "section": "Putting everything together",
-    "text": "Putting everything together\n\nseq\n\n'TTTCGACCGAGTGGACTTCGTGTACAGAGCAAAACCAGCTGAGGACGCGTGAACCCACTGCCCGTGTGCGCGCGGTCTTCACACATAAATTGCTGAGATCCTTGCACCCCGGTATGACCAGCGTCCCACGTGCCTGTCATACTATAATGTGTATAGAATTTACAGTGGCATAAGCTATCCAGACAAGTGCCGTCGCATTCCACCTGCACGGGTTATGTCCATGGTTATATTCCAAGAAAAGATGATGGAACATATTGGACACAATGTGATTGAGTCCTTCCTGGGCGAAGGTGTTCTATG'\n\n\n\n# Function simulating a single run of a single polymerase molecule\n\ndef ddN(number_of_iterations, template, base, ddN_ratio):\n    new_strands = []\n    for _ in range(number_of_iterations):\n        synthesized_strand = ''\n        for nucleotide in template:\n            if nucleotide == base and random.random() &gt; ddN_ratio:\n                synthesized_strand += nucleotide.lower()\n                break\n            synthesized_strand += nucleotide\n        new_strands.append(synthesized_strand)\n    return(new_strands)\n\n\n# Generating simulated sequencing run\n\nseq_run = {}\nfor nt in 'ATCG':\n    seq_run[nt] = ddN(100000,seq,nt,0.95)\n\n\n# Computing lengths\n\nseq_lengths = {'base':[],'length':[]}\nfor key in seq_run.keys():\n    for sequence in seq_run[key]:\n        seq_lengths['base'].append(key)\n        seq_lengths['length'].append(len(sequence))\n\n\n# Converting dictionary into Pandas dataframe\n\nsequences = pd.DataFrame(seq_lengths)\n\n\n# Grouping by nucleotide and length\n\nsequences_grouped_by_length = sequences.groupby(\n    ['base','length']\n).agg(\n    count=pd.NamedAgg(\n        column='length',\n        aggfunc='count'\n    )\n).reset_index()\n\n\n# Plotting (note the quadratic scale for realism)\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q',scale=alt.Scale(type='sqrt')),\n    x = alt.X('base'),\n    color=alt.Color('count:Q',legend=None,\n                    scale=alt.Scale(type='log',scheme=\"greys\")),\n    tooltip='count:Q'\n).properties(\n    width=100,\n    height=800)\n\n\n\n\n\n\n\n\n# Plotting using color\n\nimport altair as alt\nalt.Chart(sequences_grouped_by_length).mark_tick(thickness=4).encode(\n    y = alt.Y('length:Q',scale=alt.Scale(type=\"sqrt\")),\n    color=alt.Color('base:N',#legend=None,\n                    scale=alt.Scale(scheme=\"set1\")),\n    opacity=alt.Opacity('count:N',legend=None),\n    tooltip='count:Q'\n).properties(\n    width=20,\n    height=800)",
+    "objectID": "lectures/lecture5.html#the-fix-dont-forget-the-last-sequence",
+    "href": "lectures/lecture5.html#the-fix-dont-forget-the-last-sequence",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "The Fix: Don’t Forget the Last Sequence",
+    "text": "The Fix: Don’t Forget the Last Sequence\nAfter the loop ends, we need to check if there’s a pending sequence that hasn’t been saved yet:\n\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nfor line in fasta_data.strip().split('\\n'):\n    if line.startswith('&gt;'):\n        # Save the previous sequence (if there is one)\n        if current_name:\n            sequences[current_name] = current_seq\n        # Start a new sequence\n        current_name = line[1:].split()[0]\n        current_seq = \"\"\n    else:\n        # Append to current sequence\n        current_seq += line\n\n# Don't forget the last sequence!\nif current_name:\n    sequences[current_name] = current_seq\n\nprint(\"Sequences found:\", list(sequences.keys()))\nprint(f\"Number of sequences: {len(sequences)}\")\n\nSequences found: ['seq1', 'seq2', 'seq3']\nNumber of sequences: 3\n\n\nNow we have all three sequences! Let’s verify by iterating through the dictionary.\nAbout .items(): When iterating over a dictionary, for name, seq in sequences.items(): gives us both the key and value in each iteration. Other options: - for name in sequences: — just the keys - for seq in sequences.values(): — just the values - for name, seq in sequences.items(): — both (most useful)\n\nfor name, seq in sequences.items():\n    print(f\"{name}: {seq[:20]}... (length: {len(seq)})\")\n\nseq1: ATGCGATCGATCGATCGATC... (length: 41)\nseq2: ATATATATGCATGCATATAT... (length: 36)\nseq3: GCGCGCATATATGCGCGCAT... (length: 36)",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
-    "objectID": "lectures/lecture3.html#homework",
-    "href": "lectures/lecture3.html#homework",
-    "title": "Lecture 3: Data analysis ecosystem",
+    "objectID": "lectures/lecture5.html#wrapping-it-in-a-function",
+    "href": "lectures/lecture5.html#wrapping-it-in-a-function",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Wrapping It in a Function",
+    "text": "Wrapping It in a Function\nLet’s create a reusable function:\n\ndef parse_fasta(fasta_string):\n    \"\"\"\n    Parse a FASTA-formatted string into a dictionary.\n    \n    Args:\n        fasta_string: A string containing FASTA-formatted sequences\n        \n    Returns:\n        A dictionary mapping sequence names to sequences\n    \"\"\"\n    sequences = {}\n    current_name = None\n    current_seq = \"\"\n    \n    for line in fasta_string.strip().split('\\n'):\n        if line.startswith('&gt;'):\n            if current_name:\n                sequences[current_name] = current_seq\n            current_name = line[1:].split()[0]\n            current_seq = \"\"\n        else:\n            current_seq += line\n    \n    # Don't forget the last sequence!\n    if current_name:\n        sequences[current_name] = current_seq\n    \n    return sequences\n\n\n# Test our function\nresult = parse_fasta(fasta_data)\nprint(result)\n\n{'seq1': 'ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG', 'seq2': 'ATATATATGCATGCATATATGCATGCATATATATAT', 'seq3': 'GCGCGCATATATGCGCGCATATGCGCGCGCATATAT'}\n\n\n\nHandling Multi-line Sequences\nReal FASTA files often split long sequences across multiple lines (typically 60 or 80 characters per line):\n&gt;seq1 A long sequence\nATGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATC\nGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATC\nGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATC\n&gt;seq2 Another sequence\n...\nGood news: Our parser already handles this correctly! Here’s why:\nThe line current_seq += line appends each sequence line to current_seq. So when we encounter multiple consecutive sequence lines (lines that don’t start with &gt;), they all get concatenated together:\n\n\n\nLine read\nAction\ncurrent_seq\n\n\n\n\n&gt;seq1 ...\nStart new sequence\n\"\"\n\n\nATGCGATC...\nAppend\n\"ATGCGATC...\"\n\n\nGATCGATC...\nAppend\n\"ATGCGATC...GATCGATC...\"\n\n\nGATCGATC...\nAppend\n\"ATGCGATC...GATCGATC...GATCGATC...\"\n\n\n&gt;seq2 ...\nSave seq1, start seq2\n\"\"\n\n\n\nThe key insight: we only save a sequence when we hit the next &gt; (or end of file), so all the intermediate lines get accumulated.\n\n# Let's prove it works with multi-line sequences\nmultiline_example = \"\"\"&gt;gene1 Split across three lines\nATGCGATCGATCGATCGATC\nGGGGCCCCAAAATTTT\nATATATAT\n&gt;gene2 Also multi-line\nCCCCGGGG\nAAAATTTT\n\"\"\"\n\ntest_multiline = parse_fasta(multiline_example)\n\nfor name, seq in test_multiline.items():\n    print(f\"{name}: {seq}\")\n    print(f\"  Length: {len(seq)} bp\\n\")\n\ngene1: ATGCGATCGATCGATCGATCGGGGCCCCAAAATTTTATATATAT\n  Length: 44 bp\n\ngene2: CCCCGGGGAAAATTTT\n  Length: 16 bp",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "5. Py3: Parsing FASTA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture5.html#string-operations-for-sequence-analysis",
+    "href": "lectures/lecture5.html#string-operations-for-sequence-analysis",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "String Operations for Sequence Analysis",
+    "text": "String Operations for Sequence Analysis\nNow that we can parse FASTA files, let’s explore string operations useful for analyzing sequences. These concepts come from Think Python chapters 5, 7, and 8.\n\nString Indexing and Slicing (Chapter 8)\nStrings are sequences of characters. We can access individual characters using indexing and extract substrings using slicing:\n\nseq = result['seq1']\nprint(f\"Full sequence: {seq}\")\nprint(f\"Length: {len(seq)}\")\n\n# Indexing: access individual characters\nprint(f\"\\nFirst nucleotide (index 0): {seq[0]}\")\nprint(f\"Last nucleotide (index -1): {seq[-1]}\")\nprint(f\"Fifth nucleotide (index 4): {seq[4]}\")\n\n# Slicing: extract substrings [start:end]\nprint(f\"\\nFirst 10 nucleotides [0:10]: {seq[0:10]}\")\nprint(f\"Last 10 nucleotides [-10:]: {seq[-10:]}\")\nprint(f\"Middle portion [15:25]: {seq[15:25]}\")\n\nFull sequence: ATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\nLength: 41\n\nFirst nucleotide (index 0): A\nLast nucleotide (index -1): G\nFifth nucleotide (index 4): G\n\nFirst 10 nucleotides [0:10]: ATGCGATCGA\nLast 10 nucleotides [-10:]: GGAATTCCGG\nMiddle portion [15:25]: CGATCGATCG\n\n\n\n\nThe in Operator and Searching (Chapter 7)\nThe in operator checks if a substring exists within a string. This is useful for finding motifs:\n\n# The 'in' operator returns True or False\nprint(\"'ATG' in seq1:\", 'ATG' in seq)\nprint(\"'TATA' in seq1:\", 'TATA' in seq)\nprint(\"'GAATTC' in seq1:\", 'GAATTC' in seq)  # EcoRI restriction site\n\n# Search for restriction sites in all sequences\nrestriction_site = 'GAATTC'  # EcoRI\nfor name, sequence in result.items():\n    if restriction_site in sequence:\n        print(f\"{name}: Contains EcoRI site ({restriction_site})\")\n    else:\n        print(f\"{name}: No EcoRI site found\")\n\n'ATG' in seq1: True\n'TATA' in seq1: False\n'GAATTC' in seq1: True\nseq1: Contains EcoRI site (GAATTC)\nseq2: No EcoRI site found\nseq3: No EcoRI site found\n\n\n\n\nString Methods (Chapter 7 & 8)\nString methods are functions called using dot notation. Here are some useful ones for sequence analysis:\n\n# .count() - count occurrences of a substring\nprint(f\"Number of 'A' in seq1: {seq.count('A')}\")\nprint(f\"Number of 'GC' dinucleotides: {seq.count('GC')}\")\nprint(f\"Number of 'ATG' (start codons): {seq.count('ATG')}\")\n\n# .upper() and .lower() - case conversion\nmixed_case = \"AtGcGaTc\"\nprint(f\"\\nOriginal: {mixed_case}\")\nprint(f\"Upper: {mixed_case.upper()}\")\nprint(f\"Lower: {mixed_case.lower()}\")\n\n# .replace() - substitute substrings\nprint(f\"\\nOriginal seq1: {seq[:20]}...\")\n# Convert DNA to RNA (T → U)\nrna = seq.replace('T', 'U')\nprint(f\"As RNA: {rna[:20]}...\")\n\nNumber of 'A' in seq1: 10\nNumber of 'GC' dinucleotides: 1\nNumber of 'ATG' (start codons): 1\n\nOriginal: AtGcGaTc\nUpper: ATGCGATC\nLower: atgcgatc\n\nOriginal seq1: ATGCGATCGATCGATCGATC...\nAs RNA: AUGCGAUCGAUCGAUCGAUC...\n\n\n\n\nConditionals and Boolean Operators (Chapter 5)\nWe can combine conditions using and, or, and not to create more complex filters:\n\n# Example: combining conditions with and, or, not\nfor name, sequence in result.items():\n    has_start = 'ATG' in sequence\n    is_long = len(sequence) &gt; 35\n    \n    # 'and' - both must be true\n    if has_start and is_long:\n        print(f\"{name}: has start codon AND is long\")\n    \n    # 'or' - at least one must be true\n    if has_start or is_long:\n        print(f\"{name}: has start codon OR is long\")\n    \n    # 'not' - negates the condition\n    if not has_start:\n        print(f\"{name}: does NOT have start codon\")\n\nseq1: has start codon AND is long\nseq1: has start codon OR is long\nseq2: has start codon AND is long\nseq2: has start codon OR is long\nseq3: has start codon AND is long\nseq3: has start codon OR is long\n\n\n\n\nCounters and the Modulus Operator (Chapter 5 & 7)\nA counter starts at 0 and increments when a condition is met. The modulus operator (%) returns the remainder after division—useful for checking divisibility.\n\n# Count adenines using a counter variable\nseq = result['seq1']\n\na_count = 0\nfor nucleotide in seq:\n    if nucleotide == 'A':\n        a_count += 1\n\nprint(f\"Adenines in seq1: {a_count}\")\nprint(f\"(Same as seq.count('A'): {seq.count('A')})\")\n\n# Modulus: check if length is divisible by 3 (complete codons)\nif len(seq) % 3 == 0:\n    print(f\"Length {len(seq)} is divisible by 3\")\nelse:\n    print(f\"Length {len(seq)} has remainder {len(seq) % 3}\")\n\nAdenines in seq1: 10\n(Same as seq.count('A'): 10)\nLength 41 has remainder 2\n\n\n\n\nReading FASTA from Files (Chapter 7 & 8)\nThe with statement safely opens and closes files. We can adapt our parser to read from a file:\n\n# Write our FASTA data to a file\nwith open('example.fasta', 'w') as f:\n    f.write(fasta_data)\nprint(\"Created example.fasta\")\n\n# Read it back using our parse logic\nsequences = {}\ncurrent_name = None\ncurrent_seq = \"\"\n\nwith open('example.fasta', 'r') as f:\n    for line in f:\n        line = line.strip()\n        if line.startswith('&gt;'):\n            if current_name:\n                sequences[current_name] = current_seq\n            current_name = line[1:].split()[0]\n            current_seq = \"\"\n        else:\n            current_seq += line\n    if current_name:\n        sequences[current_name] = current_seq\n\nprint(\"Read from file:\", list(sequences.keys()))\n\nCreated example.fasta\nRead from file: ['seq1', 'seq2', 'seq3']",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "5. Py3: Parsing FASTA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture5.html#using-the-dictionary",
+    "href": "lectures/lecture5.html#using-the-dictionary",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Using the Dictionary",
+    "text": "Using the Dictionary\nNow we can easily access any sequence by name:\n\n# Get a specific sequence\nprint(\"E. coli promoter sequence:\")\nprint(result['seq1'])\n\nE. coli promoter sequence:\nATGCGATCGATCGATCGATCGATCGAATTCCGGAATTCCGG\n\n\n\n# Compare sequence lengths\nfor name, seq in result.items():\n    print(f\"{name}: {len(seq)} nucleotides\")\n\nseq1: 41 nucleotides\nseq2: 36 nucleotides\nseq3: 36 nucleotides",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "5. Py3: Parsing FASTA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture5.html#visualizing-gc-content-across-sequences",
+    "href": "lectures/lecture5.html#visualizing-gc-content-across-sequences",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Visualizing GC Content Across Sequences",
+    "text": "Visualizing GC Content Across Sequences\nNow let’s apply our FASTA parser to a more interesting problem: analyzing GC content in sliding windows across longer sequences. First, let’s define some longer DNA sequences:\n\nimport random\n\nrandom.seed(42)  # Makes results reproducible\n\ndef generate_biased_seq(length, gc_start, gc_end):\n    \"\"\"Generate a sequence with one GC-rich region.\"\"\"\n    seq = []\n    for i in range(length):\n        if gc_start &lt;= i &lt; gc_end:\n            # GC-rich: 70% G/C, 30% A/T\n            seq.append(random.choice('GCGCGCGCAT'))\n        else:\n            # AT-rich: 30% G/C, 70% A/T\n            seq.append(random.choice('ATATATATGC'))\n    return ''.join(seq)\n\n# Create sequences with distinct GC patterns\nseq_ecoli = generate_biased_seq(500, 100, 300)   # GC-rich in middle\nseq_yeast = generate_biased_seq(500, 0, 150)     # GC-rich at start\nseq_human = generate_biased_seq(500, 350, 500)   # GC-rich at end\n\nmultiline_fasta = f\"\"\"&gt;ecoli E. coli genomic region\n{seq_ecoli}\n&gt;yeast Yeast promoter\n{seq_yeast}\n&gt;human Human sequence\n{seq_human}\n\"\"\"\n\nsequences = parse_fasta(multiline_fasta)\n\nfor name, seq in sequences.items():\n    print(f\"{name}: {len(seq)} bp\")\n\necoli: 500 bp\nyeast: 500 bp\nhuman: 500 bp\n\n\n\nGC Content Function\nLet’s define a function to calculate GC content (from Lecture 4):\n\ndef gc_content(sequence):\n    \"\"\"Calculate GC content as a percentage.\"\"\"\n    g = sequence.count('G')\n    c = sequence.count('C')\n    return (g + c) / len(sequence) * 100\n\n\n\nSliding Window Analysis\nA sliding window moves across the sequence, calculating GC content at each position:\n\nimport pandas as pd\n\nwindow_size = 50\ngc_data = []\n\n# For each sequence...\nfor name, seq in sequences.items():\n    # ...slide a window across it\n    for i in range(len(seq) - window_size + 1):\n        window = seq[i:i + window_size]  # Extract 50 bp\n        gc = gc_content(window)           # Calculate GC%\n        gc_data.append({\n            'sequence': name,\n            'position': i,\n            'gc_percent': gc\n        })\n\ndf = pd.DataFrame(gc_data)\ndf.head()\n\n\n\n\n\n\n\n\nsequence\nposition\ngc_percent\n\n\n\n\n0\necoli\n0\n20.0\n\n\n1\necoli\n1\n20.0\n\n\n2\necoli\n2\n22.0\n\n\n3\necoli\n3\n22.0\n\n\n4\necoli\n4\n24.0\n\n\n\n\n\n\n\n\n\nPlotting GC Content Profiles\nNow let’s visualize how GC content varies along each sequence:\n\nimport altair as alt\n\nalt.Chart(df).mark_line().encode(\n    x=alt.X('position:Q', title='Position (bp)'),\n    y=alt.Y('gc_percent:Q', title='GC Content (%)', scale=alt.Scale(domain=[0, 100])),\n    color=alt.Color('sequence:N', title='Sequence'),\n    strokeWidth=alt.value(2)\n).properties(\n    width=600,\n    height=300,\n    title='GC Content in Sliding Windows (50 bp)'\n).configure_legend(\n    orient='bottom'\n)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "5. Py3: Parsing FASTA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture5.html#summary",
+    "href": "lectures/lecture5.html#summary",
+    "title": "Lecture 5: Parsing FASTA Files",
+    "section": "Summary",
+    "text": "Summary\nThis lecture demonstrated Python concepts from Think Python chapters 5, 7, and 8:\nFrom Chapter 5 (Conditionals): - Boolean expressions and comparisons - Logical operators: and, or, not - The modulus operator % for divisibility checks\nFrom Chapter 7 (Iteration and Search): - For loops iterating through strings - The in operator for substring search - Counters for tracking occurrences - String methods: .strip(), .split()\nFrom Chapter 8 (Strings): - String indexing: seq[0], seq[-1] - String slicing: seq[start:end] - String methods: .count(), .upper(), .lower(), .replace(), .startswith() - File operations: open(), reading line by line\nBiological applications: - Parsing FASTA format files - Searching for motifs and restriction sites - Calculating nucleotide composition - Sliding window analysis for GC content - Visualization of sequence properties",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "5. Py3: Parsing FASTA"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture5.html#homework",
+    "href": "lectures/lecture5.html#homework",
+    "title": "Lecture 5: Parsing FASTA Files",
     "section": "Homework",
-    "text": "Homework\n\nChapters 1, 2, 3 from “Think Python”",
+    "text": "Homework\n\nChapters 9, 10, 11 from “Think Python” 3rd edition",
     "crumbs": [
       "Home",
       "Lectures",
-      "3. Data analysis ecosystem"
+      "5. Py3: Parsing FASTA"
     ]
   },
   {
@@ -1142,7 +1245,7 @@
     "href": "index.html#lectures",
     "title": "BMMB554 | Biological data analysis",
     "section": "Lectures",
-    "text": "Lectures\n\n\n\nTable 1: Course schedule\n\n\n\n\n\n#\nDate\nTopic\nDescription\n\n\n\n\n1\nJan 13\nGetting Started with GitHub\n\n\n\n2\nJan 15\nIntroduction to Bash\n\n\n\n3\nJan 20\nData analysis ecosystem\n\n\n\n4\nJan 22\nFASTQ and Quality Scores\n\n\n\n5\nJan 27\nLists and Dictionaries\n\n\n\n6\nJan 29\nFile I/O in Python\n\n\n\n7\nFeb 3\nData Manipulation with Pandas\n\n\n\n8\nFeb 5\n-\n\n\n\n9\nFeb 10\n-\n\n\n\n10\nFeb 12\n-\n\n\n\n11\nFeb 17\n-\n\n\n\n12\nFeb 19\n-\n\n\n\n13\nFeb 24\n-\n\n\n\n14\nFeb 26\n-\n\n\n\n15\nMar 3\n-\n\n\n\n16\nMar 5\n-\n\n\n\n-\n-\nSpring break\n\n\n\n17\nMar 17\n-\n\n\n\n18\nMar 19\n-\n\n\n\n19\nMar 24\n-\n\n\n\n20\nMar 26\n-\n\n\n\n21\nMar 31\n-\n\n\n\n22\nApr 2\n-\n\n\n\n23\nApr 7\n-\n\n\n\n24\nApr 9\n-\n\n\n\n25\nApr 14\n-\n\n\n\n26\nApr 16\n-\n\n\n\n27\nApr 21\n-\n\n\n\n28\nApr 23\n-\n\n\n\n29\nApr 28\n-\n\n\n\n30\nApr 30\n-"
+    "text": "Lectures\n\n\n\nTable 1: Course schedule\n\n\n\n\n\n#\nDate\nTopic\nDescription\n\n\n\n\n1\nJan 13\nGetting Started with GitHub\n\n\n\n2\nJan 15\nIntroduction to Bash\n\n\n\n3\nJan 20\nPy1: Data analysis ecosystem - Crunch, load, visualize\n\n\n\n4\nJan 22\nPy2: Simple sequence manipulation\n\n\n\n5\nJan 27\nPy3: Parsing FASTA\n\n\n\n6\nJan 29\nLists and Dictionaries\n\n\n\n7\nFeb 3\nFile I/O in Python\n\n\n\n8\nFeb 5\nData Manipulation with Pandas\n\n\n\n9\nFeb 10\n-\n\n\n\n10\nFeb 12\n-\n\n\n\n11\nFeb 17\n-\n\n\n\n12\nFeb 19\n-\n\n\n\n13\nFeb 24\n-\n\n\n\n14\nFeb 26\n-\n\n\n\n15\nMar 3\n-\n\n\n\n16\nMar 5\n-\n\n\n\n-\n-\nSpring break\n\n\n\n17\nMar 17\n-\n\n\n\n18\nMar 19\n-\n\n\n\n19\nMar 24\n-\n\n\n\n20\nMar 26\n-\n\n\n\n21\nMar 31\n-\n\n\n\n22\nApr 2\n-\n\n\n\n23\nApr 7\n-\n\n\n\n24\nApr 9\n-\n\n\n\n25\nApr 14\n-\n\n\n\n26\nApr 16\n-\n\n\n\n27\nApr 21\n-\n\n\n\n28\nApr 23\n-\n\n\n\n29\nApr 28\n-\n\n\n\n30\nApr 30\n-"
   },
   {
     "objectID": "index.html#academic-integrity",
