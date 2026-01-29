@@ -27,12 +27,14 @@ website:
             text: "4. Py2: Simple sequence manipulation"
           - href: lectures/lecture5.ipynb
             text: "5. Py3: Parsing FASTA"
-          # - href: lectures/lecture6.ipynb
-          #   text: "6. Lists and Dictionaries"
+          - href: lectures/lecture6.ipynb
+            text: "6. Py4: FASTQ and Quality Scores"
           # - href: lectures/lecture7.ipynb
-          #   text: "7. File I/O in Python"
+          #   text: "7. Lists and Dictionaries"
           # - href: lectures/lecture8.ipynb
-          #   text: "8. Data Manipulation with Pandas"
+          #   text: "8. File I/O in Python"
+          # - href: lectures/lecture9.ipynb
+          #   text: "9. Data Manipulation with Pandas"
 
 format:
   html:
