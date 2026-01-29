@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,9 +103,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -222,7 +219,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#lecture-6-fastq-and-quality-scores" id="toc-lecture-6-fastq-and-quality-scores" class="nav-link active" data-scroll-target="#lecture-6-fastq-and-quality-scores">Lecture 6: FASTQ and Quality Scores</a></li>
   <li><a href="#fastq" id="toc-fastq" class="nav-link" data-scroll-target="#fastq">FASTQ</a>
   <ul class="collapse">
-  <li><a href="#basic-format" id="toc-basic-format" class="nav-link" data-scroll-target="#basic-format">Basic format</a></li>
   <li><a href="#reading-fastq-with-python" id="toc-reading-fastq-with-python" class="nav-link" data-scroll-target="#reading-fastq-with-python">Reading FASTQ with python</a></li>
   <li><a href="#read-name" id="toc-read-name" class="nav-link" data-scroll-target="#read-name">Read name</a></li>
   <li><a href="#quality-values" id="toc-quality-values" class="nav-link" data-scroll-target="#quality-values">Quality values</a>
@@ -270,55 +266,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="fastq" class="level1">
 <h1>FASTQ</h1>
-<p>This notebook explores <a href="https://en.wikipedia.org/wiki/FASTQ_format">FASTQ</a>, the most common format for storing sequencing reads.</p>
-<p>FASTA and FASTQ are rather similar, but FASTQ is almost always used for storing <em>sequencing reads</em> (with associated quality values), whereas FASTA is used for storing all kinds of DNA, RNA or protein sequences (without associated quality values).</p>
-<section id="basic-format" class="level2">
-<h2 class="anchored" data-anchor-id="basic-format">Basic format</h2>
-<p>Here’s a single sequencing read in FASTQ format:</p>
-<pre><code>@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1
-AGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATGAGAGCTCAGAAGTAACAGTTGCTTTCAGTCCCATAAAAACAGTCCTACAA
-+
-BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFFEHGGFGGDGHGFEEHFFHGE</code></pre>
-<p>It’s spread across four lines. The four lines are:</p>
-<ol type="1">
-<li>“<code>@</code>” followed by a read name</li>
-<li>Nucleotide sequence</li>
-<li>“<code>+</code>”, possibly followed by some info, but ignored by virtually all tools</li>
-<li>Quality sequence (explained below)</li>
-</ol>
-</section>
+<p>This notebook explores <a href="https://en.wikipedia.org/wiki/FASTQ_format">FASTQ</a>, the most common format for storing sequencing reads.FASTA and FASTQ are rather similar, but FASTQ is almost always used for storing <em>sequencing reads</em> (with associated quality values), whereas FASTA is used for storing all kinds of DNA, RNA or protein sequences (without associated quality values).</p>
 <section id="reading-fastq-with-python" class="level2">
 <h2 class="anchored" data-anchor-id="reading-fastq-with-python">Reading FASTQ with python</h2>
-<p>Download a sample small fastq file:</p>
-<div id="cell-6" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!curl -sLO https://zenodo.org/records/10602772/files/fastq_single_end_long.fq</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>zenodo.org<span class="op">/</span>records<span class="op">/</span><span class="dv">10602772</span><span class="op">/</span>files<span class="op">/</span>fastq_single_end_short.fq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Download a sample small FASTQ file:</p>
+<div id="cell-9" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!curl -sLO https://zenodo.org/records/10602772/files/fastq_single_end_long.fq</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>zenodo.org<span class="op">/</span>records<span class="op">/</span><span class="dv">10602772</span><span class="op">/</span>files<span class="op">/</span>fastq_single_end_short.fq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we will use a very simple Python function to read this file and load fastq data into a list:### Understanding the <code>parse_fastq()</code> function&gt; <strong>📝 New Python concepts:</strong> This function introduces <strong>function definitions</strong>, <strong>while loops</strong>, <strong>string methods</strong>, and <strong>file handling</strong>.&gt;&gt; 📚 <strong>Think Python:</strong> <a href="https://greenteapress.com/thinkpython/html/thinkpython010.html">Ch. 9 - Lists</a> (lists, append) | <a href="https://greenteapress.com/thinkpython/html/thinkpython012.html">Ch. 11 - Tuples</a> (tuples)<strong>Line-by-line breakdown:</strong>| Line | Code | Explanation ||——|——|————-|| 1 | <code>def parse_fastq(fh):</code> | <code>def</code> creates a function named <code>parse_fastq</code>. <code>fh</code> is a <strong>parameter</strong>—a placeholder for whatever file handle we pass in when calling the function. || 3 | <code>reads = []</code> | Creates an empty list to store our results. <em>(Ch. 9: Lists)</em> || 4 | <code>while True:</code> | Starts an infinite loop. We’ll use <code>break</code> to exit when done. || 5 | <code>first_line = fh.readline()</code> | <code>readline()</code> reads one line from the file and moves to the next. || 6 | <code>if len(first_line) == 0:</code> | When we reach end-of-file, <code>readline()</code> returns an empty string (length 0). || 7 | <code>break</code> | Exits the <code>while</code> loop immediately. || 8-9 | <code>if not first_line.startswith('@'):</code> | <code>startswith('@')</code> returns <code>True</code> if the string begins with <code>@</code>. If not, something’s wrong with the file. || 10 | <code>name = first_line[1:].rstrip()</code> | <code>[1:]</code> is <strong>slicing</strong>—takes everything from position 1 onward (skips the <code>@</code>). <code>rstrip()</code> removes trailing whitespace/newlines. <em>(Ch. 9: Slicing)</em> || 11-13 | <code>seq = fh.readline().rstrip()</code> | Reads the sequence line, the <code>+</code> line (ignored), and quality line. || 14 | <code>reads.append((name, seq, qual))</code> | Creates a <strong>tuple</strong> <code>(name, seq, qual)</code> and adds it to our list. <em>(Ch. 9: append; Ch. 11: Tuples)</em> || 15 | <code>return reads</code> | Sends the completed list back to whoever called the function. || 17 | <code>with open(...) as fq:</code> | <strong>Context manager</strong>—opens file safely and auto-closes it when done. || 20 | <code>for read in reads:</code> | Loops through each tuple in the list. <em>(Ch. 9: Iteration)</em> |</p>
-<div id="cell-8" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_fastq(fh):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Parse reads from a FASTQ filehandle.  For each read, we</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">        return a name, nucleotide-string, quality-string triple. """</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    reads <span class="op">=</span> []</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        first_line <span class="op">=</span> fh.readline()</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(first_line) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span>  <span class="co"># end of file</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> first_line.startswith(<span class="st">'@'</span>):</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Expected '@' at start of FASTQ record, got: </span><span class="sc">{</span>first_line[:<span class="dv">20</span>]<span class="sc">!r}</span><span class="ss">"</span>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        name <span class="op">=</span> first_line[<span class="dv">1</span>:].rstrip()</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        seq <span class="op">=</span> fh.readline().rstrip()</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        fh.readline()  <span class="co"># ignore line starting with +</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        qual <span class="op">=</span> fh.readline().rstrip()</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        reads.append((name, seq, qual))</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> reads</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'fastq_single_end_short.fq'</span>,<span class="st">'r'</span>) <span class="im">as</span> fq:</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    reads <span class="op">=</span> parse_fastq(fq)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> read <span class="kw">in</span> reads:</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(read)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-11" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_fastq(fh):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Parse reads from a FASTQ filehandle.  For each read, we</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">        return a name, nucleotide-string, quality-string triple. """</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    reads <span class="op">=</span> []</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        first_line <span class="op">=</span> fh.readline()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(first_line) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span>  <span class="co"># end of file</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> first_line.startswith(<span class="st">'@'</span>):</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Expected '@' at start of FASTQ record, got: </span><span class="sc">{</span>first_line[:<span class="dv">20</span>]<span class="sc">!r}</span><span class="ss">"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        name <span class="op">=</span> first_line[<span class="dv">1</span>:].rstrip()</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        seq <span class="op">=</span> fh.readline().rstrip()</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        fh.readline()  <span class="co"># ignore line starting with +</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        qual <span class="op">=</span> fh.readline().rstrip()</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        reads.append((name, seq, qual))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> reads</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'fastq_single_end_short.fq'</span>,<span class="st">'r'</span>) <span class="im">as</span> fq:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    reads <span class="op">=</span> parse_fastq(fq)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> read <span class="kw">in</span> reads:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(read)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>('ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1', 'AGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATG', 'BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGF')
 ('ERR294379.136275489 HS24_09441:8:2311:1917:99340#42/1', 'CTTAAGTATTTTGAAAGTTAACATAAGTTATTCTCAGAGAGACTGCTTTT', '@@AHFF?EEDEAF?FEEGEFD?GGFEFGECGE?9H?EEABFAG9@CDGGF')
@@ -335,80 +315,68 @@ BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFF
 </section>
 <section id="read-name" class="level2">
 <h2 class="anchored" data-anchor-id="read-name">Read name</h2>
-<p>Read names often contain information about:</p>
-<ol type="1">
-<li>The scientific study for which the read was sequenced. E.g. the string <code>ERR294379</code> (an <a href="http://www.ebi.ac.uk/ena/about/sra_format">SRA accession number</a>) in the read names correspond to <a href="http://www.ncbi.nlm.nih.gov/sra/?term=ERR294379">this study</a>.</li>
-<li>The sequencing instrument, and the exact <em>part</em> of the sequencing instrument, where the DNA was sequenced. See the <a href="http://en.wikipedia.org/wiki/FASTQ_format#Illumina_sequence_identifiers">FASTQ format</a> Wikipedia article for specifics on how the Illumina software encodes this information.</li>
-<li>Whether the read is part of a <em>paired-end read</em> and, if so, which end it is. The <code>/1</code> you see at the end of the read names above indicates the read is the first end from a paired-end read.</li>
-</ol>
+<p>Read names often contain information about:1. The scientific study for which the read was sequenced. E.g. the string <code>ERR294379</code> (an <a href="http://www.ebi.ac.uk/ena/about/sra_format">SRA accession number</a>) in the read names correspond to <a href="http://www.ncbi.nlm.nih.gov/sra/?term=ERR294379">this study</a>.2. The sequencing instrument, and the exact <em>part</em> of the sequencing instrument, where the DNA was sequenced. See the <a href="http://en.wikipedia.org/wiki/FASTQ_format#Illumina_sequence_identifiers">FASTQ format</a> Wikipedia article for specifics on how the Illumina software encodes this information.3. Whether the read is part of a <em>paired-end read</em> and, if so, which end it is. The <code>/1</code> you see at the end of the read names above indicates the read is the first end from a paired-end read.</p>
 </section>
 <section id="quality-values" class="level2">
 <h2 class="anchored" data-anchor-id="quality-values">Quality values</h2>
-<p>Quality values are probabilities. Each nucleotide in each sequencing read has an associated quality value. A nucleotide quality value encodes the probability that the nucleotide was <em>incorrectly called</em> by the sequencing instrument and its software. If the nucleotide is <code>A</code>, the corresponding quality value encodes the probability that the nucleotide at that position is actually <em>not</em> an <code>A</code>.</p>
-<p>Quality values are encoded in two senses: first, the relevant probabilities are re-scaled using the Phred scale, which is a negative log scale. In other words if <em>p</em> is the probability that the nucleotide was incorrectly called, we encode this as <em>Q</em> where <em>Q</em> = -10 * log10(<em>p</em>).</p>
-<blockquote class="blockquote">
-<p><strong>💡 Why Phred scale?</strong> Error probabilities span a huge range (0.1 to 0.00001). The log transformation compresses this into manageable integers (10 to 50) that fit in a single ASCII character.</p>
-</blockquote>
-<p>For example: - If <em>Q</em> = 30, then <em>p</em> = 0.001, a 1-in-1000 chance that the nucleotide is wrong - If <em>Q</em> = 20, then <em>p</em> = 0.01, a 1-in-100 chance - If <em>Q</em> = 10, then <em>p</em> = 0.1, a 1-in-10 chance</p>
-<p>Second, scaled quality values are <em>rounded</em> to the nearest integer and encoded using <a href="http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII printable characters</a>. For example, using the Phred33 encoding (which is by far the most common), a <em>Q</em> of 30 is encoded as the ASCII character with code 33 + 30 = 63, which is “<code>?</code>”. A <em>Q</em> of 20 is encoded as the ASCII character with code 33 + 20 = 53, which is “<code>5</code>”.</p>
-<p>Let’s define some relevant Python functions:</p>
+<p>Quality values are probabilities. Each nucleotide in each sequencing read has an associated quality value. A nucleotide quality value encodes the probability that the nucleotide was <em>incorrectly called</em> by the sequencing instrument and its software. If the nucleotide is <code>A</code>, the corresponding quality value encodes the probability that the nucleotide at that position is actually <em>not</em> an <code>A</code>.Quality values are encoded in two senses: first, the relevant probabilities are re-scaled using the Phred scale, which is a negative log scale.In other words if <em>p</em> is the probability that the nucleotide was incorrectly called, we encode this as <em>Q</em> where <em>Q</em> = -10 * log10(<em>p</em>).&gt; <strong>💡 Why Phred scale?</strong> Error probabilities span a huge range (0.1 to 0.00001). The log transformation compresses this into manageable integers (10 to 50) that fit in a single ASCII character.For example:- If <em>Q</em> = 30, then <em>p</em> = 0.001, a 1-in-1000 chance that the nucleotide is wrong- If <em>Q</em> = 20, then <em>p</em> = 0.01, a 1-in-100 chance- If <em>Q</em> = 10, then <em>p</em> = 0.1, a 1-in-10 chanceSecond, scaled quality values are <em>rounded</em> to the nearest integer and encoded using <a href="http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII printable characters</a>. For example, using the Phred33 encoding (which is by far the most common), a <em>Q</em> of 30 is encoded as the ASCII character with code 33 + 30 = 63, which is “<code>?</code>”. A <em>Q</em> of 20 is encoded as the ASCII character with code 33 + 20 = 53, which is “<code>5</code>”.Let’s define some relevant Python functions:</p>
 <section id="understanding-the-quality-conversion-functionsthese-four-functions-convert-between-different-representations-of-quality-scores.-heres-what-each-one-does-new-python-concepts-ord-and-chr-are-built-in-functions-for-working-with-ascii-characters.-exponentiation-raises-a-number-to-a-power.-function-purpose-key-code-explained----phred33_to_q-character-q-score-ordqual-returns-the-ascii-code-number-for-a-character-e.g.-ord-63.-subtract-33-to-get-q.-q_to_phred33-q-score-character-chrq-33-does-the-reverseconverts-a-number-to-its-ascii-character-e.g.-chr63-.-q_to_p-q-score-probability-10.0--0.1-q-is-the-formula-p-10-q10.-we-use-10.0-float-to-ensure-decimal-division.-p_to_q-probability-q-score-math.log10p-computes-log-base-10.-intround...-rounds-to-nearest-integer-then-converts-to-int.-example-walkthrough-for-q30q_to_p30-10.0--0.1-30-10.0--3-0.001this-means-a-1-in-1000-chance-the-base-call-is-wrong." class="level3">
 <h3 class="anchored" data-anchor-id="understanding-the-quality-conversion-functionsthese-four-functions-convert-between-different-representations-of-quality-scores.-heres-what-each-one-does-new-python-concepts-ord-and-chr-are-built-in-functions-for-working-with-ascii-characters.-exponentiation-raises-a-number-to-a-power.-function-purpose-key-code-explained----phred33_to_q-character-q-score-ordqual-returns-the-ascii-code-number-for-a-character-e.g.-ord-63.-subtract-33-to-get-q.-q_to_phred33-q-score-character-chrq-33-does-the-reverseconverts-a-number-to-its-ascii-character-e.g.-chr63-.-q_to_p-q-score-probability-10.0--0.1-q-is-the-formula-p-10-q10.-we-use-10.0-float-to-ensure-decimal-division.-p_to_q-probability-q-score-math.log10p-computes-log-base-10.-intround...-rounds-to-nearest-integer-then-converts-to-int.-example-walkthrough-for-q30q_to_p30-10.0--0.1-30-10.0--3-0.001this-means-a-1-in-1000-chance-the-base-call-is-wrong.">Understanding the quality conversion functionsThese four functions convert between different representations of quality scores. Here’s what each one does:&gt; <strong>📝 New Python concepts:</strong> <strong><code>ord()</code></strong> and <strong><code>chr()</code></strong> are built-in functions for working with ASCII characters. <strong>Exponentiation</strong> (<code>**</code>) raises a number to a power.| Function | Purpose | Key code explained ||———-|———|——————-|| <code>phred33_to_q()</code> | Character → Q score | <code>ord(qual)</code> returns the ASCII code number for a character (e.g., <code>ord('?')</code> → 63). Subtract 33 to get Q. || <code>q_to_phred33()</code> | Q score → Character | <code>chr(Q + 33)</code> does the reverse—converts a number to its ASCII character (e.g., <code>chr(63)</code> → ‘?’). || <code>q_to_p()</code> | Q score → Probability | <code>10.0 ** (-0.1 * Q)</code> is the formula <em>p</em> = 10^(-Q/10). We use <code>10.0</code> (float) to ensure decimal division. || <code>p_to_q()</code> | Probability → Q score | <code>math.log10(p)</code> computes log base 10. <code>int(round(...))</code> rounds to nearest integer then converts to int. |<strong>Example walkthrough</strong> for Q=30:<code>q_to_p(30) = 10.0 ** (-0.1 * 30) = 10.0 ** (-3) = 0.001</code>This means a 1-in-1000 chance the base call is wrong.</h3>
-<div id="cell-13" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phred33_to_q(qual):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn Phred+33 ASCII-encoded quality into Phred-scaled integer """</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">ord</span>(qual)<span class="op">-</span><span class="dv">33</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_phred33(Q):</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn Phred-scaled integer into Phred+33 ASCII-encoded quality """</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">chr</span>(Q <span class="op">+</span> <span class="dv">33</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_p(Q):</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn Phred-scaled integer into error probability """</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">10.0</span> <span class="op">**</span> (<span class="op">-</span><span class="fl">0.1</span> <span class="op">*</span> Q)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> p_to_q(p):</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn error probability into Phred-scaled integer """</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> math</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(<span class="bu">round</span>(<span class="op">-</span><span class="fl">10.0</span> <span class="op">*</span> math.log10(p)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-18" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phred33_to_q(qual):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn Phred+33 ASCII-encoded quality into Phred-scaled integer """</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">ord</span>(qual)<span class="op">-</span><span class="dv">33</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_phred33(Q):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn Phred-scaled integer into Phred+33 ASCII-encoded quality """</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">chr</span>(Q <span class="op">+</span> <span class="dv">33</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_p(Q):</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn Phred-scaled integer into error probability """</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">10.0</span> <span class="op">**</span> (<span class="op">-</span><span class="fl">0.1</span> <span class="op">*</span> Q)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> p_to_q(p):</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Turn error probability into Phred-scaled integer """</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> math</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(<span class="bu">round</span>(<span class="op">-</span><span class="fl">10.0</span> <span class="op">*</span> math.log10(p)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="cell-14" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Here are the examples discussed above</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Qs into ps</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>q_to_p(<span class="dv">30</span>), q_to_p(<span class="dv">20</span>), q_to_p(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-19" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Here are the examples discussed above</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Qs into ps</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>q_to_p(<span class="dv">30</span>), q_to_p(<span class="dv">20</span>), q_to_p(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>(0.001, 0.01, 0.1)</code></pre>
 </div>
 </div>
-<div id="cell-15" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p_to_q(<span class="fl">0.00011</span>) <span class="co"># note that the result is rounded</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-20" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>p_to_q(<span class="fl">0.00011</span>) <span class="co"># note that the result is rounded</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>40</code></pre>
 </div>
 </div>
-<div id="cell-16" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>q_to_phred33(<span class="dv">30</span>), q_to_phred33(<span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-21" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>q_to_phred33(<span class="dv">30</span>), q_to_phred33(<span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>('?', '5')</code></pre>
 </div>
 </div>
 <p>To convert an entire string of Phred33-encoded quality values into the corresponding <em>Q</em> or <em>p</em> values, we can do the following:### Understanding this code block&gt; <strong>📝 New Python concepts:</strong> <strong><code>StringIO</code></strong> lets you treat a string as if it were a file. <strong>Tuple unpacking</strong> assigns multiple variables at once. <strong><code>map()</code></strong> applies a function to every element.&gt;&gt; 📚 <strong>Think Python:</strong> <a href="https://greenteapress.com/thinkpython/html/thinkpython010.html">Ch. 9 - Lists</a> | <a href="https://greenteapress.com/thinkpython/html/thinkpython012.html">Ch. 11 - Tuples</a> (tuple assignment)| Line | Code | Explanation ||——|——|————-|| 1 | <code>from io import StringIO</code> | Imports <code>StringIO</code> from the <code>io</code> module—lets us treat a string like a file. || 3-7 | <code>fastq_string = '''...'''</code> | Triple quotes create a multi-line string containing one FASTQ record. || 10 | <code>parse_fastq(StringIO(fastq_string))</code> | <code>StringIO(fastq_string)</code> wraps our string so <code>parse_fastq()</code> can read it like a file. || 10 | <code>...[0]</code> | Gets the first (and only) read from the returned list. <em>(Ch. 9: Indexing)</em> || 10 | <code>name, seq, qual = ...</code> | <strong>Tuple unpacking</strong>—the tuple <code>(name, seq, qual)</code> is split into 3 separate variables. <em>(Ch. 11: Tuple Assignment)</em> || 11 | <code>list(map(phred33_to_q, qual))</code> | <code>map()</code> applies <code>phred33_to_q</code> to each character in <code>qual</code>. <code>list()</code> converts the result to a list. || 12 | <code>list(map(q_to_p, q_string))</code> | Same pattern—applies <code>q_to_p</code> to each Q score. |<strong>Why <code>StringIO</code>?</strong> Our <code>parse_fastq()</code> function expects a file handle (something it can call <code>.readline()</code> on). <code>StringIO</code> makes a string behave like a file, so we can test our parser without creating an actual file.</p>
-<div id="cell-18" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> StringIO</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>fastq_string <span class="op">=</span> <span class="st">'''@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="st">AGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATG</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="st">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="st">BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGF</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="st">'''</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Take the first read from the small example above</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>name, seq, qual <span class="op">=</span> parse_fastq(StringIO(fastq_string))[<span class="dv">0</span>]</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>q_string <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(phred33_to_q, qual))</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>p_string <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(q_to_p, q_string))</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(q_string)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(p_string)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-23" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> StringIO</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fastq_string <span class="op">=</span> <span class="st">'''@ERR294379.100739024 HS24_09441:8:2203:17450:94030#42/1</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">AGGGAGTCCACAGCACAGTCCAGACTCCCACCAGTTCTGACGAAATGATG</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="st">BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGF</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="st">'''</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Take the first read from the small example above</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>name, seq, qual <span class="op">=</span> parse_fastq(StringIO(fastq_string))[<span class="dv">0</span>]</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>q_string <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(phred33_to_q, qual))</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>p_string <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(q_to_p, q_string))</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(q_string)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(p_string)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[33, 35, 35, 36, 36, 37, 30, 37, 38, 37, 37, 37, 39, 38, 37, 37, 39, 39, 38, 39, 38, 38, 39, 34, 39, 31, 38, 39, 39, 39, 38, 37, 32, 39, 36, 38, 37, 36, 39, 38, 36, 37, 38, 39, 34, 34, 38, 38, 38, 37]
 [0.000501187233627272, 0.00031622776601683794, 0.00031622776601683794, 0.00025118864315095795, 0.00025118864315095795, 0.00019952623149688788, 0.001, 0.00019952623149688788, 0.00015848931924611126, 0.00019952623149688788, 0.00019952623149688788, 0.00019952623149688788, 0.0001258925411794166, 0.00015848931924611126, 0.00019952623149688788, 0.00019952623149688788, 0.0001258925411794166, 0.0001258925411794166, 0.00015848931924611126, 0.0001258925411794166, 0.00015848931924611126, 0.00015848931924611126, 0.0001258925411794166, 0.0003981071705534969, 0.0001258925411794166, 0.0007943282347242813, 0.00015848931924611126, 0.0001258925411794166, 0.0001258925411794166, 0.0001258925411794166, 0.00015848931924611126, 0.00019952623149688788, 0.000630957344480193, 0.0001258925411794166, 0.00025118864315095795, 0.00015848931924611126, 0.00019952623149688788, 0.00025118864315095795, 0.0001258925411794166, 0.00015848931924611126, 0.00025118864315095795, 0.00019952623149688788, 0.00015848931924611126, 0.0001258925411794166, 0.0003981071705534969, 0.0003981071705534969, 0.00015848931924611126, 0.00015848931924611126, 0.00015848931924611126, 0.00019952623149688788]</code></pre>
@@ -424,147 +392,53 @@ BDDEEF?FGFFFHGFFHHGHGGHCH@GHHHGFAHEGFEHGEFGHCCGGGFEGFGFFDFFHBGDGFHGEFGHFGHGFGFFF
 <section id="how-good-are-my-reads" class="level2">
 <h2 class="anchored" data-anchor-id="how-good-are-my-reads">How good are my reads?</h2>
 <p>Let’s analyze the quality distribution across all reads in our FASTQ file. First, reload the reads:</p>
-<div id="cell-21" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload reads from file</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'fastq_single_end_short.fq'</span>,<span class="st">'r'</span>) <span class="im">as</span> fq:</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    reads <span class="op">=</span> parse_fastq(fq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-27" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload reads from file</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'fastq_single_end_short.fq'</span>,<span class="st">'r'</span>) <span class="im">as</span> fq:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    reads <span class="op">=</span> parse_fastq(fq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="understanding-nested-list-comprehensionsthe-next-cell-uses-a-nested-list-comprehensiona-compact-way-to-create-a-list-of-lists.-lets-break-it-down-new-python-concept-list-comprehensions-are-a-concise-way-to-create-lists.-the-syntax-expression-for-item-in-iterable-creates-a-new-list-by-applying-expression-to-each-item.-think-python-ch.-9---lists-ch.-11---tuples-tuple-indexingthe-code-phred33_to_qq-for-q-in-read2-for-read-in-readsstep-by-step-breakdown1.-outer-loop-for-read-in-reads-iterates-through-each-read-tuple-ch.-9-iteration2.-access-quality-string-read2-gets-the-3rd-element-quality-string-from-the-tuple-ch.-11-tuple-indexing3.-inner-loop-for-q-in-read2-iterates-through-each-character-in-the-quality-string4.-transform-phred33_to_qq-converts-each-character-to-a-q-scoreequivalent-using-regular-loopspythonrun_qualities-for-read-in-reads-outer-loop-qual_scores-for-q-in-read2-inner-loop-over-quality-string-qual_scores.appendphred33_to_qq-run_qualities.appendqual_scoresresult-structure-a-list-of-lists-where-each-inner-list-contains-the-q-scores-for-one-read.-ch.-9-nested-lists" class="level3">
 <h3 class="anchored" data-anchor-id="understanding-nested-list-comprehensionsthe-next-cell-uses-a-nested-list-comprehensiona-compact-way-to-create-a-list-of-lists.-lets-break-it-down-new-python-concept-list-comprehensions-are-a-concise-way-to-create-lists.-the-syntax-expression-for-item-in-iterable-creates-a-new-list-by-applying-expression-to-each-item.-think-python-ch.-9---lists-ch.-11---tuples-tuple-indexingthe-code-phred33_to_qq-for-q-in-read2-for-read-in-readsstep-by-step-breakdown1.-outer-loop-for-read-in-reads-iterates-through-each-read-tuple-ch.-9-iteration2.-access-quality-string-read2-gets-the-3rd-element-quality-string-from-the-tuple-ch.-11-tuple-indexing3.-inner-loop-for-q-in-read2-iterates-through-each-character-in-the-quality-string4.-transform-phred33_to_qq-converts-each-character-to-a-q-scoreequivalent-using-regular-loopspythonrun_qualities-for-read-in-reads-outer-loop-qual_scores-for-q-in-read2-inner-loop-over-quality-string-qual_scores.appendphred33_to_qq-run_qualities.appendqual_scoresresult-structure-a-list-of-lists-where-each-inner-list-contains-the-q-scores-for-one-read.-ch.-9-nested-lists">Understanding nested list comprehensionsThe next cell uses a <strong>nested list comprehension</strong>—a compact way to create a list of lists. Let’s break it down:&gt; <strong>📝 New Python concept:</strong> <strong>List comprehensions</strong> are a concise way to create lists. The syntax <code>[expression for item in iterable]</code> creates a new list by applying <code>expression</code> to each <code>item</code>.&gt;&gt; 📚 <strong>Think Python:</strong> <a href="https://greenteapress.com/thinkpython/html/thinkpython010.html">Ch. 9 - Lists</a> | <a href="https://greenteapress.com/thinkpython/html/thinkpython012.html">Ch. 11 - Tuples</a> (tuple indexing)<strong>The code:</strong> <code>[[phred33_to_q(q) for q in read[2]] for read in reads]</code><strong>Step-by-step breakdown:</strong>1. <strong>Outer loop</strong>: <code>for read in reads</code> — iterates through each read tuple <em>(Ch. 9: Iteration)</em>2. <strong>Access quality string</strong>: <code>read[2]</code> — gets the 3rd element (quality string) from the tuple <em>(Ch. 11: Tuple indexing)</em>3. <strong>Inner loop</strong>: <code>for q in read[2]</code> — iterates through each character in the quality string4. <strong>Transform</strong>: <code>phred33_to_q(q)</code> — converts each character to a Q score<strong>Equivalent using regular loops:</strong><code>pythonrun_qualities = []for read in reads:                    # outer loop    qual_scores = []    for q in read[2]:                 # inner loop over quality string        qual_scores.append(phred33_to_q(q))    run_qualities.append(qual_scores)</code><strong>Result structure:</strong> A list of lists, where each inner list contains the Q scores for one read. <em>(Ch. 9: Nested lists)</em></h3>
-<div id="cell-23" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract qualities and convert to numerical values using list comprehension</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>run_qualities <span class="op">=</span> [[phred33_to_q(q) <span class="cf">for</span> q <span class="kw">in</span> read[<span class="dv">2</span>]] <span class="cf">for</span> read <span class="kw">in</span> reads]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-29" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract qualities and convert to numerical values using list comprehension</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>run_qualities <span class="op">=</span> [[phred33_to_q(q) <span class="cf">for</span> q <span class="kw">in</span> read[<span class="dv">2</span>]] <span class="cf">for</span> read <span class="kw">in</span> reads]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="understanding-numpy-arrays-and-transposewe-need-to-transpose-this-matrix-so-that-instead-of-rows-reads-and-columns-positions-we-get-rows-positions-and-columns-reads.-this-lets-us-compute-statistics-per-position-across-all-readsbefore-rowsreads-after-rowspositionsread1-q1-q2-q3-pos1-q1_r1-q1_r2-q1_r3read2-q1-q2-q3-pos2-q2_r1-q2_r2-q2_r3read3-q1-q2-q3-pos3-q3_r1-q3_r2-q3_r3-new-python-concepts-numpy-is-a-library-for-numerical-computing.-np.array-converts-lists-to-arrays.-.t-transposes-swaps-rows-and-columns.-code-explanation---import-numpy-as-np-imports-numpy-library-conventionally-aliased-as-np.-np.arrayrun_qualities-converts-our-list-of-lists-into-a-numpy-arraya-grid-like-structure-optimized-for-math-operations.-.t-the-transpose-attributeswaps-rows-and-columns.-equivalent-to-np.transposearray.-why-numpy-python-lists-are-flexible-but-slow-for-math.-numpy-arrays-are-optimized-for-numerical-operations-and-can-compute-statistics-across-entire-rowscolumns-efficiently." class="level3">
 <h3 class="anchored" data-anchor-id="understanding-numpy-arrays-and-transposewe-need-to-transpose-this-matrix-so-that-instead-of-rows-reads-and-columns-positions-we-get-rows-positions-and-columns-reads.-this-lets-us-compute-statistics-per-position-across-all-readsbefore-rowsreads-after-rowspositionsread1-q1-q2-q3-pos1-q1_r1-q1_r2-q1_r3read2-q1-q2-q3-pos2-q2_r1-q2_r2-q2_r3read3-q1-q2-q3-pos3-q3_r1-q3_r2-q3_r3-new-python-concepts-numpy-is-a-library-for-numerical-computing.-np.array-converts-lists-to-arrays.-.t-transposes-swaps-rows-and-columns.-code-explanation---import-numpy-as-np-imports-numpy-library-conventionally-aliased-as-np.-np.arrayrun_qualities-converts-our-list-of-lists-into-a-numpy-arraya-grid-like-structure-optimized-for-math-operations.-.t-the-transpose-attributeswaps-rows-and-columns.-equivalent-to-np.transposearray.-why-numpy-python-lists-are-flexible-but-slow-for-math.-numpy-arrays-are-optimized-for-numerical-operations-and-can-compute-statistics-across-entire-rowscolumns-efficiently.">Understanding NumPy arrays and transposeWe need to <a href="https://en.wikipedia.org/wiki/Transpose">transpose</a> this matrix so that instead of rows = reads and columns = positions, we get rows = positions and columns = reads. This lets us compute statistics <em>per position</em> across all reads:<code>Before (rows=reads):     After (rows=positions):Read1: [Q1, Q2, Q3]      Pos1: [Q1_r1, Q1_r2, Q1_r3]Read2: [Q1, Q2, Q3]  =&gt;  Pos2: [Q2_r1, Q2_r2, Q2_r3]Read3: [Q1, Q2, Q3]      Pos3: [Q3_r1, Q3_r2, Q3_r3]</code>&gt; <strong>📝 New Python concepts:</strong> <strong>NumPy</strong> is a library for numerical computing. <strong><code>np.array()</code></strong> converts lists to arrays. <strong><code>.T</code></strong> transposes (swaps rows and columns).| Code | Explanation ||——|————-|| <code>import numpy as np</code> | Imports NumPy library, conventionally aliased as <code>np</code>. || <code>np.array(run_qualities)</code> | Converts our list of lists into a NumPy array—a grid-like structure optimized for math operations. || <code>.T</code> | The <strong>transpose</strong> attribute—swaps rows and columns. Equivalent to <code>np.transpose(array)</code>. |<strong>Why NumPy?</strong> Python lists are flexible but slow for math. NumPy arrays are optimized for numerical operations and can compute statistics across entire rows/columns efficiently.</h3>
-<div id="cell-25" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transpose using numpy</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>base_qualities <span class="op">=</span> np.array(run_qualities).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-31" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transpose using numpy</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>base_qualities <span class="op">=</span> np.array(run_qualities).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="understanding-pandas-dataframesnow-well-compute-summary-statistics-for-each-position-and-store-them-in-a-pandas-dataframea-table-like-structure-perfect-for-data-analysis.-new-python-concepts-pandas-is-a-data-analysis-library.-pd.dataframe-creates-a-table-from-a-dictionary.-range-generates-a-sequence-of-numbers.-think-python-ch.-9---lists-list-comprehensions-ch.-10---dictionaries-dict-syntax-code-explanation---import-pandas-as-pd-imports-pandas-conventionally-aliased-as-pd.-pd.dataframe...-creates-a-table-where-each-key-becomes-a-column-name-and-each-value-becomes-column-data.-ch.-10-dictionaries-rangelenbase_qualities-generates-numbers-0-1-2-up-to-the-number-of-positions.-these-become-row-indices.-np.meanb-for-b-in-base_qualities-list-comprehension-that-computes-the-mean-of-each-row-position-in-our-transposed-array.-ch.-9-lists-np.quantileb-.25-computes-the-25th-percentilethe-value-below-which-25-of-data-falls.-numpy-statistics-functions-function-what-it-computes---np.meanb-average-sum-divided-by-count-np.medianb-middle-value-when-sorted-np.quantileb-.25-25th-percentile-np.quantileb-.75-75th-percentile-np.minb-np.maxb-smallest-and-largest-values" class="level3">
 <h3 class="anchored" data-anchor-id="understanding-pandas-dataframesnow-well-compute-summary-statistics-for-each-position-and-store-them-in-a-pandas-dataframea-table-like-structure-perfect-for-data-analysis.-new-python-concepts-pandas-is-a-data-analysis-library.-pd.dataframe-creates-a-table-from-a-dictionary.-range-generates-a-sequence-of-numbers.-think-python-ch.-9---lists-list-comprehensions-ch.-10---dictionaries-dict-syntax-code-explanation---import-pandas-as-pd-imports-pandas-conventionally-aliased-as-pd.-pd.dataframe...-creates-a-table-where-each-key-becomes-a-column-name-and-each-value-becomes-column-data.-ch.-10-dictionaries-rangelenbase_qualities-generates-numbers-0-1-2-up-to-the-number-of-positions.-these-become-row-indices.-np.meanb-for-b-in-base_qualities-list-comprehension-that-computes-the-mean-of-each-row-position-in-our-transposed-array.-ch.-9-lists-np.quantileb-.25-computes-the-25th-percentilethe-value-below-which-25-of-data-falls.-numpy-statistics-functions-function-what-it-computes---np.meanb-average-sum-divided-by-count-np.medianb-middle-value-when-sorted-np.quantileb-.25-25th-percentile-np.quantileb-.75-75th-percentile-np.minb-np.maxb-smallest-and-largest-values">Understanding pandas DataFramesNow we’ll compute summary statistics for each position and store them in a <strong>pandas DataFrame</strong>—a table-like structure perfect for data analysis.&gt; <strong>📝 New Python concepts:</strong> <strong>pandas</strong> is a data analysis library. <strong><code>pd.DataFrame()</code></strong> creates a table from a dictionary. <strong><code>range()</code></strong> generates a sequence of numbers.&gt;&gt; 📚 <strong>Think Python:</strong> <a href="https://greenteapress.com/thinkpython/html/thinkpython010.html">Ch. 9 - Lists</a> (list comprehensions) | <a href="https://greenteapress.com/thinkpython/html/thinkpython011.html">Ch. 10 - Dictionaries</a> (dict syntax)| Code | Explanation ||——|————-|| <code>import pandas as pd</code> | Imports pandas, conventionally aliased as <code>pd</code>. || <code>pd.DataFrame({...})</code> | Creates a table where each key becomes a column name and each value becomes column data. <em>(Ch. 10: Dictionaries)</em> || <code>range(len(base_qualities))</code> | Generates numbers 0, 1, 2, … up to the number of positions. These become row indices. || <code>[np.mean(b) for b in base_qualities]</code> | List comprehension that computes the mean of each row (position) in our transposed array. <em>(Ch. 9: Lists)</em> || <code>np.quantile(b, .25)</code> | Computes the 25th percentile—the value below which 25% of data falls. |<strong>NumPy statistics functions:</strong>| Function | What it computes ||———-|—————–|| <code>np.mean(b)</code> | Average (sum divided by count) || <code>np.median(b)</code> | Middle value when sorted || <code>np.quantile(b, .25)</code> | 25th percentile || <code>np.quantile(b, .75)</code> | 75th percentile || <code>np.min(b)</code>, <code>np.max(b)</code> | Smallest and largest values |</h3>
-<div id="cell-27" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute per-position statistics using pandas</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>stats_df <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'base'</span>: <span class="bu">range</span>(<span class="bu">len</span>(base_qualities)),</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mean'</span>: [np.mean(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'median'</span>: [np.median(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'q25'</span>: [np.quantile(b, <span class="fl">.25</span>) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'q75'</span>: [np.quantile(b, <span class="fl">.75</span>) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'min'</span>: [np.<span class="bu">min</span>(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max'</span>: [np.<span class="bu">max</span>(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities]</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-33" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute per-position statistics using pandas</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>stats_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'base'</span>: <span class="bu">range</span>(<span class="bu">len</span>(base_qualities)),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mean'</span>: [np.mean(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'median'</span>: [np.median(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'q25'</span>: [np.quantile(b, <span class="fl">.25</span>) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'q75'</span>: [np.quantile(b, <span class="fl">.75</span>) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'min'</span>: [np.<span class="bu">min</span>(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities],</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'max'</span>: [np.<span class="bu">max</span>(b) <span class="cf">for</span> b <span class="kw">in</span> base_qualities]</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="understanding-altair-visualizationthe-plot-below-shows-quality-distribution-per-positionsimilar-to-fastqc-output.-each-position-shows--black-line-min-to-max-range--green-bar-interquartile-range-25th-to-75th-percentile---red-tick-median-quality-new-python-concepts-altair-is-a-declarative-visualization-library.-you-describe-what-you-want-to-show-not-how-to-draw-it.-charts-are-built-by-chaining-methods.-code-explanation---import-altair-as-alt-imports-altair-conventionally-aliased-as-alt.-alt.chartstats_df-creates-a-chart-object-from-our-dataframe.-.encodealt.xbaseq-...-maps-the-base-column-to-the-x-axis.-q-means-quantitative-numeric.-.propertieswidth800-height200-sets-the-chart-dimensions-in-pixels.-.mark_tick-draws-small-horizontal-ticks-for-median.-.mark_rule-draws-linesbars-for-ranges.-alt.ymedianq-maps-median-column-to-y-axis.-alt.y2q75q-sets-the-end-point-for-a-range-used-with-mark_rule.-median-q-min_max-the-operator-layers-multiple-charts-on-top-of-each-other.-how-layering-worksmin_max-black-lines-q-green-bars-median-red-ticks-combined-plot" class="level3">
 <h3 class="anchored" data-anchor-id="understanding-altair-visualizationthe-plot-below-shows-quality-distribution-per-positionsimilar-to-fastqc-output.-each-position-shows--black-line-min-to-max-range--green-bar-interquartile-range-25th-to-75th-percentile---red-tick-median-quality-new-python-concepts-altair-is-a-declarative-visualization-library.-you-describe-what-you-want-to-show-not-how-to-draw-it.-charts-are-built-by-chaining-methods.-code-explanation---import-altair-as-alt-imports-altair-conventionally-aliased-as-alt.-alt.chartstats_df-creates-a-chart-object-from-our-dataframe.-.encodealt.xbaseq-...-maps-the-base-column-to-the-x-axis.-q-means-quantitative-numeric.-.propertieswidth800-height200-sets-the-chart-dimensions-in-pixels.-.mark_tick-draws-small-horizontal-ticks-for-median.-.mark_rule-draws-linesbars-for-ranges.-alt.ymedianq-maps-median-column-to-y-axis.-alt.y2q75q-sets-the-end-point-for-a-range-used-with-mark_rule.-median-q-min_max-the-operator-layers-multiple-charts-on-top-of-each-other.-how-layering-worksmin_max-black-lines-q-green-bars-median-red-ticks-combined-plot">Understanding Altair visualizationThe plot below shows quality distribution per position—similar to FastQC output. Each position shows:- <strong>Black line</strong>: min to max range- <strong>Green bar</strong>: interquartile range (25th to 75th percentile) - <strong>Red tick</strong>: median quality&gt; <strong>📝 New Python concepts:</strong> <strong>Altair</strong> is a declarative visualization library. You describe <em>what</em> you want to show, not <em>how</em> to draw it. Charts are built by chaining methods.| Code | Explanation ||——|————-|| <code>import altair as alt</code> | Imports Altair, conventionally aliased as <code>alt</code>. || <code>alt.Chart(stats_df)</code> | Creates a chart object from our DataFrame. || <code>.encode(alt.X('base:Q', ...))</code> | Maps the <code>base</code> column to the x-axis. <code>:Q</code> means “quantitative” (numeric). || <code>.properties(width=800, height=200)</code> | Sets the chart dimensions in pixels. || <code>.mark_tick()</code> | Draws small horizontal ticks (for median). || <code>.mark_rule()</code> | Draws lines/bars (for ranges). || <code>alt.Y('median:Q')</code> | Maps <code>median</code> column to y-axis. || <code>alt.Y2('q75:Q')</code> | Sets the end point for a range (used with <code>mark_rule</code>). || <code>median + q + min_max</code> | The <code>+</code> operator <strong>layers</strong> multiple charts on top of each other. |<strong>How layering works:</strong><code>min_max (black lines)     ─────────────────         +q (green bars)            ████████████████         +                       median (red ticks)              ─         =Combined plot             ─────█████─█████─────</code></h3>
-<div id="cell-29" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot quality per position</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>base <span class="op">=</span> alt.Chart(stats_df).encode(</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    alt.X(<span class="st">'base:Q'</span>, title<span class="op">=</span><span class="st">"Position in the read"</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">800</span>,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">200</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>median <span class="op">=</span> base.mark_tick(color<span class="op">=</span><span class="st">'red'</span>,orient<span class="op">=</span><span class="st">'horizontal'</span>).encode(</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    alt.Y(<span class="st">'median:Q'</span>, title<span class="op">=</span><span class="st">"Phred quality score"</span>),</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> base.mark_rule(color<span class="op">=</span><span class="st">'green'</span>,opacity<span class="op">=</span><span class="fl">.5</span>,strokeWidth<span class="op">=</span><span class="dv">10</span>).encode(</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    alt.Y(<span class="st">'q25:Q'</span>),</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    alt.Y2(<span class="st">'q75:Q'</span>)</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>min_max <span class="op">=</span> base.mark_rule(color<span class="op">=</span><span class="st">'black'</span>).encode(</span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        alt.Y(<span class="st">'min:Q'</span>),</span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>        alt.Y2(<span class="st">'max:Q'</span>)</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>median <span class="op">+</span> q <span class="op">+</span> min_max</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-
-<style>
-  #altair-viz-2f7fe7eb2ef3412683b83df008755631.vega-embed {
-    width: 100%;
-    display: flex;
-  }
-
-  #altair-viz-2f7fe7eb2ef3412683b83df008755631.vega-embed details,
-  #altair-viz-2f7fe7eb2ef3412683b83df008755631.vega-embed details summary {
-    position: relative;
-  }
-</style>
-<div id="altair-viz-2f7fe7eb2ef3412683b83df008755631"></div>
-<script type="text/javascript">
-  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
-  (function(spec, embedOpt){
-    let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-2f7fe7eb2ef3412683b83df008755631") {
-      outputDiv = document.getElementById("altair-viz-2f7fe7eb2ef3412683b83df008755631");
-    }
-
-    const paths = {
-      "vega": "https://cdn.jsdelivr.net/npm/vega@6?noext",
-      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
-      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@6.1.0?noext",
-      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@7?noext",
-    };
-
-    function maybeLoadScript(lib, version) {
-      var key = `${lib.replace("-", "")}_version`;
-      return (VEGA_DEBUG[key] == version) ?
-        Promise.resolve(paths[lib]) :
-        new Promise(function(resolve, reject) {
-          var s = document.createElement('script');
-          document.getElementsByTagName("head")[0].appendChild(s);
-          s.async = true;
-          s.onload = () => {
-            VEGA_DEBUG[key] = version;
-            return resolve(paths[lib]);
-          };
-          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
-          s.src = paths[lib];
-        });
-    }
-
-    function showError(err) {
-      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
-      throw err;
-    }
-
-    function displayChart(vegaEmbed) {
-      vegaEmbed(outputDiv, spec, embedOpt)
-        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
-    }
-
-    if(typeof define === "function" && define.amd) {
-      requirejs.config({paths});
-      let deps = ["vega-embed"];
-      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
-    } else {
-      maybeLoadScript("vega", "6")
-        .then(() => maybeLoadScript("vega-lite", "6.1.0"))
-        .then(() => maybeLoadScript("vega-embed", "7"))
-        .catch(showError)
-        .then(() => displayChart(vegaEmbed));
-    }
-  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "layer": [{"mark": {"type": "tick", "color": "red", "orient": "horizontal"}, "encoding": {"x": {"field": "base", "title": "Position in the read", "type": "quantitative"}, "y": {"field": "median", "title": "Phred quality score", "type": "quantitative"}}}, {"mark": {"type": "rule", "color": "green", "opacity": 0.5, "strokeWidth": 10}, "encoding": {"x": {"field": "base", "title": "Position in the read", "type": "quantitative"}, "y": {"field": "q25", "type": "quantitative"}, "y2": {"field": "q75"}}}, {"mark": {"type": "rule", "color": "black"}, "encoding": {"x": {"field": "base", "title": "Position in the read", "type": "quantitative"}, "y": {"field": "min", "type": "quantitative"}, "y2": {"field": "max"}}}], "data": {"name": "data-baa837aafa98b132b874739d2eaef52f"}, "height": 200, "width": 800, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-baa837aafa98b132b874739d2eaef52f": [{"base": 0, "mean": 32.666666666666664, "median": 33.0, "q25": 32.0, "q75": 33.5, "min": 31, "max": 34}, {"base": 1, "mean": 33.666666666666664, "median": 35.0, "q25": 33.0, "q75": 35.0, "min": 31, "max": 35}, {"base": 2, "mean": 33.0, "median": 32.0, "q25": 32.0, "q75": 33.5, "min": 32, "max": 35}, {"base": 3, "mean": 37.333333333333336, "median": 37.0, "q25": 36.5, "q75": 38.0, "min": 36, "max": 39}, {"base": 4, "mean": 33.333333333333336, "median": 36.0, "q25": 31.5, "q75": 36.5, "min": 27, "max": 37}, {"base": 5, "mean": 37.0, "median": 37.0, "q25": 37.0, "q75": 37.0, "min": 37, "max": 37}, {"base": 6, "mean": 32.333333333333336, "median": 30.0, "q25": 30.0, "q75": 33.5, "min": 30, "max": 37}, {"base": 7, "mean": 36.0, "median": 36.0, "q25": 35.5, "q75": 36.5, "min": 35, "max": 37}, {"base": 8, "mean": 36.666666666666664, "median": 36.0, "q25": 36.0, "q75": 37.0, "min": 36, "max": 38}, {"base": 9, "mean": 37.0, "median": 37.0, "q25": 36.0, "q75": 38.0, "min": 35, "max": 39}, {"base": 10, "mean": 36.333333333333336, "median": 36.0, "q25": 36.0, "q75": 36.5, "min": 36, "max": 37}, {"base": 11, "mean": 35.333333333333336, "median": 37.0, "q25": 34.5, "q75": 37.0, "min": 32, "max": 37}, {"base": 12, "mean": 37.0, "median": 37.0, "q25": 36.0, "q75": 38.0, "min": 35, "max": 39}, {"base": 13, "mean": 34.333333333333336, "median": 35.0, "q25": 32.5, "q75": 36.5, "min": 30, "max": 38}, {"base": 14, "mean": 37.0, "median": 37.0, "q25": 37.0, "q75": 37.0, "min": 37, "max": 37}, {"base": 15, "mean": 36.333333333333336, "median": 36.0, "q25": 36.0, "q75": 36.5, "min": 36, "max": 37}, {"base": 16, "mean": 37.0, "median": 36.0, "q25": 36.0, "q75": 37.5, "min": 36, "max": 39}, {"base": 17, "mean": 38.0, "median": 38.0, "q25": 37.5, "q75": 38.5, "min": 37, "max": 39}, {"base": 18, "mean": 36.333333333333336, "median": 36.0, "q25": 35.5, "q75": 37.0, "min": 35, "max": 38}, {"base": 19, "mean": 38.0, "median": 38.0, "q25": 37.5, "q75": 38.5, "min": 37, "max": 39}, {"base": 20, "mean": 36.0, "median": 35.0, "q25": 35.0, "q75": 36.5, "min": 35, "max": 38}, {"base": 21, "mean": 35.0, "median": 37.0, "q25": 33.5, "q75": 37.5, "min": 30, "max": 38}, {"base": 22, "mean": 37.0, "median": 38.0, "q25": 36.0, "q75": 38.5, "min": 34, "max": 39}, {"base": 23, "mean": 37.0, "median": 38.0, "q25": 36.0, "q75": 38.5, "min": 34, "max": 39}, {"base": 24, "mean": 37.0, "median": 37.0, "q25": 36.0, "q75": 38.0, "min": 35, "max": 39}, {"base": 25, "mean": 31.666666666666668, "median": 31.0, "q25": 29.5, "q75": 33.5, "min": 28, "max": 36}, {"base": 26, "mean": 37.666666666666664, "median": 38.0, "q25": 37.5, "q75": 38.0, "min": 37, "max": 38}, {"base": 27, "mean": 38.666666666666664, "median": 39.0, "q25": 38.5, "q75": 39.0, "min": 38, "max": 39}, {"base": 28, "mean": 37.666666666666664, "median": 38.0, "q25": 37.0, "q75": 38.5, "min": 36, "max": 39}, {"base": 29, "mean": 33.333333333333336, "median": 34.0, "q25": 30.5, "q75": 36.5, "min": 27, "max": 39}, {"base": 30, "mean": 38.0, "median": 38.0, "q25": 38.0, "q75": 38.0, "min": 38, "max": 38}, {"base": 31, "mean": 36.333333333333336, "median": 36.0, "q25": 36.0, "q75": 36.5, "min": 36, "max": 37}, {"base": 32, "mean": 32.333333333333336, "median": 32.0, "q25": 31.0, "q75": 33.5, "min": 30, "max": 35}, {"base": 33, "mean": 34.0, "median": 39.0, "q25": 31.5, "q75": 39.0, "min": 24, "max": 39}, {"base": 34, "mean": 36.666666666666664, "median": 36.0, "q25": 35.5, "q75": 37.5, "min": 35, "max": 39}, {"base": 35, "mean": 35.333333333333336, "median": 38.0, "q25": 34.0, "q75": 38.0, "min": 30, "max": 38}, {"base": 36, "mean": 38.0, "median": 37.0, "q25": 36.5, "q75": 39.0, "min": 36, "max": 41}, {"base": 37, "mean": 36.333333333333336, "median": 36.0, "q25": 36.0, "q75": 36.5, "min": 36, "max": 37}, {"base": 38, "mean": 36.666666666666664, "median": 39.0, "q25": 35.5, "q75": 39.0, "min": 32, "max": 39}, {"base": 39, "mean": 35.666666666666664, "median": 36.0, "q25": 34.5, "q75": 37.0, "min": 33, "max": 38}, {"base": 40, "mean": 36.666666666666664, "median": 37.0, "q25": 36.5, "q75": 37.0, "min": 36, "max": 37}, {"base": 41, "mean": 35.333333333333336, "median": 37.0, "q25": 34.5, "q75": 37.0, "min": 32, "max": 37}, {"base": 42, "mean": 38.0, "median": 38.0, "q25": 38.0, "q75": 38.0, "min": 38, "max": 38}, {"base": 43, "mean": 33.0, "median": 36.0, "q25": 30.0, "q75": 37.5, "min": 24, "max": 39}, {"base": 44, "mean": 34.0, "median": 34.0, "q25": 32.5, "q75": 35.5, "min": 31, "max": 37}, {"base": 45, "mean": 34.666666666666664, "median": 34.0, "q25": 34.0, "q75": 35.0, "min": 34, "max": 36}, {"base": 46, "mean": 36.333333333333336, "median": 36.0, "q25": 35.5, "q75": 37.0, "min": 35, "max": 38}, {"base": 47, "mean": 35.666666666666664, "median": 38.0, "q25": 34.5, "q75": 38.0, "min": 31, "max": 38}, {"base": 48, "mean": 38.0, "median": 38.0, "q25": 38.0, "q75": 38.0, "min": 38, "max": 38}, {"base": 49, "mean": 37.666666666666664, "median": 37.0, "q25": 37.0, "q75": 38.0, "min": 37, "max": 39}]}}, {"mode": "vega-lite"});
-</script>
-</div>
+<div id="cell-35" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot quality per positionimport altair as altbase = alt.Chart(stats_df).encode(    alt.X('base:Q', title="Position in the read")).properties(    width=800,    height=200)median = base.mark_tick(color='red',orient='horizontal').encode(    alt.Y('median:Q', title="Phred quality score"),)q = base.mark_rule(color='green',opacity=.5,strokeWidth=10).encode(    alt.Y('q25:Q'),    alt.Y2('q75:Q'))min_max = base.mark_rule(color='black').encode(        alt.Y('min:Q'),        alt.Y2('max:Q'))median + q + min_max</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="other-comments" class="level2">
 <h2 class="anchored" data-anchor-id="other-comments">Other comments</h2>
-<p>In all the examples above, the reads in the FASTQ file are all the same length. This is not necessarily the case though it is usually true for datasets generated by sequencing-by-synthesis instruments. FASTQ files can contain reads of various lengths.</p>
-<p>FASTQ files often have the extension <code>.fastq</code> or <code>.fq</code>.</p>
+<p>In all the examples above, the reads in the FASTQ file are all the same length. This is not necessarily the case though it is usually true for datasets generated by sequencing-by-synthesis instruments. FASTQ files can contain reads of various lengths.FASTQ files often have the extension <code>.fastq</code> or <code>.fq</code>.</p>
 
 
 </section>
@@ -677,7 +551,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
