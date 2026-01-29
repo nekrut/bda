@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -227,12 +227,6 @@ window.Quarto = {
  <span class="menu-text">5. Py3: Parsing FASTA</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
-  </div>
-</li>
       </ul>
   </li>
     </ul>
@@ -245,7 +239,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#lecture-7-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" id="toc-lecture-7-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" class="nav-link active" data-scroll-target="#lecture-7-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead">Lecture 7: Lists and Dictionaries<img src="https://imgs.xkcd.com/comics/seven.png" class="img-fluid" alt="XKCD comic about the number seven having too many sounds - link to xkcd.com"><strong>Preclass prep:</strong> Chapters 5 and 7 from “Think Python”&gt; <strong>💡 Attribution:</strong> This material uses examples from notebooks developed by Ben Langmead</a>
+  <li><a href="#lecture-6-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" id="toc-lecture-6-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" class="nav-link active" data-scroll-target="#lecture-6-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead">Lecture 6: Lists and Dictionaries<img src="https://imgs.xkcd.com/comics/seven.png" class="img-fluid" alt="XKCD comic about the number seven having too many sounds - link to xkcd.com"><strong>Preclass prep:</strong> Chapters 5 and 7 from “Think Python”&gt; <strong>💡 Attribution:</strong> This material uses examples from notebooks developed by Ben Langmead</a>
   <ul class="collapse">
   <li><a href="#prep" id="toc-prep" class="nav-link" data-scroll-target="#prep">Prep</a></li>
   </ul></li>
@@ -273,12 +267,12 @@ window.Quarto = {
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/colab/lectures/lecture7.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/colab/lectures/lecture6.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
 <figcaption>Open In Colab</figcaption>
 </figure>
 </div>
-<section id="lecture-7-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" class="level1">
-<h1>Lecture 7: Lists and Dictionaries<a href="https://xkcd.com/2483"><img src="https://imgs.xkcd.com/comics/seven.png" class="img-fluid" alt="XKCD comic about the number seven having too many sounds - link to xkcd.com"></a><strong>Preclass prep:</strong> Chapters <a href="https://greenteapress.com/thinkpython2/html/thinkpython2009.html">5</a> and <a href="https://greenteapress.com/thinkpython2/html/thinkpython2011.html">7</a> from “Think Python”&gt; <strong>💡 Attribution:</strong> This material uses examples from notebooks developed by <a href="https://langmead-lab.org/teaching-materials/">Ben Langmead</a></h1>
+<section id="lecture-6-lists-and-dictionariesxkcd-comic-about-the-number-seven-having-too-many-sounds---link-to-xkcd.compreclass-prep-chapters-5-and-7-from-think-python-attribution-this-material-uses-examples-from-notebooks-developed-by-ben-langmead" class="level1">
+<h1>Lecture 6: Lists and Dictionaries<a href="https://xkcd.com/2483"><img src="https://imgs.xkcd.com/comics/seven.png" class="img-fluid" alt="XKCD comic about the number seven having too many sounds - link to xkcd.com"></a><strong>Preclass prep:</strong> Chapters <a href="https://greenteapress.com/thinkpython2/html/thinkpython2009.html">5</a> and <a href="https://greenteapress.com/thinkpython2/html/thinkpython2011.html">7</a> from “Think Python”&gt; <strong>💡 Attribution:</strong> This material uses examples from notebooks developed by <a href="https://langmead-lab.org/teaching-materials/">Ben Langmead</a></h1>
 <section id="prep" class="level2">
 <h2 class="anchored" data-anchor-id="prep">Prep</h2>
 <ol type="1">
@@ -795,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
