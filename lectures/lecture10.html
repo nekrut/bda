@@ -1,0 +1,4022 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lecture10 – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lecture-9-data-manipulation-with-pandas" id="toc-lecture-9-data-manipulation-with-pandas" class="nav-link active" data-scroll-target="#lecture-9-data-manipulation-with-pandas">Lecture 9: Data Manipulation with Pandas</a>
+  <ul class="collapse">
+  <li><a href="#pandas-learning-resources" id="toc-pandas-learning-resources" class="nav-link" data-scroll-target="#pandas-learning-resources">Pandas learning resources</a></li>
+  </ul></li>
+  <li><a href="#basics" id="toc-basics" class="nav-link" data-scroll-target="#basics">Basics</a>
+  <ul class="collapse">
+  <li><a href="#the-data-set" id="toc-the-data-set" class="nav-link" data-scroll-target="#the-data-set">The data set</a></li>
+  <li><a href="#reading-in-data" id="toc-reading-in-data" class="nav-link" data-scroll-target="#reading-in-data">Reading in data</a></li>
+  <li><a href="#indexing-data-frames" id="toc-indexing-data-frames" class="nav-link" data-scroll-target="#indexing-data-frames">Indexing data frames</a></li>
+  <li><a href="#filtering-boolean-indexing-of-data-frames" id="toc-filtering-boolean-indexing-of-data-frames" class="nav-link" data-scroll-target="#filtering-boolean-indexing-of-data-frames">Filtering: Boolean indexing of data frames</a></li>
+  <li><a href="#calculating-with-data-frames" id="toc-calculating-with-data-frames" class="nav-link" data-scroll-target="#calculating-with-data-frames">Calculating with data frames</a></li>
+  <li><a href="#a-note-about-vectorization" id="toc-a-note-about-vectorization" class="nav-link" data-scroll-target="#a-note-about-vectorization">A note about vectorization</a></li>
+  <li><a href="#outputting-a-new-csv-file" id="toc-outputting-a-new-csv-file" class="nav-link" data-scroll-target="#outputting-a-new-csv-file">Outputting a new CSV file</a></li>
+  </ul></li>
+  <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link" data-scroll-target="#tidy-data">Tidy data</a>
+  <ul class="collapse">
+  <li><a href="#finding-unique-values-and-counts" id="toc-finding-unique-values-and-counts" class="nav-link" data-scroll-target="#finding-unique-values-and-counts">Finding unique values and counts</a></li>
+  <li><a href="#sorting" id="toc-sorting" class="nav-link" data-scroll-target="#sorting">Sorting</a></li>
+  </ul></li>
+  <li><a href="#split-apply-combine" id="toc-split-apply-combine" class="nav-link" data-scroll-target="#split-apply-combine">Split-apply-combine</a>
+  <ul class="collapse">
+  <li><a href="#aggregation" id="toc-aggregation" class="nav-link" data-scroll-target="#aggregation">Aggregation</a></li>
+  <li><a href="#tidying-a-data-set-with-melt" id="toc-tidying-a-data-set-with-melt" class="nav-link" data-scroll-target="#tidying-a-data-set-with-melt">Tidying a data set with melt</a></li>
+  </ul></li>
+  <li><a href="#working-with-multiple-tables" id="toc-working-with-multiple-tables" class="nav-link" data-scroll-target="#working-with-multiple-tables">Working with multiple tables</a>
+  <ul class="collapse">
+  <li><a href="#inner-join" id="toc-inner-join" class="nav-link" data-scroll-target="#inner-join">Inner join</a></li>
+  <li><a href="#left-join" id="toc-left-join" class="nav-link" data-scroll-target="#left-join">Left join</a></li>
+  <li><a href="#right-join" id="toc-right-join" class="nav-link" data-scroll-target="#right-join">Right join</a></li>
+  <li><a href="#full-outer-join" id="toc-full-outer-join" class="nav-link" data-scroll-target="#full-outer-join">Full (outer) join</a></li>
+  </ul></li>
+  <li><a href="#putting-it-all-together-pandas-altair" id="toc-putting-it-all-together-pandas-altair" class="nav-link" data-scroll-target="#putting-it-all-together-pandas-altair">Putting it all together: Pandas + Altair</a>
+  <ul class="collapse">
+  <li><a href="#understanding-altair" id="toc-understanding-altair" class="nav-link" data-scroll-target="#understanding-altair">Understanding Altair</a></li>
+  <li><a href="#cleaning-the-data" id="toc-cleaning-the-data" class="nav-link" data-scroll-target="#cleaning-the-data">Cleaning the data</a></li>
+  <li><a href="#plotting-the-data" id="toc-plotting-the-data" class="nav-link" data-scroll-target="#plotting-the-data">Plotting the data</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture10.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/colab/lectures/lecture9.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Open In Colab</figcaption>
+</figure>
+</div>
+<section id="lecture-9-data-manipulation-with-pandas" class="level1">
+<h1>Lecture 9: Data Manipulation with Pandas</h1>
+<blockquote class="blockquote">
+<p>This is an aggregated tutorial relying on material from: - <a href="http://justinbois.github.io/bootcamp/2020/index.html">Justin Bois</a> - <a href="https://people.duke.edu/~ccc14/bios-821-2017/index.html">BIOS821 course at Duke</a> - <a href="https://pandas.pydata.org/docs/user_guide/index.html/">Pandas documentation</a></p>
+</blockquote>
+<p>Pandas (from “Panel Data”) is an essential piece of scientific (and not only) data analysis infrastructure. It is, in essence, a highly optimized library for manipulating very large tables (or “Data Frames”).</p>
+<section id="pandas-learning-resources" class="level2">
+<h2 class="anchored" data-anchor-id="pandas-learning-resources">Pandas learning resources</h2>
+<ul>
+<li><a href="https://pandas.pydata.org/docs/getting_started/index.html#getting-started">Getting started</a> - official introduction from Pandas.</li>
+<li><a href="http://people.duke.edu/~ccc14/bios-821-2017/index.html">Data Science Tools</a> - Data Science for Biologists from Duke University.</li>
+<li><a href="https://datacarpentry.org/">Data Carpentry</a> - a collection of lessons <em>à la</em> Software Carpentry.</li>
+</ul>
+<div id="cell-4" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas, conventionally imported as pd</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Throughout your research career, you will undoubtedly need to handle data, possibly lots of data. The data comes in lots of formats, and you will spend much of your time <strong>wrangling</strong> the data to get it into a usable form.</p>
+<p>Pandas is the primary tool in the Python ecosystem for handling data. Its primary object, the <code>DataFrame</code> is extremely useful in wrangling data.</p>
+</section>
+</section>
+<section id="basics" class="level1">
+<h1>Basics</h1>
+<section id="the-data-set" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-set">The data set</h2>
+<p>The dataset we will be using is a subset of metadata describing SARS-CoV-2 datasets from the <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive</a>.</p>
+<p>It is obtained by going to https://www.ncbi.nlm.nih.gov/sra and performing a query with the following search terms: <code>txid2697049[Organism:noexp]</code>.</p>
+<div id="cell-7" class="cell" data-execution_count="31">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>sLO https:<span class="op">//</span>zenodo.org<span class="op">/</span>records<span class="op">/</span><span class="dv">10680001</span><span class="op">/</span>files<span class="op">/</span>sra_ncov.csv.gz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-8" class="cell" data-execution_count="32">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>gunzip <span class="op">-</span>c sra_ncov.csv.gz <span class="op">|</span> head <span class="op">-</span>n <span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Run,ReleaseDate,size_MB,Experiment,LibraryStrategy,LibrarySelection,LibrarySource,LibraryLayout,Platform,Model,SRAStudy,BioProject
+ERR5063394,2021-01-18 12:14:33,0,ERX4869505,Targeted-Capture,RANDOM,TRANSCRIPTOMIC,SINGLE,ILLUMINA,unspecified,ERP121228,PRJEB37886
+ERR5063392,2021-01-18 12:14:33,0,ERX4869504,AMPLICON,PCR,VIRAL RNA,SINGLE,ILLUMINA,Illumina MiSeq,ERP121228,PRJEB37886
+gunzip: error writing to output: Broken pipe
+gunzip: sra_ncov.csv.gz: uncompress failed</code></pre>
+</div>
+</div>
+</section>
+<section id="reading-in-data" class="level2">
+<h2 class="anchored" data-anchor-id="reading-in-data">Reading in data</h2>
+<p>Pandas has a very powerful function, <code>pd.read_csv()</code> that can read in a CSV file and store the contents in a convenient data structure called a <strong>data frame</strong>.</p>
+<div id="cell-10" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'sra_ncov.csv.gz'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-11" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View the first few rows</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ERR5063394</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869505</td>
+<td>Targeted-Capture</td>
+<td>RANDOM</td>
+<td>TRANSCRIPTOMIC</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>unspecified</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>ERR5063392</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869504</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>Illumina MiSeq</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>ERR5063395</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869506</td>
+<td>Targeted-Capture</td>
+<td>RANDOM</td>
+<td>TRANSCRIPTOMIC</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>unspecified</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>ERR5063397</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869510</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>NextSeq 550</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>ERR5063396</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869507</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>NextSeq 550</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="indexing-data-frames" class="level2">
+<h2 class="anchored" data-anchor-id="indexing-data-frames">Indexing data frames</h2>
+<p>The data frame is a convenient data structure for many reasons. Let’s start by looking at how data frames are indexed.</p>
+<p><strong>Important</strong>: We index DataFrames by columns, not rows!</p>
+<div id="cell-13" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This gives us a column</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Run'</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>0    ERR5063394
+1    ERR5063392
+2    ERR5063395
+3    ERR5063397
+4    ERR5063396
+Name: Run, dtype: object</code></pre>
+</div>
+</div>
+<div id="cell-14" class="cell" data-execution_count="36">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Access a single value</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Run'</span>][<span class="dv">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<pre><code>'ERR5063396'</code></pre>
+</div>
+</div>
+<p>However, it’s better to use <code>.loc</code> for accessing data. This gives the location in the data frame we want.</p>
+<blockquote class="blockquote">
+<p><strong>💡 <code>loc</code> versus <code>iloc</code>:</strong> <code>loc</code> uses label-based indexing (actual row and column labels), while <code>iloc</code> uses integer-based indexing (integer positions).</p>
+</blockquote>
+<div id="cell-16" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">4</span>, <span class="st">'Run'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>'ERR5063396'</code></pre>
+</div>
+</div>
+<div id="cell-17" class="cell" data-execution_count="38">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">4</span>:<span class="dv">6</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="38">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>ERR5063396</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869507</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>NextSeq 550</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>ERR5063399</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869508</td>
+<td>Targeted-Capture</td>
+<td>RANDOM</td>
+<td>TRANSCRIPTOMIC</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>unspecified</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-18" class="cell" data-execution_count="39">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">4</span>:<span class="dv">6</span>, [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>ERR5063396</td>
+<td>0</td>
+<td>AMPLICON</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>ERR5063399</td>
+<td>0</td>
+<td>Targeted-Capture</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-19" class="cell" data-execution_count="40">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">4</span>:<span class="dv">6</span>, [<span class="st">'Run'</span>, <span class="st">'size_MB'</span>, <span class="st">'LibraryStrategy'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>ERR5063396</td>
+<td>0</td>
+<td>AMPLICON</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>ERR5063399</td>
+<td>0</td>
+<td>Targeted-Capture</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>ERR5063400</td>
+<td>0</td>
+<td>AMPLICON</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="filtering-boolean-indexing-of-data-frames" class="level2">
+<h2 class="anchored" data-anchor-id="filtering-boolean-indexing-of-data-frames">Filtering: Boolean indexing of data frames</h2>
+<p>Let’s say I wanted to pull out accession numbers of runs produced by Pacific Biosciences machines (labeled as <code>PACBIO_SMRT</code>). I can use Boolean indexing to specify the row.</p>
+<div id="cell-21" class="cell" data-execution_count="41">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df.loc[df[<span class="st">'Platform'</span>] <span class="op">==</span> <span class="st">'PACBIO_SMRT'</span>, <span class="st">'Run'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="41">
+<pre><code>49441     SRR13144531
+49442     SRR13144533
+49443     SRR13144530
+49444     SRR13144529
+49445     SRR13144528
+49446     SRR13144534
+49447     SRR13144527
+49448     SRR13144526
+49449     SRR13144525
+49450     SRR13144524
+49451     SRR13144523
+49452     SRR13144532
+173270    SRR12038589
+173271    SRR12038590
+Name: Run, dtype: object</code></pre>
+</div>
+</div>
+<div id="cell-22" class="cell" data-execution_count="42">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull the whole record</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df.loc[df[<span class="st">'Platform'</span>] <span class="op">==</span> <span class="st">'PACBIO_SMRT'</span>, :].head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49441</th>
+<td>SRR13144531</td>
+<td>2020-11-25 21:54:15</td>
+<td>1137</td>
+<td>SRX9584893</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49442</th>
+<td>SRR13144533</td>
+<td>2020-11-25 21:54:15</td>
+<td>1999</td>
+<td>SRX9584891</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49443</th>
+<td>SRR13144530</td>
+<td>2020-11-25 21:54:15</td>
+<td>81</td>
+<td>SRX9584894</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49444</th>
+<td>SRR13144529</td>
+<td>2020-11-25 21:54:15</td>
+<td>1311</td>
+<td>SRX9584895</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49445</th>
+<td>SRR13144528</td>
+<td>2020-11-25 21:54:15</td>
+<td>327</td>
+<td>SRX9584896</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49446</th>
+<td>SRR13144534</td>
+<td>2020-11-25 21:54:15</td>
+<td>2292</td>
+<td>SRX9584890</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49447</th>
+<td>SRR13144527</td>
+<td>2020-11-25 21:54:15</td>
+<td>3377</td>
+<td>SRX9584897</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49448</th>
+<td>SRR13144526</td>
+<td>2020-11-25 21:54:15</td>
+<td>285</td>
+<td>SRX9584898</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49449</th>
+<td>SRR13144525</td>
+<td>2020-11-25 21:54:15</td>
+<td>406</td>
+<td>SRX9584899</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49450</th>
+<td>SRR13144524</td>
+<td>2020-11-25 21:54:15</td>
+<td>1507</td>
+<td>SRX9584900</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Now, let’s pull out all PacBio records that were obtained from Amplicon sequencing. We can use the <code>&amp;</code> operator:</p>
+<div id="cell-24" class="cell" data-execution_count="43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df.loc[(df[<span class="st">'Platform'</span>] <span class="op">==</span> <span class="st">'PACBIO_SMRT'</span>) <span class="op">&amp;</span> (df[<span class="st">'LibraryStrategy'</span>] <span class="op">==</span> <span class="st">'AMPLICON'</span>), :].head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="43">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49441</th>
+<td>SRR13144531</td>
+<td>2020-11-25 21:54:15</td>
+<td>1137</td>
+<td>SRX9584893</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">49442</th>
+<td>SRR13144533</td>
+<td>2020-11-25 21:54:15</td>
+<td>1999</td>
+<td>SRX9584891</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">49443</th>
+<td>SRR13144530</td>
+<td>2020-11-25 21:54:15</td>
+<td>81</td>
+<td>SRX9584894</td>
+<td>AMPLICON</td>
+<td>RT-PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>PACBIO_SMRT</td>
+<td>Sequel II</td>
+<td>SRP294181</td>
+<td>PRJNA680710</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-25" class="cell" data-execution_count="44">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See how many match</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>inds <span class="op">=</span> (df[<span class="st">'Platform'</span>] <span class="op">==</span> <span class="st">'PACBIO_SMRT'</span>) <span class="op">&amp;</span> (df[<span class="st">'LibraryStrategy'</span>] <span class="op">==</span> <span class="st">'AMPLICON'</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>np.unique(inds, return_counts<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="44">
+<pre><code>(array([False,  True]), array([190344,     12]))</code></pre>
+</div>
+</div>
+</section>
+<section id="calculating-with-data-frames" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-with-data-frames">Calculating with data frames</h2>
+<p>Let’s add a column that specifies whether or not the corresponding run is above 100 MB:</p>
+<div id="cell-27" class="cell" data-execution_count="45">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the column to the DataFrame</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Over100Mb'</span>] <span class="op">=</span> df[<span class="st">'size_MB'</span>] <span class="op">&gt;=</span> <span class="dv">100</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Take a look</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+<th data-quarto-table-cell-role="th">Over100Mb</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>ERR5063394</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869505</td>
+<td>Targeted-Capture</td>
+<td>RANDOM</td>
+<td>TRANSCRIPTOMIC</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>unspecified</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>ERR5063392</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869504</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>Illumina MiSeq</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>ERR5063395</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869506</td>
+<td>Targeted-Capture</td>
+<td>RANDOM</td>
+<td>TRANSCRIPTOMIC</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>unspecified</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>ERR5063397</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869510</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>NextSeq 550</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>ERR5063396</td>
+<td>2021-01-18 12:14:33</td>
+<td>0</td>
+<td>ERX4869507</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>ILLUMINA</td>
+<td>NextSeq 550</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="a-note-about-vectorization" class="level2">
+<h2 class="anchored" data-anchor-id="a-note-about-vectorization">A note about vectorization</h2>
+<p>Notice how applying the <code>&gt;=</code> operator to a <code>Series</code> resulted in <strong>elementwise</strong> application. This is called <strong>vectorization</strong>. It means that we do not have to write a <code>for</code> loop to do operations on the elements of a <code>Series</code>.</p>
+<p>Vectorized code is almost always faster because the looping is done with compiled code under the hood.</p>
+</section>
+<section id="outputting-a-new-csv-file" class="level2">
+<h2 class="anchored" data-anchor-id="outputting-a-new-csv-file">Outputting a new CSV file</h2>
+<div id="cell-30" class="cell" data-execution_count="46">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">'over100Mb_data.csv'</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-31" class="cell" data-execution_count="47">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>head <span class="op">-</span><span class="dv">3</span> over100Mb_data.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Run,ReleaseDate,size_MB,Experiment,LibraryStrategy,LibrarySelection,LibrarySource,LibraryLayout,Platform,Model,SRAStudy,BioProject,Over100Mb
+ERR5063394,2021-01-18 12:14:33,0,ERX4869505,Targeted-Capture,RANDOM,TRANSCRIPTOMIC,SINGLE,ILLUMINA,unspecified,ERP121228,PRJEB37886,False
+ERR5063392,2021-01-18 12:14:33,0,ERX4869504,AMPLICON,PCR,VIRAL RNA,SINGLE,ILLUMINA,Illumina MiSeq,ERP121228,PRJEB37886,False</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="tidy-data" class="level1">
+<h1>Tidy data</h1>
+<p><a href="https://en.wikipedia.org/wiki/Hadley_Wickham">Hadley Wickham</a> wrote a <a href="http://dx.doi.org/10.18637/jss.v059.i10">great article</a> in favor of “tidy data.” Tidy data frames follow the rules:</p>
+<ol type="1">
+<li>Each variable is a column.</li>
+<li>Each observation is a row.</li>
+<li>Each type of observation has its own separate data frame.</li>
+</ol>
+<p>A tidy data frame is almost always <strong>much</strong> easier to work with than non-tidy formats.</p>
+<section id="finding-unique-values-and-counts" class="level2">
+<h2 class="anchored" data-anchor-id="finding-unique-values-and-counts">Finding unique values and counts</h2>
+<div id="cell-34" class="cell" data-execution_count="48">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-read the data (using local file downloaded earlier)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'sra_ncov.csv.gz'</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[df[<span class="st">'size_MB'</span>] <span class="op">&gt;</span> <span class="dv">0</span>].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-35" class="cell" data-execution_count="49">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Platform'</span>].unique()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>array(['ILLUMINA', 'OXFORD_NANOPORE', 'ION_TORRENT', 'PACBIO_SMRT',
+       'BGISEQ'], dtype=object)</code></pre>
+</div>
+</div>
+<div id="cell-36" class="cell" data-execution_count="50">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Platform'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="50">
+<pre><code>Platform
+ILLUMINA           155937
+OXFORD_NANOPORE     25202
+ION_TORRENT           507
+BGISEQ                 22
+PACBIO_SMRT            14
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+</section>
+<section id="sorting" class="level2">
+<h2 class="anchored" data-anchor-id="sorting">Sorting</h2>
+<div id="cell-38" class="cell" data-execution_count="51">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df_subset <span class="op">=</span> df.sample(n<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>df_subset</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">50149</th>
+<td>ERR4861209</td>
+<td>2020-11-21 16:41:51</td>
+<td>78</td>
+<td>ERX4730592</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">82213</th>
+<td>SRR12894498</td>
+<td>2020-10-26 02:10:41</td>
+<td>33</td>
+<td>SRX9359447</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>SRP253798</td>
+<td>PRJNA613958</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">72388</th>
+<td>ERR4787576</td>
+<td>2020-11-04 09:00:36</td>
+<td>51</td>
+<td>ERX4657334</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">179370</th>
+<td>ERR4080522</td>
+<td>2020-04-30 11:59:40</td>
+<td>48</td>
+<td>ERX4077924</td>
+<td>WGA</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP121327</td>
+<td>PRJEB37966</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">31670</th>
+<td>ERR4906236</td>
+<td>2020-12-04 08:46:14</td>
+<td>116</td>
+<td>ERX4773060</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">125322</th>
+<td>ERR4597347</td>
+<td>2020-09-17 10:06:00</td>
+<td>80</td>
+<td>ERX4531009</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">92941</th>
+<td>ERR4686387</td>
+<td>2020-10-16 15:55:41</td>
+<td>17</td>
+<td>ERX4607689</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">80210</th>
+<td>SRR12901710</td>
+<td>2020-10-26 19:29:02</td>
+<td>26</td>
+<td>SRX9366412</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina MiSeq</td>
+<td>SRP253926</td>
+<td>PRJNA614995</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">45364</th>
+<td>ERR4868293</td>
+<td>2020-11-27 12:12:51</td>
+<td>19</td>
+<td>ERX4737733</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5201</th>
+<td>ERR5055563</td>
+<td>2021-01-11 01:05:32</td>
+<td>30</td>
+<td>ERX4861632</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>GridION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-39" class="cell" data-execution_count="52">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>df_subset.sort_index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">5201</th>
+<td>ERR5055563</td>
+<td>2021-01-11 01:05:32</td>
+<td>30</td>
+<td>ERX4861632</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>GridION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">31670</th>
+<td>ERR4906236</td>
+<td>2020-12-04 08:46:14</td>
+<td>116</td>
+<td>ERX4773060</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">45364</th>
+<td>ERR4868293</td>
+<td>2020-11-27 12:12:51</td>
+<td>19</td>
+<td>ERX4737733</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">50149</th>
+<td>ERR4861209</td>
+<td>2020-11-21 16:41:51</td>
+<td>78</td>
+<td>ERX4730592</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">72388</th>
+<td>ERR4787576</td>
+<td>2020-11-04 09:00:36</td>
+<td>51</td>
+<td>ERX4657334</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">80210</th>
+<td>SRR12901710</td>
+<td>2020-10-26 19:29:02</td>
+<td>26</td>
+<td>SRX9366412</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina MiSeq</td>
+<td>SRP253926</td>
+<td>PRJNA614995</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">82213</th>
+<td>SRR12894498</td>
+<td>2020-10-26 02:10:41</td>
+<td>33</td>
+<td>SRX9359447</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>SRP253798</td>
+<td>PRJNA613958</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">92941</th>
+<td>ERR4686387</td>
+<td>2020-10-16 15:55:41</td>
+<td>17</td>
+<td>ERX4607689</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">125322</th>
+<td>ERR4597347</td>
+<td>2020-09-17 10:06:00</td>
+<td>80</td>
+<td>ERX4531009</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">179370</th>
+<td>ERR4080522</td>
+<td>2020-04-30 11:59:40</td>
+<td>48</td>
+<td>ERX4077924</td>
+<td>WGA</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP121327</td>
+<td>PRJEB37966</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-40" class="cell" data-execution_count="53">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df_subset.sort_values(by<span class="op">=</span>[<span class="st">'LibraryLayout'</span>, <span class="st">'size_MB'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="53">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">45364</th>
+<td>ERR4868293</td>
+<td>2020-11-27 12:12:51</td>
+<td>19</td>
+<td>ERX4737733</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">80210</th>
+<td>SRR12901710</td>
+<td>2020-10-26 19:29:02</td>
+<td>26</td>
+<td>SRX9366412</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina MiSeq</td>
+<td>SRP253926</td>
+<td>PRJNA614995</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">82213</th>
+<td>SRR12894498</td>
+<td>2020-10-26 02:10:41</td>
+<td>33</td>
+<td>SRX9359447</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>SRP253798</td>
+<td>PRJNA613958</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">72388</th>
+<td>ERR4787576</td>
+<td>2020-11-04 09:00:36</td>
+<td>51</td>
+<td>ERX4657334</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">50149</th>
+<td>ERR4861209</td>
+<td>2020-11-21 16:41:51</td>
+<td>78</td>
+<td>ERX4730592</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">125322</th>
+<td>ERR4597347</td>
+<td>2020-09-17 10:06:00</td>
+<td>80</td>
+<td>ERX4531009</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">31670</th>
+<td>ERR4906236</td>
+<td>2020-12-04 08:46:14</td>
+<td>116</td>
+<td>ERX4773060</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">92941</th>
+<td>ERR4686387</td>
+<td>2020-10-16 15:55:41</td>
+<td>17</td>
+<td>ERX4607689</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">5201</th>
+<td>ERR5055563</td>
+<td>2021-01-11 01:05:32</td>
+<td>30</td>
+<td>ERX4861632</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>GridION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">179370</th>
+<td>ERR4080522</td>
+<td>2020-04-30 11:59:40</td>
+<td>48</td>
+<td>ERX4077924</td>
+<td>WGA</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP121327</td>
+<td>PRJEB37966</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-41" class="cell" data-execution_count="54">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df_subset.sort_values(by<span class="op">=</span>[<span class="st">'LibraryLayout'</span>, <span class="st">'size_MB'</span>], ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Run</th>
+<th data-quarto-table-cell-role="th">ReleaseDate</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">LibraryStrategy</th>
+<th data-quarto-table-cell-role="th">LibrarySelection</th>
+<th data-quarto-table-cell-role="th">LibrarySource</th>
+<th data-quarto-table-cell-role="th">LibraryLayout</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">SRAStudy</th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">31670</th>
+<td>ERR4906236</td>
+<td>2020-12-04 08:46:14</td>
+<td>116</td>
+<td>ERX4773060</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">125322</th>
+<td>ERR4597347</td>
+<td>2020-09-17 10:06:00</td>
+<td>80</td>
+<td>ERX4531009</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">50149</th>
+<td>ERR4861209</td>
+<td>2020-11-21 16:41:51</td>
+<td>78</td>
+<td>ERX4730592</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">72388</th>
+<td>ERR4787576</td>
+<td>2020-11-04 09:00:36</td>
+<td>51</td>
+<td>ERX4657334</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">82213</th>
+<td>SRR12894498</td>
+<td>2020-10-26 02:10:41</td>
+<td>33</td>
+<td>SRX9359447</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>SRP253798</td>
+<td>PRJNA613958</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">80210</th>
+<td>SRR12901710</td>
+<td>2020-10-26 19:29:02</td>
+<td>26</td>
+<td>SRX9366412</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>Illumina MiSeq</td>
+<td>SRP253926</td>
+<td>PRJNA614995</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">45364</th>
+<td>ERR4868293</td>
+<td>2020-11-27 12:12:51</td>
+<td>19</td>
+<td>ERX4737733</td>
+<td>AMPLICON</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>PAIRED</td>
+<td>ILLUMINA</td>
+<td>NextSeq 500</td>
+<td>ERP121228</td>
+<td>PRJEB37886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">179370</th>
+<td>ERR4080522</td>
+<td>2020-04-30 11:59:40</td>
+<td>48</td>
+<td>ERX4077924</td>
+<td>WGA</td>
+<td>PCR</td>
+<td>VIRAL RNA</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP121327</td>
+<td>PRJEB37966</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">5201</th>
+<td>ERR5055563</td>
+<td>2021-01-11 01:05:32</td>
+<td>30</td>
+<td>ERX4861632</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>GridION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">92941</th>
+<td>ERR4686387</td>
+<td>2020-10-16 15:55:41</td>
+<td>17</td>
+<td>ERX4607689</td>
+<td>AMPLICON</td>
+<td>unspecified</td>
+<td>GENOMIC</td>
+<td>SINGLE</td>
+<td>OXFORD_NANOPORE</td>
+<td>MinION</td>
+<td>ERP123896</td>
+<td>PRJEB40277</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="split-apply-combine" class="level1">
+<h1>Split-apply-combine</h1>
+<p>Let’s say we want to compute the total size of SRA runs for each <code>BioProject</code>. The strategy is:</p>
+<ol type="1">
+<li><strong>Split</strong> the data set up according to the <code>'BioProject'</code> field</li>
+<li><strong>Apply</strong> a sum function to the split data sets</li>
+<li><strong>Combine</strong> the results into a new summary data set</li>
+</ol>
+<p>This is the <strong>split-apply-combine</strong> strategy, put forward by Hadley Wickham in <a href="http://dx.doi.org/10.18637/jss.v040.i01">this paper</a>.</p>
+<section id="aggregation" class="level2">
+<h2 class="anchored" data-anchor-id="aggregation">Aggregation</h2>
+<div id="cell-44" class="cell" data-execution_count="55">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>grouped <span class="op">=</span> df.groupby([<span class="st">'BioProject'</span>])</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>grouped</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>&lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x1279557f0&gt;</code></pre>
+</div>
+</div>
+<div id="cell-45" class="cell" data-execution_count="56">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df_sum <span class="op">=</span> pd.DataFrame(grouped[<span class="st">'size_MB'</span>].<span class="bu">sum</span>())</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>df_sum.head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">BioProject</th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB37513</th>
+<td>19806</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB37886</th>
+<td>9235309</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB37966</th>
+<td>92058</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38101</th>
+<td>533</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38351</th>
+<td>571</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38369</th>
+<td>1544</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38388</th>
+<td>51684</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38459</th>
+<td>3208</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38546</th>
+<td>1686</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38723</th>
+<td>12620</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-46" class="cell" data-execution_count="57">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_sum <span class="op">=</span> df_sum.reset_index()</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df_sum.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PRJEB37513</td>
+<td>19806</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PRJEB37886</td>
+<td>9235309</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>PRJEB37966</td>
+<td>92058</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PRJEB38101</td>
+<td>533</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PRJEB38351</td>
+<td>571</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-47" class="cell" data-execution_count="58">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple columns in groupby</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'BioProject'</span>, <span class="st">'Platform'</span>]).<span class="bu">sum</span>(numeric_only<span class="op">=</span><span class="va">True</span>).reset_index().head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">BioProject</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>PRJEB37513</td>
+<td>ILLUMINA</td>
+<td>19806</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>PRJEB37886</td>
+<td>ILLUMINA</td>
+<td>7640033</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>PRJEB37886</td>
+<td>OXFORD_NANOPORE</td>
+<td>1595276</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>PRJEB37966</td>
+<td>OXFORD_NANOPORE</td>
+<td>92058</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>PRJEB38101</td>
+<td>ILLUMINA</td>
+<td>533</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>PRJEB38351</td>
+<td>ILLUMINA</td>
+<td>571</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>PRJEB38369</td>
+<td>ILLUMINA</td>
+<td>1544</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>PRJEB38388</td>
+<td>OXFORD_NANOPORE</td>
+<td>51684</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>PRJEB38459</td>
+<td>ILLUMINA</td>
+<td>2672</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>PRJEB38459</td>
+<td>OXFORD_NANOPORE</td>
+<td>536</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-48" class="cell" data-execution_count="59">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Descriptive statistics</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'BioProject'</span>, <span class="st">'Platform'</span>])[<span class="st">'size_MB'</span>].describe().head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">25%</th>
+<th data-quarto-table-cell-role="th">50%</th>
+<th data-quarto-table-cell-role="th">75%</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">BioProject</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB37513</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>244.0</td>
+<td>81.172131</td>
+<td>35.651535</td>
+<td>21.0</td>
+<td>36.00</td>
+<td>92.5</td>
+<td>108.00</td>
+<td>161.0</td>
+</tr>
+<tr class="even">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">PRJEB37886</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>114178.0</td>
+<td>66.913355</td>
+<td>67.270998</td>
+<td>1.0</td>
+<td>22.00</td>
+<td>59.0</td>
+<td>89.00</td>
+<td>3536.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>19128.0</td>
+<td>83.400042</td>
+<td>115.955997</td>
+<td>1.0</td>
+<td>19.00</td>
+<td>51.0</td>
+<td>108.00</td>
+<td>3845.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB37966</th>
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>752.0</td>
+<td>122.417553</td>
+<td>168.301885</td>
+<td>5.0</td>
+<td>67.00</td>
+<td>110.0</td>
+<td>150.00</td>
+<td>2846.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38101</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>6.0</td>
+<td>88.833333</td>
+<td>75.058422</td>
+<td>4.0</td>
+<td>25.00</td>
+<td>89.0</td>
+<td>147.00</td>
+<td>181.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38351</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>6.0</td>
+<td>95.166667</td>
+<td>10.496031</td>
+<td>80.0</td>
+<td>88.75</td>
+<td>96.0</td>
+<td>103.25</td>
+<td>107.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38369</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>18.0</td>
+<td>85.777778</td>
+<td>24.673290</td>
+<td>49.0</td>
+<td>61.25</td>
+<td>92.5</td>
+<td>104.00</td>
+<td>124.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38388</th>
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>583.0</td>
+<td>88.651801</td>
+<td>65.441487</td>
+<td>1.0</td>
+<td>44.00</td>
+<td>75.0</td>
+<td>122.00</td>
+<td>421.0</td>
+</tr>
+<tr class="odd">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">PRJEB38459</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>1.0</td>
+<td>2672.000000</td>
+<td>NaN</td>
+<td>2672.0</td>
+<td>2672.00</td>
+<td>2672.0</td>
+<td>2672.00</td>
+<td>2672.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>1.0</td>
+<td>536.000000</td>
+<td>NaN</td>
+<td>536.0</td>
+<td>536.00</td>
+<td>536.0</td>
+<td>536.00</td>
+<td>536.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-49" class="cell" data-execution_count="60">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom aggregations</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'BioProject'</span>, <span class="st">'Platform'</span>]).agg({<span class="st">'size_MB'</span>: np.mean, <span class="st">'Run'</span>: <span class="st">'nunique'</span>}).head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/f0/hrhg01rs28sgr9r5v8k3rwrw0000gn/T/ipykernel_69872/3276325559.py:2: FutureWarning: The provided callable &lt;function mean at 0x1103fe5c0&gt; is currently using SeriesGroupBy.mean. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "mean" instead.
+  df.groupby(['BioProject', 'Platform']).agg({'size_MB': np.mean, 'Run': 'nunique'}).head(10)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="60">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">size_MB</th>
+<th data-quarto-table-cell-role="th">Run</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">BioProject</th>
+<th data-quarto-table-cell-role="th">Platform</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB37513</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>81.172131</td>
+<td>244</td>
+</tr>
+<tr class="even">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">PRJEB37886</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>66.913355</td>
+<td>114178</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>83.400042</td>
+<td>19128</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB37966</th>
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>122.417553</td>
+<td>752</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38101</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>88.833333</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38351</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>95.166667</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">PRJEB38369</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>85.777778</td>
+<td>18</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">PRJEB38388</th>
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>88.651801</td>
+<td>583</td>
+</tr>
+<tr class="odd">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">PRJEB38459</th>
+<th data-quarto-table-cell-role="th">ILLUMINA</th>
+<td>2672.000000</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">OXFORD_NANOPORE</th>
+<td>536.000000</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="tidying-a-data-set-with-melt" class="level2">
+<h2 class="anchored" data-anchor-id="tidying-a-data-set-with-melt">Tidying a data set with melt</h2>
+<p>The most useful function for tidying data is <code>pd.melt()</code>. Let’s demonstrate with a coverage dataset:</p>
+<div id="cell-51" class="cell" data-execution_count="61">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df_cov <span class="op">=</span> pd.read_csv(<span class="st">'https://zenodo.org/records/10680470/files/coverage.tsv.gz'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>df_cov.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="61">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">#chr</th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th">end</th>
+<th data-quarto-table-cell-role="th">SRR12733539.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733570.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733581.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733607.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733616.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733619.bam</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>NC_045512.2</td>
+<td>0</td>
+<td>100</td>
+<td>259.0</td>
+<td>3490.0</td>
+<td>1645.0</td>
+<td>399.0</td>
+<td>598.0</td>
+<td>107.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>NC_045512.2</td>
+<td>100</td>
+<td>200</td>
+<td>720.0</td>
+<td>9106.0</td>
+<td>3780.0</td>
+<td>1063.0</td>
+<td>1404.0</td>
+<td>272.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>NC_045512.2</td>
+<td>200</td>
+<td>300</td>
+<td>979.0</td>
+<td>14207.0</td>
+<td>5054.0</td>
+<td>1450.0</td>
+<td>1921.0</td>
+<td>344.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>NC_045512.2</td>
+<td>300</td>
+<td>400</td>
+<td>983.0</td>
+<td>15438.0</td>
+<td>5212.0</td>
+<td>1396.0</td>
+<td>1908.0</td>
+<td>328.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>NC_045512.2</td>
+<td>400</td>
+<td>500</td>
+<td>1297.0</td>
+<td>17257.0</td>
+<td>6174.0</td>
+<td>1567.0</td>
+<td>2021.0</td>
+<td>385.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>These data are not tidy. When we melt the data frame, the data within it (called <strong>values</strong>) become a single column. The headers (called <strong>variables</strong>) also become new columns.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://pandas.pydata.org/docs/_images/07_melt.svg" class="img-fluid figure-img"></p>
+<figcaption>Pandas melt operation diagram showing wide format table transformed to long format with id_vars, variable, and value columns</figcaption>
+</figure>
+</div>
+<div id="cell-53" class="cell" data-execution_count="62">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>melted <span class="op">=</span> pd.melt(df_cov, </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>                 value_name<span class="op">=</span><span class="st">'coverage'</span>, </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                 var_name<span class="op">=</span><span class="st">'sample'</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                 value_vars<span class="op">=</span>df_cov.columns[<span class="dv">3</span>:],</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>                 id_vars<span class="op">=</span>[<span class="st">'start'</span>, <span class="st">'end'</span>])</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>melted.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="62">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th">end</th>
+<th data-quarto-table-cell-role="th">sample</th>
+<th data-quarto-table-cell-role="th">coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>0</td>
+<td>100</td>
+<td>SRR12733539.bam</td>
+<td>259.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>100</td>
+<td>200</td>
+<td>SRR12733539.bam</td>
+<td>720.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>200</td>
+<td>300</td>
+<td>SRR12733539.bam</td>
+<td>979.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>300</td>
+<td>400</td>
+<td>SRR12733539.bam</td>
+<td>983.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>400</td>
+<td>500</td>
+<td>SRR12733539.bam</td>
+<td>1297.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-54" class="cell" data-execution_count="63">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>melted.groupby([<span class="st">'sample'</span>])[<span class="st">'coverage'</span>].describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="63">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">25%</th>
+<th data-quarto-table-cell-role="th">50%</th>
+<th data-quarto-table-cell-role="th">75%</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">sample</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">SRR12733539.bam</th>
+<td>100.0</td>
+<td>1271.75</td>
+<td>295.525499</td>
+<td>259.0</td>
+<td>1093.00</td>
+<td>1310.0</td>
+<td>1484.25</td>
+<td>1963.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">SRR12733570.bam</th>
+<td>100.0</td>
+<td>10112.04</td>
+<td>3412.618417</td>
+<td>1843.0</td>
+<td>8582.25</td>
+<td>10615.5</td>
+<td>12062.75</td>
+<td>18673.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">SRR12733581.bam</th>
+<td>100.0</td>
+<td>5800.16</td>
+<td>1360.497731</td>
+<td>1645.0</td>
+<td>5038.50</td>
+<td>6118.5</td>
+<td>6766.50</td>
+<td>8100.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">SRR12733607.bam</th>
+<td>100.0</td>
+<td>1509.15</td>
+<td>389.486359</td>
+<td>399.0</td>
+<td>1334.50</td>
+<td>1571.0</td>
+<td>1834.75</td>
+<td>2159.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">SRR12733616.bam</th>
+<td>100.0</td>
+<td>1691.37</td>
+<td>444.477395</td>
+<td>414.0</td>
+<td>1446.50</td>
+<td>1820.0</td>
+<td>2030.00</td>
+<td>2366.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">SRR12733619.bam</th>
+<td>100.0</td>
+<td>359.54</td>
+<td>77.393318</td>
+<td>107.0</td>
+<td>321.50</td>
+<td>384.5</td>
+<td>411.00</td>
+<td>482.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>To get back from melted (narrow) format to wide format, use <code>pivot()</code>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://pandas.pydata.org/docs/_images/07_pivot.svg" class="img-fluid figure-img"></p>
+<figcaption>Pandas pivot operation diagram showing long format table transformed back to wide format</figcaption>
+</figure>
+</div>
+<div id="cell-56" class="cell" data-execution_count="64">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>melted.pivot(index<span class="op">=</span>[<span class="st">'start'</span>, <span class="st">'end'</span>], columns<span class="op">=</span><span class="st">'sample'</span>, values<span class="op">=</span><span class="st">'coverage'</span>).head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="64">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">sample</th>
+<th data-quarto-table-cell-role="th">SRR12733539.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733570.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733581.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733607.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733616.bam</th>
+<th data-quarto-table-cell-role="th">SRR12733619.bam</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th">end</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">100</th>
+<td>259.0</td>
+<td>3490.0</td>
+<td>1645.0</td>
+<td>399.0</td>
+<td>598.0</td>
+<td>107.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">100</th>
+<th data-quarto-table-cell-role="th">200</th>
+<td>720.0</td>
+<td>9106.0</td>
+<td>3780.0</td>
+<td>1063.0</td>
+<td>1404.0</td>
+<td>272.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">200</th>
+<th data-quarto-table-cell-role="th">300</th>
+<td>979.0</td>
+<td>14207.0</td>
+<td>5054.0</td>
+<td>1450.0</td>
+<td>1921.0</td>
+<td>344.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">300</th>
+<th data-quarto-table-cell-role="th">400</th>
+<td>983.0</td>
+<td>15438.0</td>
+<td>5212.0</td>
+<td>1396.0</td>
+<td>1908.0</td>
+<td>328.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">400</th>
+<th data-quarto-table-cell-role="th">500</th>
+<td>1297.0</td>
+<td>17257.0</td>
+<td>6174.0</td>
+<td>1567.0</td>
+<td>2021.0</td>
+<td>385.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="working-with-multiple-tables" class="level1">
+<h1>Working with multiple tables</h1>
+<p>Working with multiple tables often involves joining them on a common key.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://pandas.pydata.org/docs/_images/08_merge_left.svg" class="img-fluid figure-img"></p>
+<figcaption>Pandas merge left join diagram showing how two dataframes combine on matching keys</figcaption>
+</figure>
+</div>
+<div id="cell-58" class="cell" data-execution_count="65">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.DataFrame({<span class="st">"key"</span>: [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>], <span class="st">"value"</span>: np.random.randn(<span class="dv">4</span>)})</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> pd.DataFrame({<span class="st">"key"</span>: [<span class="st">"B"</span>, <span class="st">"D"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>], <span class="st">"value"</span>: np.random.randn(<span class="dv">4</span>)})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-59" class="cell" data-execution_count="66">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>df1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="66">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>A</td>
+<td>2.159150</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>B</td>
+<td>0.243231</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>C</td>
+<td>0.577176</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>D</td>
+<td>0.675909</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-60" class="cell" data-execution_count="67">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="67">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>B</td>
+<td>-0.262216</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>D</td>
+<td>0.093675</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>D</td>
+<td>-0.408300</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>E</td>
+<td>0.069736</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="inner-join" class="level2">
+<h2 class="anchored" data-anchor-id="inner-join">Inner join</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/SQL_Join_-_07_A_Inner_Join_B.svg/234px-SQL_Join_-_07_A_Inner_Join_B.svg.png" class="img-fluid figure-img"></p>
+<figcaption>Venn diagram showing inner join - intersection of sets A and B highlighted</figcaption>
+</figure>
+</div>
+<div id="cell-62" class="cell" data-execution_count="68">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>pd.merge(df1, df2, on<span class="op">=</span><span class="st">"key"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="68">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">value_x</th>
+<th data-quarto-table-cell-role="th">value_y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>B</td>
+<td>0.243231</td>
+<td>-0.262216</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>D</td>
+<td>0.675909</td>
+<td>0.093675</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>D</td>
+<td>0.675909</td>
+<td>-0.408300</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="left-join" class="level2">
+<h2 class="anchored" data-anchor-id="left-join">Left join</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/SQL_Join_-_01b_A_Left_Join_B.svg/234px-SQL_Join_-_01b_A_Left_Join_B.svg.png" class="img-fluid figure-img"></p>
+<figcaption>Venn diagram showing left join - all of set A plus intersection with B highlighted</figcaption>
+</figure>
+</div>
+<div id="cell-64" class="cell" data-execution_count="69">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pd.merge(df1, df2, on<span class="op">=</span><span class="st">"key"</span>, how<span class="op">=</span><span class="st">"left"</span>).fillna(<span class="st">'.'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="69">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">value_x</th>
+<th data-quarto-table-cell-role="th">value_y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>A</td>
+<td>2.159150</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>B</td>
+<td>0.243231</td>
+<td>-0.262216</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>C</td>
+<td>0.577176</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>D</td>
+<td>0.675909</td>
+<td>0.093675</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>D</td>
+<td>0.675909</td>
+<td>-0.4083</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="right-join" class="level2">
+<h2 class="anchored" data-anchor-id="right-join">Right join</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/SQL_Join_-_03_A_Right_Join_B.svg/234px-SQL_Join_-_03_A_Right_Join_B.svg.png" class="img-fluid figure-img"></p>
+<figcaption>Venn diagram showing right join - all of set B plus intersection with A highlighted</figcaption>
+</figure>
+</div>
+<div id="cell-66" class="cell" data-execution_count="70">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pd.merge(df1, df2, on<span class="op">=</span><span class="st">"key"</span>, how<span class="op">=</span><span class="st">"right"</span>).fillna(<span class="st">'.'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="70">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">value_x</th>
+<th data-quarto-table-cell-role="th">value_y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>B</td>
+<td>0.243231</td>
+<td>-0.262216</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>D</td>
+<td>0.675909</td>
+<td>0.093675</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>D</td>
+<td>0.675909</td>
+<td>-0.408300</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>E</td>
+<td>.</td>
+<td>0.069736</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="full-outer-join" class="level2">
+<h2 class="anchored" data-anchor-id="full-outer-join">Full (outer) join</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/SQL_Join_-_05_A_Full_Join_B.svg/234px-SQL_Join_-_05_A_Full_Join_B.svg.png" class="img-fluid figure-img"></p>
+<figcaption>Venn diagram showing full outer join - all of both sets A and B highlighted</figcaption>
+</figure>
+</div>
+<div id="cell-68" class="cell" data-execution_count="71">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>pd.merge(df1, df2, on<span class="op">=</span><span class="st">"key"</span>, how<span class="op">=</span><span class="st">"outer"</span>).fillna(<span class="st">'.'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="71">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">value_x</th>
+<th data-quarto-table-cell-role="th">value_y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>A</td>
+<td>2.15915</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>B</td>
+<td>0.243231</td>
+<td>-0.262216</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>C</td>
+<td>0.577176</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>D</td>
+<td>0.675909</td>
+<td>0.093675</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>D</td>
+<td>0.675909</td>
+<td>-0.4083</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>E</td>
+<td>.</td>
+<td>0.069736</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="putting-it-all-together-pandas-altair" class="level1">
+<h1>Putting it all together: Pandas + Altair</h1>
+<section id="understanding-altair" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-altair">Understanding <a href="https://altair-viz.github.io/">Altair</a></h2>
+<p>Vega-Altair is a declarative statistical visualization library for Python. It offers a powerful and concise grammar that enables you to quickly build a wide range of statistical visualizations.</p>
+<div id="cell-70" class="cell" data-execution_count="72">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> date</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>today <span class="op">=</span> date.today()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-71" class="cell" data-execution_count="73">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read a larger dataset</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> pd.read_csv(</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://zenodo.org/records/10680776/files/ena.tsv.gz"</span>,</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    compression<span class="op">=</span><span class="st">'gzip'</span>,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>,</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    low_memory<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    nrows<span class="op">=</span><span class="dv">100000</span>  <span class="co"># Limit rows for faster loading</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-72" class="cell" data-execution_count="74">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(sra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="74">
+<pre><code>100000</code></pre>
+</div>
+</div>
+<div id="cell-73" class="cell" data-execution_count="75">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>sra.sample(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="75">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">study_accession</th>
+<th data-quarto-table-cell-role="th">base_count</th>
+<th data-quarto-table-cell-role="th">accession</th>
+<th data-quarto-table-cell-role="th">collection_date</th>
+<th data-quarto-table-cell-role="th">country</th>
+<th data-quarto-table-cell-role="th">culture_collection</th>
+<th data-quarto-table-cell-role="th">description</th>
+<th data-quarto-table-cell-role="th">sample_collection</th>
+<th data-quarto-table-cell-role="th">sample_title</th>
+<th data-quarto-table-cell-role="th">sequencing_method</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">library_name</th>
+<th data-quarto-table-cell-role="th">library_construction_protocol</th>
+<th data-quarto-table-cell-role="th">library_layout</th>
+<th data-quarto-table-cell-role="th">instrument_model</th>
+<th data-quarto-table-cell-role="th">instrument_platform</th>
+<th data-quarto-table-cell-role="th">isolation_source</th>
+<th data-quarto-table-cell-role="th">isolate</th>
+<th data-quarto-table-cell-role="th">investigation_type</th>
+<th data-quarto-table-cell-role="th">collection_date_submitted</th>
+<th data-quarto-table-cell-role="th">center_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">31562</th>
+<td>PRJNA716984</td>
+<td>4477222.0</td>
+<td>SAMN21918147</td>
+<td>2021-09-07</td>
+<td>USA: Indiana</td>
+<td>NaN</td>
+<td>Sequel II sequencing</td>
+<td>NaN</td>
+<td>CDC Sars CoV2 Sequencing Baseline Constellation</td>
+<td>NaN</td>
+<td>...</td>
+<td>Unknown</td>
+<td>Freed primers</td>
+<td>PAIRED</td>
+<td>Sequel II</td>
+<td>PACBIO_SMRT</td>
+<td>Nasal Swabs</td>
+<td>SARS-CoV-2/Human/USA/IN-CDC-LC0287206/2021</td>
+<td>NaN</td>
+<td>2021-09-07</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">87931</th>
+<td>PRJNA856404</td>
+<td>33599098.0</td>
+<td>SAMN29960563</td>
+<td>2022-05-14</td>
+<td>Australia: Victoria</td>
+<td>NaN</td>
+<td>GridION sequencing; Whole genome sequencing of...</td>
+<td>NaN</td>
+<td>This sample has been submitted by pda|williams...</td>
+<td>NaN</td>
+<td>...</td>
+<td>RATED17</td>
+<td>NaN</td>
+<td>SINGLE</td>
+<td>GridION</td>
+<td>OXFORD_NANOPORE</td>
+<td>Rapid antigen test device</td>
+<td>RATED17</td>
+<td>NaN</td>
+<td>2022-05-14</td>
+<td>SUB11855608</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">68138</th>
+<td>PRJEB37886</td>
+<td>842505955.0</td>
+<td>SAMEA11047407</td>
+<td>2021-11-26</td>
+<td>United Kingdom</td>
+<td>NaN</td>
+<td>Illumina NovaSeq 6000 sequencing; Illumina Nov...</td>
+<td>NaN</td>
+<td>COG-UK/MILK-2C13DE3</td>
+<td>NaN</td>
+<td>...</td>
+<td>NT1711934H / HT-125130:A7</td>
+<td>NaN</td>
+<td>PAIRED</td>
+<td>Illumina NovaSeq 6000</td>
+<td>ILLUMINA</td>
+<td>NaN</td>
+<td>not provided</td>
+<td>NaN</td>
+<td>2021-11-26</td>
+<td>SC</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">22123</th>
+<td>PRJNA625551</td>
+<td>39200317.0</td>
+<td>SAMN23710884</td>
+<td>2021-01-01</td>
+<td>USA: Virginia</td>
+<td>NaN</td>
+<td>MinION sequencing; Amplicon-based sequencing o...</td>
+<td>NaN</td>
+<td>Amplicon-based sequencing of SARS-CoV-2 : VA-C...</td>
+<td>NaN</td>
+<td>...</td>
+<td>SARS-CoV-2 : VA-CAV_VAS3N_00004000_01</td>
+<td>NaN</td>
+<td>SINGLE</td>
+<td>MinION</td>
+<td>OXFORD_NANOPORE</td>
+<td>human</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2021</td>
+<td>SUB10769604</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">17979</th>
+<td>PRJNA686984</td>
+<td>38069750.0</td>
+<td>SAMN25038967</td>
+<td>2021-12-21</td>
+<td>USA: Colorado</td>
+<td>NaN</td>
+<td>NextSeq 550 sequencing; PCR tiled amplicon WGS...</td>
+<td>NaN</td>
+<td>PCR tiled amplicon WGS of SARS-CoV-2</td>
+<td>NaN</td>
+<td>...</td>
+<td>112</td>
+<td>NaN</td>
+<td>SINGLE</td>
+<td>NextSeq 550</td>
+<td>ILLUMINA</td>
+<td>patient isolate</td>
+<td>CO-CDPHE-2102510306</td>
+<td>NaN</td>
+<td>2021-12-21</td>
+<td>SUB10962253</td>
+</tr>
+</tbody>
+</table>
+
+<p>5 rows × 32 columns</p>
+</div>
+</div>
+</div>
+</section>
+<section id="cleaning-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="cleaning-the-data">Cleaning the data</h2>
+<div id="cell-75" class="cell" data-execution_count="76">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert collection_date to datetime</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: errors='coerce' converts unparseable dates to NaT (Not a Time)</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This is acceptable here because we will filter out invalid dates in the next step</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> sra.assign(collection_date<span class="op">=</span>pd.to_datetime(sra[<span class="st">"collection_date"</span>], errors<span class="op">=</span><span class="st">'coerce'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-76" class="cell" data-execution_count="77">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Earliest entry:'</span>, sra[<span class="st">'collection_date'</span>].<span class="bu">min</span>())</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Latest entry:'</span>, sra[<span class="st">'collection_date'</span>].<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Earliest entry: 2019-12-30 00:00:00
+Latest entry: 2023-01-20 00:00:00</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>⚠️ Data Quality:</strong> Don’t get surprised here - the metadata is only as good as the person who entered it. So, <strong>when you enter metadata for your sequencing data – pay attention!!!</strong></p>
+</blockquote>
+<div id="cell-78" class="cell" data-execution_count="78">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter to valid date range using explicit Timestamp objects for clarity</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> sra[</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    (sra[<span class="st">'collection_date'</span>] <span class="op">&gt;=</span> pd.Timestamp(<span class="st">'2020-01-01'</span>)) </span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span> </span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    (sra[<span class="st">'collection_date'</span>] <span class="op">&lt;=</span> pd.Timestamp(<span class="st">'2023-12-31'</span>))</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-79" class="cell" data-execution_count="79">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate data for heatmap</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>heatmap_2d <span class="op">=</span> sra.groupby(</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'instrument_platform'</span>, <span class="st">'library_strategy'</span>]</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>).agg(</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'run_accession'</span>: <span class="st">'nunique'</span>}</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>heatmap_2d</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="79">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">instrument_platform</th>
+<th data-quarto-table-cell-role="th">library_strategy</th>
+<th data-quarto-table-cell-role="th">run_accession</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>BGISEQ</td>
+<td>AMPLICON</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>BGISEQ</td>
+<td>OTHER</td>
+<td>13</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>BGISEQ</td>
+<td>RNA-Seq</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>BGISEQ</td>
+<td>Targeted-Capture</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>DNBSEQ</td>
+<td>AMPLICON</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>ILLUMINA</td>
+<td>AMPLICON</td>
+<td>78262</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>ILLUMINA</td>
+<td>OTHER</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>ILLUMINA</td>
+<td>RNA-Seq</td>
+<td>524</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>ILLUMINA</td>
+<td>Targeted-Capture</td>
+<td>272</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>ILLUMINA</td>
+<td>WCS</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>ILLUMINA</td>
+<td>WGA</td>
+<td>1389</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>ILLUMINA</td>
+<td>WGS</td>
+<td>977</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12</th>
+<td>ILLUMINA</td>
+<td>miRNA-Seq</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">13</th>
+<td>ION_TORRENT</td>
+<td>AMPLICON</td>
+<td>1752</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14</th>
+<td>ION_TORRENT</td>
+<td>RNA-Seq</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">15</th>
+<td>ION_TORRENT</td>
+<td>WGA</td>
+<td>11</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">16</th>
+<td>ION_TORRENT</td>
+<td>WGS</td>
+<td>24</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">17</th>
+<td>OXFORD_NANOPORE</td>
+<td>AMPLICON</td>
+<td>7305</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">18</th>
+<td>OXFORD_NANOPORE</td>
+<td>RNA-Seq</td>
+<td>292</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">19</th>
+<td>OXFORD_NANOPORE</td>
+<td>WGA</td>
+<td>134</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">20</th>
+<td>OXFORD_NANOPORE</td>
+<td>WGS</td>
+<td>227</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">21</th>
+<td>PACBIO_SMRT</td>
+<td>AMPLICON</td>
+<td>8379</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">22</th>
+<td>PACBIO_SMRT</td>
+<td>RNA-Seq</td>
+<td>13</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">23</th>
+<td>PACBIO_SMRT</td>
+<td>Targeted-Capture</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">24</th>
+<td>PACBIO_SMRT</td>
+<td>WGS</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="plotting-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-the-data">Plotting the data</h2>
+<div id="cell-81" class="cell" data-execution_count="80">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> alt.Chart(heatmap_2d).mark_rect(opacity<span class="op">=</span><span class="dv">1</span>).encode(</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"instrument_platform:N"</span>,</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Instrument"</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"library_strategy:N"</span>,</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Strategy"</span>,</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span>alt.Axis(orient<span class="op">=</span><span class="st">'right'</span>)</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"run_accession:Q"</span>,</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"# Samples"</span>,</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(</span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>            scheme<span class="op">=</span><span class="st">"goldred"</span>,</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">type</span><span class="op">=</span><span class="st">"log"</span></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>    tooltip<span class="op">=</span>[</span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(</span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">"instrument_platform:N"</span>,</span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="st">"Machine"</span></span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(</span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"run_accession:Q"</span>,</span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="st">"Number of runs"</span></span>
+<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(</span>
+<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>            <span class="st">"library_strategy:N"</span>,</span>
+<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="st">"Protocol"</span></span>
+<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb64-32"><a href="#cb64-32" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb64-33"><a href="#cb64-33" aria-hidden="true" tabindex="-1"></a>).properties(</span>
+<span id="cb64-34"><a href="#cb64-34" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">500</span>,</span>
+<span id="cb64-35"><a href="#cb64-35" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span>,</span>
+<span id="cb64-36"><a href="#cb64-36" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
+<span id="cb64-37"><a href="#cb64-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>: [<span class="st">"Breakdown of datasets from ENA"</span>,</span>
+<span id="cb64-38"><a href="#cb64-38" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"by Platform and Library Strategy"</span>],</span>
+<span id="cb64-39"><a href="#cb64-39" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subtitle"</span>: <span class="st">"(Sample of 100k records)"</span></span>
+<span id="cb64-40"><a href="#cb64-40" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb64-41"><a href="#cb64-41" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb64-42"><a href="#cb64-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-43"><a href="#cb64-43" aria-hidden="true" tabindex="-1"></a>back</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="80">
+
+<style>
+  #altair-viz-d93eb64673c34da3b4b3e765b4131c6c.vega-embed {
+    width: 100%;
+    display: flex;
+  }
+
+  #altair-viz-d93eb64673c34da3b4b3e765b4131c6c.vega-embed details,
+  #altair-viz-d93eb64673c34da3b4b3e765b4131c6c.vega-embed details summary {
+    position: relative;
+  }
+</style>
+<div id="altair-viz-d93eb64673c34da3b4b3e765b4131c6c"></div>
+<script type="text/javascript">
+  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-d93eb64673c34da3b4b3e765b4131c6c") {
+      outputDiv = document.getElementById("altair-viz-d93eb64673c34da3b4b3e765b4131c6c");
+    }
+
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm/vega@6?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@6.1.0?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@7?noext",
+    };
+
+    function maybeLoadScript(lib, version) {
+      var key = `${lib.replace("-", "")}_version`;
+      return (VEGA_DEBUG[key] == version) ?
+        Promise.resolve(paths[lib]) :
+        new Promise(function(resolve, reject) {
+          var s = document.createElement('script');
+          document.getElementsByTagName("head")[0].appendChild(s);
+          s.async = true;
+          s.onload = () => {
+            VEGA_DEBUG[key] = version;
+            return resolve(paths[lib]);
+          };
+          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+          s.src = paths[lib];
+        });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      let deps = ["vega-embed"];
+      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else {
+      maybeLoadScript("vega", "6")
+        .then(() => maybeLoadScript("vega-lite", "6.1.0"))
+        .then(() => maybeLoadScript("vega-embed", "7"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"name": "data-0c1367e49a7528048fe172df9ad3d2ce"}, "mark": {"type": "rect", "opacity": 1}, "encoding": {"color": {"field": "run_accession", "scale": {"scheme": "goldred", "type": "log"}, "title": "# Samples", "type": "quantitative"}, "tooltip": [{"field": "instrument_platform", "title": "Machine", "type": "nominal"}, {"field": "run_accession", "title": "Number of runs", "type": "quantitative"}, {"field": "library_strategy", "title": "Protocol", "type": "nominal"}], "x": {"field": "instrument_platform", "title": "Instrument", "type": "nominal"}, "y": {"axis": {"orient": "right"}, "field": "library_strategy", "title": "Strategy", "type": "nominal"}}, "height": 150, "title": {"text": ["Breakdown of datasets from ENA", "by Platform and Library Strategy"], "subtitle": "(Sample of 100k records)"}, "width": 500, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-0c1367e49a7528048fe172df9ad3d2ce": [{"instrument_platform": "BGISEQ", "library_strategy": "AMPLICON", "run_accession": 1}, {"instrument_platform": "BGISEQ", "library_strategy": "OTHER", "run_accession": 13}, {"instrument_platform": "BGISEQ", "library_strategy": "RNA-Seq", "run_accession": 2}, {"instrument_platform": "BGISEQ", "library_strategy": "Targeted-Capture", "run_accession": 2}, {"instrument_platform": "DNBSEQ", "library_strategy": "AMPLICON", "run_accession": 3}, {"instrument_platform": "ILLUMINA", "library_strategy": "AMPLICON", "run_accession": 78262}, {"instrument_platform": "ILLUMINA", "library_strategy": "OTHER", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "RNA-Seq", "run_accession": 524}, {"instrument_platform": "ILLUMINA", "library_strategy": "Targeted-Capture", "run_accession": 272}, {"instrument_platform": "ILLUMINA", "library_strategy": "WCS", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGA", "run_accession": 1389}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGS", "run_accession": 977}, {"instrument_platform": "ILLUMINA", "library_strategy": "miRNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "AMPLICON", "run_accession": 1752}, {"instrument_platform": "ION_TORRENT", "library_strategy": "RNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGA", "run_accession": 11}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGS", "run_accession": 24}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "AMPLICON", "run_accession": 7305}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "RNA-Seq", "run_accession": 292}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGA", "run_accession": 134}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGS", "run_accession": 227}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "AMPLICON", "run_accession": 8379}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "RNA-Seq", "run_accession": 13}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "Targeted-Capture", "run_accession": 6}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "WGS", "run_accession": 1}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+</div>
+<div id="cell-82" class="cell" data-execution_count="81">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add text labels</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>front <span class="op">=</span> back.mark_text(</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>    align<span class="op">=</span><span class="st">"center"</span>,</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    baseline<span class="op">=</span><span class="st">"middle"</span>,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>    fontWeight<span class="op">=</span><span class="st">"bold"</span>,</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>).encode(</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>alt.Text(<span class="st">"run_accession:Q"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">",.0f"</span>),</span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.condition(</span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>        alt.datum.run_accession <span class="op">&gt;</span> <span class="dv">200</span>,</span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>        alt.value(<span class="st">"white"</span>),</span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>        alt.value(<span class="st">"black"</span>)</span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine layers</span></span>
+<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a>back <span class="op">+</span> front</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="81">
+
+<style>
+  #altair-viz-2f8e18d4fcde47d290bbcebe1507f662.vega-embed {
+    width: 100%;
+    display: flex;
+  }
+
+  #altair-viz-2f8e18d4fcde47d290bbcebe1507f662.vega-embed details,
+  #altair-viz-2f8e18d4fcde47d290bbcebe1507f662.vega-embed details summary {
+    position: relative;
+  }
+</style>
+<div id="altair-viz-2f8e18d4fcde47d290bbcebe1507f662"></div>
+<script type="text/javascript">
+  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-2f8e18d4fcde47d290bbcebe1507f662") {
+      outputDiv = document.getElementById("altair-viz-2f8e18d4fcde47d290bbcebe1507f662");
+    }
+
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm/vega@6?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@6.1.0?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@7?noext",
+    };
+
+    function maybeLoadScript(lib, version) {
+      var key = `${lib.replace("-", "")}_version`;
+      return (VEGA_DEBUG[key] == version) ?
+        Promise.resolve(paths[lib]) :
+        new Promise(function(resolve, reject) {
+          var s = document.createElement('script');
+          document.getElementsByTagName("head")[0].appendChild(s);
+          s.async = true;
+          s.onload = () => {
+            VEGA_DEBUG[key] = version;
+            return resolve(paths[lib]);
+          };
+          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+          s.src = paths[lib];
+        });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      let deps = ["vega-embed"];
+      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else {
+      maybeLoadScript("vega", "6")
+        .then(() => maybeLoadScript("vega-lite", "6.1.0"))
+        .then(() => maybeLoadScript("vega-embed", "7"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "layer": [{"mark": {"type": "rect", "opacity": 1}, "encoding": {"color": {"field": "run_accession", "scale": {"scheme": "goldred", "type": "log"}, "title": "# Samples", "type": "quantitative"}, "tooltip": [{"field": "instrument_platform", "title": "Machine", "type": "nominal"}, {"field": "run_accession", "title": "Number of runs", "type": "quantitative"}, {"field": "library_strategy", "title": "Protocol", "type": "nominal"}], "x": {"field": "instrument_platform", "title": "Instrument", "type": "nominal"}, "y": {"axis": {"orient": "right"}, "field": "library_strategy", "title": "Strategy", "type": "nominal"}}, "title": {"text": ["Breakdown of datasets from ENA", "by Platform and Library Strategy"], "subtitle": "(Sample of 100k records)"}}, {"mark": {"type": "text", "align": "center", "baseline": "middle", "fontSize": 12, "fontWeight": "bold"}, "encoding": {"color": {"condition": {"test": "(datum.run_accession > 200)", "value": "white"}, "value": "black"}, "text": {"field": "run_accession", "format": ",.0f", "type": "quantitative"}, "tooltip": [{"field": "instrument_platform", "title": "Machine", "type": "nominal"}, {"field": "run_accession", "title": "Number of runs", "type": "quantitative"}, {"field": "library_strategy", "title": "Protocol", "type": "nominal"}], "x": {"field": "instrument_platform", "title": "Instrument", "type": "nominal"}, "y": {"axis": {"orient": "right"}, "field": "library_strategy", "title": "Strategy", "type": "nominal"}}, "title": {"text": ["Breakdown of datasets from ENA", "by Platform and Library Strategy"], "subtitle": "(Sample of 100k records)"}}], "data": {"name": "data-0c1367e49a7528048fe172df9ad3d2ce"}, "height": 150, "width": 500, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-0c1367e49a7528048fe172df9ad3d2ce": [{"instrument_platform": "BGISEQ", "library_strategy": "AMPLICON", "run_accession": 1}, {"instrument_platform": "BGISEQ", "library_strategy": "OTHER", "run_accession": 13}, {"instrument_platform": "BGISEQ", "library_strategy": "RNA-Seq", "run_accession": 2}, {"instrument_platform": "BGISEQ", "library_strategy": "Targeted-Capture", "run_accession": 2}, {"instrument_platform": "DNBSEQ", "library_strategy": "AMPLICON", "run_accession": 3}, {"instrument_platform": "ILLUMINA", "library_strategy": "AMPLICON", "run_accession": 78262}, {"instrument_platform": "ILLUMINA", "library_strategy": "OTHER", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "RNA-Seq", "run_accession": 524}, {"instrument_platform": "ILLUMINA", "library_strategy": "Targeted-Capture", "run_accession": 272}, {"instrument_platform": "ILLUMINA", "library_strategy": "WCS", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGA", "run_accession": 1389}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGS", "run_accession": 977}, {"instrument_platform": "ILLUMINA", "library_strategy": "miRNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "AMPLICON", "run_accession": 1752}, {"instrument_platform": "ION_TORRENT", "library_strategy": "RNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGA", "run_accession": 11}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGS", "run_accession": 24}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "AMPLICON", "run_accession": 7305}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "RNA-Seq", "run_accession": 292}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGA", "run_accession": 134}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGS", "run_accession": 227}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "AMPLICON", "run_accession": 8379}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "RNA-Seq", "run_accession": 13}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "Targeted-Capture", "run_accession": 6}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "WGS", "run_accession": 1}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>In this lecture, we covered:</p>
+<ol type="1">
+<li><strong>Pandas basics</strong>: DataFrames, indexing with <code>loc</code> and <code>iloc</code></li>
+<li><strong>Boolean indexing</strong>: Filtering data with conditions</li>
+<li><strong>Calculations</strong>: Vectorized operations on columns</li>
+<li><strong>Tidy data</strong>: Principles of data organization</li>
+<li><strong>Split-apply-combine</strong>: Using <code>groupby()</code> for aggregations</li>
+<li><strong>Reshaping</strong>: <code>melt()</code> and <code>pivot()</code> for transforming data</li>
+<li><strong>Joins</strong>: Combining tables with <code>merge()</code></li>
+<li><strong>Visualization</strong>: Creating plots with Altair</li>
+</ol>
+<p>These skills form the foundation of data analysis in Python!</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture10.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
