@@ -33,9 +33,9 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 4 | Jan 22 | [Py2: Simple sequence manipulation](lectures/lecture4.ipynb) |
 | 5 | Jan 27 | [Py3: Parsing FASTA](lectures/lecture5.ipynb) |
 | 6 | Jan 29 | [Py4: FASTQ and Quality Scores](lectures/lecture6.ipynb) |
-| 7 | Feb 3 | Lists and Dictionaries |
-| 8 | Feb 5 | File I/O in Python |
-| 9 | Feb 10 | Data Manipulation with Pandas |
+| 7 | Feb 3 | [Py5: Data Manipulation with Pandas](lectures/lecture7.ipynb) |
+| 8 | Feb 5 | - |
+| 9 | Feb 10 | - |
 | 10 | Feb 12 | - |
 | 11 | Feb 17 | - |
 | 12 | Feb 19 | - |

@@ -1,0 +1,21 @@
+organism,kingdom,genome_size_mb,gc_percent,num_genes,habitat
+Escherichia coli,Bacteria,4.6,50.8,4300,gut
+Bacillus subtilis,Bacteria,4.2,43.5,4100,soil
+Mycobacterium tuberculosis,Bacteria,4.4,65.6,4000,host-associated
+Staphylococcus aureus,Bacteria,2.8,32.9,2600,host-associated
+Pseudomonas aeruginosa,Bacteria,6.3,66.6,5700,soil
+Streptococcus pneumoniae,Bacteria,2.2,39.7,2100,host-associated
+Vibrio cholerae,Bacteria,4.0,47.5,3800,aquatic
+Clostridioides difficile,Bacteria,4.3,29.1,3800,gut
+Saccharomyces cerevisiae,Eukarya,12.1,38.3,6000,soil
+Candida auris,Eukarya,12.4,44.5,5400,host-associated
+Drosophila melanogaster,Eukarya,144.0,42.5,14000,terrestrial
+Caenorhabditis elegans,Eukarya,100.3,35.4,20000,soil
+Arabidopsis thaliana,Eukarya,135.0,36.0,27000,terrestrial
+Homo sapiens,Eukarya,3100.0,40.9,20000,terrestrial
+Mus musculus,Eukarya,2700.0,42.0,22000,terrestrial
+Danio rerio,Eukarya,1400.0,36.6,25000,aquatic
+Halobacterium salinarum,Archaea,2.6,65.9,2600,aquatic
+Methanocaldococcus jannaschii,Archaea,1.7,31.3,1700,aquatic
+Sulfolobus acidocaldarius,Archaea,2.2,36.7,2200,terrestrial
+Thermococcus kodakarensis,Archaea,2.1,52.0,2300,aquatic
