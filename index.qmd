@@ -14,11 +14,11 @@ The **secondary analysis** extracts meaning from these intermediate data. It's t
 
 ![**Data analysis as a pyramid.** Primary data (sequencing reads) is processed into smaller intermediate datasets, which are then analyzed to produce final insights—the content of your theses, publications, and blog posts. As you climb the pyramid, standardization (availability of standard tools and procedures) and computational demands all decrease.](images/data-pyramid.svg){width=50% fig-align="center"}
 
-In this course we will try to learn key skills for climbing this pyramid. The course will be divided into following sections:
+In this course we will try to learn key skills for climbing this pyramid. The course will be divided into the following sections:
 
-1. **Foundation | Tools** - UNIX shell, Python for data manipulation, Python for visualization, version control with Git/GitHub, and responsible use of agentic AI tools.
+1. **Foundations | Tools** - UNIX shell, Python for data manipulation, Python for visualization, version control with Git/GitHub, and responsible use of agentic AI tools.
 2. **Foundations | Computational approaches** - algorithms for alignment, mapping, assembly, and composition analysis.  
-3. **Application | Datatypes and analysis** - hands on primary and secondary analyses in genome assembly, transcriptomics, variation, epigenetics, and community analysis.
+3. **Application | Datatypes and analysis** - hands-on primary and secondary analyses in genome assembly, transcriptomics, variation, epigenetics, and community analysis.
 4. **Application | Class projects** - class will be divided into groups with each group given a research project.
 
 ## Lectures
@@ -67,7 +67,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | Section Exams (3 × 16.7%) | 50% |
 | Final Project | 40% |
 
-**Thursday Quizzes** — Short weekly quizzes covering material from the previous week's lectures. These are designed to ensure that you do read the meterial that is given as as homework.
+**Thursday Quizzes** — Short weekly quizzes covering material from the previous week's lectures. These are designed to ensure that you do read the material that is given as homework.
 
 **Section Exams** — Three take-home exams, one after each major section: (1) Tools, (2) Computational approaches, (3) Datatypes and analysis.
 
