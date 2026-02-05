@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>lecture7 – BMMB554</title>
+<title>lecture9a – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -150,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture7.html">7. Py5: Data Manipulation with Pandas</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture9a.html">9a. Data Manipulation with Pandas</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -209,14 +209,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  <a href="../lectures/lecture9a.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">9a. Data Manipulation with Pandas</span></a>
   </div>
 </li>
       </ul>
@@ -290,7 +284,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#exercise-10" id="toc-exercise-10" class="nav-link" data-scroll-target="#exercise-10">Exercise</a></li>
   </ul></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
-  <li><a href="#a-more-realistic-example" id="toc-a-more-realistic-example" class="nav-link" data-scroll-target="#a-more-realistic-example">A more realistic example</a>
+  <li><a href="#lecture-9b-analyzing-sra-metadata" id="toc-lecture-9b-analyzing-sra-metadata" class="nav-link" data-scroll-target="#lecture-9b-analyzing-sra-metadata">Lecture 9b: Analyzing SRA Metadata</a>
   <ul class="collapse">
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#explore-the-data" id="toc-explore-the-data" class="nav-link" data-scroll-target="#explore-the-data">Explore the data</a></li>
@@ -299,10 +293,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#visualize-with-altair" id="toc-visualize-with-altair" class="nav-link" data-scroll-target="#visualize-with-altair">Visualize with Altair</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture7.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture9a.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture7.html">7. Py5: Data Manipulation with Pandas</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture9a.html">9a. Data Manipulation with Pandas</a></li></ol></nav></header>
 
 
 
@@ -319,20 +313,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This tutorial draws on material from: - <a href="http://justinbois.github.io/bootcamp/2020/index.html">Justin Bois</a> - <a href="https://people.duke.edu/~ccc14/bios-821-2017/index.html">BIOS821 course at Duke</a> - <a href="https://pandas.pydata.org/docs/user_guide/index.html/">Pandas documentation</a></p>
 </blockquote>
 <p>Pandas (from “Panel Data”) is a library for manipulating tabular data in Python. Its central object—the <strong>DataFrame</strong>—lets you filter, transform, aggregate, and reshape tables with concise, readable code. We will use a small genome statistics dataset throughout this lecture.</p>
-<div id="a3" class="cell" data-execution_count="1">
+<div id="a3" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="creating-a-dataframe" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-dataframe">Creating a DataFrame</h2>
 <p>The simplest way to create a DataFrame is from a Python dictionary. Each key becomes a column name, and the corresponding list becomes the column values.</p>
-<div id="a6" class="cell" data-execution_count="2">
+<div id="a6" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>small_df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'organism'</span>: [<span class="st">'E. coli'</span>, <span class="st">'S. cerevisiae'</span>, <span class="st">'H. sapiens'</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'genome_size_mb'</span>: [<span class="fl">4.6</span>, <span class="fl">12.1</span>, <span class="fl">3100.0</span>],</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'num_genes'</span>: [<span class="dv">4300</span>, <span class="dv">6000</span>, <span class="dv">20000</span>]</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>small_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="31">
 <div>
 
 
@@ -370,7 +364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="a7" class="cell" data-execution_count="3">
+<div id="a7" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Shape:'</span>, small_df.shape)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(small_df.dtypes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -386,18 +380,18 @@ dtype: object</code></pre>
 <section id="exercise" class="level3">
 <h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
 <p>Create a DataFrame called <code>viruses</code> with 3 columns: <code>name</code>, <code>genome_size_kb</code>, and <code>host</code>. Include at least 3 rows of made-up or real virus data. Print its shape.</p>
-<div id="swqgzfh0un" class="cell" data-execution_count="4">
+<div id="swqgzfh0un" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="reading-csv-files" class="level2">
 <h2 class="anchored" data-anchor-id="reading-csv-files">Reading CSV files</h2>
-<p>In practice, data lives in files. <code>pd.read_csv()</code> reads a CSV into a DataFrame. Here we load a genome statistics dataset:</p>
-<div id="a10" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/nekrut/bda/main/lectures/data/genome_stats.csv'</span>)</span>
+<p>In practice, data lives in files. <code>pd.read_csv()</code> reads a CSV into a DataFrame. Here we load a genome statistics dataset from a local file:</p>
+<div id="a10" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'data/genome_stats.csv'</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="33">
 <div>
 
 
@@ -465,7 +459,7 @@ dtype: object</code></pre>
 </div>
 </div>
 </div>
-<div id="a11" class="cell" data-execution_count="6">
+<div id="a11" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Shape:'</span>, df.shape)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.dtypes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -484,7 +478,7 @@ dtype: object</code></pre>
 <section id="exercise-1" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-1">Exercise</h3>
 <p>Use <code>.tail()</code> to show the last 3 rows of <code>df</code>. Then use <code>.describe()</code> to get summary statistics. Which organism has the largest genome?</p>
-<div id="2fuz592qlar" class="cell" data-execution_count="7">
+<div id="2fuz592qlar" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -497,10 +491,10 @@ dtype: object</code></pre>
 <li><strong><code>df.loc[row_label, col_label]</code></strong> — label-based indexing (uses actual row/column names)</li>
 <li><strong><code>df.iloc[row_pos, col_pos]</code></strong> — integer position-based indexing</li>
 </ul>
-<div id="a14" class="cell" data-execution_count="8">
+<div id="a14" class="cell" data-execution_count="35">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select a single column</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'organism'</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="35">
 <pre><code>0              Escherichia coli
 1             Bacillus subtilis
 2    Mycobacterium tuberculosis
@@ -509,17 +503,17 @@ dtype: object</code></pre>
 Name: organism, dtype: object</code></pre>
 </div>
 </div>
-<div id="a15" class="cell" data-execution_count="9">
+<div id="a15" class="cell" data-execution_count="36">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Label-based: row 3, column 'gc_percent'</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df.loc[<span class="dv">3</span>, <span class="st">'gc_percent'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>np.float64(32.9)</code></pre>
 </div>
 </div>
-<div id="a16" class="cell" data-execution_count="10">
+<div id="a16" class="cell" data-execution_count="37">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integer position-based: rows 2 through 4</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">2</span>:<span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="37">
 <div>
 
 
@@ -572,7 +566,7 @@ Name: organism, dtype: object</code></pre>
 <section id="exercise-2" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-2">Exercise</h3>
 <p>Using <code>df.loc</code>, extract the <code>organism</code> and <code>habitat</code> columns for rows 5 through 9. Then use <code>df.iloc</code> to get the value in the 4th row, 3rd column.</p>
-<div id="nf5hi393vep" class="cell" data-execution_count="11">
+<div id="nf5hi393vep" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -583,10 +577,10 @@ Name: organism, dtype: object</code></pre>
 <blockquote class="blockquote">
 <p><strong>Note:</strong> <code>df[condition]</code> is shorthand for <code>df.loc[condition]</code>—both are acceptable. We use the shorter form here for readability.</p>
 </blockquote>
-<div id="a19" class="cell" data-execution_count="12">
+<div id="a19" class="cell" data-execution_count="38">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All bacteria</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">'kingdom'</span>] <span class="op">==</span> <span class="st">'Bacteria'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="38">
 <div>
 
 
@@ -681,10 +675,10 @@ Name: organism, dtype: object</code></pre>
 </div>
 </div>
 </div>
-<div id="a20" class="cell" data-execution_count="13">
+<div id="a20" class="cell" data-execution_count="39">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bacteria with GC content above 50%</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>df[(df[<span class="st">'kingdom'</span>] <span class="op">==</span> <span class="st">'Bacteria'</span>) <span class="op">&amp;</span> (df[<span class="st">'gc_percent'</span>] <span class="op">&gt;</span> <span class="dv">50</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="39">
 <div>
 
 
@@ -737,7 +731,7 @@ Name: organism, dtype: object</code></pre>
 <section id="exercise-3" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-3">Exercise</h3>
 <p>Filter <code>df</code> to show only organisms that live in <code>"aquatic"</code> habitats. Then find all Eukarya with more than 20,000 genes.</p>
-<div id="31z6i5l941r" class="cell" data-execution_count="14">
+<div id="31z6i5l941r" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -748,10 +742,10 @@ Name: organism, dtype: object</code></pre>
 <blockquote class="blockquote">
 <p><strong>Note:</strong> This permanently adds the column to <code>df</code>. All subsequent cells will see 7 columns instead of 6.</p>
 </blockquote>
-<div id="a23" class="cell" data-execution_count="15">
+<div id="a23" class="cell" data-execution_count="40">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'genes_per_mb'</span>] <span class="op">=</span> df[<span class="st">'num_genes'</span>] <span class="op">/</span> df[<span class="st">'genome_size_mb'</span>]</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">'organism'</span>, <span class="st">'genome_size_mb'</span>, <span class="st">'num_genes'</span>, <span class="st">'genes_per_mb'</span>]].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="40">
 <div>
 
 
@@ -810,7 +804,7 @@ Name: organism, dtype: object</code></pre>
 <section id="exercise-4" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-4">Exercise</h3>
 <p>Add a column <code>gc_category</code> that is <code>"high"</code> when <code>gc_percent</code> &gt; 50 and <code>"low"</code> otherwise. Hint: use <code>np.where()</code> — you’ll need <code>import numpy as np</code>.</p>
-<div id="83d5e7wesfy" class="cell" data-execution_count="16">
+<div id="83d5e7wesfy" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -818,11 +812,11 @@ Name: organism, dtype: object</code></pre>
 <section id="writing-csv" class="level2">
 <h2 class="anchored" data-anchor-id="writing-csv">Writing CSV</h2>
 <p>Use <code>df.to_csv()</code> to save a DataFrame back to disk. Setting <code>index=False</code> prevents Pandas from writing the row numbers as an extra unnamed column—without it, the CSV gets cluttered with a meaningless index.</p>
-<div id="a26" class="cell" data-execution_count="17">
+<div id="a26" class="cell" data-execution_count="41">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">'genome_stats_with_density.csv'</span>, index<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify round-trip</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>pd.read_csv(<span class="st">'genome_stats_with_density.csv'</span>).head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="41">
 <div>
 
 
@@ -880,15 +874,15 @@ Name: organism, dtype: object</code></pre>
 <section id="exploring-categories" class="level2">
 <h2 class="anchored" data-anchor-id="exploring-categories">Exploring categories</h2>
 <p>Before discussing data organization principles, let’s explore what categories exist in our dataset.</p>
-<div id="a30" class="cell" data-execution_count="18">
+<div id="a30" class="cell" data-execution_count="42">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'kingdom'</span>].unique()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="42">
 <pre><code>array(['Bacteria', 'Eukarya', 'Archaea'], dtype=object)</code></pre>
 </div>
 </div>
-<div id="a31" class="cell" data-execution_count="19">
+<div id="a31" class="cell" data-execution_count="43">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'kingdom'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="43">
 <pre><code>kingdom
 Bacteria    8
 Eukarya     8
@@ -896,9 +890,9 @@ Archaea     4
 Name: count, dtype: int64</code></pre>
 </div>
 </div>
-<div id="a32" class="cell" data-execution_count="20">
+<div id="a32" class="cell" data-execution_count="44">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'habitat'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="44">
 <pre><code>habitat
 aquatic            5
 terrestrial        5
@@ -911,7 +905,7 @@ Name: count, dtype: int64</code></pre>
 <section id="exercise-5" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-5">Exercise</h3>
 <p>How many unique habitats are there? Which habitat has the fewest organisms? Use <code>.unique()</code> and <code>.value_counts()</code>.</p>
-<div id="xopotvmfvdh" class="cell" data-execution_count="21">
+<div id="xopotvmfvdh" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
@@ -932,10 +926,10 @@ Name: count, dtype: int64</code></pre>
 <h2 class="anchored" data-anchor-id="wide-vs-long-format">Wide vs long format</h2>
 <p>Data often arrives in <strong>wide</strong> format—one column per experimental condition. This is convenient for spreadsheets but violates tidy principles because the column headers contain data (condition names).</p>
 <p>Below is a small gene expression dataset. The values represent expression levels measured in FPKM (Fragments Per Kilobase of transcript per Million mapped reads)—a common unit for RNA-seq experiments.</p>
-<div id="a35" class="cell" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>expr <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/nekrut/bda/main/lectures/data/gene_expression_wide.csv'</span>)</span>
+<div id="a35" class="cell" data-execution_count="45">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>expr <span class="op">=</span> pd.read_csv(<span class="st">'data/gene_expression_wide.csv'</span>)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>expr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="45">
 <div>
 
 
@@ -992,7 +986,7 @@ Name: count, dtype: int64</code></pre>
 </figure>
 </div>
 <p>Key parameters of <code>pd.melt()</code>: - <strong><code>id_vars</code></strong> — columns to keep as identifiers (not melted) - <strong><code>var_name</code></strong> — name for the new column created from the old column headers - <strong><code>value_name</code></strong> — name for the new column holding the cell values</p>
-<div id="a37" class="cell" data-execution_count="23">
+<div id="a37" class="cell" data-execution_count="46">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>expr_long <span class="op">=</span> pd.melt(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    expr,</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    id_vars<span class="op">=</span>[<span class="st">'gene'</span>],</span>
@@ -1000,7 +994,7 @@ Name: count, dtype: int64</code></pre>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    value_name<span class="op">=</span><span class="st">'expression'</span></span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>expr_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="46">
 <div>
 
 
@@ -1099,9 +1093,9 @@ Name: count, dtype: int64</code></pre>
 <figcaption>Pandas pivot operation diagram</figcaption>
 </figure>
 </div>
-<div id="a39" class="cell" data-execution_count="24">
+<div id="a39" class="cell" data-execution_count="47">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>expr_long.pivot(index<span class="op">=</span><span class="st">'gene'</span>, columns<span class="op">=</span><span class="st">'condition'</span>, values<span class="op">=</span><span class="st">'expression'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="47">
 <div>
 
 
@@ -1153,14 +1147,9 @@ Name: count, dtype: int64</code></pre>
 </div>
 <section id="exercise-6" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-6">Exercise</h3>
-<p>The DataFrame below is in wide format. Melt it into tidy (long) format, then pivot it back to wide.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>temps <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'city'</span>: [<span class="st">'NYC'</span>, <span class="st">'LA'</span>, <span class="st">'Chicago'</span>],</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'jan'</span>: [<span class="op">-</span><span class="dv">1</span>, <span class="dv">14</span>, <span class="op">-</span><span class="dv">5</span>],</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'jul'</span>: [<span class="dv">28</span>, <span class="dv">24</span>, <span class="dv">27</span>]</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="mg5w9eudvv" class="cell" data-execution_count="25">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The DataFrame below is in wide format. Melt it into tidy (long) format, then pivot it back to wide.<code>pythontemps = pd.DataFrame({    'city': ['NYC', 'LA', 'Chicago'],    'jan': [-1, 14, -5],    'jul': [28, 24, 27]})</code></p>
+<div id="mg5w9eudvv" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -1169,9 +1158,9 @@ Name: count, dtype: int64</code></pre>
 <section id="sorting" class="level1">
 <h1>Sorting</h1>
 <p>Use <code>sort_values()</code> to order rows by one or more columns. By default sorting is ascending; pass <code>ascending=False</code> to reverse.</p>
-<div id="a42" class="cell" data-execution_count="26">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df.sort_values(<span class="st">'genome_size_mb'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="26">
+<div id="a42" class="cell" data-execution_count="48">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df.sort_values(<span class="st">'genome_size_mb'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="48">
 <div>
 
 
@@ -1395,13 +1384,13 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 </div>
-<div id="a43" class="cell" data-execution_count="27">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-column sort: kingdom ascending, genome size descending</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>df.sort_values(</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    by<span class="op">=</span>[<span class="st">'kingdom'</span>, <span class="st">'genome_size_mb'</span>],</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>]</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div id="a43" class="cell" data-execution_count="49">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-column sort: kingdom ascending, genome size descending</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>df.sort_values(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    by<span class="op">=</span>[<span class="st">'kingdom'</span>, <span class="st">'genome_size_mb'</span>],</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>]</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="49">
 <div>
 
 
@@ -1628,8 +1617,8 @@ Name: count, dtype: int64</code></pre>
 <section id="exercise-7" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-7">Exercise</h3>
 <p>Sort <code>df</code> by <code>num_genes</code> in descending order. Which organism has the most genes? Then sort by <code>habitat</code> ascending and <code>gc_percent</code> descending.</p>
-<div id="nmeklcsew3" class="cell" data-execution_count="28">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="nmeklcsew3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -1645,9 +1634,9 @@ Name: count, dtype: int64</code></pre>
 <p>In Pandas this is done with <code>groupby()</code>.</p>
 <section id="aggregation" class="level2">
 <h2 class="anchored" data-anchor-id="aggregation">Aggregation</h2>
-<div id="a47" class="cell" data-execution_count="29">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'kingdom'</span>)[<span class="st">'genome_size_mb'</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="29">
+<div id="a47" class="cell" data-execution_count="50">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'kingdom'</span>)[<span class="st">'genome_size_mb'</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="50">
 <pre><code>kingdom
 Archaea       2.150
 Bacteria      4.100
@@ -1655,9 +1644,9 @@ Eukarya     950.475
 Name: genome_size_mb, dtype: float64</code></pre>
 </div>
 </div>
-<div id="a48" class="cell" data-execution_count="30">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'kingdom'</span>)[<span class="st">'genome_size_mb'</span>].describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div id="a48" class="cell" data-execution_count="51">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'kingdom'</span>)[<span class="st">'genome_size_mb'</span>].describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
 <div>
 
 
@@ -1726,10 +1715,10 @@ Name: genome_size_mb, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="a49" class="cell" data-execution_count="31">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Group by two columns</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'kingdom'</span>, <span class="st">'habitat'</span>])[<span class="st">'num_genes'</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="31">
+<div id="a49" class="cell" data-execution_count="52">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Group by two columns</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'kingdom'</span>, <span class="st">'habitat'</span>])[<span class="st">'num_genes'</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
 <pre><code>kingdom   habitat        
 Archaea   aquatic             2200.0
           terrestrial         2200.0
@@ -1747,8 +1736,8 @@ Name: num_genes, dtype: float64</code></pre>
 <section id="exercise-8" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-8">Exercise</h3>
 <p>Use <code>groupby</code> to find the <strong>maximum</strong> <code>gc_percent</code> for each kingdom. Then compute the mean <code>num_genes</code> grouped by <code>habitat</code>.</p>
-<div id="lmsjozwlt4" class="cell" data-execution_count="32">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="lmsjozwlt4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -1764,15 +1753,15 @@ Name: num_genes, dtype: float64</code></pre>
 </figure>
 </div>
 <p>Let’s create two small DataFrames to demonstrate different join types.</p>
-<div id="a52_taxonomy" class="cell" data-execution_count="33">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'organism'</span>: [<span class="st">'Escherichia coli'</span>, <span class="st">'Saccharomyces cerevisiae'</span>,</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'Homo sapiens'</span>, <span class="st">'Halobacterium salinarum'</span>],</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'phylum'</span>: [<span class="st">'Pseudomonadota'</span>, <span class="st">'Ascomycota'</span>,</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Chordata'</span>, <span class="st">'Euryarchaeota'</span>]</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>taxonomy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div id="a52_taxonomy" class="cell" data-execution_count="53">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'organism'</span>: [<span class="st">'Escherichia coli'</span>, <span class="st">'Saccharomyces cerevisiae'</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'Homo sapiens'</span>, <span class="st">'Halobacterium salinarum'</span>],</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'phylum'</span>: [<span class="st">'Pseudomonadota'</span>, <span class="st">'Ascomycota'</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Chordata'</span>, <span class="st">'Euryarchaeota'</span>]</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>taxonomy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="53">
 <div>
 
 
@@ -1811,14 +1800,14 @@ Name: num_genes, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="a52_isolation" class="cell" data-execution_count="34">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>isolation <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'organism'</span>: [<span class="st">'Escherichia coli'</span>, <span class="st">'Bacillus subtilis'</span>,</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'Homo sapiens'</span>, <span class="st">'Drosophila melanogaster'</span>],</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'first_sequenced'</span>: [<span class="dv">1997</span>, <span class="dv">1997</span>, <span class="dv">2001</span>, <span class="dv">2000</span>]</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>isolation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
+<div id="a52_isolation" class="cell" data-execution_count="54">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>isolation <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'organism'</span>: [<span class="st">'Escherichia coli'</span>, <span class="st">'Bacillus subtilis'</span>,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'Homo sapiens'</span>, <span class="st">'Drosophila melanogaster'</span>],</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'first_sequenced'</span>: [<span class="dv">1997</span>, <span class="dv">1997</span>, <span class="dv">2001</span>, <span class="dv">2000</span>]</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>isolation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
 <div>
 
 
@@ -1860,9 +1849,9 @@ Name: num_genes, dtype: float64</code></pre>
 <section id="inner-join" class="level3">
 <h3 class="anchored" data-anchor-id="inner-join">Inner join</h3>
 <p>Keeps only rows whose key appears in <strong>both</strong> tables.</p>
-<div id="a54" class="cell" data-execution_count="35">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="35">
+<div id="a54" class="cell" data-execution_count="55">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="55">
 <div>
 
 
@@ -1898,9 +1887,9 @@ Name: num_genes, dtype: float64</code></pre>
 <section id="left-join" class="level3">
 <h3 class="anchored" data-anchor-id="left-join">Left join</h3>
 <p>Keeps all rows from the <strong>left</strong> table; fills missing matches with NaN.</p>
-<div id="a56" class="cell" data-execution_count="36">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="36">
+<div id="a56" class="cell" data-execution_count="56">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
 <div>
 
 
@@ -1951,9 +1940,9 @@ Name: num_genes, dtype: float64</code></pre>
 <section id="right-join" class="level3">
 <h3 class="anchored" data-anchor-id="right-join">Right join</h3>
 <p>Keeps all rows from the <strong>right</strong> table.</p>
-<div id="a58" class="cell" data-execution_count="37">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>, how<span class="op">=</span><span class="st">'right'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="37">
+<div id="a58" class="cell" data-execution_count="57">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>, how<span class="op">=</span><span class="st">'right'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
 <div>
 
 
@@ -2001,9 +1990,9 @@ Name: num_genes, dtype: float64</code></pre>
 <section id="outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="outer-join">Outer join</h3>
 <p>Keeps all rows from <strong>both</strong> tables.</p>
-<div id="a60" class="cell" data-execution_count="38">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>, how<span class="op">=</span><span class="st">'outer'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="38">
+<div id="a60" class="cell" data-execution_count="58">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pd.merge(taxonomy, isolation, on<span class="op">=</span><span class="st">'organism'</span>, how<span class="op">=</span><span class="st">'outer'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="58">
 <div>
 
 
@@ -2062,14 +2051,9 @@ Name: num_genes, dtype: float64</code></pre>
 </section>
 <section id="exercise-9" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-9">Exercise</h3>
-<p>Create two DataFrames and merge them:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>habitats <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'habitat'</span>: [<span class="st">'gut'</span>, <span class="st">'soil'</span>, <span class="st">'aquatic'</span>],</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'temperature_c'</span>: [<span class="dv">37</span>, <span class="dv">20</span>, <span class="dv">15</span>]</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Merge <code>habitats</code> with <code>df</code> using a left join on <code>'habitat'</code>. How many rows have NaN for <code>temperature_c</code>? Why?</p>
-<div id="4z69ab2frt5" class="cell" data-execution_count="39">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create two DataFrames and merge them:<code>pythonhabitats = pd.DataFrame({    'habitat': ['gut', 'soil', 'aquatic'],    'temperature_c': [37, 20, 15]})</code>Merge <code>habitats</code> with <code>df</code> using a left join on <code>'habitat'</code>. How many rows have NaN for <code>temperature_c</code>? Why?</p>
+<div id="4z69ab2frt5" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -2078,39 +2062,39 @@ Name: num_genes, dtype: float64</code></pre>
 <h1>Visualization with Altair</h1>
 <p>Let’s make a quick bar chart of mean genome size by kingdom using <code>groupby</code> + Altair.</p>
 <p>Altair uses single-letter encoding type suffixes: - <strong><code>:N</code></strong> — nominal (categorical, unordered) data like kingdom names - <strong><code>:Q</code></strong> — quantitative (numeric, continuous) data like genome size - <strong><code>:O</code></strong> — ordinal (ordered categories) and <strong><code>:T</code></strong> — temporal (dates/times)</p>
-<div id="a63" class="cell" data-execution_count="40">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>kingdom_means <span class="op">=</span> df.groupby(<span class="st">'kingdom'</span>)[<span class="st">'genome_size_mb'</span>].mean().reset_index()</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>alt.Chart(kingdom_means).mark_bar().encode(</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(<span class="st">'kingdom:N'</span>, title<span class="op">=</span><span class="st">'Kingdom'</span>),</span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(<span class="st">'genome_size_mb:Q'</span>, title<span class="op">=</span><span class="st">'Mean genome size (Mb)'</span>),</span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'kingdom:N'</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">300</span>,</span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Mean Genome Size by Kingdom'</span></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="40">
+<div id="a63" class="cell" data-execution_count="59">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>kingdom_means <span class="op">=</span> df.groupby(<span class="st">'kingdom'</span>)[<span class="st">'genome_size_mb'</span>].mean().reset_index()</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>alt.Chart(kingdom_means).mark_bar().encode(</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(<span class="st">'kingdom:N'</span>, title<span class="op">=</span><span class="st">'Kingdom'</span>),</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(<span class="st">'genome_size_mb:Q'</span>, title<span class="op">=</span><span class="st">'Mean genome size (Mb)'</span>),</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'kingdom:N'</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>).properties(</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">300</span>,</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Mean Genome Size by Kingdom'</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
 
 <style>
-  #altair-viz-58802ae95ab04327aa5343f92bdd7d0f.vega-embed {
+  #altair-viz-ad90af2f86d2468b8c1cda22ae2a2562.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-58802ae95ab04327aa5343f92bdd7d0f.vega-embed details,
-  #altair-viz-58802ae95ab04327aa5343f92bdd7d0f.vega-embed details summary {
+  #altair-viz-ad90af2f86d2468b8c1cda22ae2a2562.vega-embed details,
+  #altair-viz-ad90af2f86d2468b8c1cda22ae2a2562.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-58802ae95ab04327aa5343f92bdd7d0f"></div>
+<div id="altair-viz-ad90af2f86d2468b8c1cda22ae2a2562"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-58802ae95ab04327aa5343f92bdd7d0f") {
-      outputDiv = document.getElementById("altair-viz-58802ae95ab04327aa5343f92bdd7d0f");
+    if (outputDiv.id !== "altair-viz-ad90af2f86d2468b8c1cda22ae2a2562") {
+      outputDiv = document.getElementById("altair-viz-ad90af2f86d2468b8c1cda22ae2a2562");
     }
 
     const paths = {
@@ -2162,92 +2146,11 @@ Name: num_genes, dtype: float64</code></pre>
 </script>
 </div>
 </div>
-<p>Eukarya genomes are orders of magnitude larger than Bacteria and Archaea, making the smaller kingdoms nearly invisible on a linear scale. A <strong>logarithmic y-axis</strong> lets us compare all three kingdoms meaningfully.</p>
-<div id="ldv4jhgrm8" class="cell" data-execution_count="56">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(kingdom_means).mark_bar().encode(</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(<span class="st">'kingdom:N'</span>, title<span class="op">=</span><span class="st">'Kingdom'</span>),</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(<span class="st">'genome_size_mb:Q'</span>, title<span class="op">=</span><span class="st">'Mean genome size (Mb)'</span>, scale<span class="op">=</span>alt.Scale(<span class="bu">type</span><span class="op">=</span><span class="st">'sqrt'</span>, domainMin<span class="op">=</span><span class="dv">1</span>)),</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'kingdom:N'</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">300</span>,</span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Mean Genome Size by Kingdom (log scale)'</span></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="56">
-
-<style>
-  #altair-viz-b99b24e68de04ff18d2c09f99bc68cf0.vega-embed {
-    width: 100%;
-    display: flex;
-  }
-
-  #altair-viz-b99b24e68de04ff18d2c09f99bc68cf0.vega-embed details,
-  #altair-viz-b99b24e68de04ff18d2c09f99bc68cf0.vega-embed details summary {
-    position: relative;
-  }
-</style>
-<div id="altair-viz-b99b24e68de04ff18d2c09f99bc68cf0"></div>
-<script type="text/javascript">
-  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
-  (function(spec, embedOpt){
-    let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-b99b24e68de04ff18d2c09f99bc68cf0") {
-      outputDiv = document.getElementById("altair-viz-b99b24e68de04ff18d2c09f99bc68cf0");
-    }
-
-    const paths = {
-      "vega": "https://cdn.jsdelivr.net/npm/vega@6?noext",
-      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
-      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@6.1.0?noext",
-      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@7?noext",
-    };
-
-    function maybeLoadScript(lib, version) {
-      var key = `${lib.replace("-", "")}_version`;
-      return (VEGA_DEBUG[key] == version) ?
-        Promise.resolve(paths[lib]) :
-        new Promise(function(resolve, reject) {
-          var s = document.createElement('script');
-          document.getElementsByTagName("head")[0].appendChild(s);
-          s.async = true;
-          s.onload = () => {
-            VEGA_DEBUG[key] = version;
-            return resolve(paths[lib]);
-          };
-          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
-          s.src = paths[lib];
-        });
-    }
-
-    function showError(err) {
-      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
-      throw err;
-    }
-
-    function displayChart(vegaEmbed) {
-      vegaEmbed(outputDiv, spec, embedOpt)
-        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
-    }
-
-    if(typeof define === "function" && define.amd) {
-      requirejs.config({paths});
-      let deps = ["vega-embed"];
-      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
-    } else {
-      maybeLoadScript("vega", "6")
-        .then(() => maybeLoadScript("vega-lite", "6.1.0"))
-        .then(() => maybeLoadScript("vega-embed", "7"))
-        .catch(showError)
-        .then(() => displayChart(vegaEmbed));
-    }
-  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"name": "data-deda78ca1c08c51c549fbe63f250e99b"}, "mark": {"type": "bar"}, "encoding": {"color": {"field": "kingdom", "type": "nominal"}, "x": {"field": "kingdom", "title": "Kingdom", "type": "nominal"}, "y": {"field": "genome_size_mb", "scale": {"domainMin": 1, "type": "sqrt"}, "title": "Mean genome size (Mb)", "type": "quantitative"}}, "title": "Mean Genome Size by Kingdom (log scale)", "width": 300, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-deda78ca1c08c51c549fbe63f250e99b": [{"kingdom": "Archaea", "genome_size_mb": 2.15}, {"kingdom": "Bacteria", "genome_size_mb": 4.1}, {"kingdom": "Eukarya", "genome_size_mb": 950.475}]}}, {"mode": "vega-lite"});
-</script>
-</div>
-</div>
 <section id="exercise-10" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-10">Exercise</h3>
 <p>Create a scatter plot of <code>genome_size_mb</code> (x) vs <code>num_genes</code> (y), colored by <code>kingdom</code>. Use <code>mark_point()</code> instead of <code>mark_bar()</code>.</p>
-<div id="ck4lkrklc8p" class="cell" data-execution_count="42">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ck4lkrklc8p" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -2266,653 +2169,141 @@ Name: num_genes, dtype: float64</code></pre>
 <li><strong>Visualization</strong>: Altair integrates directly with DataFrames</li>
 </ul>
 <hr>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/colab/lectures/lecture9b.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Open In Colab</figcaption>
+</figure>
+</div>
 </section>
-<section id="a-more-realistic-example" class="level1">
-<h1>A more realistic example</h1>
+<section id="lecture-9b-analyzing-sra-metadata" class="level1">
+<h1>Lecture 9b: Analyzing SRA Metadata</h1>
 <p>The <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive</a> (SRA) is the largest public repository of sequencing data, mirrored by the European Nucleotide Archive (ENA). Here we analyze SARS-CoV-2 metadata to understand how sequencing platforms and library protocols were used during the pandemic.</p>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="a90ca00b4961" class="cell" data-execution_count="43">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-118" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We use a pre-compiled ENA metadata snapshot hosted on <a href="https://zenodo.org/records/10680776">Zenodo</a>. The file contains ~800k records; we load the first 100k for speed.</p>
-<div id="fed82318f8f0" class="cell" data-execution_count="44">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> pd.read_csv(</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://zenodo.org/records/10680776/files/ena.tsv.gz"</span>,</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    compression<span class="op">=</span><span class="st">'gzip'</span>,</span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>,</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    low_memory<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    nrows<span class="op">=</span><span class="dv">100000</span></span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-120" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> pd.read_csv(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://zenodo.org/records/10680776/files/ena.tsv.gz"</span>,</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    compression<span class="op">=</span><span class="st">'gzip'</span>,</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    sep<span class="op">=</span><span class="st">"</span><span class="ch">\t</span><span class="st">"</span>,</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    low_memory<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    nrows<span class="op">=</span><span class="dv">100000</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="explore-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="explore-the-data">Explore the data</h2>
-<div id="4574e788ab5d" class="cell" data-execution_count="45">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(sra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="45">
-<pre><code>100000</code></pre>
+<div id="cell-122" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(sra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div id="cell-123" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>sra.sample(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="4548125b3f4c" class="cell" data-execution_count="46">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>sra.sample(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="46">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">study_accession</th>
-<th data-quarto-table-cell-role="th">base_count</th>
-<th data-quarto-table-cell-role="th">accession</th>
-<th data-quarto-table-cell-role="th">collection_date</th>
-<th data-quarto-table-cell-role="th">country</th>
-<th data-quarto-table-cell-role="th">culture_collection</th>
-<th data-quarto-table-cell-role="th">description</th>
-<th data-quarto-table-cell-role="th">sample_collection</th>
-<th data-quarto-table-cell-role="th">sample_title</th>
-<th data-quarto-table-cell-role="th">sequencing_method</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">library_name</th>
-<th data-quarto-table-cell-role="th">library_construction_protocol</th>
-<th data-quarto-table-cell-role="th">library_layout</th>
-<th data-quarto-table-cell-role="th">instrument_model</th>
-<th data-quarto-table-cell-role="th">instrument_platform</th>
-<th data-quarto-table-cell-role="th">isolation_source</th>
-<th data-quarto-table-cell-role="th">isolate</th>
-<th data-quarto-table-cell-role="th">investigation_type</th>
-<th data-quarto-table-cell-role="th">collection_date_submitted</th>
-<th data-quarto-table-cell-role="th">center_name</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">98517</th>
-<td>PRJEB37886</td>
-<td>1.021151e+09</td>
-<td>SAMEA10938693</td>
-<td>2021-10-29</td>
-<td>United Kingdom</td>
-<td>NaN</td>
-<td>Illumina NovaSeq 6000 sequencing; Illumina Nov...</td>
-<td>NaN</td>
-<td>COG-UK/NEWC-28D0557</td>
-<td>NaN</td>
-<td>...</td>
-<td>NT1705557N / HT-122795:H9</td>
-<td>NaN</td>
-<td>PAIRED</td>
-<td>Illumina NovaSeq 6000</td>
-<td>ILLUMINA</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>2021-10-29</td>
-<td>SC</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">30031</th>
-<td>PRJEB43060</td>
-<td>2.903531e+08</td>
-<td>SAMEA12516416</td>
-<td>2021-08-04</td>
-<td>Norway</td>
-<td>NaN</td>
-<td>Illumina NovaSeq 6000 sequencing; Raw reads: S...</td>
-<td>NaN</td>
-<td>SARS-CoV-2/human/Norway/16523/2021/1</td>
-<td>NaN</td>
-<td>...</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>PAIRED</td>
-<td>Illumina NovaSeq 6000</td>
-<td>ILLUMINA</td>
-<td>upper respiratory secretion</td>
-<td>SARS-CoV-2/human/Norway/16523/2021</td>
-<td>NaN</td>
-<td>2021-08-04</td>
-<td>Norwegian Institute of Public Health (NIPH)</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">60679</th>
-<td>PRJEB37886</td>
-<td>8.712552e+08</td>
-<td>SAMEA8237191</td>
-<td>2021-02-24</td>
-<td>United Kingdom</td>
-<td>NaN</td>
-<td>Illumina NovaSeq 6000 sequencing; Illumina Nov...</td>
-<td>NaN</td>
-<td>COG-UK/CAMC-1359F50</td>
-<td>NaN</td>
-<td>...</td>
-<td>NT1665242V / DN785905B:A10</td>
-<td>NaN</td>
-<td>PAIRED</td>
-<td>Illumina NovaSeq 6000</td>
-<td>ILLUMINA</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>2021-02-24</td>
-<td>SC</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">8597</th>
-<td>PRJNA736036</td>
-<td>7.197057e+07</td>
-<td>SAMN27058926</td>
-<td>2020-11-13</td>
-<td>USA: Iowa</td>
-<td>NaN</td>
-<td>Illumina MiSeq sequencing; Amplicon sequencing...</td>
-<td>NaN</td>
-<td>This sample has been submitted by pda|wesley-h...</td>
-<td>NaN</td>
-<td>...</td>
-<td>1425959-IA-M05216</td>
-<td>NaN</td>
-<td>PAIRED</td>
-<td>Illumina MiSeq</td>
-<td>ILLUMINA</td>
-<td>clinical</td>
-<td>IA-SHL-1425959</td>
-<td>NaN</td>
-<td>2020-11-13</td>
-<td>SUB11247375</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">52307</th>
-<td>PRJNA716984</td>
-<td>2.460988e+06</td>
-<td>SAMN23448018</td>
-<td>2021-11-11</td>
-<td>USA: New Jersey</td>
-<td>NaN</td>
-<td>Sequel II sequencing</td>
-<td>NaN</td>
-<td>CDC Sars CoV2 Sequencing Baseline Constellation</td>
-<td>NaN</td>
-<td>...</td>
-<td>Unknown</td>
-<td>Freed primers</td>
-<td>PAIRED</td>
-<td>Sequel II</td>
-<td>PACBIO_SMRT</td>
-<td>Nasal Swabs</td>
-<td>SARS-CoV-2/Human/USA/NJ-CDC-LC0374318/2021</td>
-<td>NaN</td>
-<td>2021-11-11</td>
-<td>NaN</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 32 columns</p>
+<div id="cell-124" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>sra.columns.tolist()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-</div>
-<div id="4611650ea2b7" class="cell" data-execution_count="47">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>sra.columns.tolist()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="47">
-<pre><code>['study_accession',
- 'base_count',
- 'accession',
- 'collection_date',
- 'country',
- 'culture_collection',
- 'description',
- 'sample_collection',
- 'sample_title',
- 'sequencing_method',
- 'sample_material',
- 'sample_description',
- 'sample_accession',
- 'sample_capture_status',
- 'sample_alias',
- 'library_selection',
- 'location',
- 'run_accession',
- 'read_count',
- 'project_name',
- 'library_source',
- 'library_strategy',
- 'library_name',
- 'library_construction_protocol',
- 'library_layout',
- 'instrument_model',
- 'instrument_platform',
- 'isolation_source',
- 'isolate',
- 'investigation_type',
- 'collection_date_submitted',
- 'center_name']</code></pre>
-</div>
-</div>
-<div id="1c5c2ae0c83b" class="cell" data-execution_count="48">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>sra[<span class="st">'instrument_platform'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="48">
-<pre><code>instrument_platform
-ILLUMINA           81692
-PACBIO_SMRT         8431
-OXFORD_NANOPORE     8066
-ION_TORRENT         1790
-BGISEQ                18
-DNBSEQ                 3
-Name: count, dtype: int64</code></pre>
-</div>
+<div id="cell-125" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>sra[<span class="st">'instrument_platform'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="clean-dates" class="level2">
 <h2 class="anchored" data-anchor-id="clean-dates">Clean dates</h2>
-<div id="6961c12ab9df" class="cell" data-execution_count="49">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert collection_date to datetime</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co"># errors='coerce' turns unparseable dates into NaT (Not a Time)</span></span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> sra.assign(collection_date<span class="op">=</span>pd.to_datetime(sra[<span class="st">'collection_date'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-127" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert collection_date to datetime</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co"># errors='coerce' turns unparseable dates into NaT (Not a Time)</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> sra.assign(collection_date<span class="op">=</span>pd.to_datetime(sra[<span class="st">'collection_date'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="eb5f6a3d56e6" class="cell" data-execution_count="50">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Earliest entry:'</span>, sra[<span class="st">'collection_date'</span>].<span class="bu">min</span>())</span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Latest entry:'</span>, sra[<span class="st">'collection_date'</span>].<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Earliest entry: 2019-12-30 00:00:00
-Latest entry: 2023-01-20 00:00:00</code></pre>
-</div>
+<div id="cell-128" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Earliest entry:'</span>, sra[<span class="st">'collection_date'</span>].<span class="bu">min</span>())</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Latest entry:'</span>, sra[<span class="st">'collection_date'</span>].<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
 <p><strong>⚠️ Data Quality:</strong> Don’t get surprised here — the metadata is only as good as the person who entered it. When you enter metadata for your sequencing data, pay attention!</p>
 </blockquote>
-<div id="bf758daa91e3" class="cell" data-execution_count="51">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter to valid date range</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> sra[</span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    (sra[<span class="st">'collection_date'</span>] <span class="op">&gt;=</span> pd.Timestamp(<span class="st">'2020-01-01'</span>))</span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span></span>
-<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    (sra[<span class="st">'collection_date'</span>] <span class="op">&lt;=</span> pd.Timestamp(<span class="st">'2023-12-31'</span>))</span>
-<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-130" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter to valid date range</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> sra[</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    (sra[<span class="st">'collection_date'</span>] <span class="op">&gt;=</span> pd.Timestamp(<span class="st">'2020-01-01'</span>))</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    (sra[<span class="st">'collection_date'</span>] <span class="op">&lt;=</span> pd.Timestamp(<span class="st">'2023-12-31'</span>))</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="aggregate-for-visualization" class="level2">
 <h2 class="anchored" data-anchor-id="aggregate-for-visualization">Aggregate for visualization</h2>
-<div id="5a8cca6367ea" class="cell" data-execution_count="52">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>heatmap_2d <span class="op">=</span> sra.groupby(</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'instrument_platform'</span>, <span class="st">'library_strategy'</span>]</span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>).agg(</span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'run_accession'</span>: <span class="st">'nunique'</span>}</span>
-<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
-<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>heatmap_2d</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="52">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">instrument_platform</th>
-<th data-quarto-table-cell-role="th">library_strategy</th>
-<th data-quarto-table-cell-role="th">run_accession</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>BGISEQ</td>
-<td>AMPLICON</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>BGISEQ</td>
-<td>OTHER</td>
-<td>13</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>BGISEQ</td>
-<td>RNA-Seq</td>
-<td>2</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>BGISEQ</td>
-<td>Targeted-Capture</td>
-<td>2</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>DNBSEQ</td>
-<td>AMPLICON</td>
-<td>3</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">5</th>
-<td>ILLUMINA</td>
-<td>AMPLICON</td>
-<td>78262</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">6</th>
-<td>ILLUMINA</td>
-<td>OTHER</td>
-<td>2</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">7</th>
-<td>ILLUMINA</td>
-<td>RNA-Seq</td>
-<td>524</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">8</th>
-<td>ILLUMINA</td>
-<td>Targeted-Capture</td>
-<td>272</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">9</th>
-<td>ILLUMINA</td>
-<td>WCS</td>
-<td>2</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">10</th>
-<td>ILLUMINA</td>
-<td>WGA</td>
-<td>1389</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">11</th>
-<td>ILLUMINA</td>
-<td>WGS</td>
-<td>977</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">12</th>
-<td>ILLUMINA</td>
-<td>miRNA-Seq</td>
-<td>3</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">13</th>
-<td>ION_TORRENT</td>
-<td>AMPLICON</td>
-<td>1752</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">14</th>
-<td>ION_TORRENT</td>
-<td>RNA-Seq</td>
-<td>3</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">15</th>
-<td>ION_TORRENT</td>
-<td>WGA</td>
-<td>11</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">16</th>
-<td>ION_TORRENT</td>
-<td>WGS</td>
-<td>24</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">17</th>
-<td>OXFORD_NANOPORE</td>
-<td>AMPLICON</td>
-<td>7305</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">18</th>
-<td>OXFORD_NANOPORE</td>
-<td>RNA-Seq</td>
-<td>292</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">19</th>
-<td>OXFORD_NANOPORE</td>
-<td>WGA</td>
-<td>134</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">20</th>
-<td>OXFORD_NANOPORE</td>
-<td>WGS</td>
-<td>227</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">21</th>
-<td>PACBIO_SMRT</td>
-<td>AMPLICON</td>
-<td>8379</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">22</th>
-<td>PACBIO_SMRT</td>
-<td>RNA-Seq</td>
-<td>13</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">23</th>
-<td>PACBIO_SMRT</td>
-<td>Targeted-Capture</td>
-<td>6</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">24</th>
-<td>PACBIO_SMRT</td>
-<td>WGS</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
+<div id="cell-132" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>heatmap_2d <span class="op">=</span> sra.groupby(</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'instrument_platform'</span>, <span class="st">'library_strategy'</span>]</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>).agg(</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'run_accession'</span>: <span class="st">'nunique'</span>}</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>heatmap_2d</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="visualize-with-altair" class="level2">
 <h2 class="anchored" data-anchor-id="visualize-with-altair">Visualize with Altair</h2>
-<div id="8d6c8852d543" class="cell" data-execution_count="53">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-134" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="7c286885f3b7" class="cell" data-execution_count="54">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> alt.Chart(heatmap_2d).mark_rect(opacity<span class="op">=</span><span class="dv">1</span>).encode(</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(</span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"instrument_platform:N"</span>,</span>
-<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Instrument"</span></span>
-<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(</span>
-<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"library_strategy:N"</span>,</span>
-<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Strategy"</span>,</span>
-<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span>alt.Axis(orient<span class="op">=</span><span class="st">'right'</span>)</span>
-<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(</span>
-<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"run_accession:Q"</span>,</span>
-<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"# Samples"</span>,</span>
-<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(</span>
-<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>            scheme<span class="op">=</span><span class="st">"goldred"</span>,</span>
-<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">type</span><span class="op">=</span><span class="st">"log"</span></span>
-<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>    tooltip<span class="op">=</span>[</span>
-<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(<span class="st">"instrument_platform:N"</span>, title<span class="op">=</span><span class="st">"Machine"</span>),</span>
-<span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(<span class="st">"run_accession:Q"</span>, title<span class="op">=</span><span class="st">"Number of runs"</span>),</span>
-<span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(<span class="st">"library_strategy:N"</span>, title<span class="op">=</span><span class="st">"Protocol"</span>)</span>
-<span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">500</span>,</span>
-<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span>,</span>
-<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
-<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>: [<span class="st">"Breakdown of datasets from ENA"</span>,</span>
-<span id="cb69-29"><a href="#cb69-29" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"by Platform and Library Strategy"</span>],</span>
-<span id="cb69-30"><a href="#cb69-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subtitle"</span>: <span class="st">"(Sample of 100k records)"</span></span>
-<span id="cb69-31"><a href="#cb69-31" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb69-32"><a href="#cb69-32" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb69-33"><a href="#cb69-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-34"><a href="#cb69-34" aria-hidden="true" tabindex="-1"></a>back</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="54">
-
-<style>
-  #altair-viz-2fbb0d4c812246e58235838feafb1b93.vega-embed {
-    width: 100%;
-    display: flex;
-  }
-
-  #altair-viz-2fbb0d4c812246e58235838feafb1b93.vega-embed details,
-  #altair-viz-2fbb0d4c812246e58235838feafb1b93.vega-embed details summary {
-    position: relative;
-  }
-</style>
-<div id="altair-viz-2fbb0d4c812246e58235838feafb1b93"></div>
-<script type="text/javascript">
-  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
-  (function(spec, embedOpt){
-    let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-2fbb0d4c812246e58235838feafb1b93") {
-      outputDiv = document.getElementById("altair-viz-2fbb0d4c812246e58235838feafb1b93");
-    }
-
-    const paths = {
-      "vega": "https://cdn.jsdelivr.net/npm/vega@6?noext",
-      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
-      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@6.1.0?noext",
-      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@7?noext",
-    };
-
-    function maybeLoadScript(lib, version) {
-      var key = `${lib.replace("-", "")}_version`;
-      return (VEGA_DEBUG[key] == version) ?
-        Promise.resolve(paths[lib]) :
-        new Promise(function(resolve, reject) {
-          var s = document.createElement('script');
-          document.getElementsByTagName("head")[0].appendChild(s);
-          s.async = true;
-          s.onload = () => {
-            VEGA_DEBUG[key] = version;
-            return resolve(paths[lib]);
-          };
-          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
-          s.src = paths[lib];
-        });
-    }
-
-    function showError(err) {
-      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
-      throw err;
-    }
-
-    function displayChart(vegaEmbed) {
-      vegaEmbed(outputDiv, spec, embedOpt)
-        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
-    }
-
-    if(typeof define === "function" && define.amd) {
-      requirejs.config({paths});
-      let deps = ["vega-embed"];
-      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
-    } else {
-      maybeLoadScript("vega", "6")
-        .then(() => maybeLoadScript("vega-lite", "6.1.0"))
-        .then(() => maybeLoadScript("vega-embed", "7"))
-        .catch(showError)
-        .then(() => displayChart(vegaEmbed));
-    }
-  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"name": "data-0c1367e49a7528048fe172df9ad3d2ce"}, "mark": {"type": "rect", "opacity": 1}, "encoding": {"color": {"field": "run_accession", "scale": {"scheme": "goldred", "type": "log"}, "title": "# Samples", "type": "quantitative"}, "tooltip": [{"field": "instrument_platform", "title": "Machine", "type": "nominal"}, {"field": "run_accession", "title": "Number of runs", "type": "quantitative"}, {"field": "library_strategy", "title": "Protocol", "type": "nominal"}], "x": {"field": "instrument_platform", "title": "Instrument", "type": "nominal"}, "y": {"axis": {"orient": "right"}, "field": "library_strategy", "title": "Strategy", "type": "nominal"}}, "height": 150, "title": {"text": ["Breakdown of datasets from ENA", "by Platform and Library Strategy"], "subtitle": "(Sample of 100k records)"}, "width": 500, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-0c1367e49a7528048fe172df9ad3d2ce": [{"instrument_platform": "BGISEQ", "library_strategy": "AMPLICON", "run_accession": 1}, {"instrument_platform": "BGISEQ", "library_strategy": "OTHER", "run_accession": 13}, {"instrument_platform": "BGISEQ", "library_strategy": "RNA-Seq", "run_accession": 2}, {"instrument_platform": "BGISEQ", "library_strategy": "Targeted-Capture", "run_accession": 2}, {"instrument_platform": "DNBSEQ", "library_strategy": "AMPLICON", "run_accession": 3}, {"instrument_platform": "ILLUMINA", "library_strategy": "AMPLICON", "run_accession": 78262}, {"instrument_platform": "ILLUMINA", "library_strategy": "OTHER", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "RNA-Seq", "run_accession": 524}, {"instrument_platform": "ILLUMINA", "library_strategy": "Targeted-Capture", "run_accession": 272}, {"instrument_platform": "ILLUMINA", "library_strategy": "WCS", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGA", "run_accession": 1389}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGS", "run_accession": 977}, {"instrument_platform": "ILLUMINA", "library_strategy": "miRNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "AMPLICON", "run_accession": 1752}, {"instrument_platform": "ION_TORRENT", "library_strategy": "RNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGA", "run_accession": 11}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGS", "run_accession": 24}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "AMPLICON", "run_accession": 7305}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "RNA-Seq", "run_accession": 292}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGA", "run_accession": 134}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGS", "run_accession": 227}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "AMPLICON", "run_accession": 8379}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "RNA-Seq", "run_accession": 13}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "Targeted-Capture", "run_accession": 6}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "WGS", "run_accession": 1}]}}, {"mode": "vega-lite"});
-</script>
+<div id="cell-135" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>back <span class="op">=</span> alt.Chart(heatmap_2d).mark_rect(opacity<span class="op">=</span><span class="dv">1</span>).encode(</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"instrument_platform:N"</span>,</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Instrument"</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"library_strategy:N"</span>,</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Strategy"</span>,</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span>alt.Axis(orient<span class="op">=</span><span class="st">'right'</span>)</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(</span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"run_accession:Q"</span>,</span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"# Samples"</span>,</span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(</span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>            scheme<span class="op">=</span><span class="st">"goldred"</span>,</span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">type</span><span class="op">=</span><span class="st">"log"</span></span>
+<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>    tooltip<span class="op">=</span>[</span>
+<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(<span class="st">"instrument_platform:N"</span>, title<span class="op">=</span><span class="st">"Machine"</span>),</span>
+<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(<span class="st">"run_accession:Q"</span>, title<span class="op">=</span><span class="st">"Number of runs"</span>),</span>
+<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a>        alt.Tooltip(<span class="st">"library_strategy:N"</span>, title<span class="op">=</span><span class="st">"Protocol"</span>)</span>
+<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a>).properties(</span>
+<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">500</span>,</span>
+<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span>,</span>
+<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span>{</span>
+<span id="cb62-28"><a href="#cb62-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>: [<span class="st">"Breakdown of datasets from ENA"</span>,</span>
+<span id="cb62-29"><a href="#cb62-29" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"by Platform and Library Strategy"</span>],</span>
+<span id="cb62-30"><a href="#cb62-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subtitle"</span>: <span class="st">"(Sample of 100k records)"</span></span>
+<span id="cb62-31"><a href="#cb62-31" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb62-32"><a href="#cb62-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-33"><a href="#cb62-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-34"><a href="#cb62-34" aria-hidden="true" tabindex="-1"></a>back</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-<div id="dfb189d17e58" class="cell" data-execution_count="55">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add text labels</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>front <span class="op">=</span> back.mark_text(</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>    align<span class="op">=</span><span class="st">"center"</span>,</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>    baseline<span class="op">=</span><span class="st">"middle"</span>,</span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">=</span><span class="dv">12</span>,</span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>    fontWeight<span class="op">=</span><span class="st">"bold"</span>,</span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>).encode(</span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>alt.Text(<span class="st">"run_accession:Q"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">",.0f"</span>),</span>
-<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.condition(</span>
-<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>        alt.datum.run_accession <span class="op">&gt;</span> <span class="dv">200</span>,</span>
-<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>        alt.value(<span class="st">"white"</span>),</span>
-<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>        alt.value(<span class="st">"black"</span>)</span>
-<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine layers</span></span>
-<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>back <span class="op">+</span> front</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="55">
-
-<style>
-  #altair-viz-f913ddc503d544a0b8c1345002077c2f.vega-embed {
-    width: 100%;
-    display: flex;
-  }
-
-  #altair-viz-f913ddc503d544a0b8c1345002077c2f.vega-embed details,
-  #altair-viz-f913ddc503d544a0b8c1345002077c2f.vega-embed details summary {
-    position: relative;
-  }
-</style>
-<div id="altair-viz-f913ddc503d544a0b8c1345002077c2f"></div>
-<script type="text/javascript">
-  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
-  (function(spec, embedOpt){
-    let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-f913ddc503d544a0b8c1345002077c2f") {
-      outputDiv = document.getElementById("altair-viz-f913ddc503d544a0b8c1345002077c2f");
-    }
-
-    const paths = {
-      "vega": "https://cdn.jsdelivr.net/npm/vega@6?noext",
-      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
-      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@6.1.0?noext",
-      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@7?noext",
-    };
-
-    function maybeLoadScript(lib, version) {
-      var key = `${lib.replace("-", "")}_version`;
-      return (VEGA_DEBUG[key] == version) ?
-        Promise.resolve(paths[lib]) :
-        new Promise(function(resolve, reject) {
-          var s = document.createElement('script');
-          document.getElementsByTagName("head")[0].appendChild(s);
-          s.async = true;
-          s.onload = () => {
-            VEGA_DEBUG[key] = version;
-            return resolve(paths[lib]);
-          };
-          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
-          s.src = paths[lib];
-        });
-    }
-
-    function showError(err) {
-      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
-      throw err;
-    }
-
-    function displayChart(vegaEmbed) {
-      vegaEmbed(outputDiv, spec, embedOpt)
-        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
-    }
-
-    if(typeof define === "function" && define.amd) {
-      requirejs.config({paths});
-      let deps = ["vega-embed"];
-      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
-    } else {
-      maybeLoadScript("vega", "6")
-        .then(() => maybeLoadScript("vega-lite", "6.1.0"))
-        .then(() => maybeLoadScript("vega-embed", "7"))
-        .catch(showError)
-        .then(() => displayChart(vegaEmbed));
-    }
-  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "layer": [{"mark": {"type": "rect", "opacity": 1}, "encoding": {"color": {"field": "run_accession", "scale": {"scheme": "goldred", "type": "log"}, "title": "# Samples", "type": "quantitative"}, "tooltip": [{"field": "instrument_platform", "title": "Machine", "type": "nominal"}, {"field": "run_accession", "title": "Number of runs", "type": "quantitative"}, {"field": "library_strategy", "title": "Protocol", "type": "nominal"}], "x": {"field": "instrument_platform", "title": "Instrument", "type": "nominal"}, "y": {"axis": {"orient": "right"}, "field": "library_strategy", "title": "Strategy", "type": "nominal"}}, "title": {"text": ["Breakdown of datasets from ENA", "by Platform and Library Strategy"], "subtitle": "(Sample of 100k records)"}}, {"mark": {"type": "text", "align": "center", "baseline": "middle", "fontSize": 12, "fontWeight": "bold"}, "encoding": {"color": {"condition": {"test": "(datum.run_accession > 200)", "value": "white"}, "value": "black"}, "text": {"field": "run_accession", "format": ",.0f", "type": "quantitative"}, "tooltip": [{"field": "instrument_platform", "title": "Machine", "type": "nominal"}, {"field": "run_accession", "title": "Number of runs", "type": "quantitative"}, {"field": "library_strategy", "title": "Protocol", "type": "nominal"}], "x": {"field": "instrument_platform", "title": "Instrument", "type": "nominal"}, "y": {"axis": {"orient": "right"}, "field": "library_strategy", "title": "Strategy", "type": "nominal"}}, "title": {"text": ["Breakdown of datasets from ENA", "by Platform and Library Strategy"], "subtitle": "(Sample of 100k records)"}}], "data": {"name": "data-0c1367e49a7528048fe172df9ad3d2ce"}, "height": 150, "width": 500, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-0c1367e49a7528048fe172df9ad3d2ce": [{"instrument_platform": "BGISEQ", "library_strategy": "AMPLICON", "run_accession": 1}, {"instrument_platform": "BGISEQ", "library_strategy": "OTHER", "run_accession": 13}, {"instrument_platform": "BGISEQ", "library_strategy": "RNA-Seq", "run_accession": 2}, {"instrument_platform": "BGISEQ", "library_strategy": "Targeted-Capture", "run_accession": 2}, {"instrument_platform": "DNBSEQ", "library_strategy": "AMPLICON", "run_accession": 3}, {"instrument_platform": "ILLUMINA", "library_strategy": "AMPLICON", "run_accession": 78262}, {"instrument_platform": "ILLUMINA", "library_strategy": "OTHER", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "RNA-Seq", "run_accession": 524}, {"instrument_platform": "ILLUMINA", "library_strategy": "Targeted-Capture", "run_accession": 272}, {"instrument_platform": "ILLUMINA", "library_strategy": "WCS", "run_accession": 2}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGA", "run_accession": 1389}, {"instrument_platform": "ILLUMINA", "library_strategy": "WGS", "run_accession": 977}, {"instrument_platform": "ILLUMINA", "library_strategy": "miRNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "AMPLICON", "run_accession": 1752}, {"instrument_platform": "ION_TORRENT", "library_strategy": "RNA-Seq", "run_accession": 3}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGA", "run_accession": 11}, {"instrument_platform": "ION_TORRENT", "library_strategy": "WGS", "run_accession": 24}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "AMPLICON", "run_accession": 7305}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "RNA-Seq", "run_accession": 292}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGA", "run_accession": 134}, {"instrument_platform": "OXFORD_NANOPORE", "library_strategy": "WGS", "run_accession": 227}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "AMPLICON", "run_accession": 8379}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "RNA-Seq", "run_accession": 13}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "Targeted-Capture", "run_accession": 6}, {"instrument_platform": "PACBIO_SMRT", "library_strategy": "WGS", "run_accession": 1}]}}, {"mode": "vega-lite"});
-</script>
-</div>
+<div id="cell-136" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add text labels</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>front <span class="op">=</span> back.mark_text(</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    align<span class="op">=</span><span class="st">"center"</span>,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    baseline<span class="op">=</span><span class="st">"middle"</span>,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    fontWeight<span class="op">=</span><span class="st">"bold"</span>,</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>).encode(</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>alt.Text(<span class="st">"run_accession:Q"</span>, <span class="bu">format</span><span class="op">=</span><span class="st">",.0f"</span>),</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.condition(</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>        alt.datum.run_accession <span class="op">&gt;</span> <span class="dv">200</span>,</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>        alt.value(<span class="st">"white"</span>),</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>        alt.value(<span class="st">"black"</span>)</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine layers</span></span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>back <span class="op">+</span> front</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 
@@ -3026,7 +2417,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -3358,4 +2749,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture7.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture9a.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

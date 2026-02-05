@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -285,32 +285,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>By the end, you will be able to: - Create basic charts (scatter, bar, line) - Encode data fields to visual properties - Aggregate and transform data within charts - Customize colors, scales, and labels - Layer multiple chart elements - Build publication-quality heatmaps</p>
 <section id="part-1-what-is-declarative-visualization" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-what-is-declarative-visualization">Part 1: What is Declarative Visualization?</h2>
-<p>Think of ordering food at a restaurant. You don’t walk into the kitchen and say “heat the pan to 375°F, dice the onions, sauté for 3 minutes…” — you just say “I’d like the pasta.” That’s the difference between <strong>imperative</strong> and <strong>declarative</strong>.<strong>Imperative</strong> (matplotlib) — you specify <em>how</em> to draw, step by step. You manage coordinates, colors, labels, legends, and layout yourself:<code>pythonimport matplotlib.pyplot as pltfig, ax = plt.subplots(figsize=(6, 3))cities = ['Seattle', 'New York', 'Chicago']temps = [53.7, 52.7, 48.7]colors = ['#4c78a8', '#f58518', '#e45756']bars = ax.barh(cities, temps, color=colors)ax.set_xlabel('Average Temperature (°F)')ax.set_title('Average Temperature by City')ax.bar_label(bars, fmt='%.1f')ax.set_xlim(0, 65)plt.tight_layout()plt.show()</code><strong>Declarative</strong> (Altair) — you describe <em>what</em> you want to see. You state the relationships between your data and visual properties. Altair handles scales, axes, labels, and layout automatically:<code>pythonalt.Chart(weather).mark_bar().encode(    x='average(temp):Q',    y='city:N',    color='city:N')</code>The key difference: with matplotlib you compute the averages yourself, position each bar, pick colors, format labels, and manage layout. With Altair you declare “show average temperature by city, color by city” and the library does the rest — including aggregation, axis scaling, and a legend.</p>
+<p>Think of ordering food at a restaurant. You don’t walk into the kitchen and say “heat the pan to 375°F, dice the onions, sauté for 3 minutes…” — you just say “I’d like the pasta.” That’s the difference between <strong>imperative</strong> and <strong>declarative</strong>.</p>
+<p><strong>Imperative</strong> (matplotlib) — you specify <em>how</em> to draw, step by step. You manage coordinates, colors, labels, legends, and layout yourself:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> [<span class="st">'Seattle'</span>, <span class="st">'New York'</span>, <span class="st">'Chicago'</span>]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>temps <span class="op">=</span> [<span class="fl">53.7</span>, <span class="fl">52.7</span>, <span class="fl">48.7</span>]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#4c78a8'</span>, <span class="st">'#f58518'</span>, <span class="st">'#e45756'</span>]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(cities, temps, color<span class="op">=</span>colors)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Average Temperature (°F)'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Average Temperature by City'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>ax.bar_label(bars, fmt<span class="op">=</span><span class="st">'</span><span class="sc">%.1f</span><span class="st">'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, <span class="dv">65</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Declarative</strong> (Altair) — you describe <em>what</em> you want to see. You state the relationships between your data and visual properties. Altair handles scales, axes, labels, and layout automatically:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'average(temp):Q'</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'city:N'</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The key difference: with matplotlib you compute the averages yourself, position each bar, pick colors, format labels, and manage layout. With Altair you declare “show average temperature by city, color by city” and the library does the rest — including aggregation, axis scaling, and a legend.</p>
 </section>
 <section id="part-2-setup" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-setup">Part 2: Setup</h2>
 <div id="cell-6" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s create a simple dataset to work with—monthly precipitation for three cities:</p>
 <div id="cell-8" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>weather <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'city'</span>: [<span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>             <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>],</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'month'</span>: [<span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>              <span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>],</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'precip'</span>: [<span class="fl">5.2</span>, <span class="fl">3.9</span>, <span class="fl">4.1</span>, <span class="fl">2.8</span>, <span class="fl">2.1</span>, <span class="fl">1.6</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>               <span class="fl">3.6</span>, <span class="fl">3.1</span>, <span class="fl">4.2</span>, <span class="fl">4.0</span>, <span class="fl">4.5</span>, <span class="fl">4.2</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>               <span class="fl">2.0</span>, <span class="fl">1.9</span>, <span class="fl">2.6</span>, <span class="fl">3.7</span>, <span class="fl">4.1</span>, <span class="fl">4.0</span>],</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'temp'</span>: [<span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">62</span>, <span class="dv">68</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>             <span class="dv">35</span>, <span class="dv">38</span>, <span class="dv">48</span>, <span class="dv">58</span>, <span class="dv">68</span>, <span class="dv">77</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>             <span class="dv">28</span>, <span class="dv">32</span>, <span class="dv">42</span>, <span class="dv">52</span>, <span class="dv">64</span>, <span class="dv">74</span>]</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>weather</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>weather <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'city'</span>: [<span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>, <span class="st">'Seattle'</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>, <span class="st">'New York'</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>             <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>, <span class="st">'Chicago'</span>],</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'month'</span>: [<span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>              <span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>],</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'precip'</span>: [<span class="fl">5.2</span>, <span class="fl">3.9</span>, <span class="fl">4.1</span>, <span class="fl">2.8</span>, <span class="fl">2.1</span>, <span class="fl">1.6</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>               <span class="fl">3.6</span>, <span class="fl">3.1</span>, <span class="fl">4.2</span>, <span class="fl">4.0</span>, <span class="fl">4.5</span>, <span class="fl">4.2</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>               <span class="fl">2.0</span>, <span class="fl">1.9</span>, <span class="fl">2.6</span>, <span class="fl">3.7</span>, <span class="fl">4.1</span>, <span class="fl">4.0</span>],</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'temp'</span>: [<span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">62</span>, <span class="dv">68</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>             <span class="dv">35</span>, <span class="dv">38</span>, <span class="dv">48</span>, <span class="dv">58</span>, <span class="dv">68</span>, <span class="dv">77</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>             <span class="dv">28</span>, <span class="dv">32</span>, <span class="dv">42</span>, <span class="dv">52</span>, <span class="dv">64</span>, <span class="dv">74</span>]</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>weather</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
@@ -475,9 +496,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="creating-a-chart-object">Creating a Chart Object</h3>
 <p>Start by wrapping your DataFrame in <code>alt.Chart()</code>:</p>
 <div id="cell-14" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This creates a chart object - it stores data but can't render without a mark</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> alt.Chart(weather)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(chart))  <span class="co"># It's an Altair Chart object</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This creates a chart object - it stores data but can't render without a mark</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> alt.Chart(weather)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(chart))  <span class="co"># It's an Altair Chart object</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'altair.vegalite.v6.api.Chart'&gt;</code></pre>
 </div>
@@ -487,28 +508,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="adding-a-mark" class="level3">
 <h3 class="anchored" data-anchor-id="adding-a-mark">Adding a Mark</h3>
 <div id="cell-17" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mark_point() draws circles</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_point()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mark_point() draws circles</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_point()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 
 <style>
-  #altair-viz-fc9bf1fa1941477890044b4e630277fd.vega-embed {
+  #altair-viz-4b71622f869a41fcbd5c7a9df9378739.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-fc9bf1fa1941477890044b4e630277fd.vega-embed details,
-  #altair-viz-fc9bf1fa1941477890044b4e630277fd.vega-embed details summary {
+  #altair-viz-4b71622f869a41fcbd5c7a9df9378739.vega-embed details,
+  #altair-viz-4b71622f869a41fcbd5c7a9df9378739.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-fc9bf1fa1941477890044b4e630277fd"></div>
+<div id="altair-viz-4b71622f869a41fcbd5c7a9df9378739"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-fc9bf1fa1941477890044b4e630277fd") {
-      outputDiv = document.getElementById("altair-viz-fc9bf1fa1941477890044b4e630277fd");
+    if (outputDiv.id !== "altair-viz-4b71622f869a41fcbd5c7a9df9378739") {
+      outputDiv = document.getElementById("altair-viz-4b71622f869a41fcbd5c7a9df9378739");
     }
 
     const paths = {
@@ -566,30 +587,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="adding-encodings">Adding Encodings</h3>
 <p>Encodings map data columns to visual channels like position (x, y), color, size, etc.</p>
 <div id="cell-21" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_point().encode(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'precip'</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city'</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_point().encode(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'precip'</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city'</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 
 <style>
-  #altair-viz-4273a6a48a59429490c5cad2dc678f19.vega-embed {
+  #altair-viz-489adcaaabfb46ddb61b74cf52222d69.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-4273a6a48a59429490c5cad2dc678f19.vega-embed details,
-  #altair-viz-4273a6a48a59429490c5cad2dc678f19.vega-embed details summary {
+  #altair-viz-489adcaaabfb46ddb61b74cf52222d69.vega-embed details,
+  #altair-viz-489adcaaabfb46ddb61b74cf52222d69.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-4273a6a48a59429490c5cad2dc678f19"></div>
+<div id="altair-viz-489adcaaabfb46ddb61b74cf52222d69"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-4273a6a48a59429490c5cad2dc678f19") {
-      outputDiv = document.getElementById("altair-viz-4273a6a48a59429490c5cad2dc678f19");
+    if (outputDiv.id !== "altair-viz-489adcaaabfb46ddb61b74cf52222d69") {
+      outputDiv = document.getElementById("altair-viz-489adcaaabfb46ddb61b74cf52222d69");
     }
 
     const paths = {
@@ -648,31 +669,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="different-mark-types">Different <a href="https://altair-viz.github.io/user_guide/marks/index.html">Mark Types</a></h3>
 <p>Altair provides many mark types. Here are the most common:</p>
 <div id="cell-25" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bar chart</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'precip'</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city'</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bar chart</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'precip'</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city'</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 
 <style>
-  #altair-viz-4b0338938a1e4b6b88690c5dd9cf1d5f.vega-embed {
+  #altair-viz-4bb387b31d604bf2b1d799cbbb683891.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-4b0338938a1e4b6b88690c5dd9cf1d5f.vega-embed details,
-  #altair-viz-4b0338938a1e4b6b88690c5dd9cf1d5f.vega-embed details summary {
+  #altair-viz-4bb387b31d604bf2b1d799cbbb683891.vega-embed details,
+  #altair-viz-4bb387b31d604bf2b1d799cbbb683891.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-4b0338938a1e4b6b88690c5dd9cf1d5f"></div>
+<div id="altair-viz-4bb387b31d604bf2b1d799cbbb683891"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-4b0338938a1e4b6b88690c5dd9cf1d5f") {
-      outputDiv = document.getElementById("altair-viz-4b0338938a1e4b6b88690c5dd9cf1d5f");
+    if (outputDiv.id !== "altair-viz-4bb387b31d604bf2b1d799cbbb683891") {
+      outputDiv = document.getElementById("altair-viz-4bb387b31d604bf2b1d799cbbb683891");
     }
 
     const paths = {
@@ -725,31 +746,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="cell-26" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Line chart</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_line().encode(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month'</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'precip'</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Line chart</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_line().encode(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'precip'</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 
 <style>
-  #altair-viz-a1e8a762af3249e0b36531de0c432a87.vega-embed {
+  #altair-viz-e7daa46bbdd64fdfb6a7c0532dae491e.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-a1e8a762af3249e0b36531de0c432a87.vega-embed details,
-  #altair-viz-a1e8a762af3249e0b36531de0c432a87.vega-embed details summary {
+  #altair-viz-e7daa46bbdd64fdfb6a7c0532dae491e.vega-embed details,
+  #altair-viz-e7daa46bbdd64fdfb6a7c0532dae491e.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-a1e8a762af3249e0b36531de0c432a87"></div>
+<div id="altair-viz-e7daa46bbdd64fdfb6a7c0532dae491e"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-a1e8a762af3249e0b36531de0c432a87") {
-      outputDiv = document.getElementById("altair-viz-a1e8a762af3249e0b36531de0c432a87");
+    if (outputDiv.id !== "altair-viz-e7daa46bbdd64fdfb6a7c0532dae491e") {
+      outputDiv = document.getElementById("altair-viz-e7daa46bbdd64fdfb6a7c0532dae491e");
     }
 
     const paths = {
@@ -805,9 +826,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p><strong>📝 Exercise 1:</strong> Create a scatter plot with <code>temp</code> on x-axis and <code>precip</code> on y-axis.</p>
 </blockquote>
-<div id="cell-29" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 </section>
 </section>
 <section id="part-4-data-types" class="level2">
@@ -850,32 +868,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>You specify types by adding them after the field name with a colon:</p>
-<div id="cell-32" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explicit type annotations</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'precip:Q'</span>,  <span class="co"># Quantitative</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>     <span class="co"># Nominal</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div id="cell-31" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explicit type annotations</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'precip:Q'</span>,  <span class="co"># Quantitative</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>     <span class="co"># Nominal</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
 
 <style>
-  #altair-viz-8e5b27efe5e540129b41f786b86245bb.vega-embed {
+  #altair-viz-7d6852110e1d4b0ea389611f790789bb.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-8e5b27efe5e540129b41f786b86245bb.vega-embed details,
-  #altair-viz-8e5b27efe5e540129b41f786b86245bb.vega-embed details summary {
+  #altair-viz-7d6852110e1d4b0ea389611f790789bb.vega-embed details,
+  #altair-viz-7d6852110e1d4b0ea389611f790789bb.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-8e5b27efe5e540129b41f786b86245bb"></div>
+<div id="altair-viz-7d6852110e1d4b0ea389611f790789bb"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-8e5b27efe5e540129b41f786b86245bb") {
-      outputDiv = document.getElementById("altair-viz-8e5b27efe5e540129b41f786b86245bb");
+    if (outputDiv.id !== "altair-viz-7d6852110e1d4b0ea389611f790789bb") {
+      outputDiv = document.getElementById("altair-viz-7d6852110e1d4b0ea389611f790789bb");
     }
 
     const paths = {
@@ -931,32 +949,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="controlling-sort-order" class="level3">
 <h3 class="anchored" data-anchor-id="controlling-sort-order">Controlling Sort Order</h3>
 <p>By default, Altair sorts axis values alphabetically. To get chronological order, you must explicitly specify the sort order:</p>
-<div id="cell-36" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Default: sorted alphabetically (Apr, Feb, Jan, Jun, Mar, May)</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'average(precip):Q'</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div id="cell-35" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Default: sorted alphabetically (Apr, Feb, Jan, Jun, Mar, May)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'average(precip):Q'</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
 
 <style>
-  #altair-viz-ca181e06df4f4d9092dfb453d5b8d901.vega-embed {
+  #altair-viz-311d2a7822a34562b940d92ee751dd98.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-ca181e06df4f4d9092dfb453d5b8d901.vega-embed details,
-  #altair-viz-ca181e06df4f4d9092dfb453d5b8d901.vega-embed details summary {
+  #altair-viz-311d2a7822a34562b940d92ee751dd98.vega-embed details,
+  #altair-viz-311d2a7822a34562b940d92ee751dd98.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-ca181e06df4f4d9092dfb453d5b8d901"></div>
+<div id="altair-viz-311d2a7822a34562b940d92ee751dd98"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-ca181e06df4f4d9092dfb453d5b8d901") {
-      outputDiv = document.getElementById("altair-viz-ca181e06df4f4d9092dfb453d5b8d901");
+    if (outputDiv.id !== "altair-viz-311d2a7822a34562b940d92ee751dd98") {
+      outputDiv = document.getElementById("altair-viz-311d2a7822a34562b940d92ee751dd98");
     }
 
     const paths = {
@@ -1008,32 +1026,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </script>
 </div>
 </div>
-<div id="cell-37" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explicit sort: chronological order</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(<span class="st">'month:O'</span>, sort<span class="op">=</span>[<span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>]),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'average(precip):Q'</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div id="cell-36" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explicit sort: chronological order</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(<span class="st">'month:O'</span>, sort<span class="op">=</span>[<span class="st">'Jan'</span>, <span class="st">'Feb'</span>, <span class="st">'Mar'</span>, <span class="st">'Apr'</span>, <span class="st">'May'</span>, <span class="st">'Jun'</span>]),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'average(precip):Q'</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
 
 <style>
-  #altair-viz-0624a9e055b144058846cf80567b7245.vega-embed {
+  #altair-viz-62a834c0f04645e3bb08e9338f487bf8.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-0624a9e055b144058846cf80567b7245.vega-embed details,
-  #altair-viz-0624a9e055b144058846cf80567b7245.vega-embed details summary {
+  #altair-viz-62a834c0f04645e3bb08e9338f487bf8.vega-embed details,
+  #altair-viz-62a834c0f04645e3bb08e9338f487bf8.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-0624a9e055b144058846cf80567b7245"></div>
+<div id="altair-viz-62a834c0f04645e3bb08e9338f487bf8"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-0624a9e055b144058846cf80567b7245") {
-      outputDiv = document.getElementById("altair-viz-0624a9e055b144058846cf80567b7245");
+    if (outputDiv.id !== "altair-viz-62a834c0f04645e3bb08e9338f487bf8") {
+      outputDiv = document.getElementById("altair-viz-62a834c0f04645e3bb08e9338f487bf8");
     }
 
     const paths = {
@@ -1089,31 +1107,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>📝 Exercise 2:</strong> Create a bar chart showing average temperature per month with proper chronological order.</p>
 </blockquote>
 <p>In Altair, you can aggregate directly in the encoding string:</p>
-<div id="cell-40" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'average(precip):Q'</span>,  <span class="co"># Average of precip column</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div id="cell-39" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'average(precip):Q'</span>,  <span class="co"># Average of precip column</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
 
 <style>
-  #altair-viz-e830db8cc7c34d05a19bb75e30a367a2.vega-embed {
+  #altair-viz-af76b8c1317a44c19b5f8b74e84dd538.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-e830db8cc7c34d05a19bb75e30a367a2.vega-embed details,
-  #altair-viz-e830db8cc7c34d05a19bb75e30a367a2.vega-embed details summary {
+  #altair-viz-af76b8c1317a44c19b5f8b74e84dd538.vega-embed details,
+  #altair-viz-af76b8c1317a44c19b5f8b74e84dd538.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-e830db8cc7c34d05a19bb75e30a367a2"></div>
+<div id="altair-viz-af76b8c1317a44c19b5f8b74e84dd538"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-e830db8cc7c34d05a19bb75e30a367a2") {
-      outputDiv = document.getElementById("altair-viz-e830db8cc7c34d05a19bb75e30a367a2");
+    if (outputDiv.id !== "altair-viz-af76b8c1317a44c19b5f8b74e84dd538") {
+      outputDiv = document.getElementById("altair-viz-af76b8c1317a44c19b5f8b74e84dd538");
     }
 
     const paths = {
@@ -1177,32 +1195,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>min(field)</code> / <code>max(field)</code> — extremes</li>
 <li><code>stdev(field)</code> — standard deviation</li>
 </ul>
-<div id="cell-43" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count observations per city</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'count():Q'</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div id="cell-42" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count observations per city</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'count():Q'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
 
 <style>
-  #altair-viz-c38aa967a0c84913bc7d8bac5f23aa0e.vega-embed {
+  #altair-viz-364253c68ec348ef9d5e42cef6aa5357.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-c38aa967a0c84913bc7d8bac5f23aa0e.vega-embed details,
-  #altair-viz-c38aa967a0c84913bc7d8bac5f23aa0e.vega-embed details summary {
+  #altair-viz-364253c68ec348ef9d5e42cef6aa5357.vega-embed details,
+  #altair-viz-364253c68ec348ef9d5e42cef6aa5357.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-c38aa967a0c84913bc7d8bac5f23aa0e"></div>
+<div id="altair-viz-364253c68ec348ef9d5e42cef6aa5357"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-c38aa967a0c84913bc7d8bac5f23aa0e") {
-      outputDiv = document.getElementById("altair-viz-c38aa967a0c84913bc7d8bac5f23aa0e");
+    if (outputDiv.id !== "altair-viz-364253c68ec348ef9d5e42cef6aa5357") {
+      outputDiv = document.getElementById("altair-viz-364253c68ec348ef9d5e42cef6aa5357");
     }
 
     const paths = {
@@ -1254,32 +1272,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </script>
 </div>
 </div>
-<div id="cell-44" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Max temperature per city</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'max(temp):Q'</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div id="cell-43" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Max temperature per city</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar().encode(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'max(temp):Q'</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
 
 <style>
-  #altair-viz-47e218da5d7b49cda38da39701d7ed3f.vega-embed {
+  #altair-viz-aed2e057d4274d37bb757a66e61f659a.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-47e218da5d7b49cda38da39701d7ed3f.vega-embed details,
-  #altair-viz-47e218da5d7b49cda38da39701d7ed3f.vega-embed details summary {
+  #altair-viz-aed2e057d4274d37bb757a66e61f659a.vega-embed details,
+  #altair-viz-aed2e057d4274d37bb757a66e61f659a.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-47e218da5d7b49cda38da39701d7ed3f"></div>
+<div id="altair-viz-aed2e057d4274d37bb757a66e61f659a"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-47e218da5d7b49cda38da39701d7ed3f") {
-      outputDiv = document.getElementById("altair-viz-47e218da5d7b49cda38da39701d7ed3f");
+    if (outputDiv.id !== "altair-viz-aed2e057d4274d37bb757a66e61f659a") {
+      outputDiv = document.getElementById("altair-viz-aed2e057d4274d37bb757a66e61f659a");
     }
 
     const paths = {
@@ -1338,32 +1356,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="part-6-color-encoding" class="level2">
 <h2 class="anchored" data-anchor-id="part-6-color-encoding">Part 6: Color Encoding</h2>
-<div id="cell-47" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_line().encode(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'precip:Q'</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'city:N'</span>  <span class="co"># Different color for each city</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div id="cell-46" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_line().encode(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'precip:Q'</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'city:N'</span>  <span class="co"># Different color for each city</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
 
 <style>
-  #altair-viz-2ff1363da4a4423c86e845a0a84f0e8a.vega-embed {
+  #altair-viz-978017ee2ad8419f96e41d92080ce45d.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-2ff1363da4a4423c86e845a0a84f0e8a.vega-embed details,
-  #altair-viz-2ff1363da4a4423c86e845a0a84f0e8a.vega-embed details summary {
+  #altair-viz-978017ee2ad8419f96e41d92080ce45d.vega-embed details,
+  #altair-viz-978017ee2ad8419f96e41d92080ce45d.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-2ff1363da4a4423c86e845a0a84f0e8a"></div>
+<div id="altair-viz-978017ee2ad8419f96e41d92080ce45d"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-2ff1363da4a4423c86e845a0a84f0e8a") {
-      outputDiv = document.getElementById("altair-viz-2ff1363da4a4423c86e845a0a84f0e8a");
+    if (outputDiv.id !== "altair-viz-978017ee2ad8419f96e41d92080ce45d") {
+      outputDiv = document.getElementById("altair-viz-978017ee2ad8419f96e41d92080ce45d");
     }
 
     const paths = {
@@ -1419,32 +1437,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="color-for-quantitative-data" class="level3">
 <h3 class="anchored" data-anchor-id="color-for-quantitative-data">Color for Quantitative Data</h3>
 <p>You can also map numeric values to color intensity. See <a href="https://vega.github.io/vega/docs/schemes/">Vega Color Schemes</a> for all available palettes.</p>
-<div id="cell-51" class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_circle(size<span class="op">=</span><span class="dv">100</span>).encode(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'precip:Q'</span>  <span class="co"># Color intensity shows precipitation</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div id="cell-50" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_circle(size<span class="op">=</span><span class="dv">100</span>).encode(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'precip:Q'</span>  <span class="co"># Color intensity shows precipitation</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
 
 <style>
-  #altair-viz-788e49d092c04fe38c727371a5860a84.vega-embed {
+  #altair-viz-24650baa6bb24a13ae9924cd98bc8a58.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-788e49d092c04fe38c727371a5860a84.vega-embed details,
-  #altair-viz-788e49d092c04fe38c727371a5860a84.vega-embed details summary {
+  #altair-viz-24650baa6bb24a13ae9924cd98bc8a58.vega-embed details,
+  #altair-viz-24650baa6bb24a13ae9924cd98bc8a58.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-788e49d092c04fe38c727371a5860a84"></div>
+<div id="altair-viz-24650baa6bb24a13ae9924cd98bc8a58"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-788e49d092c04fe38c727371a5860a84") {
-      outputDiv = document.getElementById("altair-viz-788e49d092c04fe38c727371a5860a84");
+    if (outputDiv.id !== "altair-viz-24650baa6bb24a13ae9924cd98bc8a58") {
+      outputDiv = document.getElementById("altair-viz-24650baa6bb24a13ae9924cd98bc8a58");
     }
 
     const paths = {
@@ -1496,33 +1514,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </script>
 </div>
 </div>
-<div id="cell-52" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Try different color schemes from Vega</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_circle(size<span class="op">=</span><span class="dv">100</span>).encode(</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(<span class="st">'precip:Q'</span>, scale<span class="op">=</span>alt.Scale(scheme<span class="op">=</span><span class="st">'viridis'</span>))  <span class="co"># Try: 'plasma', 'inferno', 'magma', 'turbo', 'blues', 'greens', 'oranges', 'reds', 'purples', 'goldred', 'redyellowblue'</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div id="cell-51" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Try different color schemes from Vega</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_circle(size<span class="op">=</span><span class="dv">100</span>).encode(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(<span class="st">'precip:Q'</span>, scale<span class="op">=</span>alt.Scale(scheme<span class="op">=</span><span class="st">'viridis'</span>))  <span class="co"># Try: 'plasma', 'inferno', 'magma', 'turbo', 'blues', 'greens', 'oranges', 'reds', 'purples', 'goldred', 'redyellowblue'</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
 
 <style>
-  #altair-viz-3b1b8df4d5b24167966da868d20f73f5.vega-embed {
+  #altair-viz-045035bc08d948a4813567ba488478c2.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-3b1b8df4d5b24167966da868d20f73f5.vega-embed details,
-  #altair-viz-3b1b8df4d5b24167966da868d20f73f5.vega-embed details summary {
+  #altair-viz-045035bc08d948a4813567ba488478c2.vega-embed details,
+  #altair-viz-045035bc08d948a4813567ba488478c2.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-3b1b8df4d5b24167966da868d20f73f5"></div>
+<div id="altair-viz-045035bc08d948a4813567ba488478c2"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-3b1b8df4d5b24167966da868d20f73f5") {
-      outputDiv = document.getElementById("altair-viz-3b1b8df4d5b24167966da868d20f73f5");
+    if (outputDiv.id !== "altair-viz-045035bc08d948a4813567ba488478c2") {
+      outputDiv = document.getElementById("altair-viz-045035bc08d948a4813567ba488478c2");
     }
 
     const paths = {
@@ -1578,35 +1596,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p><strong>📝 Exercise 4:</strong> Create a scatter plot of <code>temp</code> vs <code>precip</code> with color encoding for <code>city</code>.</p>
 </blockquote>
-<div id="cell-55" class="cell" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_point(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'firebrick'</span>,  <span class="co"># Fixed color for all points</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="dv">100</span>,           <span class="co"># Fixed size</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    opacity<span class="op">=</span><span class="fl">0.7</span>         <span class="co"># Transparency</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>).encode(</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'temp:Q'</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'precip:Q'</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div id="cell-54" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_point(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'firebrick'</span>,  <span class="co"># Fixed color for all points</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="dv">100</span>,           <span class="co"># Fixed size</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    opacity<span class="op">=</span><span class="fl">0.7</span>         <span class="co"># Transparency</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>).encode(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'temp:Q'</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'precip:Q'</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
 
 <style>
-  #altair-viz-56542279612546218311ff25a94844d0.vega-embed {
+  #altair-viz-93f785b3fd004728b5bc390120c3c9bc.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-56542279612546218311ff25a94844d0.vega-embed details,
-  #altair-viz-56542279612546218311ff25a94844d0.vega-embed details summary {
+  #altair-viz-93f785b3fd004728b5bc390120c3c9bc.vega-embed details,
+  #altair-viz-93f785b3fd004728b5bc390120c3c9bc.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-56542279612546218311ff25a94844d0"></div>
+<div id="altair-viz-93f785b3fd004728b5bc390120c3c9bc"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-56542279612546218311ff25a94844d0") {
-      outputDiv = document.getElementById("altair-viz-56542279612546218311ff25a94844d0");
+    if (outputDiv.id !== "altair-viz-93f785b3fd004728b5bc390120c3c9bc") {
+      outputDiv = document.getElementById("altair-viz-93f785b3fd004728b5bc390120c3c9bc");
     }
 
     const paths = {
@@ -1658,35 +1676,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </script>
 </div>
 </div>
-<div id="cell-56" class="cell" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar(color<span class="op">=</span><span class="st">'steelblue'</span>).encode(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'average(precip):Q'</span>,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">400</span>,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Average Precipitation by City'</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div id="cell-55" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar(color<span class="op">=</span><span class="st">'steelblue'</span>).encode(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'average(precip):Q'</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>).properties(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Average Precipitation by City'</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
 
 <style>
-  #altair-viz-112068c7a0e149d7a8ad0d007c982383.vega-embed {
+  #altair-viz-9a84b0916a9243f39592c9c93f45ab51.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-112068c7a0e149d7a8ad0d007c982383.vega-embed details,
-  #altair-viz-112068c7a0e149d7a8ad0d007c982383.vega-embed details summary {
+  #altair-viz-9a84b0916a9243f39592c9c93f45ab51.vega-embed details,
+  #altair-viz-9a84b0916a9243f39592c9c93f45ab51.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-112068c7a0e149d7a8ad0d007c982383"></div>
+<div id="altair-viz-9a84b0916a9243f39592c9c93f45ab51"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-112068c7a0e149d7a8ad0d007c982383") {
-      outputDiv = document.getElementById("altair-viz-112068c7a0e149d7a8ad0d007c982383");
+    if (outputDiv.id !== "altair-viz-9a84b0916a9243f39592c9c93f45ab51") {
+      outputDiv = document.getElementById("altair-viz-9a84b0916a9243f39592c9c93f45ab51");
     }
 
     const paths = {
@@ -1742,42 +1760,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="axis-and-scale-customization" class="level3">
 <h3 class="anchored" data-anchor-id="axis-and-scale-customization">Axis and Scale Customization</h3>
 <p>For more control, use <code>alt.X()</code> and <code>alt.Y()</code> objects instead of strings:</p>
-<div id="cell-59" class="cell" data-execution_count="20">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar(color<span class="op">=</span><span class="st">'teal'</span>).encode(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'average(precip):Q'</span>,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">'Average Precipitation (inches)'</span>,  <span class="co"># Custom axis title</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(domain<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">6</span>])           <span class="co"># Fixed axis range</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'city:N'</span>,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">'City'</span>,</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span>alt.Axis(labelFontSize<span class="op">=</span><span class="dv">12</span>)          <span class="co"># Larger labels</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">400</span>,</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div id="cell-58" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_bar(color<span class="op">=</span><span class="st">'teal'</span>).encode(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'average(precip):Q'</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">'Average Precipitation (inches)'</span>,  <span class="co"># Custom axis title</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(domain<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">6</span>])           <span class="co"># Fixed axis range</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>alt.Y(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'city:N'</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">'City'</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span>alt.Axis(labelFontSize<span class="op">=</span><span class="dv">12</span>)          <span class="co"># Larger labels</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>).properties(</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">150</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
 
 <style>
-  #altair-viz-1adbfd84bc714e2f9c1e06f03a348b9e.vega-embed {
+  #altair-viz-3524240d84ca45c6863aab83cbb7f77e.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-1adbfd84bc714e2f9c1e06f03a348b9e.vega-embed details,
-  #altair-viz-1adbfd84bc714e2f9c1e06f03a348b9e.vega-embed details summary {
+  #altair-viz-3524240d84ca45c6863aab83cbb7f77e.vega-embed details,
+  #altair-viz-3524240d84ca45c6863aab83cbb7f77e.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-1adbfd84bc714e2f9c1e06f03a348b9e"></div>
+<div id="altair-viz-3524240d84ca45c6863aab83cbb7f77e"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-1adbfd84bc714e2f9c1e06f03a348b9e") {
-      outputDiv = document.getElementById("altair-viz-1adbfd84bc714e2f9c1e06f03a348b9e");
+    if (outputDiv.id !== "altair-viz-3524240d84ca45c6863aab83cbb7f77e") {
+      outputDiv = document.getElementById("altair-viz-3524240d84ca45c6863aab83cbb7f77e");
     }
 
     const paths = {
@@ -1833,35 +1851,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="color-schemes" class="level3">
 <h3 class="anchored" data-anchor-id="color-schemes">Color Schemes</h3>
 <p>Altair includes many built-in color schemes:</p>
-<div id="cell-62" class="cell" data-execution_count="21">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_circle(size<span class="op">=</span><span class="dv">200</span>).encode(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'precip:Q'</span>,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(scheme<span class="op">=</span><span class="st">'blues'</span>)  <span class="co"># Blue color gradient</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>).properties(width<span class="op">=</span><span class="dv">300</span>, height<span class="op">=</span><span class="dv">150</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div id="cell-61" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>alt.Chart(weather).mark_circle(size<span class="op">=</span><span class="dv">200</span>).encode(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'city:N'</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>alt.Color(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'precip:Q'</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(scheme<span class="op">=</span><span class="st">'blues'</span>)  <span class="co"># Blue color gradient</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>).properties(width<span class="op">=</span><span class="dv">300</span>, height<span class="op">=</span><span class="dv">150</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
 
 <style>
-  #altair-viz-e6dfb8c427c843c482c5380ae728e045.vega-embed {
+  #altair-viz-d25adf82e8184399b67a93219a0cab03.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-e6dfb8c427c843c482c5380ae728e045.vega-embed details,
-  #altair-viz-e6dfb8c427c843c482c5380ae728e045.vega-embed details summary {
+  #altair-viz-d25adf82e8184399b67a93219a0cab03.vega-embed details,
+  #altair-viz-d25adf82e8184399b67a93219a0cab03.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-e6dfb8c427c843c482c5380ae728e045"></div>
+<div id="altair-viz-d25adf82e8184399b67a93219a0cab03"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-e6dfb8c427c843c482c5380ae728e045") {
-      outputDiv = document.getElementById("altair-viz-e6dfb8c427c843c482c5380ae728e045");
+    if (outputDiv.id !== "altair-viz-d25adf82e8184399b67a93219a0cab03") {
+      outputDiv = document.getElementById("altair-viz-d25adf82e8184399b67a93219a0cab03");
     }
 
     const paths = {
@@ -1917,10 +1935,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p><strong>📝 Exercise 5:</strong> Create a bar chart of average temperature per city with orange bars and a title.</p>
 </blockquote>
-<div id="cell-65" class="cell" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-66" class="cell" data-execution_count="23">
+<div id="cell-64" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Heatmap base</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>heatmap <span class="op">=</span> alt.Chart(weather).mark_rect().encode(</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'month:O'</span>,</span>
@@ -1944,26 +1959,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>(heatmap <span class="op">+</span> text).properties(width<span class="op">=</span><span class="dv">300</span>, height<span class="op">=</span><span class="dv">150</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="21">
 
 <style>
-  #altair-viz-25e6986fe9464b6ab399bcbdccaa7955.vega-embed {
+  #altair-viz-42603d80a87b4b378c1bf14e1f9422af.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-25e6986fe9464b6ab399bcbdccaa7955.vega-embed details,
-  #altair-viz-25e6986fe9464b6ab399bcbdccaa7955.vega-embed details summary {
+  #altair-viz-42603d80a87b4b378c1bf14e1f9422af.vega-embed details,
+  #altair-viz-42603d80a87b4b378c1bf14e1f9422af.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-25e6986fe9464b6ab399bcbdccaa7955"></div>
+<div id="altair-viz-42603d80a87b4b378c1bf14e1f9422af"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-25e6986fe9464b6ab399bcbdccaa7955") {
-      outputDiv = document.getElementById("altair-viz-25e6986fe9464b6ab399bcbdccaa7955");
+    if (outputDiv.id !== "altair-viz-42603d80a87b4b378c1bf14e1f9422af") {
+      outputDiv = document.getElementById("altair-viz-42603d80a87b4b378c1bf14e1f9422af");
     }
 
     const paths = {
@@ -2016,7 +2031,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Now high values have white text (readable on dark red) and low values have black text.</p>
-<div id="cell-68" class="cell" data-execution_count="24">
+<div id="cell-66" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data with huge range</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>wide_range <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'category'</span>: [<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>, <span class="st">'D'</span>],</span>
@@ -2028,26 +2043,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'category:N'</span>,</span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'value:Q'</span></span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>).properties(title<span class="op">=</span><span class="st">'Linear Scale'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="22">
 
 <style>
-  #altair-viz-c088c7dd9a854a8286570b75baafde88.vega-embed {
+  #altair-viz-0105b90c510d4be08b0c1a8fb757b9e4.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-c088c7dd9a854a8286570b75baafde88.vega-embed details,
-  #altair-viz-c088c7dd9a854a8286570b75baafde88.vega-embed details summary {
+  #altair-viz-0105b90c510d4be08b0c1a8fb757b9e4.vega-embed details,
+  #altair-viz-0105b90c510d4be08b0c1a8fb757b9e4.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-c088c7dd9a854a8286570b75baafde88"></div>
+<div id="altair-viz-0105b90c510d4be08b0c1a8fb757b9e4"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-c088c7dd9a854a8286570b75baafde88") {
-      outputDiv = document.getElementById("altair-viz-c088c7dd9a854a8286570b75baafde88");
+    if (outputDiv.id !== "altair-viz-0105b90c510d4be08b0c1a8fb757b9e4") {
+      outputDiv = document.getElementById("altair-viz-0105b90c510d4be08b0c1a8fb757b9e4");
     }
 
     const paths = {
@@ -2102,7 +2117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p><strong>📝 Exercise 6:</strong> Create a bar chart of average temperature per city with text labels on the bars.</p>
 </blockquote>
-<div id="cell-70" class="cell" data-execution_count="25">
+<div id="cell-68" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log color scale - shows variation across all magnitudes</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(wide_range).mark_rect().encode(</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'category:N'</span>,</span>
@@ -2112,26 +2127,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>alt.Scale(scheme<span class="op">=</span><span class="st">'goldred'</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'log'</span>)</span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>).properties(width<span class="op">=</span><span class="dv">300</span>, height<span class="op">=</span><span class="dv">50</span>, title<span class="op">=</span><span class="st">'Log Color Scale'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="25">
+<div class="cell-output cell-output-display" data-execution_count="23">
 
 <style>
-  #altair-viz-d2d557c97cb1466596551c3c8898728e.vega-embed {
+  #altair-viz-c4e446319af148bca082df672d2fca75.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-d2d557c97cb1466596551c3c8898728e.vega-embed details,
-  #altair-viz-d2d557c97cb1466596551c3c8898728e.vega-embed details summary {
+  #altair-viz-c4e446319af148bca082df672d2fca75.vega-embed details,
+  #altair-viz-c4e446319af148bca082df672d2fca75.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-d2d557c97cb1466596551c3c8898728e"></div>
+<div id="altair-viz-c4e446319af148bca082df672d2fca75"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-d2d557c97cb1466596551c3c8898728e") {
-      outputDiv = document.getElementById("altair-viz-d2d557c97cb1466596551c3c8898728e");
+    if (outputDiv.id !== "altair-viz-c4e446319af148bca082df672d2fca75") {
+      outputDiv = document.getElementById("altair-viz-c4e446319af148bca082df672d2fca75");
     }
 
     const paths = {
@@ -2188,7 +2203,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="part-8-real-world-example-sra-metadata" class="level2">
 <h2 class="anchored" data-anchor-id="part-8-real-world-example-sra-metadata">Part 8: Real-World Example — SRA Metadata</h2>
 <p>The <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive</a> (SRA) is the largest public repository of sequencing data. Here we analyze SARS-CoV-2 metadata to understand how sequencing platforms and library protocols were used during the pandemic.</p>
-<div id="cell-73" class="cell" data-execution_count="26">
+<div id="cell-71" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load SRA metadata snapshot from Zenodo (first 100k records for speed)</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sra <span class="op">=</span> pd.read_csv(</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://zenodo.org/records/10680776/files/ena.tsv.gz"</span>,</span>
@@ -2199,7 +2214,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>sra.sample(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="26">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <div>
 
 
@@ -2232,75 +2247,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">96169</th>
-<td>PRJNA715749</td>
-<td>113569200.0</td>
-<td>SAMN24280853</td>
-<td>2021-12-08</td>
-<td>USA: Massachusetts</td>
+<th data-quarto-table-cell-role="th">35094</th>
+<td>PRJEB43060</td>
+<td>242603897.0</td>
+<td>SAMEA13362767</td>
+<td>2020-10-03</td>
+<td>Norway</td>
 <td>NaN</td>
-<td>Illumina NovaSeq 6000 sequencing; Amplicon seq...</td>
+<td>Illumina MiSeq sequencing; Raw reads: SARS-CoV...</td>
 <td>NaN</td>
-<td>This sample has been submitted by Broad_GCID o...</td>
+<td>SARS-CoV-2/human/Norway/4099/2020/1</td>
 <td>NaN</td>
 <td>...</td>
-<td>USA-MA-CDCBI-CRSP_R7IS35IK3N57NKBU-2021.lLP-21...</td>
 <td>NaN</td>
+<td>NaN</td>
+<td>PAIRED</td>
+<td>Illumina MiSeq</td>
+<td>ILLUMINA</td>
+<td>not provided</td>
+<td>SARS-CoV-2/human/Norway/4099/2020</td>
+<td>NaN</td>
+<td>2020-10-03</td>
+<td>Norwegian Institute of Public Health (NIPH)</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">27221</th>
+<td>PRJEB52934</td>
+<td>82336750.0</td>
+<td>SAMEA14459592</td>
+<td>2022-04-16</td>
+<td>Estonia</td>
+<td>NaN</td>
+<td>Illumina NovaSeq 6000 sequencing; Illumina Nov...</td>
+<td>NaN</td>
+<td>PCR tiled amplicon WGS of SARS-Cov-2, pre-sele...</td>
+<td>NaN</td>
+<td>...</td>
+<td>EstECDC0112</td>
+<td>Produced for Workflow v.1.8.9 (Eurofins Genom...</td>
 <td>PAIRED</td>
 <td>Illumina NovaSeq 6000</td>
 <td>ILLUMINA</td>
-<td>clinical</td>
-<td>SARS-CoV-2/Human/USA/MA-CDCBI-CRSP_R7IS35IK3N5...</td>
 <td>NaN</td>
-<td>2021-12-08</td>
 <td>NaN</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">26456</th>
-<td>PRJNA613958</td>
-<td>145859323.0</td>
-<td>SAMN16548793</td>
-<td>2020-08-05</td>
-<td>Australia: Victoria</td>
 <td>NaN</td>
-<td>NextSeq 500 sequencing; Severe acute respirato...</td>
-<td>NaN</td>
-<td>SARS-Cov-2 VIC15271 (GISAID EPI_ISL_593228)</td>
-<td>NaN</td>
-<td>...</td>
-<td>VIC15271_illumina</td>
-<td>NaN</td>
-<td>PAIRED</td>
-<td>NextSeq 500</td>
-<td>ILLUMINA</td>
-<td>NaN</td>
-<td>VIC15271</td>
-<td>NaN</td>
-<td>2020-08-05</td>
-<td>SUB8393317</td>
+<td>2022-04-16</td>
+<td>Health Board of Estonia</td>
 </tr>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">16277</th>
+<th data-quarto-table-cell-role="th">82022</th>
 <td>PRJEB37886</td>
-<td>48301278.0</td>
-<td>SAMEA14262792</td>
-<td>2022-04-20</td>
+<td>855160155.0</td>
+<td>SAMEA10170806</td>
+<td>2021-09-13</td>
 <td>United Kingdom</td>
 <td>NaN</td>
 <td>Illumina NovaSeq 6000 sequencing; Illumina Nov...</td>
 <td>NaN</td>
-<td>COG-UK/LSPA-3D9940A</td>
+<td>COG-UK/ALDP-1E70310</td>
 <td>NaN</td>
 <td>...</td>
-<td>NT1741912Q / HT-137786:F6</td>
+<td>NT1696099F / HT-119742:F1</td>
 <td>NaN</td>
 <td>PAIRED</td>
 <td>Illumina NovaSeq 6000</td>
 <td>ILLUMINA</td>
 <td>NaN</td>
-<td>not provided</td>
 <td>NaN</td>
-<td>2022-04-20</td>
+<td>NaN</td>
+<td>2021-09-13</td>
 <td>SC</td>
 </tr>
 </tbody>
@@ -2315,7 +2330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <section id="aggregate-for-visualization" class="level3">
 <h3 class="anchored" data-anchor-id="aggregate-for-visualization">Aggregate for Visualization</h3>
-<div id="cell-76" class="cell" data-execution_count="27">
+<div id="cell-74" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Group by platform and library strategy, count unique runs</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>heatmap_data <span class="op">=</span> sra.groupby(</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'instrument_platform'</span>, <span class="st">'library_strategy'</span>]</span>
@@ -2324,7 +2339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>heatmap_data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div class="cell-output cell-output-display" data-execution_count="25">
 <div>
 
 
@@ -2503,33 +2518,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="create-the-heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="create-the-heatmap">Create the Heatmap</h3>
-<div id="cell-78" class="cell" data-execution_count="28">
+<div id="cell-76" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic heatmap</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>alt.Chart(heatmap_data).mark_rect().encode(</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'instrument_platform:N'</span>,</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'library_strategy:N'</span>,</span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'run_accession:Q'</span></span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell-output cell-output-display" data-execution_count="26">
 
 <style>
-  #altair-viz-92d81009d0244066ab16a71e434419dc.vega-embed {
+  #altair-viz-282bb65d382c4755af0851c8e70e4215.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-92d81009d0244066ab16a71e434419dc.vega-embed details,
-  #altair-viz-92d81009d0244066ab16a71e434419dc.vega-embed details summary {
+  #altair-viz-282bb65d382c4755af0851c8e70e4215.vega-embed details,
+  #altair-viz-282bb65d382c4755af0851c8e70e4215.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-92d81009d0244066ab16a71e434419dc"></div>
+<div id="altair-viz-282bb65d382c4755af0851c8e70e4215"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-92d81009d0244066ab16a71e434419dc") {
-      outputDiv = document.getElementById("altair-viz-92d81009d0244066ab16a71e434419dc");
+    if (outputDiv.id !== "altair-viz-282bb65d382c4755af0851c8e70e4215") {
+      outputDiv = document.getElementById("altair-viz-282bb65d382c4755af0851c8e70e4215");
     }
 
     const paths = {
@@ -2584,7 +2599,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="final-polished-heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="final-polished-heatmap">Final Polished Heatmap</h3>
-<div id="cell-80" class="cell" data-execution_count="29">
+<div id="cell-78" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Background: colored rectangles</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>background <span class="op">=</span> alt.Chart(heatmap_data).mark_rect(opacity<span class="op">=</span><span class="dv">1</span>).encode(</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>alt.X(</span>
@@ -2619,26 +2634,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>background</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="29">
+<div class="cell-output cell-output-display" data-execution_count="27">
 
 <style>
-  #altair-viz-aaaeb2a47d5e4eebb2133fd307943a88.vega-embed {
+  #altair-viz-d5eaf3ccf5f9484db119b721d3b6e36e.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-aaaeb2a47d5e4eebb2133fd307943a88.vega-embed details,
-  #altair-viz-aaaeb2a47d5e4eebb2133fd307943a88.vega-embed details summary {
+  #altair-viz-d5eaf3ccf5f9484db119b721d3b6e36e.vega-embed details,
+  #altair-viz-d5eaf3ccf5f9484db119b721d3b6e36e.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-aaaeb2a47d5e4eebb2133fd307943a88"></div>
+<div id="altair-viz-d5eaf3ccf5f9484db119b721d3b6e36e"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-aaaeb2a47d5e4eebb2133fd307943a88") {
-      outputDiv = document.getElementById("altair-viz-aaaeb2a47d5e4eebb2133fd307943a88");
+    if (outputDiv.id !== "altair-viz-d5eaf3ccf5f9484db119b721d3b6e36e") {
+      outputDiv = document.getElementById("altair-viz-d5eaf3ccf5f9484db119b721d3b6e36e");
     }
 
     const paths = {
@@ -2693,7 +2708,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="add-text-labels" class="level3">
 <h3 class="anchored" data-anchor-id="add-text-labels">Add Text Labels</h3>
-<div id="cell-82" class="cell" data-execution_count="30">
+<div id="cell-80" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Text layer with conditional coloring</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>text_labels <span class="op">=</span> background.mark_text(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    align<span class="op">=</span><span class="st">'center'</span>,</span>
@@ -2711,26 +2726,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine layers</span></span>
 <span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>background <span class="op">+</span> text_labels</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="28">
 
 <style>
-  #altair-viz-1932b068c6984bfdb5627dce017a289d.vega-embed {
+  #altair-viz-6e13b6b685424068b06ae67cd13bbe15.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-1932b068c6984bfdb5627dce017a289d.vega-embed details,
-  #altair-viz-1932b068c6984bfdb5627dce017a289d.vega-embed details summary {
+  #altair-viz-6e13b6b685424068b06ae67cd13bbe15.vega-embed details,
+  #altair-viz-6e13b6b685424068b06ae67cd13bbe15.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-1932b068c6984bfdb5627dce017a289d"></div>
+<div id="altair-viz-6e13b6b685424068b06ae67cd13bbe15"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-1932b068c6984bfdb5627dce017a289d") {
-      outputDiv = document.getElementById("altair-viz-1932b068c6984bfdb5627dce017a289d");
+    if (outputDiv.id !== "altair-viz-6e13b6b685424068b06ae67cd13bbe15") {
+      outputDiv = document.getElementById("altair-viz-6e13b6b685424068b06ae67cd13bbe15");
     }
 
     const paths = {
@@ -2786,9 +2801,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p><strong>📝 Exercise 7:</strong> Create a bar chart showing the top 5 countries by number of SRA submissions.</p>
 </blockquote>
-<div id="cell-85" class="cell" data-execution_count="31">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 </section>
 </section>
 <section id="summary" class="level2">
@@ -2972,7 +2984,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
