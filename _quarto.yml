@@ -31,8 +31,8 @@ website:
             text: "6. Py4: FASTQ and Quality Scores"
           - href: lectures/lecture7.ipynb
             text: "7. Py5: Data Manipulation with Pandas"
-          # - href: lectures/lecture8.ipynb
-          #   text: "8. Lists and Dictionaries"
+          - href: lectures/lecture8.ipynb
+            text: "8. Py6: Building graphs with Altair"
           # - href: lectures/lecture9.ipynb
           #   text: "9. File I/O in Python"
           # - href: lectures/lecture10.ipynb
