@@ -30,6 +30,7 @@ lectures/*.png
 # Ignore downloaded images, but keep test images and diagrams
 images/
 !images/test1/
+!images/vcs/
 !images/*.svg
 
 # Test files (keep answers private)
