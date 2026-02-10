@@ -1,5 +1,10 @@
 project:
   type: website
+  render:
+    - "*.qmd"
+    - "*.ipynb"
+    - "*.md"
+    - "!sandbox/"
 
 website:
   title: "BMMB554"
@@ -33,10 +38,12 @@ website:
             text: "7. Py5: Data Manipulation with Pandas"
           - href: lectures/lecture8.ipynb
             text: "8. Py6: Building graphs with Altair"
-          # - href: lectures/lecture9.ipynb
-          #   text: "9. File I/O in Python"
+          - href: lectures/lecture9.qmd
+            text: "9. Git and GitHub"
           # - href: lectures/lecture10.ipynb
-          #   text: "10. Data Manipulation with Pandas (old)"
+          #   text: "10. File I/O in Python"
+          # - href: lectures/lecture11.ipynb
+          #   text: "11. Data Manipulation with Pandas (old)"
 
 format:
   html:
