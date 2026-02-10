@@ -28,7 +28,7 @@ lectures/*.sam
 lectures/*.txt
 lectures/*.png
 # Ignore downloaded images, but keep test images and diagrams
-images/
+images/*
 !images/test1/
 !images/vcs/
 !images/*.svg
