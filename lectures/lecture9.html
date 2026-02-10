@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>lecture9 – BMMB554</title>
+<title>Lecture 9: Git and GitHub – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,36 +103,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -176,7 +150,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture9.html">9. Git and GitHub</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -245,6 +219,12 @@ window.Quarto = {
  <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -257,447 +237,585 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#lecture-9-file-io-in-pythonin-this-lecture-well-learn-how-to-read-and-write-files-in-python-focusing-on-common-bioinformatics-file-formats-fasta-fastq-and-sam." id="toc-lecture-9-file-io-in-pythonin-this-lecture-well-learn-how-to-read-and-write-files-in-python-focusing-on-common-bioinformatics-file-formats-fasta-fastq-and-sam." class="nav-link active" data-scroll-target="#lecture-9-file-io-in-pythonin-this-lecture-well-learn-how-to-read-and-write-files-in-python-focusing-on-common-bioinformatics-file-formats-fasta-fastq-and-sam.">Lecture 9: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.</a>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a>
   <ul class="collapse">
-  <li><a href="#prep" id="toc-prep" class="nav-link" data-scroll-target="#prep">Prep</a></li>
+  <li><a href="#fork-a-github-repo" id="toc-fork-a-github-repo" class="nav-link" data-scroll-target="#fork-a-github-repo">Fork a GitHub repo</a></li>
   </ul></li>
-  <li><a href="#lists-dynamic-programming-in-sequence-alignment" id="toc-lists-dynamic-programming-in-sequence-alignment" class="nav-link" data-scroll-target="#lists-dynamic-programming-in-sequence-alignment">Lists: Dynamic programming in sequence alignment</a>
+  <li><a href="#git-versus-github" id="toc-git-versus-github" class="nav-link" data-scroll-target="#git-versus-github">Git versus GitHub</a></li>
+  <li><a href="#git-resources" id="toc-git-resources" class="nav-link" data-scroll-target="#git-resources">Git resources</a></li>
+  <li><a href="#version-control" id="toc-version-control" class="nav-link" data-scroll-target="#version-control">Version control</a></li>
+  <li><a href="#history" id="toc-history" class="nav-link" data-scroll-target="#history">History</a>
   <ul class="collapse">
-  <li><a href="#dynamic-programming-matrix-as-a-2d-list" id="toc-dynamic-programming-matrix-as-a-2d-list" class="nav-link" data-scroll-target="#dynamic-programming-matrix-as-a-2d-list">Dynamic programming matrix as a 2D list</a></li>
-  <li><a href="#initializing-the-matrix" id="toc-initializing-the-matrix" class="nav-link" data-scroll-target="#initializing-the-matrix">Initializing the matrix</a></li>
-  <li><a href="#filling-the-matrix" id="toc-filling-the-matrix" class="nav-link" data-scroll-target="#filling-the-matrix">Filling the matrix</a></li>
+  <li><a href="#git" id="toc-git" class="nav-link" data-scroll-target="#git">Git</a></li>
+  <li><a href="#github" id="toc-github" class="nav-link" data-scroll-target="#github">GitHub</a></li>
   </ul></li>
-  <li><a href="#dictionaries-translating-sequences" id="toc-dictionaries-translating-sequences" class="nav-link" data-scroll-target="#dictionaries-translating-sequences">Dictionaries: Translating sequences</a>
+  <li><a href="#basic-concepts" id="toc-basic-concepts" class="nav-link" data-scroll-target="#basic-concepts">Basic Concepts</a>
   <ul class="collapse">
-  <li><a href="#using-dictionaries-to-translate-dna" id="toc-using-dictionaries-to-translate-dna" class="nav-link" data-scroll-target="#using-dictionaries-to-translate-dna">Using dictionaries to translate DNA</a></li>
-  <li><a href="#expanding-to-multiple-phases-frames" id="toc-expanding-to-multiple-phases-frames" class="nav-link" data-scroll-target="#expanding-to-multiple-phases-frames">Expanding to multiple phases (frames)</a></li>
-  <li><a href="#finding-coordinates-of-continuous-translations" id="toc-finding-coordinates-of-continuous-translations" class="nav-link" data-scroll-target="#finding-coordinates-of-continuous-translations">Finding coordinates of continuous translations</a></li>
-  <li><a href="#analyzing-all-translations-of-a-given-sequence" id="toc-analyzing-all-translations-of-a-given-sequence" class="nav-link" data-scroll-target="#analyzing-all-translations-of-a-given-sequence">Analyzing all translations of a given sequence</a></li>
+  <li><a href="#main-commands" id="toc-main-commands" class="nav-link" data-scroll-target="#main-commands">Main commands</a></li>
+  <li><a href="#branch-flow" id="toc-branch-flow" class="nav-link" data-scroll-target="#branch-flow">Branch flow</a></li>
   </ul></li>
+  <li><a href="#lets-try" id="toc-lets-try" class="nav-link" data-scroll-target="#lets-try">Let’s try</a>
+  <ul class="collapse">
+  <li><a href="#check-history-of-this-repo-using-git-log" id="toc-check-history-of-this-repo-using-git-log" class="nav-link" data-scroll-target="#check-history-of-this-repo-using-git-log">Check history of this repo using <code>git log</code></a></li>
+  <li><a href="#check-status-of-the-repo" id="toc-check-status-of-the-repo" class="nav-link" data-scroll-target="#check-status-of-the-repo">Check status of the repo</a></li>
+  <li><a href="#lets-change-and-stage-a-file" id="toc-lets-change-and-stage-a-file" class="nav-link" data-scroll-target="#lets-change-and-stage-a-file">Let’s change and stage a file</a></li>
+  <li><a href="#oops-git-reset" id="toc-oops-git-reset" class="nav-link" data-scroll-target="#oops-git-reset">Oops: <code>git reset</code></a></li>
+  <li><a href="#lets-stage-and-commit" id="toc-lets-stage-and-commit" class="nav-link" data-scroll-target="#lets-stage-and-commit">Let’s stage and commit</a></li>
+  <li><a href="#oops-git-revert" id="toc-oops-git-revert" class="nav-link" data-scroll-target="#oops-git-revert">Oops: <code>git revert</code></a></li>
+  <li><a href="#lets-actually-make-changes-and-highlight-them-with-diff" id="toc-lets-actually-make-changes-and-highlight-them-with-diff" class="nav-link" data-scroll-target="#lets-actually-make-changes-and-highlight-them-with-diff">Let’s actually make changes and highlight them with diff</a></li>
+  <li><a href="#branches" id="toc-branches" class="nav-link" data-scroll-target="#branches">Branches</a>
+  <ul class="collapse">
+  <li><a href="#create-a-new-branch-and-switch-to-it" id="toc-create-a-new-branch-and-switch-to-it" class="nav-link" data-scroll-target="#create-a-new-branch-and-switch-to-it">Create a new branch and switch to it</a></li>
+  <li><a href="#make-changes" id="toc-make-changes" class="nav-link" data-scroll-target="#make-changes">Make changes</a></li>
+  <li><a href="#switch-to-another-branch-and-look-at-the-modified-file" id="toc-switch-to-another-branch-and-look-at-the-modified-file" class="nav-link" data-scroll-target="#switch-to-another-branch-and-look-at-the-modified-file">Switch to another branch and look at the modified file</a></li>
+  <li><a href="#merge-branches" id="toc-merge-branches" class="nav-link" data-scroll-target="#merge-branches">Merge branches</a></li>
+  <li><a href="#merging-with-conflicts" id="toc-merging-with-conflicts" class="nav-link" data-scroll-target="#merging-with-conflicts">Merging with conflicts</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#a-typical-github-workflow" id="toc-a-typical-github-workflow" class="nav-link" data-scroll-target="#a-typical-github-workflow">A typical GitHub workflow</a>
+  <ul class="collapse">
+  <li><a href="#the-steps" id="toc-the-steps" class="nav-link" data-scroll-target="#the-steps">The steps</a></li>
+  <li><a href="#high-level-flow" id="toc-high-level-flow" class="nav-link" data-scroll-target="#high-level-flow">High-level flow</a></li>
+  <li><a href="#where-things-live" id="toc-where-things-live" class="nav-link" data-scroll-target="#where-things-live">Where things live</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#for-thursday" id="toc-for-thursday" class="nav-link" data-scroll-target="#for-thursday">For Thursday!</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture9.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture9.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture9.html">9. Git and GitHub</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 9: Git and GitHub</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/colab/lectures/lecture9.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
-<figcaption>Open In Colab</figcaption>
-</figure>
-</div>
-<section id="lecture-9-file-io-in-pythonin-this-lecture-well-learn-how-to-read-and-write-files-in-python-focusing-on-common-bioinformatics-file-formats-fasta-fastq-and-sam." class="level1">
-<h1>Lecture 9: File I/O in PythonIn this lecture, we’ll learn how to read and write files in Python, focusing on common bioinformatics file formats: FASTA, FASTQ, and SAM.</h1>
-<section id="prep" class="level2">
-<h2 class="anchored" data-anchor-id="prep">Prep</h2>
-<ol type="1">
-<li>Start <a href="https://mybinder.org/v2/gh/jupyterlab/jupyterlab-demo/try.jupyter.org?urlpath=lab">JupyterLab</a></li>
-<li>Within JupyterLab start a new Python3 notebook</li>
-<li>Open <a href="http://cs1110.cs.cornell.edu/tutor/#mode=edit">this page</a> in a new browser tab</li>
-</ol>
-</section>
-</section>
-<section id="lists-dynamic-programming-in-sequence-alignment" class="level1">
-<h1>Lists: Dynamic programming in sequence alignment</h1>
-<section id="dynamic-programming-matrix-as-a-2d-list" class="level2">
-<h2 class="anchored" data-anchor-id="dynamic-programming-matrix-as-a-2d-list">Dynamic programming matrix as a 2D list</h2>
-<p>An excellent way to illustrate the utility of lists is to implement a dynamic programming algorithm for sequence alignment. Suppose we have two sequences that deliberately have different lengths:</p>
-<p><span class="math display">\[
-\texttt{G C T A T A C}
-\]</span></p>
-<p>and</p>
-<p><span class="math display">\[
-\texttt{G C G T A T G C}
-\]</span></p>
-<p>Let’s represent them as the following matrix where the first character <span class="math inline">\(\epsilon\)</span> represents an empty string:</p>
-<p><span class="math display">\[
-\begin{array}{ c | c | c | c | c | c | c}
-&amp; \epsilon &amp; G &amp; C &amp; T &amp; A &amp; T &amp; A &amp; C\\
-\hline
-\epsilon \\
-\hline
-G\\
-\hline
-C\\
-\hline
-G\\
-\hline
-T\\
-\hline
-A\\
-\hline
-T\\
-\hline
-G\\
-\hline
-C
-\end{array}
-\\
-\textbf{Note}: sequence\ \texttt{X}\ is\ vertical\ and\ sequence\ \texttt{Y}\ is\ horizontal.
-\]</span></p>
-<p>In this matrix, the cells are addressed as shown below. They filled in using the following logic:</p>
-<p><span class="math display">\[
-D[i,j] = min\begin{cases}
-          \color{green}{D[i-1,j] + 1} &amp; \\
-          \color{blue}{D[i,j-1] + 1} &amp; \\
-          \color{red}{D[i-1,j-1] + \delta(x[i-1],y[j-1])}
-             \end{cases}
-\]</span></p>
-<p>where <span class="math inline">\(\color{green}{green}\)</span> is <em>upper</em> cell, <span class="math inline">\(\color{blue}{blue}\)</span> is <em>left</em> cell, and <span class="math inline">\(\color{red}{red}\)</span> is <em>upper-left</em> cell.</p>
-</section>
-<section id="initializing-the-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="initializing-the-matrix">Initializing the matrix</h2>
-<p>Let’s initialize the first column and first row of the matrix. Because the distance between a string and an empty string is equal to the length of the string (e.g., a distance between, say, string <span class="math inline">\(\texttt{TCG}\)</span> and an empty string is 3) this resulting matrix will look like this:</p>
-<p><span class="math display">\[
-\begin{array}{ c | c | c | c | c | c | c}
-&amp; \epsilon &amp; G &amp; C &amp; T &amp; A &amp; T &amp; A &amp; C\\
-            \hline
-          \epsilon &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 &amp; 6 &amp; 7\\
-          \hline
-          G &amp; 1\\
-          \hline
-          C &amp; 2\\
-          \hline
-          G &amp; 3\\
-          \hline
-          T &amp; 4\\
-          \hline
-          A &amp; 5\\
-          \hline
-          T &amp; 6\\
-          \hline
-          G &amp; 7\\
-          \hline
-          C &amp; 8
-\end{array}
-\\
-\textbf{Note}: sequence\ \texttt{X}\ is\ vertical\ and\ sequence\ \texttt{Y}\ is\ horizontal.
-\]</span></p>
-<p>This can be achieved with the following code:</p>
-<div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.003255Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.003177Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.032510Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.032126Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="st">'GCGTATGC'</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="st">'GCTATAC'</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.zeros((<span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>D[<span class="dv">0</span>, <span class="dv">1</span>:] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>D[<span class="dv">1</span>:, <span class="dv">0</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(D)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="filling-the-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="filling-the-matrix">Filling the matrix</h2>
-<p>Now we can fill the entire matrix by using two nested loops: one iterating over <span class="math inline">\(i\)</span> coordinate (sequence <span class="math inline">\(x\)</span>) and the other iterating over <span class="math inline">\(j\)</span> coordinate (sequence <span class="math inline">\(y\)</span>):</p>
-<div id="cell-7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.033634Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.033551Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.035439Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.035139Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>):</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        delta <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> x[i<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> y[j<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        D[i, j] <span class="op">=</span> <span class="bu">min</span>(D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>]<span class="op">+</span>delta, D[i<span class="op">-</span><span class="dv">1</span>, j]<span class="op">+</span><span class="dv">1</span>, D[i, j<span class="op">-</span><span class="dv">1</span>]<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(D)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>The lower rightmost cell is special. It contains the value for the edit distance between the two strings.</p>
-<p>The following Python script implements this idea as a function:</p>
-<div id="cell-9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.036286Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.036229Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.038100Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.037809Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> edDistDp(x, y):</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Calculate edit distance between sequences x and y using</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">        matrix dynamic programming.  Return matrix and distance. """</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> np.zeros((<span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    D[<span class="dv">0</span>, <span class="dv">1</span>:] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    D[<span class="dv">1</span>:, <span class="dv">0</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x)<span class="op">+</span><span class="dv">1</span>):</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y)<span class="op">+</span><span class="dv">1</span>):</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            delta <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> x[i<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> y[j<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            D[i, j] <span class="op">=</span> <span class="bu">min</span>(D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>]<span class="op">+</span>delta, D[i<span class="op">-</span><span class="dv">1</span>, j]<span class="op">+</span><span class="dv">1</span>, D[i, j<span class="op">-</span><span class="dv">1</span>]<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> D, D[<span class="bu">len</span>(x), <span class="bu">len</span>(y)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-10" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.038889Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.038827Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.040392Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.040160Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test the function</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>D, distance <span class="op">=</span> edDistDp(<span class="st">'GCGTATGC'</span>, <span class="st">'GCTATAC'</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Edit distance: </span><span class="sc">{</span>distance<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(D)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>A graphical representation of the matrix between <code>GCGTATGCACGC</code> and <code>GCTATGCCACGC</code> looks like this:</p>
-<div id="cell-12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.041200Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.041132Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.455131Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.453495Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>D, distance <span class="op">=</span> edDistDp(<span class="st">'GCGTATGCACGC'</span>, <span class="st">'GCTATGCCACGC'</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>sns.heatmap(D, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">"crest"</span>, fmt<span class="op">=</span><span class="st">'d'</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'Edit Distance Matrix (distance = </span><span class="sc">{</span>distance<span class="sc">}</span><span class="ss">)'</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="dictionaries-translating-sequences" class="level1">
-<h1>Dictionaries: Translating sequences</h1>
-<p>Perhaps the best way to demonstrate the utility of dictionaries is by using DNA-to-Protein translation as an example.</p>
-<section id="using-dictionaries-to-translate-dna" class="level2">
-<h2 class="anchored" data-anchor-id="using-dictionaries-to-translate-dna">Using dictionaries to translate DNA</h2>
-<p>The genetic code maps codons (triplets of nucleotides) to amino acids. We define it once as a constant that can be reused across all our translation functions:</p>
-<div id="cell-14" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.459997Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.459294Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.465024Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.464361Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the genetic code as a constant (codon -&gt; amino acid)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>GENETIC_CODE <span class="op">=</span> {</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ATA'</span>:<span class="st">'I'</span>, <span class="st">'ATC'</span>:<span class="st">'I'</span>, <span class="st">'ATT'</span>:<span class="st">'I'</span>, <span class="st">'ATG'</span>:<span class="st">'M'</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ACA'</span>:<span class="st">'T'</span>, <span class="st">'ACC'</span>:<span class="st">'T'</span>, <span class="st">'ACG'</span>:<span class="st">'T'</span>, <span class="st">'ACT'</span>:<span class="st">'T'</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'AAC'</span>:<span class="st">'N'</span>, <span class="st">'AAT'</span>:<span class="st">'N'</span>, <span class="st">'AAA'</span>:<span class="st">'K'</span>, <span class="st">'AAG'</span>:<span class="st">'K'</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'AGC'</span>:<span class="st">'S'</span>, <span class="st">'AGT'</span>:<span class="st">'S'</span>, <span class="st">'AGA'</span>:<span class="st">'R'</span>, <span class="st">'AGG'</span>:<span class="st">'R'</span>,                </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'CTA'</span>:<span class="st">'L'</span>, <span class="st">'CTC'</span>:<span class="st">'L'</span>, <span class="st">'CTG'</span>:<span class="st">'L'</span>, <span class="st">'CTT'</span>:<span class="st">'L'</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'CCA'</span>:<span class="st">'P'</span>, <span class="st">'CCC'</span>:<span class="st">'P'</span>, <span class="st">'CCG'</span>:<span class="st">'P'</span>, <span class="st">'CCT'</span>:<span class="st">'P'</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'CAC'</span>:<span class="st">'H'</span>, <span class="st">'CAT'</span>:<span class="st">'H'</span>, <span class="st">'CAA'</span>:<span class="st">'Q'</span>, <span class="st">'CAG'</span>:<span class="st">'Q'</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'CGA'</span>:<span class="st">'R'</span>, <span class="st">'CGC'</span>:<span class="st">'R'</span>, <span class="st">'CGG'</span>:<span class="st">'R'</span>, <span class="st">'CGT'</span>:<span class="st">'R'</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'GTA'</span>:<span class="st">'V'</span>, <span class="st">'GTC'</span>:<span class="st">'V'</span>, <span class="st">'GTG'</span>:<span class="st">'V'</span>, <span class="st">'GTT'</span>:<span class="st">'V'</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'GCA'</span>:<span class="st">'A'</span>, <span class="st">'GCC'</span>:<span class="st">'A'</span>, <span class="st">'GCG'</span>:<span class="st">'A'</span>, <span class="st">'GCT'</span>:<span class="st">'A'</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'GAC'</span>:<span class="st">'D'</span>, <span class="st">'GAT'</span>:<span class="st">'D'</span>, <span class="st">'GAA'</span>:<span class="st">'E'</span>, <span class="st">'GAG'</span>:<span class="st">'E'</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'GGA'</span>:<span class="st">'G'</span>, <span class="st">'GGC'</span>:<span class="st">'G'</span>, <span class="st">'GGG'</span>:<span class="st">'G'</span>, <span class="st">'GGT'</span>:<span class="st">'G'</span>,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'TCA'</span>:<span class="st">'S'</span>, <span class="st">'TCC'</span>:<span class="st">'S'</span>, <span class="st">'TCG'</span>:<span class="st">'S'</span>, <span class="st">'TCT'</span>:<span class="st">'S'</span>,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'TTC'</span>:<span class="st">'F'</span>, <span class="st">'TTT'</span>:<span class="st">'F'</span>, <span class="st">'TTA'</span>:<span class="st">'L'</span>, <span class="st">'TTG'</span>:<span class="st">'L'</span>,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'TAC'</span>:<span class="st">'Y'</span>, <span class="st">'TAT'</span>:<span class="st">'Y'</span>, <span class="st">'TAA'</span>:<span class="st">'_'</span>, <span class="st">'TAG'</span>:<span class="st">'_'</span>,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'TGC'</span>:<span class="st">'C'</span>, <span class="st">'TGT'</span>:<span class="st">'C'</span>, <span class="st">'TGA'</span>:<span class="st">'_'</span>, <span class="st">'TGG'</span>:<span class="st">'W'</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Let’s generate a random DNA sequence:</p>
-<div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.466479Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.466404Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.469343Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.468973Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>seq <span class="op">=</span> <span class="st">""</span>.join([random.choice(<span class="st">'atcg'</span>) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)])</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>seq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>To translate this sequence we write a code that uses a <code>for</code> loop that iterates over the DNA sequence in steps of 3, creating a codon at each iteration. If the codon is less than 3 letters long, the loop is broken. The resulting amino acid is then added to the <code>translation</code> string:</p>
-<div id="cell-18" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.470332Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.470253Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.473576Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.473155Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>translation <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(seq), <span class="dv">3</span>):</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    codon <span class="op">=</span> seq[i:i<span class="op">+</span><span class="dv">3</span>].upper()</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(codon) <span class="op">&lt;</span> <span class="dv">3</span>: <span class="cf">break</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> codon <span class="kw">in</span> GENETIC_CODE:</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        translation <span class="op">+=</span> GENETIC_CODE[codon]</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        translation <span class="op">+=</span> <span class="st">"X"</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Translation:"</span>, translation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Note that the code uses the <code>upper()</code> method to ensure the codon is in uppercase since the table dictionary is case-sensitive. Additionally, the code checks if the codon is in the table dictionary and if not, it adds the letter “X” to the translation. This is a common way to represent unknown or stop codons in a protein sequence.</p>
-<p>Now we define a function that would perform translation so that we can reuse it later:</p>
-<div id="cell-20" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.475161Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.474914Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.478797Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.477817Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translate(seq):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Translate a DNA sequence to protein using the standard genetic code."""</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    translation <span class="op">=</span> <span class="st">''</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(seq), <span class="dv">3</span>):</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        codon <span class="op">=</span> seq[i:i<span class="op">+</span><span class="dv">3</span>].upper()</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(codon) <span class="op">&lt;</span> <span class="dv">3</span>: <span class="cf">break</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> codon <span class="kw">in</span> GENETIC_CODE:</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            translation <span class="op">+=</span> GENETIC_CODE[codon]</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            translation <span class="op">+=</span> <span class="st">"X"</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> translation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.480026Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.479947Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.483625Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.483269Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>translate(seq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="expanding-to-multiple-phases-frames" class="level2">
-<h2 class="anchored" data-anchor-id="expanding-to-multiple-phases-frames">Expanding to multiple phases (frames)</h2>
-<p>We can further modify the function by adding a <code>phase</code> parameter that would allow translating in any of the three phases:</p>
-<div id="cell-23" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.484894Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.484817Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.486694Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.486419Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translate_phase(seq, phase):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Translate a DNA sequence to protein starting at a given phase (0, 1, or 2)."""</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="dv">0</span> <span class="op">&lt;=</span> phase <span class="op">&lt;=</span> <span class="dv">2</span>, <span class="ss">f"Phase must be 0, 1, or 2, got </span><span class="sc">{</span>phase<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    translation <span class="op">=</span> <span class="st">''</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(phase, <span class="bu">len</span>(seq), <span class="dv">3</span>):</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        codon <span class="op">=</span> seq[i:i<span class="op">+</span><span class="dv">3</span>].upper()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(codon) <span class="op">&lt;</span> <span class="dv">3</span>: <span class="cf">break</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> codon <span class="kw">in</span> GENETIC_CODE:</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>            translation <span class="op">+=</span> GENETIC_CODE[codon]</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>            translation <span class="op">+=</span> <span class="st">"X"</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> translation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-24" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.487965Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.487909Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.489632Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.489335Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>translate_phase(seq, <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-25" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.490426Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.490342Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.492148Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.491906Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>translate_phase(seq, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-26" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.492999Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.492943Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.494595Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.494352Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>translate_phase(seq, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>To translate in all six reading frames (three of the “+” strand and three of the “-” strand) we need to be able to create a reverse complement of the sequence. Let’s write a simple function for that.</p>
-<p>The cell below implements a function <code>revcomp</code> that takes a DNA sequence as input and returns its reverse complement. It works by first reversing the sequence using the slice notation <code>seq[::-1]</code>, which returns the sequence in reverse order. Then, the <code>translate</code> method is used with the <code>str.maketrans</code> function to replace each occurrence of ‘a’, ‘t’, ‘g’, ‘c’, ‘A’, ‘T’, ‘G’, and ‘C’ in the reversed sequence with ‘t’, ‘a’, ‘c’, ‘g’, ‘T’, ‘A’, ‘C’, and ‘G’, respectively:</p>
-<div id="cell-28" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.495678Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.495622Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.497246Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.496918Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-compute the complement translation table for efficiency</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>_COMPLEMENT_TABLE <span class="op">=</span> <span class="bu">str</span>.maketrans(<span class="st">'atgcATGC'</span>, <span class="st">'tacgTACG'</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> revcomp(seq):</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the reverse complement of a DNA sequence."""</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> seq[::<span class="op">-</span><span class="dv">1</span>].translate(_COMPLEMENT_TABLE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now let’s use this function to create translation in all six reading frames. The cell below uses a <code>for</code> loop that iterates over the range <code>(0, 3)</code>, representing the different phases (or starting positions) of the translation. At each iteration, the <code>translate_phase</code> function is called with the DNA sequence and the current phase, and the resulting protein sequence is appended to the <code>translations</code> list along with the <code>phase</code> and the <code>strand</code> orientation (+ or -):</p>
-<div id="cell-30" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.498086Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.498033Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.499952Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.499724Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>translations <span class="op">=</span> []</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">3</span>):</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    translations.append((translate_phase(seq,i),<span class="bu">str</span>(i),<span class="st">'+'</span>))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    translations.append((translate_phase(revcomp(seq),i),<span class="bu">str</span>(i),<span class="st">'-'</span>))</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>translations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="finding-coordinates-of-continuous-translations" class="level2">
-<h2 class="anchored" data-anchor-id="finding-coordinates-of-continuous-translations">Finding coordinates of continuous translations</h2>
-<p>The translation we’ve generated above contains stops (e.g., <code>_</code> symbols). The actual biologically relevant protein sequences are between stops. We now need to split translation strings into meaningful peptide sequences and compute their coordinates. Let’s begin by splitting a string on <code>_</code> and computing the start and end positions of each peptide:</p>
-<div id="cell-32" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.500870Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.500778Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.502760Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.502449Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>string <span class="op">=</span> <span class="st">"aadsds_dsds_dsds"</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>split_indices <span class="op">=</span> []</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(string):</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> char <span class="op">==</span> <span class="st">"_"</span>:</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        split_indices.append(i)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(split_indices)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>The code above generates a list of split indices for a string. The list contains the indices of the characters in the string that match a specified character (in this case, the underscore <code>_</code> character).</p>
-<p>But we actually need coordinates of peptides bound by <code>_</code> characters. To get to this let’s first modify <code>split_indices</code> by adding the beginning and end:</p>
-<div id="cell-34" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.504235Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.504159Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.506133Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.505636Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>string <span class="op">=</span> <span class="st">"aadsds_dsds_dsds"</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>split_indices <span class="op">=</span> []</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(string):</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> char <span class="op">==</span> <span class="st">"_"</span>:</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        split_indices.append(i)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>split_indices.insert(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>split_indices.append(<span class="bu">len</span>(string))</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(split_indices)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now, let’s convert these to ranges and also stick the peptide sequence in:</p>
-<div id="cell-36" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.507480Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.507422Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.509249Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.508971Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>string <span class="op">=</span> <span class="st">"aadsds_dsds_dsds"</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>split_indices <span class="op">=</span> []</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(string):</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> char <span class="op">==</span> <span class="st">"_"</span>:</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        split_indices.append(i)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>split_indices.insert(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>split_indices.append(<span class="bu">len</span>(string))</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>orfs <span class="op">=</span> string.split(<span class="st">'_'</span>)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>parts <span class="op">=</span> []</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(split_indices)<span class="op">-</span><span class="dv">1</span>):</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    parts.append((orfs[i], split_indices[i]<span class="op">+</span><span class="dv">1</span>, split_indices[i<span class="op">+</span><span class="dv">1</span>]))</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(parts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now let’s convert this to function:</p>
-<div id="cell-38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.510086Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.510030Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.511701Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.511403Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_coords(translation):</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    split_indices <span class="op">=</span> []</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(translation):</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> char <span class="op">==</span> <span class="st">"_"</span>:</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            split_indices.append(i)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    split_indices.insert(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    split_indices.append(<span class="bu">len</span>(translation))</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> []</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(split_indices)<span class="op">-</span><span class="dv">1</span>):</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        parts.append((translation.split(<span class="st">'_'</span>)[i], split_indices[i] <span class="op">+</span> <span class="dv">1</span>, split_indices[i <span class="op">+</span> <span class="dv">1</span>]))</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(parts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-39" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.512428Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.512377Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.513917Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.513693Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>extract_coords(string)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>And specify the right parameters to make it truly generic:</p>
-<div id="cell-41" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.515121Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.515059Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.517007Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.516735Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_coords_with_annotation(separator, translation, phase, strand):</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    split_indices <span class="op">=</span> []</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, char <span class="kw">in</span> <span class="bu">enumerate</span>(translation):</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> char <span class="op">==</span> separator:</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>            split_indices.append(i)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    split_indices.insert(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    split_indices.append(<span class="bu">len</span>(translation))</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> []</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(split_indices)<span class="op">-</span><span class="dv">1</span>):</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        parts.append((translation.split(separator)[i], phase, strand, split_indices[i]<span class="op">+</span><span class="dv">1</span>, split_indices[i<span class="op">+</span><span class="dv">1</span>]))</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(parts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-42" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.517943Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.517889Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.519716Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.519426Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>extract_coords_with_annotation(<span class="st">'_'</span>, string, <span class="st">'0'</span>, <span class="st">'+'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="analyzing-all-translations-of-a-given-sequence" class="level2">
-<h2 class="anchored" data-anchor-id="analyzing-all-translations-of-a-given-sequence">Analyzing all translations of a given sequence</h2>
-<p>We begin by parsing the <code>translations</code> list we defined above:</p>
-<div id="cell-44" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.520524Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.520469Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.523822Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.523549Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>all_translations <span class="op">=</span> []</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> translations:</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    all_translations.append(extract_coords_with_annotation(<span class="st">'_'</span>, item[<span class="dv">0</span>], item[<span class="dv">1</span>], item[<span class="dv">2</span>]))</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>all_translations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now the problem with this list is that it is nested. However, we need to make it flat:</p>
-<div id="cell-46" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.524961Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.524887Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.527154Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.526888Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>flat_list <span class="op">=</span> []</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sublist <span class="kw">in</span> all_translations:</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> item <span class="kw">in</span> sublist:</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        flat_list.append(item)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>flat_list</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now we can load the list into <code>Pandas</code> and plot away:</p>
-<div id="cell-48" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.527967Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.527919Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:40.532579Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:40.532287Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(flat_list, columns<span class="op">=</span>[<span class="st">'aa'</span>, <span class="st">'frame'</span>, <span class="st">'strand'</span>, <span class="st">'start'</span>, <span class="st">'end'</span>])</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Now let’s plot it:</p>
-<div id="cell-50" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-01-07T18:42:40.533594Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-01-07T18:42:40.533538Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-01-07T18:42:41.032106Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-01-07T18:42:41.031501Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>plus <span class="op">=</span> alt.Chart(df[df[<span class="st">'strand'</span>]<span class="op">==</span><span class="st">'+'</span>]).mark_rect().encode(</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> alt.X(<span class="st">'start:Q'</span>),</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">=</span> alt.X2(<span class="st">'end:Q'</span>),</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> alt.Y(<span class="st">'frame:N'</span>),</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'frame'</span>,</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    tooltip<span class="op">=</span><span class="st">'aa:N'</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">600</span>,</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">100</span>,</span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Plus strand'</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>minus <span class="op">=</span> alt.Chart(df[df[<span class="st">'strand'</span>]<span class="op">==</span><span class="st">'-'</span>]).mark_rect().encode(</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> alt.X(<span class="st">'start:Q'</span>, sort<span class="op">=</span>alt.EncodingSortField(<span class="st">'start:Q'</span>, order<span class="op">=</span><span class="st">'descending'</span>)),</span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">=</span> alt.X2(<span class="st">'end:Q'</span>),</span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> alt.Y(<span class="st">'frame:N'</span>),</span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'frame'</span>,</span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    tooltip<span class="op">=</span><span class="st">'aa:N'</span></span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>).properties(</span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">600</span>,</span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">100</span>,</span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'Minus strand'</span></span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>plus <span class="op">&amp;</span> minus</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+    
+  
+    
+  </div>
+  
 
 
+</header>
+
+
+<p><a href="https://xkcd.com/1597/"><img src="../images/git/xkcd_git.png" class="img-fluid"></a></p>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<p>Go through steps below so we can begin.</p>
+<section id="fork-a-github-repo" class="level2">
+<h2 class="anchored" data-anchor-id="fork-a-github-repo">Fork a GitHub repo</h2>
+<p>1. Navigate to <a href="https://github.com/">https://github.com/</a></p>
+<p><img src="../images/git/github_homepage.jpeg" class="img-fluid"></p>
+<p>2. Click “Sign in”</p>
+<p><img src="../images/git/sign_in.jpeg" class="img-fluid"></p>
+<p>3. Click the “Username or email address” field.</p>
+<p><img src="../images/git/username_field.jpeg" class="img-fluid"></p>
+<p>4. Switch to http://github.com/nekrut/bmmb554_foo_bar</p>
+<p>Paste the following URL to the browser address field:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-copy="true"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>http://github.com/nekrut/bmmb554_foo_bar</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>5. Click “Fork”</p>
+<p><img src="../images/git/click_fork.jpeg" class="img-fluid"></p>
+<p>6. Navigate to your newly created fork</p>
+<p><img src="../images/git/navigate_fork.jpeg" class="img-fluid"></p>
+<p>7. Click “Code”</p>
+<p><img src="../images/git/click_code.jpeg" class="img-fluid"></p>
+<p>8. Click “Codespaces”</p>
+<p><img src="../images/git/click_codespaces.jpeg" class="img-fluid"></p>
+<p>9. Click “+”.</p>
+<p><img src="../images/git/click_plus.jpeg" class="img-fluid"></p>
 </section>
+</section>
+<section id="git-versus-github" class="level1">
+<h1>Git versus GitHub</h1>
+<ul>
+<li>Git - version control system</li>
+<li>GitHub - hosting service</li>
+</ul>
+</section>
+<section id="git-resources" class="level1">
+<h1>Git resources</h1>
+<ul>
+<li><a href="https://git-scm.com/book/en/v2">The Git Book</a></li>
+<li>Troubleshooting <a href="https://dangitgit.com/en"><img src="https://img.shields.io/badge/rating-PG--13-blue.png" class="img-fluid"></a> <a href="https://ohshitgit.com/"><img src="https://img.shields.io/badge/rating-R-red.png" class="img-fluid"></a></li>
+</ul>
+</section>
+<section id="version-control" class="level1">
+<h1>Version control</h1>
+<ul>
+<li>Manages changes over time</li>
+<li>Enables collaboration</li>
+<li>Provides complete history</li>
+</ul>
+<p>You already use version control—you just don’t call it that:</p>
+<ul>
+<li><strong>Google Docs version history</strong> — every edit is saved with a timestamp and author; you can view or restore any past version → <em>commit history &amp; revert</em></li>
+<li><strong>Suggesting mode in Google Docs</strong> — proposed edits that a collaborator reviews and accepts or rejects → <em>pull requests &amp; code review</em></li>
+<li><strong>Track Changes in Word</strong> — redline markup showing insertions and deletions → <em><code>git diff</code></em></li>
+<li><strong>Saving a video game</strong> — checkpoint your progress so you can reload if things go wrong → <em>commits as snapshots</em></li>
+<li><strong>Wikipedia edit history</strong> — every revision is logged; vandalism can be rolled back instantly → <em>audit trail &amp; revert</em></li>
+</ul>
+</section>
+<section id="history" class="level1">
+<h1>History</h1>
+<section id="git" class="level2">
+<h2 class="anchored" data-anchor-id="git">Git</h2>
+<p>Early version control systems like <strong>CVS</strong> (Concurrent Versions System) and <strong>SVN</strong> (Subversion) were <em>centralized</em>—all version history lived on a single server, and developers needed a network connection for most operations. This created bottlenecks and a single point of failure, especially for large projects with many contributors.</p>
+<p>The word “git” is British slang for a stupid or unpleasant person. Torvalds joked about the name:</p>
+<blockquote class="blockquote">
+<p>“I’m an egotistical bastard, and I name all my projects after myself. First ‘Linux’, now ‘git’.”</p>
+</blockquote>
+<p>The project’s original README offered additional readings: “global information tracker” when things work, and “goddamn idiotic truckload of sh*t” when they don’t.</p>
+<p>Linus Torvalds created Git in April 2005 after a licensing dispute forced the Linux kernel project to stop using BitKeeper, a proprietary <em>distributed</em> version control system the project had relied on since 2002. Torvalds designed Git to be fast, fully distributed, and capable of handling massive non-linear development—thousands of parallel branches merging constantly. Development moved remarkably quickly: Git became self-hosting within a day of its announcement, and by June 2005 it managed the Linux kernel 2.6.12 release. Torvalds handed maintenance to Junio Hamano in July 2005, who shipped the 1.0 release that December and continues to maintain the project today.</p>
+<p>Sources: <a href="https://en.wikipedia.org/wiki/Git">Git — Wikipedia</a> | <a href="https://git-scm.com/book/en/v2/Getting-Started-A-Short-History-of-Git">A Short History of Git</a> | <a href="https://blogboard.io/blog/knowledge/what-does-git-stand-for/">What does git stand for?</a></p>
+</section>
+<section id="github" class="level2">
+<h2 class="anchored" data-anchor-id="github">GitHub</h2>
+<p>Tom Preston-Werner, Chris Wanstrath, and PJ Hyett began building GitHub in late 2007 and launched a public beta in April 2008. The platform provided a web-based interface for Git repositories along with features like pull requests, issue tracking, and user profiles—making collaboration far more accessible than raw Git alone. Growth was rapid: by 2009 GitHub had over 100,000 users, and by 2011 it surpassed SourceForge and Google Code to become the largest code hosting service. Microsoft acquired GitHub in June 2018 for $7.5 billion, and the platform now hosts over 200 million repositories.</p>
+<p>Sources: <a href="https://en.wikipedia.org/wiki/GitHub">GitHub — Wikipedia</a> | <a href="https://nira.com/github-history/">How GitHub Democratized Coding and Found a New Home at Microsoft</a></p>
+</section>
+</section>
+<section id="basic-concepts" class="level1">
+<h1>Basic Concepts</h1>
+<section id="main-commands" class="level2">
+<h2 class="anchored" data-anchor-id="main-commands">Main commands</h2>
+<p><img src="../images/git/git_commands.png" class="img-fluid"> &gt; From tutorials by <a href="https://www.kylebradbury.org/index.html">Kyle Bradbury</a></p>
+</section>
+<section id="branch-flow" class="level2">
+<h2 class="anchored" data-anchor-id="branch-flow">Branch flow</h2>
+<p><img src="../images/git/branch_flow.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>From <a href="https://gitbetter.substack.com/p/how-to-work-in-multiple-git-branches">GitBetter</a></p>
+</blockquote>
+</section>
+</section>
+<section id="lets-try" class="level1">
+<h1>Let’s try</h1>
+<p>Switch to your GitHub code space that you started, and use examples below.</p>
+<section id="check-history-of-this-repo-using-git-log" class="level2">
+<h2 class="anchored" data-anchor-id="check-history-of-this-repo-using-git-log">Check history of this repo using <code>git log</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>commit de89f51d8e124665713f6fd94cd46447d172033b (HEAD -&gt; main, origin/main, origin/HEAD)
+Author: Anton Nekrutenko &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 08:02:50 2023 -0500
+
+    Create file2.txt
+
+commit bc3e5c4a9d54203739bb90f29d92e20082b9e5d4
+Author: Anton Nekrutenko &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 08:02:25 2023 -0500
+
+    Create file1.txt
+
+commit 99dd43783be37b08c1ca80cdc881eae537526396
+Author: Anton Nekrutenko &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 08:00:34 2023 -0500
+
+    Updated readme
+
+commit 18ebdabfe6f92f33ea626994ce6c9998cbe63522
+Author: Anton Nekrutenko &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 07:59:46 2023 -0500
+
+    Initial commit</code></pre>
+</section>
+<section id="check-status-of-the-repo" class="level2">
+<h2 class="anchored" data-anchor-id="check-status-of-the-repo">Check status of the repo</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean</code></pre>
+</section>
+<section id="lets-change-and-stage-a-file" class="level2">
+<h2 class="anchored" data-anchor-id="lets-change-and-stage-a-file">Let’s change and stage a file</h2>
+<p>Use editor to modify <code>file1.txt</code>. Once it is saved, we can see what is happening by using <code>git status</code> again:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+        modified:   file1.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
+<p>You can see that the file is modified but <em>not staged</em>. To stage it for commit you need to explicitly add it to staging:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you run <code>git status</code> now you will get:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git reset HEAD &lt;file&gt;..." to unstage)
+
+        modified:   file1.txt</code></pre>
+</section>
+<section id="oops-git-reset" class="level2">
+<h2 class="anchored" data-anchor-id="oops-git-reset">Oops: <code>git reset</code></h2>
+<p>Running <code>git reset</code> will restore the <em>status quo</em> as it was prior to <code>git add</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Unstaged changes after reset:
+M       file1.txt</code></pre>
+<p>and <code>git status</code> will look as it did prior to <code>git add</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+        modified:   file1.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
+</section>
+<section id="lets-stage-and-commit" class="level2">
+<h2 class="anchored" data-anchor-id="lets-stage-and-commit">Let’s stage and commit</h2>
+<p>If you are indeed ready to go ahead let’s <code>add</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and <code>commit</code></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'modified file1'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>[main 476adb7] modified file1
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+<p>If you run <code>git log</code> you will see this additional commit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>commit 476adb7b64a9330199fea13ca2e7523f7fe90189 (HEAD -&gt; main)
+Author: nekrut &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 13:23:24 2023 +0000
+
+    modified file1</code></pre>
+<p>or alternatively you can use <code>--oneline</code> flag:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>476adb7 (HEAD -&gt; main) modified file1
+de89f51 (origin/main, origin/HEAD) Create file2.txt
+bc3e5c4 Create file1.txt
+99dd437 Updated readme
+18ebdab Initial commit</code></pre>
+</section>
+<section id="oops-git-revert" class="level2">
+<h2 class="anchored" data-anchor-id="oops-git-revert">Oops: <code>git revert</code></h2>
+<p>To roll everything back you can do this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert 476adb7</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>[main 1f13d5f] Revert "modified file1"
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+<p>In Codespaces, this opens a <code>COMMIT_EDITMSG</code> tab in VS Code with a pre-filled revert message. Edit the message if needed, save (<kbd>Ctrl</kbd>+<kbd>S</kbd>), and close the tab to complete the commit.</p>
+<p>Now, let’s look at the log (showing just two last commits):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>commit 1f13d5fcf38057db9a90066b99aa475a6eeb1bae (HEAD -&gt; main)
+Author: nekrut &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 13:31:24 2023 +0000
+
+    Revert "modified file1"
+
+    This reverts commit 476adb7b64a9330199fea13ca2e7523f7fe90189.
+
+commit 476adb7b64a9330199fea13ca2e7523f7fe90189
+Author: nekrut &lt;anekrut@gmail.com&gt;
+Date:   Tue Feb 21 13:23:24 2023 +0000
+
+    modified file1</code></pre>
+</section>
+<section id="lets-actually-make-changes-and-highlight-them-with-diff" class="level2">
+<h2 class="anchored" data-anchor-id="lets-actually-make-changes-and-highlight-them-with-diff">Let’s actually make changes and highlight them with diff</h2>
+<p>First, let’s modify, say, <code>file2.txt</code> by adding a line. In this example I modified it from:</p>
+<pre><code>This
+is
+another
+file
+I've
+made</code></pre>
+<p>to</p>
+<pre><code>This
+is
+file2
+I've
+made</code></pre>
+<p>Now <code>add</code> and <code>commit</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+        modified:   file2.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file2.txt</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'changed file2'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>[main a947686] changed file2
+ 1 file changed, 1 insertion(+), 2 deletions(-)</code></pre>
+<p>Let’s now compare the changes between two commits:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff a947686 1f13d5f</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>diff --git a/file2.txt b/file2.txt
+index 1f383ac..e13e461 100644
+--- a/file2.txt
++++ b/file2.txt
+@@ -1,5 +1,6 @@
+ This
+ is
+-file2
++another
++file
+ I've
+ made</code></pre>
+<p>here:</p>
+<ul>
+<li><code>a</code> and <code>b</code> = tags of files being compared</li>
+<li><code>---</code> and <code>+++</code> marked to indicate differences between <code>a</code> and <code>b</code></li>
+<li><code>@@ -1,5 +1,6 @@</code> file chunk header which has the following format:
+<ul>
+<li><code>@@ [file a range][file b range] @@</code></li>
+<li>File ranges are: <code>&lt;start line&gt;&lt;number of lines&gt;</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="branches" class="level2">
+<h2 class="anchored" data-anchor-id="branches">Branches</h2>
+<p><img src="../images/git/branch_flow.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>From <a href="https://gitbetter.substack.com/p/how-to-work-in-multiple-git-branches">GitBetter</a></p>
+</blockquote>
+<p>To enable collaborations and to give the ability to develop major features without disrupting production (<code>master</code> or <code>main</code>) branch Git allows creation of multiple branches.</p>
+<section id="create-a-new-branch-and-switch-to-it" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-new-branch-and-switch-to-it">Create a new branch and switch to it</h3>
+<p>Let’s create branch dev:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>to see existing branches:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>  dev
+* main</code></pre>
+<p>The <code>main</code> branch is active (tagged with <code>*</code>). To actually switch branches:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Switched to branch 'dev'</code></pre>
+</section>
+<section id="make-changes" class="level3">
+<h3 class="anchored" data-anchor-id="make-changes">Make changes</h3>
+<p>Let’s make some changes, say, to <code>file1.txt</code> from this:</p>
+<pre><code>This
+is
+a
+file</code></pre>
+<p>to this:</p>
+<pre><code>This
+is
+a
+file1</code></pre>
+<p>and then get <code>status</code>, <code>add</code>, and <code>commit</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>On branch dev
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+        modified:   file1.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'changes to file1.txt'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>[dev 05ce64d] changes to file1.txt
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+</section>
+<section id="switch-to-another-branch-and-look-at-the-modified-file" class="level3">
+<h3 class="anchored" data-anchor-id="switch-to-another-branch-and-look-at-the-modified-file">Switch to another branch and look at the modified file</h3>
+<p>If we switch back to <code>main</code> and look at the content of <code>file1.txt</code> we will see the “old” content:</p>
+<pre><code>This
+is
+a
+file</code></pre>
+</section>
+<section id="merge-branches" class="level3">
+<h3 class="anchored" data-anchor-id="merge-branches">Merge branches</h3>
+<p>To incorporate changes from <code>dev</code> into <code>main</code> we need to do a merge:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge dev main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Updating a947686..05ce64d
+Fast-forward
+ file1.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+<p>and if we look at <code>file1.txt</code> again we will see the change:</p>
+<p>$ more file1.txt This is a file1</p>
+<p>We can now delete the branch:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-d</span> dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Deleted branch dev (was 05ce64d).</code></pre>
+</section>
+<section id="merging-with-conflicts" class="level3">
+<h3 class="anchored" data-anchor-id="merging-with-conflicts">Merging with conflicts</h3>
+<p>To simulate a merging conflict we need to make different changes to the same line of a file in different branches.</p>
+<section id="modify-file1.txt-in-main" class="level4">
+<h4 class="anchored" data-anchor-id="modify-file1.txt-in-main">Modify <code>file1.txt</code> in <code>main</code></h4>
+<p>First, let’s checkout <code>main</code> and make the following change to <code>file1.txt</code>, say, from</p>
+<pre><code>This
+is
+a
+file1</code></pre>
+<p>to</p>
+<pre><code>This
+is
+a
+file1 - the first file we created</code></pre>
+<p>now we add and commit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'main changes to file1'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>[main dfd0598] main changes to file1
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can use <code>git diff</code> to see the differences between branches such as, for example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff main dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>diff --git a/file1.txt b/file1.txt
+index f8e8191..e82ee85 100644
+--- a/file1.txt
++++ b/file1.txt
+@@ -1,4 +1,4 @@
+ This
+ is
+ a
+-file1 - the first file we created
++file1</code></pre>
+</div>
+</div>
+</section>
+<section id="modify-file1.txt-in-dev" class="level4">
+<h4 class="anchored" data-anchor-id="modify-file1.txt-in-dev">Modify <code>file1.txt</code> in <code>dev</code></h4>
+<p>Checkout <code>dev</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Switched to branch 'dev'</code></pre>
+<p>Change <code>file1.txt</code>, say, from:</p>
+<pre><code>This
+is
+a
+file1</code></pre>
+<p>to</p>
+<pre><code>This
+is
+a
+file1 - the first file</code></pre>
+<p>now we add and commit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'dev changes to file1'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>[dev b2b8b9e] dev changes to file1
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+</section>
+<section id="checkout-main-and-try-to-merge" class="level4">
+<h4 class="anchored" data-anchor-id="checkout-main-and-try-to-merge">Checkout <code>main</code> and try to <code>merge</code></h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge main dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Auto-merging file1.txt
+CONFLICT (content): Merge conflict in file1.txt
+Automatic merge failed; fix conflicts and then commit the result.</code></pre>
+<p>If you then look at the content of the file, you will see this:</p>
+<p><img src="../images/git/merge_conflict.png" class="img-fluid"></p>
+<p>so here you need to decide which version you will keep and edit the file correspondingly. For example, I edited it to this form and saved:</p>
+<p><img src="../images/git/merge_resolved.png" class="img-fluid"></p>
+<p>Now I need to <code>add</code> and <code>commit</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add file1.txt</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'merged dev into main'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+</section>
+<section id="a-typical-github-workflow" class="level1">
+<h1>A typical GitHub workflow</h1>
+<p>Now that we know the basics, let’s put it all together into the standard fork-based contribution workflow used in open-source projects.</p>
+<section id="the-steps" class="level2">
+<h2 class="anchored" data-anchor-id="the-steps">The steps</h2>
+<p><strong>1. Fork the repo on GitHub</strong></p>
+<p>Click the “Fork” button on the original (upstream) repository page. This creates your own copy under your GitHub account.</p>
+<p><strong>2. Clone your fork locally</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/YOUR_USERNAME/repo_name.git</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> repo_name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>3. Create a new branch</strong></p>
+<p>Never work directly on <code>main</code>. Create a descriptive branch for your changes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> my-new-feature</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>4. Make your changes</strong></p>
+<p>Edit files, add new ones—do whatever your contribution requires.</p>
+<p><strong>5. Stage and commit</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add changed_file.txt</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'add new feature'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>6. Push the branch to your fork</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin my-new-feature</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>7. Open a Pull Request on GitHub</strong></p>
+<p>Go to the original repo on GitHub. You’ll see a prompt to open a Pull Request from your recently pushed branch. Click it, write a description of your changes, and submit.</p>
+</section>
+<section id="high-level-flow" class="level2">
+<h2 class="anchored" data-anchor-id="high-level-flow">High-level flow</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[Fork] --&gt; B[Clone]
+  B --&gt; C[Branch]
+  C --&gt; D[Edit]
+  D --&gt; E[Add/Commit]
+  E --&gt; F[Push]
+  F --&gt; G[Pull Request]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="where-things-live" class="level2">
+<h2 class="anchored" data-anchor-id="where-things-live">Where things live</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  A["Upstream repo&lt;br&gt;(GitHub)"]
+  B["Your fork&lt;br&gt;(GitHub)"]
+  C["Local clone&lt;br&gt;(your machine)"]
+
+  A -- "fork" --&gt; B
+  B -- "clone" --&gt; C
+  C -- "push" --&gt; B
+  B -- "pull request" --&gt; A
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level1">
+<h1>Summary</h1>
+<p>Here is what we covered in this lecture:</p>
+<ul>
+<li><strong>Git vs GitHub</strong> — Git is a local version control system; GitHub is a cloud platform for hosting Git repos and collaborating</li>
+<li><strong>Core commands</strong> — <code>status</code>, <code>add</code>, <code>commit</code>, <code>log</code>, <code>diff</code>, <code>reset</code>, <code>revert</code></li>
+<li><strong>Branching</strong> — <code>branch</code>, <code>checkout</code>, <code>merge</code> let you work on features in isolation and combine them later</li>
+<li><strong>Merge conflicts</strong> — happen when two branches edit the same line; you resolve them manually, then <code>add</code> and <code>commit</code></li>
+<li><strong>The fork → branch → PR workflow</strong> — the standard way to contribute to projects on GitHub</li>
+</ul>
+</section>
+<section id="for-thursday" class="level1">
+<h1>For Thursday!</h1>
+<p>Create your CV as a markdown document!</p>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -807,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1139,4 +1257,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture9.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture9.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
