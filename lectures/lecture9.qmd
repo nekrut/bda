@@ -2,7 +2,7 @@
 title: "Lecture 9: Git and GitHub"
 ---
 
-[![](../images/git-tutorial/xkcd_git.png)](https://xkcd.com/1597/)
+[![](../images/vcs/xkcd_git.png)](https://xkcd.com/1597/)
 
 # Setup
 
@@ -12,15 +12,15 @@ Go through steps below so we can begin.
 
 1\. Navigate to [https://github.com/](https://github.com/)
 
-![](../images/git-tutorial/github_homepage.jpeg)
+![](../images/vcs/github_homepage.jpeg)
 
 2\. Click "Sign in"
 
-![](../images/git-tutorial/sign_in.jpeg)
+![](../images/vcs/sign_in.jpeg)
 
 3\. Click the "Username or email address" field.
 
-![](../images/git-tutorial/username_field.jpeg)
+![](../images/vcs/username_field.jpeg)
 
 4\. Switch to http://github.com/nekrut/bmmb554_foo_bar
 
@@ -32,23 +32,23 @@ http://github.com/nekrut/bmmb554_foo_bar
 
 5\. Click "Fork"
 
-![](../images/git-tutorial/click_fork.jpeg)
+![](../images/vcs/click_fork.jpeg)
 
 6\. Navigate to your newly created fork
 
-![](../images/git-tutorial/navigate_fork.jpeg)
+![](../images/vcs/navigate_fork.jpeg)
 
 7\. Click "Code"
 
-![](../images/git-tutorial/click_code.jpeg)
+![](../images/vcs/click_code.jpeg)
 
 8\. Click "Codespaces"
 
-![](../images/git-tutorial/click_codespaces.jpeg)
+![](../images/vcs/click_codespaces.jpeg)
 
 9\. Click "+".
 
-![](../images/git-tutorial/click_plus.jpeg)
+![](../images/vcs/click_plus.jpeg)
 
 # Git versus GitHub
 
@@ -99,11 +99,11 @@ Sources: [GitHub — Wikipedia](https://en.wikipedia.org/wiki/GitHub) | [How Git
 # Basic Concepts 
 
 ## Main commands
-![](../images/git-tutorial/git_commands.png)
+![](../images/vcs/git_commands.png)
 > From tutorials by [Kyle Bradbury](https://www.kylebradbury.org/index.html)
 
 ## Branch flow
-![](../images/git-tutorial/branch_flow.png)
+![](../images/vcs/branch_flow.png)
 
 > From [GitBetter](https://gitbetter.substack.com/p/how-to-work-in-multiple-git-branches)
 
@@ -399,7 +399,7 @@ index 1f383ac..e13e461 100644
 
 ## Branches
 
-![](../images/git-tutorial/branch_flow.png)
+![](../images/vcs/branch_flow.png)
 
 > From [GitBetter](https://gitbetter.substack.com/p/how-to-work-in-multiple-git-branches)
 
@@ -639,12 +639,12 @@ Automatic merge failed; fix conflicts and then commit the result.
 
 If you then look at the content of the file, you will see this:
 
-![](../images/git-tutorial/merge_conflict.png)
+![](../images/vcs/merge_conflict.png)
 
 
 so here you need to decide which version you will keep and edit the file correspondingly. For example, I edited it to this form and saved:
 
-![](../images/git-tutorial/merge_resolved.png)
+![](../images/vcs/merge_resolved.png)
 
 Now I need to `add` and `commit`:
 
