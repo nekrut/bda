@@ -313,7 +313,7 @@ Look at Miffy's CV (`index.md`) for a complete working example of all these elem
 
 # Custom Domains (brief mention)
 
-If you want a URL like `miffypluis.com` instead of `username.github.io/cv`:
+If you want a URL like `miffypluis.org` instead of `username.github.io/cv`:
 
 1. Buy a domain (~$10–15/year from Namecheap, Google Domains, etc.)
 2. Add a `CNAME` file to your repo containing your domain name
