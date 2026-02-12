@@ -36,7 +36,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 7 | Feb 3 | [Py5: Data Manipulation with Pandas](lectures/lecture7.ipynb) |
 | 8 | Feb 5 | [Py6: Building graphs with Altair](lectures/lecture8.ipynb) |
 | 9 | Feb 10 | [Git and GitHub](lectures/lecture9.qmd) |
-| 10 | Feb 12 | - |
+| 10 | Feb 12 | [Publishing Your CV with GitHub Pages](lectures/lecture10.qmd) |
 | 11 | Feb 17 | - |
 | 12 | Feb 19 | - |
 | 13 | Feb 24 | - |

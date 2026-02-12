@@ -1,0 +1,351 @@
+---
+title: "Lecture 10: Publishing Your CV with GitHub Pages"
+---
+
+[![](https://imgs.xkcd.com/comics/qualifications.png)](https://xkcd.com/2756/)
+
+Last class I asked you to convert your CV to a markdown document. Now let's turn it into a live website—for free, in about five minutes.
+
+# What is GitHub Pages?
+
+GitHub Pages is a free static-site hosting service built into every GitHub repository. You push markdown (or HTML), and GitHub renders it into a website automatically.
+
+- **Free** for public repositories
+- **No server setup** — GitHub handles everything
+- **Automatic rendering** — markdown → HTML via Jekyll
+- **URL pattern**: `https://USERNAME.github.io/REPONAME`
+
+## How does it compare?
+
+| Feature | GitHub Pages | Google Sites | WordPress |
+|---------|:---:|:---:|:---:|
+| Cost | Free | Free | Free (limited) / Paid |
+| Custom domain | Yes | Yes | Paid only |
+| Markdown support | Native | No | Plugin |
+| Version control | Git built-in | No | No |
+| Setup time | ~5 min | ~10 min | ~30 min |
+| Customization | Full (HTML/CSS/Jekyll) | Drag-and-drop | Themes + plugins |
+
+# The Plan
+
+Here's what we'll do today:
+
+1. Create a new repo called `cv` on GitHub (web UI)
+2. Open a Codespace
+3. Download/create `index.md` with CV content
+4. `git add`, `git commit`, `git push`
+5. Enable GitHub Pages (web UI: Settings → Pages)
+6. View the live site
+7. (Optional) Add a Jekyll theme for polish
+
+# Create the Repository
+
+We'll use the GitHub web interface to create a new repo.
+
+## Step-by-step
+
+1\. Go to [github.com](https://github.com) and click the **"+"** button in the top-right corner, then select **"New repository"**
+
+<!-- ![](../images/github-pages/new_repo_button.png) -->
+
+2\. Fill in the details:
+
+   - **Repository name**: `cv`
+   - **Visibility**: **Public**
+   - Check **"Add a README file"**
+
+<!-- ![](../images/github-pages/create_repo_form.png) -->
+
+3\. Click **"Create repository"**
+
+:::{.callout-tip}
+The repo **must be public** for free GitHub Pages hosting. Private repos require GitHub Pro.
+:::
+
+# Open a Codespace
+
+1\. On your new `cv` repo page, click **"Code"** → **"Codespaces"** → **"+"**
+
+<!-- ![](../images/github-pages/open_codespace.png) -->
+
+2\. Wait for the Codespace to spin up (30–60 seconds)
+
+3\. Open the **terminal** at the bottom of the VS Code interface
+
+This is the same Codespace workflow from Lecture 9—a full development environment in your browser.
+
+# Add the CV Content
+
+In the Codespace terminal, download Miffy's CV as `index.md`:
+
+```{.bash code-copy="true"}
+curl -o index.md https://raw.githubusercontent.com/nekrut/bda/main/data/Miffy_Academic_CV.md
+```
+
+Or: open the VS Code editor in Codespace and paste your own CV into a new file called `index.md`.
+
+:::{.callout-important}
+The file **must** be named `index.md` — GitHub Pages serves it as the homepage. If you name it anything else (like `cv.md` or `resume.md`), visitors will see the README instead.
+:::
+
+Preview what you downloaded:
+
+```{.bash code-copy="true"}
+head -20 index.md
+```
+
+```
+# Miffy B. Pluis, PhD
+
+**Professor of Burrow Architecture & Lapine Behavioral Sciences**
+Department of Meadow Studies, University of Utrecht-den-Haag
+Snuffie Lane 1955, 3500 AA Utrecht, The Netherlands
+
+Email: m.b.pluis@uu-meadow.nl | ORCID: 0000-0002-EARS-0001
+
+---
+
+## Education
+
+**PhD in Theoretical Carrot Biochemistry**, Wageningen University, 2008
+Dissertation: *"Orange Is the New Green: Carotenoid Bioavailability in Subterranean Root Systems and Its Implications for Lagomorph Nutrition"*
+Advisor: Prof. Boris Bear
+
+**MSc in Meadow Ecology & Floral Arrangement** (cum laude), Utrecht University, 2004
+Thesis: *"Spatial Distribution of Wildflowers in Dutch Polders: A Sensory Perspective"*
+```
+
+# Commit and Push
+
+Now let's track the file with Git and push it to GitHub:
+
+```{.bash code-copy="true"}
+git add index.md
+```
+
+```{.bash code-copy="true"}
+git commit -m "Add CV"
+```
+
+```{.bash code-copy="true"}
+git push
+```
+
+:::{.callout-note}
+Since the Codespace was opened from the `cv` repo, `git push` targets the right remote automatically. No need to set upstream or configure anything.
+:::
+
+If you refresh your repo page on GitHub, you should see `index.md` alongside the `README.md`.
+
+# Enable GitHub Pages
+
+Back in the GitHub web interface:
+
+1\. Go to your `cv` repository page
+
+2\. Click **Settings** (gear icon in the top menu bar)
+
+<!-- ![](../images/github-pages/settings_button.png) -->
+
+3\. In the left sidebar, click **Pages**
+
+<!-- ![](../images/github-pages/pages_sidebar.png) -->
+
+4\. Under **"Source"**, select **Deploy from a branch**
+
+5\. Select the **main** branch and **/ (root)** folder
+
+<!-- ![](../images/github-pages/pages_source.png) -->
+
+6\. Click **Save**
+
+:::{.callout-warning}
+Deployment takes 1–2 minutes. If you see a 404, wait and refresh. You can watch the build progress under the **Actions** tab of your repo.
+:::
+
+# View Your Site
+
+Once deployed, your CV is live at:
+
+```
+https://USERNAME.github.io/cv/
+```
+
+Replace `USERNAME` with your GitHub username. GitHub Pages takes your raw markdown and renders it into a clean HTML page—no extra work required.
+
+# Add a Jekyll Theme (optional)
+
+The default rendering is clean but plain. Jekyll—GitHub Pages' built-in static site generator—supports themes that change the look with zero code.
+
+Back in the Codespace terminal:
+
+```{.bash code-copy="true"}
+echo 'theme: jekyll-theme-minimal' > _config.yml
+```
+
+```{.bash code-copy="true"}
+git add _config.yml
+git commit -m "Add Jekyll theme"
+git push
+```
+
+Wait 1–2 minutes and refresh your site to see the themed version.
+
+## Built-in themes
+
+| Theme | Style | Good for |
+|-------|-------|----------|
+| `minimal` | Clean, left sidebar | CVs, personal pages |
+| `cayman` | Green-blue gradient header | Project landing pages |
+| `slate` | Dark header, gray body | Technical docs |
+| `architect` | Blueprint/technical feel | Engineering portfolios |
+| `tactile` | Linen texture, warm | Creative portfolios |
+
+To try a different theme, just change the value in `_config.yml`:
+
+```{.bash code-copy="true"}
+echo 'theme: jekyll-theme-cayman' > _config.yml
+git add _config.yml
+git commit -m "Switch to Cayman theme"
+git push
+```
+
+## Customize the title
+
+You can add a title and description to `_config.yml`:
+
+```{.yaml code-copy="true"}
+theme: jekyll-theme-minimal
+title: "Miffy B. Pluis, PhD"
+description: "Professor of Burrow Architecture & Lapine Behavioral Sciences"
+```
+
+These appear in the sidebar (for `minimal`) or header (for other themes).
+
+# Markdown Formatting Reference
+
+Your CV is a markdown file, so everything you see on the rendered site is controlled by markdown syntax. Here's a quick reference for the formatting you'll use most.
+
+## Text styling
+
+```{.markdown code-copy="true"}
+**bold text**
+*italic text*
+~~strikethrough~~
+`inline code`
+```
+
+Renders as: **bold text**, *italic text*, ~~strikethrough~~, `inline code`
+
+## Headings
+
+```{.markdown code-copy="true"}
+# Heading 1
+## Heading 2
+### Heading 3
+```
+
+Use `#` for your name, `##` for major sections (Education, Experience), `###` for subsections.
+
+## Links and images
+
+```{.markdown code-copy="true"}
+[link text](https://example.com)
+![alt text](image.png)
+```
+
+## Lists
+
+```{.markdown code-copy="true"}
+- Unordered item
+- Another item
+  - Nested item
+
+1. First item
+2. Second item
+3. Third item
+```
+
+## Horizontal rules
+
+```{.markdown code-copy="true"}
+---
+```
+
+A line with just `---` creates a horizontal divider—useful for separating CV sections.
+
+## Blockquotes
+
+```{.markdown code-copy="true"}
+> This is a blockquote.
+```
+
+## Tables
+
+```{.markdown code-copy="true"}
+| Year | Role | Institution |
+|------|------|-------------|
+| 2020 | Professor | Utrecht |
+| 2014 | Assoc. Prof. | ETH |
+```
+
+Pipes (`|`) define columns, dashes (`---`) separate the header row.
+
+## Putting it together
+
+A typical CV section in markdown:
+
+```{.markdown code-copy="true"}
+## Education
+
+**PhD in Theoretical Carrot Biochemistry**, Wageningen University, 2008
+Dissertation: *"Orange Is the New Green"*
+Advisor: Prof. Boris Bear
+
+**MSc in Meadow Ecology** (cum laude), Utrecht University, 2004
+
+---
+```
+
+:::{.callout-tip}
+Look at Miffy's CV (`index.md`) for a complete working example of all these elements in action.
+:::
+
+# Custom Domains (brief mention)
+
+If you want a URL like `miffypluis.com` instead of `username.github.io/cv`:
+
+1. Buy a domain (~$10–15/year from Namecheap, Google Domains, etc.)
+2. Add a `CNAME` file to your repo containing your domain name
+3. Configure DNS records to point to GitHub's servers
+
+This is entirely optional—`username.github.io/cv` works great on its own.
+
+# Summary
+
+## Commands used today
+
+| Command | What it does |
+|---------|-------------|
+| `curl -o index.md URL` | Download a file from the web |
+| `git add index.md` | Stage the file for commit |
+| `git commit -m "Add CV"` | Save a snapshot with a message |
+| `git push` | Upload commits to GitHub |
+
+## Key takeaways
+
+- **GitHub Pages** = free website hosting from any public repo
+- **`index.md`** = the homepage — name matters
+- **Jekyll themes** = visual polish with zero code
+- **The whole workflow**: create repo → add content → push → enable Pages → done
+
+# Homework
+
+## 1. Publish your CV
+
+Format your CV the way you like and send me a linjk using [this form](https://forms.gle/hLhQUe7kA5dQbANB8).
+
+## 2. Install AI agents
+
+- Install [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) — follow the quickstart guide for your OS
+- Install [Gemini CLI](https://github.com/google-gemini/gemini-cli) — follow the README instructions
