@@ -36,3 +36,6 @@ images/*
 # Test files (keep answers private)
 lectures/test2*.qmd
 lectures/test2*.pdf
+
+# Plan files
+lectures/PLAN_*.md
