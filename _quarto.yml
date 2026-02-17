@@ -42,8 +42,8 @@ website:
             text: "9. Git and GitHub"
           - href: lectures/lecture10.qmd
             text: "10. Publishing Your CV with GitHub Pages"
-          # - href: lectures/lecture11.ipynb
-          #   text: "11. Data Manipulation with Pandas (old)"
+          - href: lectures/lecture11.qmd
+            text: "11. Building a Website with Claude Code"
 
 format:
   html:
