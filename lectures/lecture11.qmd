@@ -1,0 +1,450 @@
+---
+title: "Lecture 11: Building a Website with Claude Code"
+---
+
+[![](https://imgs.xkcd.com/comics/tasks_2x.png)](https://xkcd.com/1425/)
+
+Last class you published your CV as a GitHub Pages site. Today we'll use an AI coding agent—Claude Code—to transform that simple page into a full Quarto website with a blog. All from a single prompt.
+
+# What is Claude Code?
+
+Claude Code is an **agentic coding tool** made by Anthropic. You give it a task in plain English, and it:
+
+- Reads your files
+- Asks clarifying questions
+- Writes and edits code
+- Runs terminal commands
+- Commits and pushes to Git
+
+It operates directly inside your repository—no copy-pasting code from a chatbot.
+
+:::{.callout-note}
+Claude Code is different from ChatGPT or a regular Claude chat. Instead of generating code snippets you need to paste somewhere, it **acts directly on your project**—creating files, editing configs, running builds.
+:::
+
+## Claude Code in a Codespace
+
+Claude Code is a CLI tool that runs in the terminal. We'll install it inside a **GitHub Codespace**—the same environment you used in lectures 9 and 10. No local installation, no OS differences.
+
+# Setup
+
+## Step 1: Open a Codespace on your CV repo
+
+1\. Go to your `cv` repo on GitHub
+
+2\. Click **Code → Codespaces → "+"** (same as lectures 9 and 10)
+
+3\. Open the terminal
+
+## Step 2: Install Claude Code
+
+Run:
+
+```{.bash code-copy="true"}
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Then restart the terminal (or run `source ~/.bashrc`) so `claude` is on PATH.
+
+Verify it works:
+
+```{.bash code-copy="true"}
+claude --version
+```
+
+## Step 3: Set your API key
+
+I will provide each of you with an Anthropic API key. Run these commands **exactly** to configure Claude Code to use it without a browser login.
+
+First, set the key (replace `your-key-here` with the key I gave you):
+
+```{.bash code-copy="true"}
+export ANTHROPIC_API_KEY="your-key-here"
+```
+
+Then create a helper script:
+
+```{.bash code-copy="true"}
+mkdir -p ~/.claude
+echo 'echo ${ANTHROPIC_API_KEY}' > ~/.claude/anthropic_key_helper.sh
+chmod +x ~/.claude/anthropic_key_helper.sh
+```
+
+Then write the Claude Code config files. Copy-paste this entire block:
+
+```{.bash code-copy="true"}
+LAST20=$(echo -n "$ANTHROPIC_API_KEY" | tail -c 20)
+
+cat > ~/.claude.json << EOF
+{
+  "customApiKeyResponses": {
+    "approved": ["$LAST20"],
+    "rejected": []
+  },
+  "hasCompletedOnboarding": true
+}
+EOF
+
+cat > ~/.claude/claude.json << EOF
+{
+  "apiKeyHelper": "$HOME/.claude/anthropic_key_helper.sh"
+}
+EOF
+```
+
+This tells Claude Code to get the API key from your helper script and skip the browser login.
+
+:::{.callout-warning}
+**Keep your API key private.** Do not share it, post it on GitHub, or commit it to a repository. Anyone with your key can make API calls billed to the account.
+:::
+
+:::{.callout-note}
+The `export` command lasts for the current terminal session only. If you close and reopen the terminal, re-run `export ANTHROPIC_API_KEY="your-key-here"` before starting Claude Code.
+:::
+
+## Step 4: Start Claude Code
+
+```{.bash code-copy="true"}
+claude
+```
+
+You're already in the `cv` repo directory since the Codespace opened there.
+
+# Prerequisites: Your CV Repo
+
+Before we proceed, confirm your `cv` repository has:
+
+- An `index.md` file (your CV from Lecture 10)
+- GitHub Pages enabled (Settings → Pages → main branch)
+- The site is live at `https://USERNAME.github.io/cv/`
+
+If you're missing any of these, go back to the [Lecture 10 steps](lecture10.qmd) and set them up first.
+
+# The Prompt
+
+Here's the key moment. Type the following prompt:
+
+```{.default code-copy="true"}
+Using index.md in this repository, build a new website using Quarto that
+features my CV as the front page but also supports blog posts. My first
+blog post should be a description of how I created this website. Set up
+GitHub Actions to deploy the site to GitHub Pages automatically.
+```
+
+Then **sit back and watch**. Claude Code will:
+
+1. Read your `index.md` to understand the content
+2. Ask you clarifying questions (theme preference, site title, etc.)
+3. Create the necessary project files
+4. Set up automated deployment
+
+:::{.callout-note}
+Claude Code is **interactive**. It will ask you questions like "What theme do you prefer?" or "Should I use your name as the site title?" Answer naturally—these choices affect the final look of your site.
+:::
+
+# What Claude Code Creates
+
+After Claude Code finishes, your repo will have new files. Here's what each one does:
+
+## `_quarto.yml` — the site configuration
+
+This is the master config file for your Quarto website. It defines:
+
+- **Project type**: `website`
+- **Site title**: your name
+- **Navbar**: navigation links (Home, Blog)
+- **Theme**: visual styling (e.g., `cosmo`, `minty`, `lux`)
+
+A typical `_quarto.yml` looks like:
+
+```{.yaml}
+project:
+  type: website
+
+website:
+  title: "Your Name"
+  navbar:
+    left:
+      - href: index.md
+        text: Home
+      - href: blog.qmd
+        text: Blog
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+```
+
+## `blog.qmd` — the blog listing page
+
+This file tells Quarto to automatically list all blog posts from the `posts/` directory:
+
+```{.yaml}
+---
+title: "Blog"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+---
+```
+
+Every time you add a new post to `posts/`, it appears here automatically.
+
+## `posts/` directory — your blog posts
+
+Each blog post lives in its own subfolder inside `posts/`:
+
+```
+posts/
+  creating-this-website/
+    index.qmd
+```
+
+A blog post is just a markdown file with a YAML header:
+
+```{.yaml}
+---
+title: "How I Created This Website"
+author: "Your Name"
+date: "2026-02-17"
+categories: [web, tutorial]
+---
+
+Your post content here in regular markdown...
+```
+
+## `.github/workflows/publish.yml` — automated deployment
+
+This file tells GitHub: *"Every time someone pushes to `main`, install Quarto, render the site, and deploy it to GitHub Pages."*
+
+```{.yaml}
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - uses: quarto-dev/quarto-actions/render@v2
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
+```
+
+:::{.callout-important}
+This is a **GitHub Actions workflow**. GitHub Actions is a CI/CD (Continuous Integration / Continuous Deployment) system built into GitHub. It runs automated tasks in response to events like pushes, pull requests, or schedules. Each `.yml` file in `.github/workflows/` defines a workflow.
+:::
+
+## `.gitignore` — files Git should ignore
+
+Claude Code adds entries to `.gitignore` so that build artifacts don't clutter your repo:
+
+```
+_site/
+.quarto/
+```
+
+## What about `_config.yml`?
+
+If you added a Jekyll theme in Lecture 10, Claude Code will **remove** `_config.yml`. Quarto replaces Jekyll—the theme is now controlled by `_quarto.yml` instead.
+
+# Switching GitHub Pages to Actions
+
+After Claude Code pushes the changes, you need to do **one manual step** in the GitHub web UI:
+
+1\. Go to your `cv` repo → **Settings** → **Pages**
+
+2\. Under **"Build and deployment"**, change the **Source** from **"Deploy from a branch"** to **"GitHub Actions"**
+
+3\. Save
+
+```{mermaid}
+flowchart LR
+    A["Push to main"] --> B["GitHub Actions<br/>triggers workflow"]
+    B --> C["Install Quarto"]
+    C --> D["Render site<br/>(markdown → HTML)"]
+    D --> E["Deploy to<br/>GitHub Pages"]
+```
+
+:::{.callout-warning}
+This step is critical. If you skip it, GitHub will try to serve your raw source files using Jekyll instead of the rendered Quarto output. Your site will look broken or show a 404.
+:::
+
+After switching, the next push to `main` will trigger the Quarto Publish workflow. You can monitor its progress in the **Actions** tab of your repo.
+
+# Verify Your Site
+
+Once the workflow completes (usually 30–60 seconds):
+
+1\. Go to the **Actions** tab — you should see a green checkmark next to "Quarto Publish"
+
+2\. Visit `https://USERNAME.github.io/cv/`
+
+3\. You should see:
+
+   - A **navbar** at the top with "Home" and "Blog" links
+   - Your **CV** as the main page content
+   - A **blog page** listing your first post
+
+:::{.callout-tip}
+If the Actions tab shows a red X, click on the failed run to see the error log. Common issues:
+
+- Missing `index.md` file
+- YAML syntax error in `_quarto.yml` (indentation matters!)
+- Permissions not set in the workflow file
+:::
+
+# Understanding the Flow
+
+Here's the big picture of what changed between Lecture 10 and today:
+
+| | Lecture 10 (Jekyll) | Lecture 11 (Quarto) |
+|--|--|--|
+| **Rendering engine** | Jekyll (built into GitHub) | Quarto (via GitHub Actions) |
+| **Configuration** | `_config.yml` | `_quarto.yml` |
+| **Deployment** | Automatic (push → live) | GitHub Actions workflow |
+| **Blog support** | Manual HTML | Built-in `listing` |
+| **Themes** | 12 Jekyll themes | 25+ Bootswatch themes |
+| **Local preview** | Requires Ruby + Jekyll | `quarto preview` |
+| **Navbar** | Theme-dependent | Always available |
+
+## Why Quarto?
+
+- **More control**: navbar, sidebar, table of contents, search—all configurable
+- **Blog support built in**: just drop `.qmd` files in `posts/`
+- **Multiple output formats**: the same source can render to HTML, PDF, Word, or slides
+- **Code execution**: Quarto can run Python, R, or Julia code and embed the output directly
+- **The tool we use in this class**: the course website you're reading right now is built with Quarto
+
+# Key Concepts
+
+## What is Quarto?
+
+Quarto is an open-source scientific and technical publishing system. It takes markdown files (`.qmd` or `.md`) and renders them into websites, documents, presentations, or books. It was created by Posit (the company behind RStudio) and is now the standard tool for reproducible scientific publishing.
+
+## What is GitHub Actions?
+
+GitHub Actions is GitHub's built-in automation platform. You define **workflows** as YAML files in `.github/workflows/`. Each workflow:
+
+- **Triggers** on an event (push, pull request, schedule)
+- **Runs** on a virtual machine (Ubuntu, macOS, or Windows)
+- **Executes** a series of steps (install tools, run commands, deploy)
+
+In our case, the workflow installs Quarto, renders the site, and deploys to GitHub Pages.
+
+## What is CI/CD?
+
+CI/CD stands for **Continuous Integration / Continuous Deployment**:
+
+- **CI**: automatically test/build your project on every push
+- **CD**: automatically deploy to production after a successful build
+
+Our Quarto workflow is a CD pipeline: push → build → deploy.
+
+## What is YAML?
+
+YAML ("YAML Ain't Markup Language") is a human-readable data format used for configuration files. Key rules:
+
+- **Indentation matters** (use spaces, not tabs)
+- **Key-value pairs**: `title: "My Site"`
+- **Lists**: items start with `-`
+- **Nesting**: indent child items under their parent
+
+```{.yaml}
+website:
+  title: "My Site"        # key-value pair
+  navbar:
+    left:                  # nested object
+      - href: index.md     # list item
+        text: Home
+      - href: blog.qmd
+        text: Blog
+```
+
+:::{.callout-warning}
+YAML is whitespace-sensitive. A single wrong indent will break your config. If something isn't working, check your indentation first.
+:::
+
+# Adding More Blog Posts
+
+To add a new post in the future:
+
+1\. Open your Codespace
+
+2\. Create a new folder inside `posts/`:
+
+```{.bash code-copy="true"}
+mkdir -p posts/my-second-post
+```
+
+3\. Create `posts/my-second-post/index.qmd` with a YAML header:
+
+```{.yaml code-copy="true"}
+---
+title: "My Second Post"
+author: "Your Name"
+date: "2026-02-20"
+categories: [update]
+---
+
+Write your post content here.
+```
+
+4\. Commit and push:
+
+```{.bash code-copy="true"}
+git add posts/my-second-post/
+git commit -m "Add second blog post"
+git push
+```
+
+The blog listing page updates automatically.
+
+# Summary
+
+## What we did today
+
+1. Installed Claude Code in a Codespace and set our API key
+2. Pointed it at our CV repository
+3. Gave it a single prompt to build a Quarto website with a blog
+4. Switched GitHub Pages from branch deployment to GitHub Actions
+5. Got a live site with a navbar, CV homepage, and blog
+
+## What Claude Code did for us
+
+| File | Purpose |
+|------|---------|
+| `_quarto.yml` | Site configuration (title, navbar, theme) |
+| `blog.qmd` | Blog listing page |
+| `posts/.../index.qmd` | First blog post |
+| `.github/workflows/publish.yml` | Automated build and deploy |
+| `.gitignore` | Exclude build artifacts |
+
+## Key takeaways
+
+- **AI coding agents** operate on your project directly—not just generate snippets
+- **Quarto** is a powerful publishing system that turns markdown into websites
+- **GitHub Actions** automates deployment so pushing = publishing
+- **YAML** is the configuration language for both Quarto and GitHub Actions
+- One clear prompt can scaffold an entire project
+
+# For Thursday!
+
+1. Make sure your Quarto CV site is live and working
+2. Write a second blog post about anything — your research interests, a paper you read, or what you had for lunch
+3. Push it and verify it appears on your blog page
+
+Share your site URL using [this form](https://forms.gle/86rguoxAu4BMh3wRA).
