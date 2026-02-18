@@ -5,6 +5,7 @@ project:
     - "*.ipynb"
     - "*.md"
     - "!sandbox/"
+    - "!lectures/PLAN_*.md"
 
 website:
   title: "BMMB554"
@@ -44,6 +45,8 @@ website:
             text: "10. Publishing Your CV with GitHub Pages"
           - href: lectures/lecture11.qmd
             text: "11. Building a Website with Claude Code"
+          - href: lectures/lecture12.qmd
+            text: "12. Responsible Use of Coding Agents"
 
 format:
   html:

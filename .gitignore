@@ -39,3 +39,6 @@ lectures/test2*.pdf
 
 # Plan files
 lectures/PLAN_*.md
+
+# Testing/grading
+testing/

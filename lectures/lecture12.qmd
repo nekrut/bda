@@ -1,0 +1,307 @@
+---
+title: "Lecture 12: Responsible Use of Coding Agents"
+---
+
+[![](https://imgs.xkcd.com/comics/machine_learning_2x.png)](https://xkcd.com/1838/)
+
+Last class we used Claude Code to turn a CV into a Quarto website. Today we go deeper: understanding how agentic tools work under the hood, using them responsibly, and applying them to two real tasks—data analysis and literature research.
+
+# Agentic concepts
+
+## What makes an agent "agentic"?
+
+A regular chatbot generates text. An **agentic** tool takes *actions*—reading files, running code, searching the web, calling APIs. The difference is autonomy: you describe a goal, and the agent figures out the steps.
+
+```{mermaid}
+flowchart LR
+    A["You describe<br/>a goal"] --> B["Agent plans<br/>the steps"]
+    B --> C["Agent executes<br/>(read, write, run)"]
+    C --> D["Agent checks<br/>results"]
+    D -->|"Not done"| B
+    D -->|"Done"| E["Returns<br/>output"]
+```
+
+Three concepts make modern agents powerful: **skills**, **MCP servers**, and **slash commands**.
+
+## Skills
+
+A **skill** is a reusable chunk of instructions that tells the agent *how* to do something specific. Think of it as a recipe card. When you invoke a skill, the agent loads those instructions and follows them.
+
+For example, Claude Code has a built-in `/commit` skill. When you type `/commit`, it doesn't just run `git commit`—it reads a detailed set of instructions that tell it to:
+
+- Check `git status` and `git diff`
+- Draft a concise commit message summarizing the "why"
+- Stage the right files
+- Avoid committing secrets
+
+Without the skill, you'd have to explain all of this every time. Skills encode best practices so you don't have to repeat yourself.
+
+## MCP: Model Context Protocol
+
+**MCP** (Model Context Protocol) is an open standard that lets agents connect to external services. An MCP **server** is a small program that exposes a set of tools the agent can call—like searching a database, querying a bioinformatics platform, or fetching data from the web.
+
+```{mermaid}
+flowchart LR
+    A["Agent<br/>(Claude Code)"] --> B["MCP Server<br/>(Galaxy)"]
+    A --> C["MCP Server<br/>(PubMed)"]
+    A --> D["MCP Server<br/>(File system)"]
+    B --> E["Search tools<br/>Run workflows"]
+    C --> F["Search papers<br/>Fetch abstracts"]
+    D --> G["Read/write<br/>local files"]
+```
+
+Why does this matter? Without MCP, an agent can only do what's built into it. With MCP, it can plug into *any* service that provides an MCP server. This is the same idea as USB—a universal standard that lets different devices work together without custom adapters.
+
+:::{.callout-note}
+MCP was introduced by Anthropic in late 2024 and is now supported by multiple AI platforms. It's an open protocol—anyone can build an MCP server for their service.
+:::
+
+## Slash commands
+
+**Slash commands** are shortcuts you type in the agent's prompt to trigger specific behaviors. They're the user-facing interface to skills and tools.
+
+Some examples in Claude Code:
+
+| Command | What it does |
+|---------|-------------|
+| `/commit` | Stages changes and creates a Git commit |
+| `/review-pr` | Reviews a pull request |
+| `/help` | Shows available commands |
+
+Slash commands keep you in flow—instead of writing a multi-sentence prompt, you type a short command and the agent knows exactly what to do.
+
+## Putting it together
+
+The key insight: **skills define *how* to do things, MCP servers define *what services* are available, and slash commands let you trigger them quickly**. Together, they make agents reliable and extensible. Instead of hoping the AI figures out the right approach, you give it structured tools and instructions.
+
+# In Claude we trust?
+
+Agentic AI is developing at an unprecedented pace. Before we use these tools for real work, we need to talk about what they are—and what they aren't.
+
+## The current moment
+
+Two recent opinion pieces capture the tension:
+
+- **Paul Ford** (New York Times, Feb 18 2026): [AI and the Future of Software](https://www.nytimes.com/2026/02/18/opinion/ai-software.html?unlocked_article_code=1.NFA.1naz.pRVgItN2aiHM&smid=url-share) — a software professional describes the moment when AI could do the technical work of his job, and what that means for the field.
+
+- **Peggy Noonan** (Wall Street Journal, Feb 13 2026): [Brace Yourself for the AI Tsunami](https://www.wsj.com/opinion/brace-yourself-for-the-ai-tsunami-95a625dc?st=rf7uCU&reflink=desktopwebshare_permalink) — on the warnings from AI creators themselves, including Anthropic CEO Dario Amodei, that this is moving faster than expected and carries risks of "terrible empowerment."
+
+Watch this video for additional context:
+
+{{< video https://youtu.be/QiT2yK-5-yg?si=Hwi1ilQGJ4BTZvrt >}}
+
+:::{.callout-warning}
+## Agentic AI is more than a tool
+
+A hammer doesn't decide where to strike. An agent does. It reads your files, writes code, runs commands, and makes decisions about what to do next. This autonomy is what makes agents powerful—and what makes them dangerous when used carelessly.
+
+Despite the fact that modern models are extremely capable, **they still make mistakes**. They hallucinate references, invent data, produce plausible-looking but incorrect code, and confidently assert things that are wrong.
+
+**In research contexts—writing papers, reporting results, citing literature—you must never trust AI output without verification.** Every claim needs a source. Every number needs a check. Every citation needs to be confirmed as real. The agent is a collaborator, not an authority.
+:::
+
+# Setting things up
+
+Before we start, let's set up a fresh workspace.
+
+## Step 1: Log into GitHub
+
+Go to [github.com](https://github.com) and sign in.
+
+## Step 2: Create a new repository
+
+1\. Click **"+"** → **"New repository"** in the top-right corner
+
+2\. Name it something like `research-initiated`
+
+3\. Check **"Add a README file"**
+
+4\. Click **"Create repository"**
+
+## Step 3: Start a Codespace
+
+1\. In your new repo, click **Code → Codespaces → "+"**
+
+2\. Wait for the Codespace to spin up and open the terminal
+
+## Step 4: Install Claude Code and set your API key
+
+Follow the same setup as [Lecture 11](lecture11.qmd) — Steps 2 through 4:
+
+1\. Install Claude Code:
+
+```{.bash code-copy="true"}
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+2\. Restart the terminal (or run `source ~/.bashrc`)
+
+3\. Set your API key (replace with the key I give you):
+
+```{.bash code-copy="true"}
+export ANTHROPIC_API_KEY="your-key-here"
+```
+
+4\. Configure Claude Code for API key authentication:
+
+```{.bash code-copy="true"}
+mkdir -p ~/.claude
+echo 'echo ${ANTHROPIC_API_KEY}' > ~/.claude/anthropic_key_helper.sh
+chmod +x ~/.claude/anthropic_key_helper.sh
+```
+
+```{.bash code-copy="true"}
+LAST20=$(echo -n "$ANTHROPIC_API_KEY" | tail -c 20)
+
+cat > ~/.claude.json << EOF
+{
+  "customApiKeyResponses": {
+    "approved": ["$LAST20"],
+    "rejected": []
+  },
+  "hasCompletedOnboarding": true
+}
+EOF
+
+cat > ~/.claude/claude.json << EOF
+{
+  "apiKeyHelper": "$HOME/.claude/anthropic_key_helper.sh"
+}
+EOF
+```
+
+5\. Start Claude Code:
+
+```{.bash code-copy="true"}
+claude
+```
+
+# Data analysis with plan files
+
+## Why plan files?
+
+In the previous lecture we typed a single prompt and let Claude Code run. That works for simple tasks, but for data analysis we want something better:
+
+- **Reproducibility**: anyone can read the plan and understand exactly what was done
+- **Iteration**: you can refine the plan, re-run it, and compare results
+- **Documentation**: the plan itself becomes part of your analysis record
+
+Instead of ad-hoc prompts, we'll write **plan files**—structured Markdown documents that describe what we want the agent to do. The agent reads the plan and produces a Jupyter notebook as output.
+
+## The dataset: Anscombe's quartet
+
+[Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) is a famous set of four datasets that have nearly identical summary statistics (mean, variance, correlation, regression line) but look completely different when plotted. It's a classic demonstration of why visualization matters.
+
+## Step 1: Download the data
+
+Open a second terminal in the Codespace so you can keep Claude Code running. Click the **"+"** button in the top-right corner of the terminal panel, or use the shortcut `` Ctrl+Shift+` ``. Then download the data:
+
+```{.bash code-copy="true"}
+curl -o anscombe_quartet.tsv https://raw.githubusercontent.com/nekrut/bda/main/data/anscombe_quartet.tsv
+```
+
+Take a look at what we downloaded:
+
+```{.bash code-copy="true"}
+head anscombe_quartet.tsv
+```
+
+You should see three columns: `dataset`, `x`, and `y`, with four groups (I, II, III, IV).
+
+## Step 2: Write a plan file
+
+We'll write the plan together in class. Create a file called `anscombe_plan.md` in the Codespace editor and describe what you want the analysis to do. Think about:
+
+- What summary statistics to compute for each group
+- What visualizations to create
+- What the output should be (a Jupyter notebook)
+
+## Step 3: Execute the plan
+
+Switch back to the terminal running Claude Code and feed it your plan:
+
+```{.default code-copy="true"}
+Read anscombe_plan.md and execute it. Create a Jupyter notebook with the complete analysis.
+```
+
+Watch what Claude Code does—it reads the plan, writes code, and produces the notebook.
+
+## Step 4: Review and iterate
+
+Open the generated notebook and check:
+
+- Are the summary statistics correct?
+- Do the plots look right?
+- Is the interpretation reasonable?
+
+If something needs fixing, update the plan file and re-run. This is the power of plan-based workflows: you refine the *specification*, not the code.
+
+:::{.callout-note}
+The plan file approach works for any analysis, not just Anscombe's quartet. For your own research, write a plan describing your data, your questions, and your expected outputs. Then let the agent do the implementation while you focus on the science.
+:::
+
+# Literature research with agentic tools
+
+## The challenge
+
+Finding and summarizing relevant papers is one of the most time-consuming parts of research. An agentic tool can help—but only if you verify everything it produces.
+
+In this example, we'll research recent papers on a topic of your choice. I'll demonstrate with the **CDKN2A gene across mammals**—a tumor suppressor gene (also known as p16) that plays a critical role in cell cycle regulation. Studying it across species helps us understand cancer resistance in long-lived mammals.
+
+## Step 1: Write a literature search plan
+
+We'll write this plan together in class. Create a file (e.g., `lit_search_plan.md`) describing:
+
+- What topic you're searching for
+- What search terms to use
+- What information to extract per paper (title, authors, DOI, summary)
+- What verification steps to perform
+
+The key requirement: **every paper found must be verified**. The plan should explicitly instruct the agent to confirm that DOIs resolve, titles match, and authors are correct.
+
+## Step 2: Execute the plan
+
+Feed the plan to Claude Code and let it search for papers and create a literature review document.
+
+:::{.callout-warning}
+## Critical: verify everything
+
+The agent will find papers and write summaries. Some will be real. Some might be hallucinated—fake papers with plausible-sounding titles and author names that don't actually exist.
+
+**You must check every single reference.** Click every DOI. Confirm every title. This is not optional—citing a non-existent paper in a thesis or publication is a serious academic integrity issue.
+:::
+
+## Step 3: Validate the output
+
+For each paper in the generated review:
+
+1\. Click the DOI or URL — does it lead to a real paper?
+
+2\. Does the title match?
+
+3\. Are the authors correct?
+
+4\. Does the summary accurately reflect the paper's findings?
+
+Mark any discrepancies. If a paper doesn't exist, delete it. If details are wrong, correct them.
+
+:::{.callout-note}
+This verification step is not a one-time annoyance—it's the core skill. The agent does the tedious initial search. You do the critical thinking. This division of labor is what makes agentic tools useful rather than dangerous.
+:::
+
+# Summary
+
+## What we covered today
+
+1. **Agentic concepts**: skills, MCP servers, and slash commands—how agents extend their capabilities
+2. **AI safety**: the current moment, risks of agentic AI, and why verification is non-negotiable
+3. **Plan-based data analysis**: writing structured plans for reproducible analysis with Anscombe's quartet
+4. **Literature research**: using agents to find papers while maintaining academic rigor through verification
+
+## Key takeaways
+
+- **Plan files** give you reproducibility and documentation for free—use them instead of ad-hoc prompts
+- **MCP servers** let agents connect to external services through a universal protocol
+- **Skills and slash commands** encode best practices so agents behave consistently
+- **Never trust agent output in research contexts** without independent verification
+- The agent is a **collaborator**, not an authority—you are always responsible for the final result
