@@ -32,6 +32,7 @@ images/*
 !images/test1/
 !images/vcs/
 !images/*.svg
+!images/lecture12_header.png
 
 # Test files (keep answers private)
 lectures/test2*.qmd

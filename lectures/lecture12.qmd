@@ -2,7 +2,7 @@
 title: "Lecture 12: Responsible Use of Coding Agents"
 ---
 
-[![](https://imgs.xkcd.com/comics/machine_learning_2x.png)](https://xkcd.com/1838/)
+![](../images/lecture12_header.png)
 
 Last class we used Claude Code to turn a CV into a Quarto website. Today we go deeper: understanding how agentic tools work under the hood, using them responsibly, and applying them to two real tasks—data analysis and literature research.
 
