@@ -47,6 +47,8 @@ website:
             text: "11. Building a Website with Claude Code"
           - href: lectures/lecture12.qmd
             text: "12. Responsible Use of Coding Agents"
+          - href: lectures/lecture13.ipynb
+            text: "13. Sequence Alignment"
 
 format:
   html:
