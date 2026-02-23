@@ -400,6 +400,12 @@ window.Quarto = {
 <p>All of these rely on the ability to <em>optimally</em> align two (or more) sequences.</p>
 <section id="the-biology-behind-substitutions-and-indels" class="level3">
 <h3 class="anchored" data-anchor-id="the-biology-behind-substitutions-and-indels">The biology behind substitutions and indels</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture13_transitions.png" class="img-fluid figure-img"></p>
+<figcaption>Transitions vs transversions in DNA</figcaption>
+</figure>
+</div>
 <p>Not all mutations are equally likely:</p>
 <ul>
 <li><strong>Transitions</strong> (purine↔︎purine: A↔︎G, or pyrimidine↔︎pyrimidine: C↔︎T) are chemically more similar changes and occur roughly <strong>twice as often</strong> as <strong>transversions</strong> (purine↔︎pyrimidine) in the human genome. In coding regions the ratio is even higher.</li>
@@ -413,6 +419,12 @@ window.Quarto = {
 <h1>Part 1: Edit Distance</h1>
 <section id="what-is-edit-distance" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-edit-distance">What is edit distance?</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture13_edit_ops.png" class="img-fluid figure-img"></p>
+<figcaption>The three edit operations: substitution, insertion, and deletion</figcaption>
+</figure>
+</div>
 <p>The <strong>edit distance</strong> (also called <strong>Levenshtein distance</strong>) between two strings is the minimum number of single-character operations required to transform one string into the other. The allowed operations are:</p>
 <table class="caption-top table">
 <thead>
@@ -564,6 +576,12 @@ y: G C - T A T G C C</code></pre>
 </section>
 <section id="dynamic-programming-to-the-rescue" class="level2">
 <h2 class="anchored" data-anchor-id="dynamic-programming-to-the-rescue">Dynamic programming to the rescue</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture13_dp_matrix.png" class="img-fluid figure-img"></p>
+<figcaption>How the DP matrix is filled — each cell is computed from three neighbors, and the traceback (red arrows) recovers the optimal alignment</figcaption>
+</figure>
+</div>
 <p><strong>Dynamic programming (DP)</strong> avoids redundant computation by building a table of solutions to subproblems. We create an <span class="math inline">\((m+1) \times (n+1)\)</span> matrix <span class="math inline">\(D\)</span> where <span class="math inline">\(D[i][j]\)</span> holds the edit distance between the first <span class="math inline">\(i\)</span> characters of <span class="math inline">\(x\)</span> and the first <span class="math inline">\(j\)</span> characters of <span class="math inline">\(y\)</span>.</p>
 <section id="initialization" class="level3">
 <h3 class="anchored" data-anchor-id="initialization">Initialization</h3>
@@ -945,6 +963,12 @@ y: G C - T A T G C C</code></pre>
 </section>
 <section id="part-4-global-vs.-local-a-side-by-side-comparison" class="level1">
 <h1>Part 4: Global vs.&nbsp;Local — A Side-by-Side Comparison</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture13_global_vs_local.png" class="img-fluid figure-img"></p>
+<figcaption>Global alignment uses the full length of both sequences; local alignment finds the best matching subregion</figcaption>
+</figure>
+</div>
 <p>Let’s see how global and local alignment handle the same pair of sequences.</p>
 <div id="cell-40" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>seq_x <span class="op">=</span> <span class="st">'AACCTTGGCTAACTGG'</span></span>
@@ -1089,6 +1113,12 @@ y: G C - T A T G C C</code></pre>
 </section>
 <section id="part-5b-whole-genome-alignment-pipelines" class="level1">
 <h1>Part 5b: Whole-Genome Alignment Pipelines</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture13_pipeline.png" class="img-fluid figure-img"></p>
+<figcaption>From exact algorithms to whole-genome alignment pipelines</figcaption>
+</figure>
+</div>
 <p>The algorithms above work on individual sequence pairs. Scaling alignment to entire genomes requires elaborate pipelines.</p>
 <section id="the-multiz-pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="the-multiz-pipeline">The MultiZ pipeline</h2>
