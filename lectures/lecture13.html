@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 13: Sequence Alignment – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture13.html">13. Sequence Alignment</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lecture-13-sequence-alignment" id="toc-lecture-13-sequence-alignment" class="nav-link active" data-scroll-target="#lecture-13-sequence-alignment">Lecture 13: Sequence Alignment</a>
+  <ul class="collapse">
+  <li><a href="#why-align-sequences" id="toc-why-align-sequences" class="nav-link" data-scroll-target="#why-align-sequences">Why align sequences?</a>
+  <ul class="collapse">
+  <li><a href="#the-biology-behind-substitutions-and-indels" id="toc-the-biology-behind-substitutions-and-indels" class="nav-link" data-scroll-target="#the-biology-behind-substitutions-and-indels">The biology behind substitutions and indels</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#part-1-edit-distance" id="toc-part-1-edit-distance" class="nav-link" data-scroll-target="#part-1-edit-distance">Part 1: Edit Distance</a>
+  <ul class="collapse">
+  <li><a href="#what-is-edit-distance" id="toc-what-is-edit-distance" class="nav-link" data-scroll-target="#what-is-edit-distance">What is edit distance?</a></li>
+  <li><a href="#edit-distance-vs.-hamming-distance" id="toc-edit-distance-vs.-hamming-distance" class="nav-link" data-scroll-target="#edit-distance-vs.-hamming-distance">Edit distance vs.&nbsp;Hamming distance</a></li>
+  <li><a href="#a-naive-recursive-solution" id="toc-a-naive-recursive-solution" class="nav-link" data-scroll-target="#a-naive-recursive-solution">A naive recursive solution</a>
+  <ul class="collapse">
+  <li><a href="#edit-transcripts" id="toc-edit-transcripts" class="nav-link" data-scroll-target="#edit-transcripts">Edit transcripts</a></li>
+  <li><a href="#memoization-a-stepping-stone" id="toc-memoization-a-stepping-stone" class="nav-link" data-scroll-target="#memoization-a-stepping-stone">Memoization: a stepping stone</a></li>
+  </ul></li>
+  <li><a href="#dynamic-programming-to-the-rescue" id="toc-dynamic-programming-to-the-rescue" class="nav-link" data-scroll-target="#dynamic-programming-to-the-rescue">Dynamic programming to the rescue</a>
+  <ul class="collapse">
+  <li><a href="#initialization" id="toc-initialization" class="nav-link" data-scroll-target="#initialization">Initialization</a></li>
+  <li><a href="#recurrence" id="toc-recurrence" class="nav-link" data-scroll-target="#recurrence">Recurrence</a></li>
+  <li><a href="#visualizing-the-dp-matrix" id="toc-visualizing-the-dp-matrix" class="nav-link" data-scroll-target="#visualizing-the-dp-matrix">Visualizing the DP matrix</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#part-2-global-alignment-needleman-wunsch" id="toc-part-2-global-alignment-needleman-wunsch" class="nav-link" data-scroll-target="#part-2-global-alignment-needleman-wunsch">Part 2: Global Alignment (Needleman-Wunsch)</a>
+  <ul class="collapse">
+  <li><a href="#defining-a-penalty-function" id="toc-defining-a-penalty-function" class="nav-link" data-scroll-target="#defining-a-penalty-function">Defining a penalty function</a>
+  <ul class="collapse">
+  <li><a href="#where-do-these-numbers-come-from" id="toc-where-do-these-numbers-come-from" class="nav-link" data-scroll-target="#where-do-these-numbers-come-from">Where do these numbers come from?</a></li>
+  </ul></li>
+  <li><a href="#the-needleman-wunsch-algorithm" id="toc-the-needleman-wunsch-algorithm" class="nav-link" data-scroll-target="#the-needleman-wunsch-algorithm">The Needleman-Wunsch algorithm</a></li>
+  <li><a href="#traceback-recovering-the-alignment" id="toc-traceback-recovering-the-alignment" class="nav-link" data-scroll-target="#traceback-recovering-the-alignment">Traceback: recovering the alignment</a></li>
+  <li><a href="#try-it-a-longer-example" id="toc-try-it-a-longer-example" class="nav-link" data-scroll-target="#try-it-a-longer-example">Try it: a longer example</a></li>
+  </ul></li>
+  <li><a href="#part-3-local-alignment-smith-waterman" id="toc-part-3-local-alignment-smith-waterman" class="nav-link" data-scroll-target="#part-3-local-alignment-smith-waterman">Part 3: Local Alignment (Smith-Waterman)</a>
+  <ul class="collapse">
+  <li><a href="#key-differences-from-global-alignment" id="toc-key-differences-from-global-alignment" class="nav-link" data-scroll-target="#key-differences-from-global-alignment">Key differences from global alignment</a></li>
+  <li><a href="#scoring-function" id="toc-scoring-function" class="nav-link" data-scroll-target="#scoring-function">Scoring function</a>
+  <ul class="collapse">
+  <li><a href="#why-must-matches-be-positive-and-edits-negative" id="toc-why-must-matches-be-positive-and-edits-negative" class="nav-link" data-scroll-target="#why-must-matches-be-positive-and-edits-negative">Why must matches be positive and edits negative?</a></li>
+  </ul></li>
+  <li><a href="#the-smith-waterman-algorithm" id="toc-the-smith-waterman-algorithm" class="nav-link" data-scroll-target="#the-smith-waterman-algorithm">The Smith-Waterman algorithm</a></li>
+  <li><a href="#traceback-for-local-alignment" id="toc-traceback-for-local-alignment" class="nav-link" data-scroll-target="#traceback-for-local-alignment">Traceback for local alignment</a></li>
+  </ul></li>
+  <li><a href="#part-4-global-vs.-local-a-side-by-side-comparison" id="toc-part-4-global-vs.-local-a-side-by-side-comparison" class="nav-link" data-scroll-target="#part-4-global-vs.-local-a-side-by-side-comparison">Part 4: Global vs.&nbsp;Local — A Side-by-Side Comparison</a>
+  <ul class="collapse">
+  <li><a href="#complexity" id="toc-complexity" class="nav-link" data-scroll-target="#complexity">Complexity</a></li>
+  <li><a href="#heuristic-alternatives" id="toc-heuristic-alternatives" class="nav-link" data-scroll-target="#heuristic-alternatives">Heuristic alternatives</a></li>
+  <li><a href="#glocal-alignment-chaining-local-alignments" id="toc-glocal-alignment-chaining-local-alignments" class="nav-link" data-scroll-target="#glocal-alignment-chaining-local-alignments">Glocal alignment: chaining local alignments</a></li>
+  <li><a href="#space-optimization" id="toc-space-optimization" class="nav-link" data-scroll-target="#space-optimization">Space optimization</a></li>
+  <li><a href="#banded-alignment" id="toc-banded-alignment" class="nav-link" data-scroll-target="#banded-alignment">Banded alignment</a></li>
+  <li><a href="#gap-penalty-models" id="toc-gap-penalty-models" class="nav-link" data-scroll-target="#gap-penalty-models">Gap penalty models</a></li>
+  <li><a href="#approximate-matching" id="toc-approximate-matching" class="nav-link" data-scroll-target="#approximate-matching">Approximate matching</a></li>
+  </ul></li>
+  <li><a href="#part-5b-whole-genome-alignment-pipelines" id="toc-part-5b-whole-genome-alignment-pipelines" class="nav-link" data-scroll-target="#part-5b-whole-genome-alignment-pipelines">Part 5b: Whole-Genome Alignment Pipelines</a>
+  <ul class="collapse">
+  <li><a href="#the-multiz-pipeline" id="toc-the-multiz-pipeline" class="nav-link" data-scroll-target="#the-multiz-pipeline">The MultiZ pipeline</a></li>
+  <li><a href="#progressive-cactus" id="toc-progressive-cactus" class="nav-link" data-scroll-target="#progressive-cactus">Progressive Cactus</a></li>
+  </ul></li>
+  <li><a href="#part-6-putting-it-all-together-interactive-examples" id="toc-part-6-putting-it-all-together-interactive-examples" class="nav-link" data-scroll-target="#part-6-putting-it-all-together-interactive-examples">Part 6: Putting It All Together — Interactive Examples</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a>
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture13.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture13.html">13. Sequence Alignment</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 13: Sequence Alignment</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/nekrut/bda/blob/colab/lectures/lecture13.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Open In Colab</figcaption>
+</figure>
+</div>
+<section id="lecture-13-sequence-alignment" class="level1">
+<h1>Lecture 13: Sequence Alignment</h1>
+<blockquote class="blockquote">
+<p>This lecture draws on material from: - <a href="https://hackmd.io/@nekrut/BkVEKymzn">Sequence Alignment lecture notes</a> by Anton Nekrutenko - <a href="http://www.cs.jhu.edu/~langmea/resources/lecture_notes/11_dp_and_edit_dist_v2.pdf">Dynamic Programming and Edit Distance</a> by Ben Langmead (JHU) - <a href="http://www.cs.jhu.edu/~langmea/resources/lecture_notes/12_global_alignment_v2.pdf">Global Alignment</a> by Ben Langmead (JHU) - <a href="http://www.cs.jhu.edu/~langmea/resources/lecture_notes/13_local_alignment_v2.pdf">Local Alignment</a> by Ben Langmead (JHU) - <a href="http://www.cs.jhu.edu/~langmea/resources/lecture_notes/14_dp_in_less_time_space_v2.pdf">DP in Less Time and Space</a> by Ben Langmead (JHU) - <a href="https://github.com/BenLangmead/comp-genomics-class">Computational Genomics notebooks</a> by Ben Langmead</p>
+</blockquote>
+<p>Sequence alignment is one of the most fundamental operations in bioinformatics. It allows us to compare DNA, RNA, or protein sequences to identify regions of similarity that may reflect functional, structural, or evolutionary relationships. In this lecture we will build up from the concept of <strong>edit distance</strong> to full <strong>global</strong> and <strong>local</strong> alignment algorithms.</p>
+<section id="why-align-sequences" class="level2">
+<h2 class="anchored" data-anchor-id="why-align-sequences">Why align sequences?</h2>
+<p>Almost every task in genomics involves comparing sequences:</p>
+<ul>
+<li><strong>Read mapping</strong> — aligning short sequencing reads to a reference genome</li>
+<li><strong>Variant calling</strong> — finding differences between a sample and a reference</li>
+<li><strong>Homology search</strong> — finding genes in other species that are related to a query (e.g., BLAST)</li>
+<li><strong>Genome assembly</strong> — finding overlaps between reads</li>
+<li><strong>Phylogenetics</strong> — building evolutionary trees from multiple sequence alignments</li>
+</ul>
+<p>All of these rely on the ability to <em>optimally</em> align two (or more) sequences.</p>
+<section id="the-biology-behind-substitutions-and-indels" class="level3">
+<h3 class="anchored" data-anchor-id="the-biology-behind-substitutions-and-indels">The biology behind substitutions and indels</h3>
+<p>Not all mutations are equally likely:</p>
+<ul>
+<li><strong>Transitions</strong> (purine↔︎purine: A↔︎G, or pyrimidine↔︎pyrimidine: C↔︎T) are chemically more similar changes and occur roughly <strong>twice as often</strong> as <strong>transversions</strong> (purine↔︎pyrimidine) in the human genome. In coding regions the ratio is even higher.</li>
+<li><strong>Insertions and deletions (indels)</strong> are less common than substitutions — a single-nucleotide indel occurs approximately every <strong>1,000 bases</strong>, and a two-nucleotide deletion about every <strong>3,000 bases</strong> (Montgomery et al.&nbsp;2013).</li>
+</ul>
+<p>These biological realities directly inform how we design scoring and penalty functions for alignment algorithms.</p>
+</section>
+</section>
+</section>
+<section id="part-1-edit-distance" class="level1">
+<h1>Part 1: Edit Distance</h1>
+<section id="what-is-edit-distance" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-edit-distance">What is edit distance?</h2>
+<p>The <strong>edit distance</strong> (also called <strong>Levenshtein distance</strong>) between two strings is the minimum number of single-character operations required to transform one string into the other. The allowed operations are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>Example</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Substitution</strong> (replace)</td>
+<td><code>A</code> → <code>G</code></td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><strong>Insertion</strong> (gap in first sequence)</td>
+<td><code>-</code> → <code>A</code></td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><strong>Deletion</strong> (gap in second sequence)</td>
+<td><code>A</code> → <code>-</code></td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>For example, to transform <code>ACGT</code> into <code>AGT</code>:</p>
+<pre><code>ACGT
+A-GT    (delete C → cost 1)</code></pre>
+<p>The edit distance is <strong>1</strong>.</p>
+</section>
+<section id="edit-distance-vs.-hamming-distance" class="level2">
+<h2 class="anchored" data-anchor-id="edit-distance-vs.-hamming-distance">Edit distance vs.&nbsp;Hamming distance</h2>
+<p>You may have encountered <strong>Hamming distance</strong> before — it counts the number of positions where two <em>equal-length</em> strings differ (substitutions only). Edit distance is more general because it allows insertions and deletions, so the strings can have different lengths.</p>
+<p><strong>Key property:</strong> For equal-length strings, <span class="math inline">\(\text{editDistance}(x, y) \le \text{hammingDistance}(x, y)\)</span>. This is because edit distance can always “do at least as well” by considering insertions and deletions alongside substitutions.</p>
+<p>A useful lower bound: <span class="math inline">\(\text{editDistance}(x, y) \ge \big| |x| - |y| \big|\)</span> — at minimum you need enough indels to account for any length difference.</p>
+<div id="cell-6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hamming_distance(x, y):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return Hamming distance between two equal-length strings."""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(x) <span class="op">==</span> <span class="bu">len</span>(y), <span class="st">"Strings must be the same length"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(c1 <span class="op">!=</span> c2 <span class="cf">for</span> c1, c2 <span class="kw">in</span> <span class="bu">zip</span>(x, y))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(hamming_distance(<span class="st">'ACGT'</span>, <span class="st">'ACTT'</span>))  <span class="co"># 1 substitution (G→T)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>But what if the strings have different lengths?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hamming_distance(<span class="st">'ACGT'</span>, <span class="st">'AGT'</span>)  <span class="co"># ERROR — different lengths!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is where edit distance comes in.</p>
+</section>
+<section id="a-naive-recursive-solution" class="level2">
+<h2 class="anchored" data-anchor-id="a-naive-recursive-solution">A naive recursive solution</h2>
+<p>We can compute edit distance recursively. The idea: compare the last characters of both strings, and consider all three operations:</p>
+<p><span class="math display">\[
+\text{edDist}(x, y) = \min \begin{cases}
+\text{edDist}(x[:-1], y[:-1]) + \delta(x[-1], y[-1]) &amp; \text{(substitution/match)} \\
+\text{edDist}(x[:-1], y) + 1 &amp; \text{(deletion from } x\text{)} \\
+\text{edDist}(x, y[:-1]) + 1 &amp; \text{(insertion into } x\text{)}
+\end{cases}
+\]</span></p>
+<p>where <span class="math inline">\(\delta(a, b) = 0\)</span> if <span class="math inline">\(a = b\)</span>, and <span class="math inline">\(1\)</span> otherwise.</p>
+<div id="cell-9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ed_recursive(x, y):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute edit distance between x and y recursively (naive)."""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(x) <span class="op">==</span> <span class="dv">0</span>: <span class="cf">return</span> <span class="bu">len</span>(y)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(y) <span class="op">==</span> <span class="dv">0</span>: <span class="cf">return</span> <span class="bu">len</span>(x)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    delt <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> x[<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> y[<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">min</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        ed_recursive(x[:<span class="op">-</span><span class="dv">1</span>], y[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">+</span> delt,  <span class="co"># substitute / match</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        ed_recursive(x[:<span class="op">-</span><span class="dv">1</span>], y) <span class="op">+</span> <span class="dv">1</span>,           <span class="co"># delete from x</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        ed_recursive(x, y[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">+</span> <span class="dv">1</span>            <span class="co"># insert into x</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ed_recursive(<span class="st">'ACGT'</span>, <span class="st">'AGT'</span>))   <span class="co"># 1</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ed_recursive(<span class="st">'shake'</span>, <span class="st">'spear'</span>))  <span class="co"># 4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="edit-transcripts" class="level3">
+<h3 class="anchored" data-anchor-id="edit-transcripts">Edit transcripts</h3>
+<p>An <strong>edit transcript</strong> records the step-by-step operations an “optimal editor” uses to transform one string into another, working left-to-right:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>M</strong></td>
+<td>Match (characters are equal)</td>
+</tr>
+<tr class="even">
+<td><strong>R</strong></td>
+<td>Replace (substitution)</td>
+</tr>
+<tr class="odd">
+<td><strong>D</strong></td>
+<td>Delete from <span class="math inline">\(x\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>I</strong></td>
+<td>Insert into <span class="math inline">\(x\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For example, aligning <code>GCGTATGC</code> to <code>GCTATGCC</code>:</p>
+<pre><code>x: G C G T A T G - C
+   | |   | | | |   |
+y: G C - T A T G C C</code></pre>
+<p>The transcript is <code>MMDMMMMIM</code> and the edit distance is <strong>2</strong> (one D + one I).</p>
+<p>This works, but it is <strong>extremely slow</strong>. The time complexity is exponential — <span class="math inline">\(O(3^{\max(m,n)})\)</span> — because the same subproblems are computed over and over again. For even modestly long sequences (length 9–10), the function makes tens of thousands of redundant calls.</p>
+<p>For example, when comparing two 9-nucleotide sequences, the naive recursive approach computes the subproblem for <code>AC</code> vs <code>AC</code> exactly <strong>48,639 times</strong>. This exponential blowup makes the naive approach completely impractical.</p>
+</section>
+<section id="memoization-a-stepping-stone" class="level3">
+<h3 class="anchored" data-anchor-id="memoization-a-stepping-stone">Memoization: a stepping stone</h3>
+<p>Before jumping to the full DP table, we can fix the naive recursion by <strong>caching</strong> results — this is called <strong>memoization</strong> (top-down dynamic programming):</p>
+<div id="cty7wjt1d44" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ed_memoized(x, y, memo<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Edit distance with memoization (top-down DP)."""</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> memo <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        memo <span class="op">=</span> {}</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(x) <span class="op">==</span> <span class="dv">0</span>: <span class="cf">return</span> <span class="bu">len</span>(y)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(y) <span class="op">==</span> <span class="dv">0</span>: <span class="cf">return</span> <span class="bu">len</span>(x)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="bu">len</span>(x), <span class="bu">len</span>(y)) <span class="kw">in</span> memo:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> memo[(<span class="bu">len</span>(x), <span class="bu">len</span>(y))]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    delt <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> x[<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> y[<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    ans <span class="op">=</span> <span class="bu">min</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        ed_memoized(x[:<span class="op">-</span><span class="dv">1</span>], y[:<span class="op">-</span><span class="dv">1</span>], memo) <span class="op">+</span> delt,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        ed_memoized(x[:<span class="op">-</span><span class="dv">1</span>], y, memo) <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        ed_memoized(x, y[:<span class="op">-</span><span class="dv">1</span>], memo) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    memo[(<span class="bu">len</span>(x), <span class="bu">len</span>(y))] <span class="op">=</span> ans</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ans</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare performance</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> time.time()</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>d1 <span class="op">=</span> ed_recursive(<span class="st">'Shakespeare'</span>, <span class="st">'shake spear'</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> time.time()</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> time.time()</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>d2 <span class="op">=</span> ed_memoized(<span class="st">'Shakespeare'</span>, <span class="st">'shake spear'</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> time.time()</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Naive recursive: distance=</span><span class="sc">{</span>d1<span class="sc">}</span><span class="ss">, time=</span><span class="sc">{</span>t1<span class="op">-</span>t0<span class="sc">:.3f}</span><span class="ss">s"</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Memoized:        distance=</span><span class="sc">{</span>d2<span class="sc">}</span><span class="ss">, time=</span><span class="sc">{</span>t3<span class="op">-</span>t2<span class="sc">:.6f}</span><span class="ss">s"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="dynamic-programming-to-the-rescue" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-programming-to-the-rescue">Dynamic programming to the rescue</h2>
+<p><strong>Dynamic programming (DP)</strong> avoids redundant computation by building a table of solutions to subproblems. We create an <span class="math inline">\((m+1) \times (n+1)\)</span> matrix <span class="math inline">\(D\)</span> where <span class="math inline">\(D[i][j]\)</span> holds the edit distance between the first <span class="math inline">\(i\)</span> characters of <span class="math inline">\(x\)</span> and the first <span class="math inline">\(j\)</span> characters of <span class="math inline">\(y\)</span>.</p>
+<section id="initialization" class="level3">
+<h3 class="anchored" data-anchor-id="initialization">Initialization</h3>
+<ul>
+<li><span class="math inline">\(D[i][0] = i\)</span> — transforming <span class="math inline">\(i\)</span> characters into an empty string requires <span class="math inline">\(i\)</span> deletions</li>
+<li><span class="math inline">\(D[0][j] = j\)</span> — transforming an empty string into <span class="math inline">\(j\)</span> characters requires <span class="math inline">\(j\)</span> insertions</li>
+</ul>
+</section>
+<section id="recurrence" class="level3">
+<h3 class="anchored" data-anchor-id="recurrence">Recurrence</h3>
+<p><span class="math display">\[D[i][j] = \min \begin{cases} D[i-1][j-1] + \delta(x[i-1], y[j-1]) \\ D[i-1][j] + 1 \\ D[i][j-1] + 1 \end{cases}\]</span></p>
+<p>The answer is in <span class="math inline">\(D[m][n]\)</span>.</p>
+<div id="cell-12" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> edit_distance(x, y):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute edit distance between strings x and y using dynamic programming."""</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> np.zeros((<span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Base cases</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    D[<span class="dv">0</span>, <span class="dv">1</span>:] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    D[<span class="dv">1</span>:, <span class="dv">0</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fill the matrix</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            delt <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> x[i<span class="op">-</span><span class="dv">1</span>] <span class="op">!=</span> y[j<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            D[i, j] <span class="op">=</span> <span class="bu">min</span>(</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> delt,  <span class="co"># diagonal: substitution or match</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                D[i<span class="op">-</span><span class="dv">1</span>, j] <span class="op">+</span> <span class="dv">1</span>,       <span class="co"># vertical: deletion</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>                D[i, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span>        <span class="co"># horizontal: insertion</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> D</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> <span class="st">'GCGTATGC'</span>, <span class="st">'TATTGGCTATGCG'</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> edit_distance(x, y)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Edit distance between '</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">' and '</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">': </span><span class="sc">{</span>D[<span class="bu">len</span>(x), <span class="bu">len</span>(y)]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualizing-the-dp-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-the-dp-matrix">Visualizing the DP matrix</h3>
+<p>Let’s write a helper to display the matrix nicely.</p>
+<div id="cell-14" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> display_matrix(D, x, y):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Display a DP matrix as a labeled DataFrame."""</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    cols <span class="op">=</span> [<span class="st">'-'</span>] <span class="op">+</span> <span class="bu">list</span>(y)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> [<span class="st">'-'</span>] <span class="op">+</span> <span class="bu">list</span>(x)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(D, index<span class="op">=</span>rows, columns<span class="op">=</span>cols)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> <span class="st">'ACGT'</span>, <span class="st">'AGT'</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> edit_distance(x, y)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>display_matrix(D, x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Reading the matrix: - The top-left corner (0,0) is the base case: two empty strings → distance 0 - The bottom-right corner gives the final answer - Each cell was computed from the three neighbors: <strong>diagonal</strong> (↖), <strong>above</strong> (↑), and <strong>left</strong> (←)</p>
+</section>
+</section>
+</section>
+<section id="part-2-global-alignment-needleman-wunsch" class="level1">
+<h1>Part 2: Global Alignment (Needleman-Wunsch)</h1>
+<p>Edit distance treats all operations equally (cost = 1). But in biology, not all changes are equally likely:</p>
+<ul>
+<li><strong>Transitions</strong> (purine ↔︎ purine: A↔︎G, or pyrimidine ↔︎ pyrimidine: C↔︎T) are more common than <strong>transversions</strong> (purine ↔︎ pyrimidine)</li>
+<li><strong>Gaps</strong> (insertions/deletions) may be penalized more heavily than substitutions</li>
+</ul>
+<p><strong>Global alignment</strong> aligns two sequences end-to-end using a <strong>penalty/scoring matrix</strong> that reflects these biological realities.</p>
+<p>The <strong>Needleman-Wunsch</strong> algorithm (1970) solves this using dynamic programming — it is essentially edit distance with a more sophisticated cost function.</p>
+<section id="defining-a-penalty-function" class="level2">
+<h2 class="anchored" data-anchor-id="defining-a-penalty-function">Defining a penalty function</h2>
+<p>We define a cost function where: - <strong>Match</strong> = 0 (no penalty) - <strong>Transition</strong> = 2 - <strong>Transversion</strong> = 4 - <strong>Gap</strong> = 8</p>
+<p>This is a <em>penalty-based</em> scheme (lower is better), unlike the <em>score-based</em> scheme we will use for local alignment later.</p>
+<section id="where-do-these-numbers-come-from" class="level3">
+<h3 class="anchored" data-anchor-id="where-do-these-numbers-come-from">Where do these numbers come from?</h3>
+<p>Penalty functions are informed by three complementary criteria:</p>
+<ol type="1">
+<li><strong>Mutational frequency</strong> — penalties inversely related to how often a mutation type occurs in nature (transitions are ~4× more common than expected by chance, so they are penalized less)</li>
+<li><strong>Biochemical interchangeability</strong> — residues that serve similar roles (e.g., both hydrophobic) incur lower penalties when swapped</li>
+<li><strong>Structural impact</strong> — substitutions that preserve 3D fold and function cost less than those that disrupt them</li>
+</ol>
+<p>For DNA, the 0/2/4/8 scheme reflects the empirical observation that substitutions occur ~1 in 1,000 bases while indels occur ~1 in 3,000 bases (so gaps cost ~3× more), and transitions are more common than transversions.</p>
+<p>For <strong>protein</strong> sequences, the widely used <strong>BLOSUM62</strong> matrix encodes log-odds scores for all 20×20 amino acid substitutions, derived from observed substitution patterns in conserved protein blocks. Positive values mean the substitution is more common than expected (benign), while negative values indicate it is rare (disruptive).</p>
+<div id="cell-18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> penalty(xc, yc):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Penalty function for global alignment.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Match=0, transition=2, transversion=4, gap=8."""</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> xc <span class="op">==</span> yc: </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span>                          <span class="co"># match</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> xc <span class="op">==</span> <span class="st">'-'</span> <span class="kw">or</span> yc <span class="op">==</span> <span class="st">'-'</span>: </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">8</span>                          <span class="co"># gap</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    minc, maxc <span class="op">=</span> <span class="bu">min</span>(xc, yc), <span class="bu">max</span>(xc, yc)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (minc <span class="op">==</span> <span class="st">'A'</span> <span class="kw">and</span> maxc <span class="op">==</span> <span class="st">'G'</span>) <span class="kw">or</span> (minc <span class="op">==</span> <span class="st">'C'</span> <span class="kw">and</span> maxc <span class="op">==</span> <span class="st">'T'</span>):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">2</span>                          <span class="co"># transition</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">4</span>                              <span class="co"># transversion</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Demonstrate</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"A vs A (match):       </span><span class="sc">{</span>penalty(<span class="st">'A'</span>, <span class="st">'A'</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"A vs G (transition):  </span><span class="sc">{</span>penalty(<span class="st">'A'</span>, <span class="st">'G'</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"A vs C (transversion):</span><span class="sc">{</span>penalty(<span class="st">'A'</span>, <span class="st">'C'</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"A vs - (gap):         </span><span class="sc">{</span>penalty(<span class="st">'A'</span>, <span class="st">'-'</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="the-needleman-wunsch-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="the-needleman-wunsch-algorithm">The Needleman-Wunsch algorithm</h2>
+<p>The algorithm is almost identical to edit distance DP, but uses our custom penalty function instead of a uniform cost of 1:</p>
+<p><span class="math display">\[D[i][j] = \min \begin{cases} D[i-1][j-1] + \text{penalty}(x[i-1], y[j-1]) &amp; \text{(match/mismatch)} \\ D[i-1][j] + \text{penalty}(x[i-1], \texttt{'-'}) &amp; \text{(gap in } y\text{)} \\ D[i][j-1] + \text{penalty}(\texttt{'-'}, y[j-1]) &amp; \text{(gap in } x\text{)} \end{cases}\]</span></p>
+<p>The optimal <strong>global</strong> alignment score is in <span class="math inline">\(D[m][n]\)</span>.</p>
+<div id="cell-20" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> global_alignment(x, y, s):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Needleman-Wunsch global alignment.</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">        x, y: sequences to align</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">        s: penalty function s(char1, char2) -&gt; cost</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">        D: the filled DP matrix</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">        score: the optimal alignment score (bottom-right cell)</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> np.zeros((<span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize first row and column with gap penalties</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        D[<span class="dv">0</span>, j] <span class="op">=</span> D[<span class="dv">0</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> s(<span class="st">'-'</span>, y[j<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        D[i, <span class="dv">0</span>] <span class="op">=</span> D[i<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>] <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], <span class="st">'-'</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fill the matrix</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>            D[i, j] <span class="op">=</span> <span class="bu">min</span>(</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], y[j<span class="op">-</span><span class="dv">1</span>]),  <span class="co"># diagonal</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                D[i<span class="op">-</span><span class="dv">1</span>, j]   <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], <span class="st">'-'</span>),      <span class="co"># vertical (gap in y)</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                D[i, j<span class="op">-</span><span class="dv">1</span>]   <span class="op">+</span> s(<span class="st">'-'</span>, y[j<span class="op">-</span><span class="dv">1</span>])       <span class="co"># horizontal (gap in x)</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> D, D[<span class="bu">len</span>(x), <span class="bu">len</span>(y)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-21" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="st">'TACGTCAGC'</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="st">'TATGTCATGC'</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>D, score <span class="op">=</span> global_alignment(x, y, penalty)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Global alignment penalty for '</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">' vs '</span><span class="sc">{</span>y<span class="sc">}</span><span class="ss">': </span><span class="sc">{</span>score<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>display_matrix(D, x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The penalty of 10 represents the best possible end-to-end alignment of these two sequences. The low penalty is driven by the many matches.</p>
+</section>
+<section id="traceback-recovering-the-alignment" class="level2">
+<h2 class="anchored" data-anchor-id="traceback-recovering-the-alignment">Traceback: recovering the alignment</h2>
+<p>The DP matrix tells us the <em>score</em>, but not the actual alignment. To recover the alignment, we <strong>trace back</strong> from <span class="math inline">\(D[m][n]\)</span> to <span class="math inline">\(D[0][0]\)</span>, following the path that produced each cell’s value.</p>
+<div id="cell-24" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> global_alignment_traceback(D, x, y, s):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Traceback through a global alignment DP matrix to recover the alignment."""</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    i, j <span class="op">=</span> <span class="bu">len</span>(x), <span class="bu">len</span>(y)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    aligned_x, aligned_y, midline <span class="op">=</span> [], [], []</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">or</span> j <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> j <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> D[i, j] <span class="op">==</span> D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], y[j<span class="op">-</span><span class="dv">1</span>]):</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Diagonal: match or substitution</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            aligned_x.append(x[i<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>            aligned_y.append(y[j<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>            midline.append(<span class="st">'|'</span> <span class="cf">if</span> x[i<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> y[j<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="st">' '</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            i <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span> j <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> i <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> D[i, j] <span class="op">==</span> D[i<span class="op">-</span><span class="dv">1</span>, j] <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], <span class="st">'-'</span>):</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Vertical: gap in y</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            aligned_x.append(x[i<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            aligned_y.append(<span class="st">'-'</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            midline.append(<span class="st">' '</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>            i <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Horizontal: gap in x</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>            aligned_x.append(<span class="st">'-'</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>            aligned_y.append(y[j<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>            midline.append(<span class="st">' '</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            j <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reverse (we traced back from end to start)</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    aligned_x <span class="op">=</span> <span class="st">''</span>.join(<span class="bu">reversed</span>(aligned_x))</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    aligned_y <span class="op">=</span> <span class="st">''</span>.join(<span class="bu">reversed</span>(aligned_y))</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    midline   <span class="op">=</span> <span class="st">''</span>.join(<span class="bu">reversed</span>(midline))</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aligned_x, midline, aligned_y</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>ax, mid, ay <span class="op">=</span> global_alignment_traceback(D, x, y, penalty)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>|</code> symbols mark matching positions. Gaps (<code>-</code>) represent insertions or deletions.</p>
+</section>
+<section id="try-it-a-longer-example" class="level2">
+<h2 class="anchored" data-anchor-id="try-it-a-longer-example">Try it: a longer example</h2>
+<div id="cell-27" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>seq1 <span class="op">=</span> <span class="st">'ATAGACGACATACAGACAGCATACAGACAGCATACAGA'</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>seq2 <span class="op">=</span> <span class="st">'TTTAGCATGCGCATATCAGCAATACAGCAGATACG'</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>D, score <span class="op">=</span> global_alignment(seq1, seq2, penalty)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>ax, mid, ay <span class="op">=</span> global_alignment_traceback(D, seq1, seq2, penalty)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Penalty: </span><span class="sc">{</span>score<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="part-3-local-alignment-smith-waterman" class="level1">
+<h1>Part 3: Local Alignment (Smith-Waterman)</h1>
+<p>Global alignment forces the entire length of both sequences to participate in the alignment. But what if we have two long sequences that share only a short region of high similarity?</p>
+<p><strong>Local alignment</strong> finds the <em>best matching subsequences</em> within two longer sequences. The <strong>Smith-Waterman</strong> algorithm (1981) is the standard method.</p>
+<section id="key-differences-from-global-alignment" class="level3">
+<h3 class="anchored" data-anchor-id="key-differences-from-global-alignment">Key differences from global alignment</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 44%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Global (Needleman-Wunsch)</th>
+<th>Local (Smith-Waterman)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Aligns</td>
+<td>Entire sequences end-to-end</td>
+<td>Best matching subregions</td>
+</tr>
+<tr class="even">
+<td>Scoring</td>
+<td>Penalties (lower is better)</td>
+<td>Rewards (higher is better)</td>
+</tr>
+<tr class="odd">
+<td>Matrix init</td>
+<td>First row/column = gap costs</td>
+<td>First row/column = 0</td>
+</tr>
+<tr class="even">
+<td>Cell minimum</td>
+<td>Can be negative</td>
+<td>Clamped to 0 (reset)</td>
+</tr>
+<tr class="odd">
+<td>Answer location</td>
+<td>Bottom-right cell</td>
+<td>Maximum value anywhere in matrix</td>
+</tr>
+<tr class="even">
+<td>Traceback</td>
+<td>From bottom-right to top-left</td>
+<td>From max cell until reaching 0</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="scoring-function" class="level2">
+<h2 class="anchored" data-anchor-id="scoring-function">Scoring function</h2>
+<p>For local alignment, we use a <strong>reward-based</strong> scoring scheme (higher is better): - <strong>Match</strong> = +2 (reward) - <strong>Mismatch</strong> = -4 (penalty) - <strong>Gap</strong> = -6 (penalty)</p>
+<p>The positive match reward is critical — it allows good regions to accumulate a high score.</p>
+<section id="why-must-matches-be-positive-and-edits-negative" class="level3">
+<h3 class="anchored" data-anchor-id="why-must-matches-be-positive-and-edits-negative">Why must matches be positive and edits negative?</h3>
+<p>The zero floor in Smith-Waterman only works if: - Matches push the score <strong>above</strong> zero (positive bonus) - Mismatches and gaps push it <strong>below</strong> zero (negative penalty)</p>
+<p>If matches were not positive, all cells would equal 0 — the floor would always dominate. If edits were not negative, the floor would never be reached and the algorithm would degenerate to global alignment. The zeros in the matrix act as a “background level” that allows peaks of similarity to rise above.</p>
+<blockquote class="blockquote">
+<p><strong>Note on duality:</strong> Penalty-based (minimize) and reward-based (maximize) scoring produce <em>identical tracebacks</em> for global alignment — they are equivalent formulations related by a sign flip plus constant. However, local alignment <em>requires</em> the reward-based formulation so the zero-floor reset is meaningful.</p>
+</blockquote>
+<div id="cell-30" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> local_score(xc, yc):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Scoring function for local alignment.</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Match=+2, mismatch=-4, gap=-6."""</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> xc <span class="op">==</span> yc:</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">2</span>    <span class="co"># match reward</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> xc <span class="op">==</span> <span class="st">'-'</span> <span class="kw">or</span> yc <span class="op">==</span> <span class="st">'-'</span>:</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">6</span>   <span class="co"># gap penalty</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span><span class="dv">4</span>       <span class="co"># mismatch penalty</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="the-smith-waterman-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="the-smith-waterman-algorithm">The Smith-Waterman algorithm</h2>
+<p>The recurrence is:</p>
+<p><span class="math display">\[V[i][j] = \max \begin{cases} V[i-1][j-1] + s(x[i-1], y[j-1]) &amp; \text{(diagonal)} \\ V[i-1][j] + s(x[i-1], \texttt{'-'}) &amp; \text{(vertical)} \\ V[i][j-1] + s(\texttt{'-'}, y[j-1]) &amp; \text{(horizontal)} \\ 0 &amp; \text{(reset — start a new alignment)} \end{cases}\]</span></p>
+<p>The <strong>0</strong> option is the key innovation: it allows the algorithm to abandon a poor alignment and start fresh, thereby finding local regions of high similarity.</p>
+<div id="cell-32" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> smith_waterman(x, y, s):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Smith-Waterman local alignment.</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">        x, y: sequences to align</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">        s: scoring function s(char1, char2) -&gt; score</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">        V: the filled DP matrix</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">        max_score: the best local alignment score</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> np.zeros((<span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note: first row and column stay 0 (no gap initialization)</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(x) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(y) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            V[i, j] <span class="op">=</span> <span class="bu">max</span>(</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                V[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], y[j<span class="op">-</span><span class="dv">1</span>]),  <span class="co"># diagonal</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                V[i<span class="op">-</span><span class="dv">1</span>, j]   <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], <span class="st">'-'</span>),      <span class="co"># vertical</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                V[i, j<span class="op">-</span><span class="dv">1</span>]   <span class="op">+</span> s(<span class="st">'-'</span>, y[j<span class="op">-</span><span class="dv">1</span>]),       <span class="co"># horizontal</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span>                                   <span class="co"># reset</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    max_score <span class="op">=</span> <span class="bu">int</span>(V.<span class="bu">max</span>())</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> V, max_score</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-33" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="st">'GGTATGCTGGCGCTA'</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="st">'TATATGCGGCGTTT'</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>V, max_score <span class="op">=</span> smith_waterman(x, y, local_score)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best local alignment score: </span><span class="sc">{</span>max_score<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>display_matrix(V, x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Notice the zeros scattered throughout the matrix — these are positions where the alignment “restarted.” The maximum value in the matrix indicates the best local alignment.</p>
+</section>
+<section id="traceback-for-local-alignment" class="level2">
+<h2 class="anchored" data-anchor-id="traceback-for-local-alignment">Traceback for local alignment</h2>
+<p>We start at the cell with the <strong>maximum score</strong> and trace back until we hit a cell with value <strong>0</strong>.</p>
+<div id="cell-36" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sw_traceback(V, x, y, s):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Traceback through a Smith-Waterman matrix to recover the local alignment."""</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the position of the maximum score</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    i, j <span class="op">=</span> np.unravel_index(np.argmax(V), V.shape)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    aligned_x, aligned_y, midline <span class="op">=</span> [], [], []</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Trace back until we hit 0</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> j <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> V[i, j] <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        diag <span class="op">=</span> V[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], y[j<span class="op">-</span><span class="dv">1</span>]) <span class="cf">if</span> (i <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> j <span class="op">&gt;</span> <span class="dv">0</span>) <span class="cf">else</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        vert <span class="op">=</span> V[i<span class="op">-</span><span class="dv">1</span>, j]   <span class="op">+</span> s(x[i<span class="op">-</span><span class="dv">1</span>], <span class="st">'-'</span>)     <span class="cf">if</span> i <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        horz <span class="op">=</span> V[i, j<span class="op">-</span><span class="dv">1</span>]   <span class="op">+</span> s(<span class="st">'-'</span>, y[j<span class="op">-</span><span class="dv">1</span>])     <span class="cf">if</span> j <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> diag <span class="op">&gt;=</span> vert <span class="kw">and</span> diag <span class="op">&gt;=</span> horz:</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>            match <span class="op">=</span> x[i<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> y[j<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>            midline.append(<span class="st">'|'</span> <span class="cf">if</span> match <span class="cf">else</span> <span class="st">' '</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>            aligned_x.append(x[i<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>            aligned_y.append(y[j<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>            i <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span> j <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> vert <span class="op">&gt;=</span> horz:</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>            aligned_x.append(x[i<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>            aligned_y.append(<span class="st">'-'</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>            midline.append(<span class="st">' '</span>)</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>            i <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>            aligned_x.append(<span class="st">'-'</span>)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>            aligned_y.append(y[j<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>            midline.append(<span class="st">' '</span>)</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>            j <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    aligned_x <span class="op">=</span> <span class="st">''</span>.join(<span class="bu">reversed</span>(aligned_x))</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    aligned_y <span class="op">=</span> <span class="st">''</span>.join(<span class="bu">reversed</span>(aligned_y))</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    midline   <span class="op">=</span> <span class="st">''</span>.join(<span class="bu">reversed</span>(midline))</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aligned_x, midline, aligned_y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-37" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ax, mid, ay <span class="op">=</span> sw_traceback(V, x, y, local_score)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best local alignment (score = </span><span class="sc">{</span>max_score<span class="sc">}</span><span class="ss">):</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The local alignment picks out just the high-similarity region, ignoring the poorly-matching flanks.</p>
+</section>
+</section>
+<section id="part-4-global-vs.-local-a-side-by-side-comparison" class="level1">
+<h1>Part 4: Global vs.&nbsp;Local — A Side-by-Side Comparison</h1>
+<p>Let’s see how global and local alignment handle the same pair of sequences.</p>
+<div id="cell-40" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>seq_x <span class="op">=</span> <span class="st">'AACCTTGGCTAACTGG'</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>seq_y <span class="op">=</span> <span class="st">'ACACTGTGA'</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Global alignment ---</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>D_g, score_g <span class="op">=</span> global_alignment(seq_x, seq_y, penalty)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ax_g, mid_g, ay_g <span class="op">=</span> global_alignment_traceback(D_g, seq_x, seq_y, penalty)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Global Alignment (Needleman-Wunsch) ==="</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Penalty: </span><span class="sc">{</span>score_g<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax_g<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid_g<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay_g<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Local alignment ---</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>V_l, score_l <span class="op">=</span> smith_waterman(seq_x, seq_y, local_score)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>ax_l, mid_l, ay_l <span class="op">=</span> sw_traceback(V_l, seq_x, seq_y, local_score)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Local Alignment (Smith-Waterman) ==="</span>)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Score: </span><span class="sc">{</span>score_l<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax_l<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid_l<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay_l<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Notice the difference: - <strong>Global alignment</strong> forces both entire sequences to align, introducing gaps to accommodate the length difference - <strong>Local alignment</strong> finds the best-matching subregion and ignores the rest</p>
+<section id="complexity" class="level2">
+<h2 class="anchored" data-anchor-id="complexity">Complexity</h2>
+<p>Both Needleman-Wunsch and Smith-Waterman have: - <strong>Time complexity</strong>: <span class="math inline">\(O(m \times n)\)</span> — we fill every cell in the matrix - <strong>Space complexity</strong>: <span class="math inline">\(O(m \times n)\)</span> — we store the entire matrix</p>
+<p>For two sequences of length 1,000, that’s a million operations — very manageable. But for genome-scale comparisons (millions of bases), this becomes prohibitively expensive.</p>
+<p>Note that although there are <span class="math inline">\(O(m^2 n^2)\)</span> possible substring pairs to consider, Smith-Waterman solves the local alignment problem in just <span class="math inline">\(O(mn)\)</span> — a remarkable efficiency gain from the DP formulation.</p>
+</section>
+<section id="heuristic-alternatives" class="level2">
+<h2 class="anchored" data-anchor-id="heuristic-alternatives">Heuristic alternatives</h2>
+<p>Because exact alignment is expensive, practical tools use <strong>heuristic</strong> approaches:</p>
+<ul>
+<li><strong>BLAST</strong> — finds short exact matches (seeds), then extends them with DP only in promising regions</li>
+<li><strong>Minimap2</strong> — uses minimizer-based seeding for fast long-read alignment</li>
+<li><strong>BWA-MEM</strong> — uses a suffix array and seed-and-extend for short-read mapping</li>
+<li><strong>LASTZ</strong> — whole genome alignment using seeded DP</li>
+<li><strong>MUMmer</strong> — uses suffix trees for rapid whole-genome comparison</li>
+</ul>
+<p>These tools trade some optimality for enormous speed gains, making it possible to align millions of reads to a genome in minutes.</p>
+</section>
+<section id="glocal-alignment-chaining-local-alignments" class="level2">
+<h2 class="anchored" data-anchor-id="glocal-alignment-chaining-local-alignments">Glocal alignment: chaining local alignments</h2>
+<p>For whole-genome comparison, neither pure global nor pure local alignment is ideal. <strong>Glocal alignment</strong> chains multiple local alignments together to cover the full extent of both genomes while allowing rearrangements, inversions, and unaligned regions. This is the approach used by tools like MUMmer and the chaining step in MultiZ.</p>
+</section>
+<section id="space-optimization" class="level2">
+<h2 class="anchored" data-anchor-id="space-optimization">Space optimization</h2>
+<p>The <span class="math inline">\(O(mn)\)</span> space requirement can be reduced:</p>
+<p><strong>Two-row trick:</strong> To compute the score alone (without traceback), we only need the current and previous rows of the DP matrix. This reduces space to <span class="math inline">\(O(\min(m,n))\)</span>.</p>
+<p><strong>Hirschberg’s algorithm:</strong> Combines the two-row trick with divide-and-conquer to recover the <em>full alignment</em> in <span class="math inline">\(O(\min(m,n))\)</span> space while maintaining <span class="math inline">\(O(mn)\)</span> time. The key insight is to run the forward DP on the first half of one sequence, the reverse DP on the second half, and combine them to find the midpoint of the optimal alignment.</p>
+</section>
+<section id="banded-alignment" class="level2">
+<h2 class="anchored" data-anchor-id="banded-alignment">Banded alignment</h2>
+<p>When two sequences are known to be similar (edit distance ≤ <span class="math inline">\(k\)</span>), we only need to fill a diagonal band of width <span class="math inline">\(2k+1\)</span> in the DP matrix. Cells outside this band cannot be part of the optimal alignment. This reduces both time and space to <span class="math inline">\(O(kn)\)</span> instead of <span class="math inline">\(O(mn)\)</span> — a significant speedup when <span class="math inline">\(k \ll m\)</span>.</p>
+</section>
+<section id="gap-penalty-models" class="level2">
+<h2 class="anchored" data-anchor-id="gap-penalty-models">Gap penalty models</h2>
+<p>In our implementations, each gap position costs the same (“linear” gap penalty). Several gap penalty models exist:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 39%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Formula</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Constant</strong></td>
+<td><span class="math inline">\(g\)</span></td>
+<td>Fixed cost regardless of gap length</td>
+</tr>
+<tr class="even">
+<td><strong>Linear</strong></td>
+<td><span class="math inline">\(k \cdot g\)</span></td>
+<td>Cost proportional to gap length <span class="math inline">\(k\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Affine</strong></td>
+<td><span class="math inline">\(g_\text{open} + k \cdot g_\text{extend}\)</span></td>
+<td>Opening cost + extension cost per position</td>
+</tr>
+<tr class="even">
+<td><strong>Convex</strong></td>
+<td>e.g., <span class="math inline">\(\log(k)\)</span></td>
+<td>Diminishing marginal cost; more biologically realistic</td>
+</tr>
+</tbody>
+</table>
+<p>In biology, a single long insertion/deletion event is more likely than multiple independent ones. <strong>Affine gap penalties</strong> model this with a large opening penalty and a smaller extension penalty, encouraging the algorithm to extend existing gaps rather than open new ones. Simple (linear, affine) models dominate in practice mostly because they can be computed efficiently, not because they are the most biologically realistic.</p>
+</section>
+<section id="approximate-matching" class="level2">
+<h2 class="anchored" data-anchor-id="approximate-matching">Approximate matching</h2>
+<p>A closely related application is <strong>approximate pattern matching</strong>: given a short pattern <span class="math inline">\(P\)</span> and a longer text <span class="math inline">\(T\)</span>, find all positions in <span class="math inline">\(T\)</span> where <span class="math inline">\(P\)</span> occurs with at most <span class="math inline">\(k\)</span> edits. The trick is to initialize the <strong>first row</strong> of the DP matrix to all zeros (instead of <span class="math inline">\(0, 1, 2, \ldots\)</span>), which allows matches to begin at any position in the text without penalty.</p>
+<div id="jiwfze8bjye" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> approximate_match(pattern, text):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Find approximate occurrences of pattern in text using edit distance DP.</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns the DP matrix where the minimum value in the last row gives</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">    the best approximate match score.</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> np.zeros((<span class="bu">len</span>(pattern) <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(text) <span class="op">+</span> <span class="dv">1</span>), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First row is all zeros (matches can start anywhere in text)</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First column: transforming pattern[:i] to empty string costs i deletions</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    D[<span class="dv">1</span>:, <span class="dv">0</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(pattern) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(pattern) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(text) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            delt <span class="op">=</span> <span class="dv">0</span> <span class="cf">if</span> pattern[i<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> text[j<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="dv">1</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            D[i, j] <span class="op">=</span> <span class="bu">min</span>(</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                D[i<span class="op">-</span><span class="dv">1</span>, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> delt,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>                D[i<span class="op">-</span><span class="dv">1</span>, j] <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>                D[i, j<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> D</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>text    <span class="op">=</span> <span class="st">'AACCCTATGTCATTGGA'</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>pattern <span class="op">=</span> <span class="st">'TACGTCAGC'</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> approximate_match(pattern, text)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>best_score <span class="op">=</span> D[<span class="bu">len</span>(pattern), :].<span class="bu">min</span>()</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>best_pos   <span class="op">=</span> D[<span class="bu">len</span>(pattern), :].argmin()</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Pattern: </span><span class="sc">{</span>pattern<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Text:    </span><span class="sc">{</span>text<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Best approximate match ends at position </span><span class="sc">{</span>best_pos<span class="sc">}</span><span class="ss"> with </span><span class="sc">{</span>best_score<span class="sc">}</span><span class="ss"> edits"</span>)</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>display_matrix(D, pattern, text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="part-5b-whole-genome-alignment-pipelines" class="level1">
+<h1>Part 5b: Whole-Genome Alignment Pipelines</h1>
+<p>The algorithms above work on individual sequence pairs. Scaling alignment to entire genomes requires elaborate pipelines.</p>
+<section id="the-multiz-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="the-multiz-pipeline">The MultiZ pipeline</h2>
+<p>MultiZ builds <strong>whole-genome multiple alignments</strong> in several stages:</p>
+<ol type="1">
+<li><strong>Softmasking</strong> — interspersed and tandem repeats are converted to lowercase. Alignment tools skip masked regions for seeding but can extend matches through them.</li>
+<li><strong>Segmentation</strong> — genomes are split into smaller segments for parallel processing.</li>
+<li><strong>Pairwise alignment</strong> — all reference segments are aligned against each query genome using <strong>lastZ</strong> (a pairwise local aligner).</li>
+<li><strong>Chaining and netting</strong> — co-linear alignment blocks are grouped into chains; nets select the best chain at each reference position.</li>
+<li><strong>Multiple alignment</strong> — all pairwise combinations are merged into a multiple alignment using MultiZ.</li>
+<li><strong>Conservation analysis</strong> — the resulting MAF (Multiple Alignment Format) is used to compute <strong>phastCons</strong> (conserved regions) and <strong>phyloP</strong> (per-base conservation scores).</li>
+</ol>
+</section>
+<section id="progressive-cactus" class="level2">
+<h2 class="anchored" data-anchor-id="progressive-cactus">Progressive Cactus</h2>
+<p>An alternative approach uses a <strong>guide tree</strong> to decompose the multiple alignment into parallelizable subtasks:</p>
+<ol type="1">
+<li>At each internal node, a local alignment step (lastZ) and a base-level alignment refinement step (CAF/BAR) are performed.</li>
+<li>Ancestral genomes are reconstructed at internal nodes by aligning ingroup species and using outgroups to resolve orthology.</li>
+<li>Sub-alignments are stitched together into a genome-wide multiple alignment stored in <strong>HAL format</strong>.</li>
+</ol>
+<p>Both pipelines produce alignments that underpin conservation tracks in genome browsers like the UCSC Genome Browser.</p>
+</section>
+</section>
+<section id="part-6-putting-it-all-together-interactive-examples" class="level1">
+<h1>Part 6: Putting It All Together — Interactive Examples</h1>
+<div id="cell-46" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> align_and_display(x, y, method<span class="op">=</span><span class="st">'both'</span>):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Run global and/or local alignment on sequences x and y, and display results."""</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> method <span class="kw">in</span> (<span class="st">'global'</span>, <span class="st">'both'</span>):</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        D, score <span class="op">=</span> global_alignment(x, y, penalty)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        ax, mid, ay <span class="op">=</span> global_alignment_traceback(D, x, y, penalty)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"=== Global Alignment ==="</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Penalty: </span><span class="sc">{</span>score<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>()</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> method <span class="kw">in</span> (<span class="st">'local'</span>, <span class="st">'both'</span>):</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        V, score <span class="op">=</span> smith_waterman(x, y, local_score)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        ax, mid, ay <span class="op">=</span> sw_traceback(V, x, y, local_score)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"=== Local Alignment ==="</span>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Score: </span><span class="sc">{</span>score<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  x: </span><span class="sc">{</span>ax<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"     </span><span class="sc">{</span>mid<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  y: </span><span class="sc">{</span>ay<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-47" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1: Similar sequences</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Example 1: Similar sequences ---"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>align_and_display(<span class="st">'ATCGATCGA'</span>, <span class="st">'ATCAATCGA'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-48" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2: Short match embedded in longer sequence</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Example 2: Shared motif in different contexts ---"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>align_and_display(<span class="st">'XXXATCGATCGAXXX'</span>, <span class="st">'YYYATCGATCGAYYY'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-49" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 3: Very different sequences</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Example 3: Dissimilar sequences ---"</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>align_and_display(<span class="st">'AAAAAGGGGG'</span>, <span class="st">'CCCCCTTTTT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="exercises" class="level1">
+<h1>Exercises</h1>
+<ol type="1">
+<li><p><strong>Modify the penalty function</strong>: Create a penalty function where all mismatches cost the same (say, 3) and gaps cost 5. Re-run the global alignment on <code>TACGTCAGC</code> vs <code>TATGTCATGC</code>. How does the alignment change?</p></li>
+<li><p><strong>Experiment with scoring</strong>: Change the local alignment scoring to match=+1, mismatch=-1, gap=-2. Align <code>AAACCCGATTT</code> vs <code>CCCGAT</code>. Does the algorithm still find the shared region?</p></li>
+<li><p><strong>Approximate matching</strong>: Modify the edit distance function to allow approximate pattern matching — find all positions in a text <span class="math inline">\(T\)</span> where pattern <span class="math inline">\(P\)</span> occurs with at most <span class="math inline">\(k\)</span> edits. <em>Hint</em>: initialize the first row of the DP matrix to all zeros instead of <span class="math inline">\(0, 1, 2, \ldots\)</span></p></li>
+<li><p><strong>Protein alignment</strong>: The concepts extend to protein sequences. Write a scoring function for amino acids where identical amino acids score +3, similar amino acids (e.g., both hydrophobic) score +1, and dissimilar amino acids score -2. Use BLOSUM62 for inspiration.</p></li>
+</ol>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>In this lecture we covered:</p>
+<ol type="1">
+<li><strong>Edit distance</strong> — the minimum number of insertions, deletions, and substitutions to transform one string into another, and the concept of edit transcripts (M/R/D/I)</li>
+<li><strong>Dynamic programming</strong> — from naive recursion to memoization to the bottom-up DP table, avoiding exponential redundant computation</li>
+<li><strong>Global alignment (Needleman-Wunsch)</strong> — aligning sequences end-to-end with biologically motivated penalty functions informed by mutational frequency, biochemical similarity, and structural impact</li>
+<li><strong>Local alignment (Smith-Waterman)</strong> — finding the best-matching subregions between sequences using a reward-based scoring scheme with a zero floor</li>
+<li><strong>Traceback</strong> — recovering the actual alignment from the DP matrix</li>
+<li><strong>Approximate matching</strong> — adapting the DP framework to find approximate pattern occurrences in text</li>
+<li><strong>Practical considerations</strong> — complexity, space optimization (Hirschberg), banded DP, gap penalty models (linear, affine, convex), and heuristic tools (BLAST, minimap2, BWA-MEM)</li>
+<li><strong>Whole-genome alignment</strong> — pipelines like MultiZ and Progressive Cactus that scale pairwise alignment to entire genomes, producing conservation tracks (phastCons, phyloP)</li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture13.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
