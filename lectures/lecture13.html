@@ -300,7 +300,6 @@ window.Quarto = {
   <li><a href="#edit-transcripts" id="toc-edit-transcripts" class="nav-link" data-scroll-target="#edit-transcripts">Edit transcripts</a></li>
   <li><a href="#how-the-recursion-works" id="toc-how-the-recursion-works" class="nav-link" data-scroll-target="#how-the-recursion-works">How the recursion works</a></li>
   <li><a href="#why-is-this-so-slow" id="toc-why-is-this-so-slow" class="nav-link" data-scroll-target="#why-is-this-so-slow">Why is this so slow?</a></li>
-  <li><a href="#memoization-a-stepping-stone" id="toc-memoization-a-stepping-stone" class="nav-link" data-scroll-target="#memoization-a-stepping-stone">Memoization: a stepping stone</a></li>
   </ul></li>
   <li><a href="#dynamic-programming-to-the-rescue" id="toc-dynamic-programming-to-the-rescue" class="nav-link" data-scroll-target="#dynamic-programming-to-the-rescue">Dynamic programming to the rescue</a>
   <ul class="collapse">
@@ -518,10 +517,6 @@ y: G C - T A T G C C</code></pre>
 <h3 class="anchored" data-anchor-id="why-is-this-so-slow">Why is this so slow?</h3>
 <p>Each call spawns three more calls, creating an exponential blowup — roughly <span class="math inline">\(3^{2n}\)</span> calls for strings of length <span class="math inline">\(n\)</span>. The root cause is <strong>redundant computation</strong>: many identical subproblems are solved over and over. For example, when comparing two 9-character sequences, the subproblem <code>ed("AC", "AC")</code> alone is recomputed <strong>48,639 times</strong>.</p>
 <p><strong>Dynamic programming</strong> fixes this by computing each subproblem exactly once and storing the results in a table.</p>
-</section>
-<section id="memoization-a-stepping-stone" class="level3">
-<h3 class="anchored" data-anchor-id="memoization-a-stepping-stone">Memoization: a stepping stone</h3>
-<p>We can fix the exponential blowup by <strong>caching</strong> results of subproblems we’ve already solved — this is called <strong>memoization</strong>. With memoization, <code>ed("Shakespeare", "shake spear")</code> drops from ~4 seconds to under a millisecond. But rather than patching the recursion, we can do even better by building the solution table directly — that’s the DP approach below.</p>
 </section>
 </section>
 <section id="dynamic-programming-to-the-rescue" class="level2">
