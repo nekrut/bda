@@ -657,6 +657,18 @@
     ]
   },
   {
+    "objectID": "lectures/lecture13.html#steps",
+    "href": "lectures/lecture13.html#steps",
+    "title": "Lecture 13: Sequence Alignment",
+    "section": "Steps",
+    "text": "Steps\n\nGo to https://usegalaxy.org in your browser.\nClick “Login or Register” in the top navigation bar.\nClick “Register here” at the bottom of the login form.\nFill in the registration form:\n\nEmail: use your Penn State email (xyz123@psu.edu)\nPassword: choose a strong password\nPublic name: pick a username (this will be visible if you share workflows or histories)\n\nCheck your email for a confirmation message from Galaxy and click the activation link.\nLog in with your new credentials. You should see the Galaxy main interface with three panels:\n\nLeft: tool panel — search and browse available tools\nCenter: main workspace — where tool forms and results appear\nRight: history panel — your datasets and analysis steps\n\nVerify your account works by uploading a small test file:\n\nClick the Upload Data button (⬆ icon at the top of the tool panel)\nChoose Paste/Fetch data\nPaste this short FASTA sequence:\n&gt;test_sequence\nACGTACGTACGTACGT\nClick Start, then Close\nWait for the dataset to turn green in your history — this confirms everything is working\n\n\nThat’s it — you’re ready for the next lecture.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "13. Sequence Alignment"
+    ]
+  },
+  {
     "objectID": "Projects/Project 1.html",
     "href": "Projects/Project 1.html",
     "title": "Take-home project 1",

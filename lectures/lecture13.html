@@ -345,6 +345,10 @@ window.Quarto = {
   </ul></li>
   <li><a href="#why-this-pipeline-matters" id="toc-why-this-pipeline-matters" class="nav-link" data-scroll-target="#why-this-pipeline-matters">Why this pipeline matters</a></li>
   </ul></li>
+  <li><a href="#homework-create-an-account-on-galaxy" id="toc-homework-create-an-account-on-galaxy" class="nav-link" data-scroll-target="#homework-create-an-account-on-galaxy">Homework: Create an Account on Galaxy</a>
+  <ul class="collapse">
+  <li><a href="#steps" id="toc-steps" class="nav-link" data-scroll-target="#steps">Steps</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.dev/nekrut/bda/blob/main/lectures/lecture13.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -3206,6 +3210,43 @@ Alignment 3:  ATGCGTACCTGAAGTTCGGATCCTAAGCCA
 </table>
 <p>LASTZ can align two mammalian-sized genomes in hours rather than the years that Smith-Waterman alone would require — while still using the same DP recurrence at its core.</p>
 <p><em>LASTZ documentation and figures: <a href="https://www.bx.psu.edu/~rsharris/lastz/README.lastz-1.04.15.html">Harris 2007</a>; source code: <a href="https://github.com/lastz/lastz">github.com/lastz/lastz</a>.</em></p>
+</section>
+</section>
+<section id="homework-create-an-account-on-galaxy" class="level1">
+<h1>Homework: Create an Account on Galaxy</h1>
+<p><a href="https://usegalaxy.org">Galaxy</a> is a free, open-source platform for accessible, reproducible, and transparent genomic research. Many of the alignment tools we discussed in this lecture — LASTZ, BWA-MEM, BLAST, Minimap2 — are available as point-and-click tools on Galaxy, so you can run real analyses without writing any code or installing software.</p>
+<p>In the coming lectures we will use Galaxy for hands-on exercises. To prepare, create an account now.</p>
+<section id="steps" class="level2">
+<h2 class="anchored" data-anchor-id="steps">Steps</h2>
+<ol type="1">
+<li><p><strong>Go to <a href="https://usegalaxy.org">https://usegalaxy.org</a></strong> in your browser.</p></li>
+<li><p><strong>Click “Login or Register”</strong> in the top navigation bar.</p></li>
+<li><p><strong>Click “Register here”</strong> at the bottom of the login form.</p></li>
+<li><p><strong>Fill in the registration form:</strong></p>
+<ul>
+<li><strong>Email</strong>: use your Penn State email (<code>xyz123@psu.edu</code>)</li>
+<li><strong>Password</strong>: choose a strong password</li>
+<li><strong>Public name</strong>: pick a username (this will be visible if you share workflows or histories)</li>
+</ul></li>
+<li><p><strong>Check your email</strong> for a confirmation message from Galaxy and <strong>click the activation link</strong>.</p></li>
+<li><p><strong>Log in</strong> with your new credentials. You should see the Galaxy main interface with three panels:</p>
+<ul>
+<li><strong>Left</strong>: tool panel — search and browse available tools</li>
+<li><strong>Center</strong>: main workspace — where tool forms and results appear</li>
+<li><strong>Right</strong>: history panel — your datasets and analysis steps</li>
+</ul></li>
+<li><p><strong>Verify your account works</strong> by uploading a small test file:</p>
+<ul>
+<li><p>Click the <strong>Upload Data</strong> button (⬆ icon at the top of the tool panel)</p></li>
+<li><p>Choose <strong>Paste/Fetch data</strong></p></li>
+<li><p>Paste this short FASTA sequence:</p>
+<pre><code>&gt;test_sequence
+ACGTACGTACGTACGT</code></pre></li>
+<li><p>Click <strong>Start</strong>, then <strong>Close</strong></p></li>
+<li><p>Wait for the dataset to turn <strong>green</strong> in your history — this confirms everything is working</p></li>
+</ul></li>
+</ol>
+<p>That’s it — you’re ready for the next lecture.</p>
 
 
 </section>
