@@ -469,7 +469,7 @@
     "href": "lectures/lecture13.html",
     "title": "Lecture 13: Sequence Alignment",
     "section": "",
-    "text": "Open In Colab\nSequence alignment is one of the most fundamental operations in bioinformatics. It allows us to compare DNA, RNA, or protein sequences to identify regions of similarity that may reflect functional, structural, or evolutionary relationships. In this lecture we will build up from the concept of edit distance to full global and local alignment algorithms.",
+    "text": "Sequence alignment is one of the most fundamental operations in bioinformatics. It allows us to compare DNA, RNA, or protein sequences to identify regions of similarity that may reflect functional, structural, or evolutionary relationships. In this lecture we will build up from the concept of edit distance to full global and local alignment algorithms.",
     "crumbs": [
       "Home",
       "Lectures",
