@@ -39,7 +39,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 10 | Feb 12 | [Publishing Your CV with GitHub Pages](lectures/lecture10.qmd) |
 | 11 | Feb 17 | [Building a Website with Claude Code](lectures/lecture11.qmd) |
 | 12 | Feb 19 | [Responsible Use of Coding Agents](lectures/lecture12.qmd) |
-| 13 | Feb 24 | - |
+| 13 | Feb 24 | [Sequence Alignment](lectures/lecture13.ipynb) |
 | 14 | Feb 26 | - |
 | 15 | Mar 3 | - |
 | 16 | Mar 5 | - |

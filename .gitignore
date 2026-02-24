@@ -34,6 +34,7 @@ images/*
 !images/*.svg
 !images/lecture12_header.png
 !images/lecture13_*.png
+!images/aglobin_*.png
 
 # Test files (keep answers private)
 lectures/test2*.qmd
