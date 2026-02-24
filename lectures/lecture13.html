@@ -562,137 +562,39 @@ y: G C - T A T G C C</code></pre>
 </section>
 <section id="worked-example-edact-at" class="level3">
 <h3 class="anchored" data-anchor-id="worked-example-edact-at">Worked example: <code>ed("ACT", "AT")</code></h3>
-<p>We want the minimum number of edits to turn <code>ACT</code> into <code>AT</code>. The answer is <strong>1</strong> (delete <code>C</code>), but let’s see how the recursion finds it.</p>
-<p><strong>Step 1</strong> — <code>ed("ACT", "AT")</code>: compare last chars <code>T</code> vs <code>T</code> — they match!</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 18%">
-<col style="width: 25%">
-<col style="width: 27%">
-<col style="width: 29%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Branch</th>
-<th>Operation</th>
-<th>Recurse on</th>
-<th>Cost so far</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>match <code>T</code>=<code>T</code></td>
-<td>free, handle both</td>
-<td><code>ed("AC", "A")</code></td>
-<td>+0</td>
-</tr>
-<tr class="even">
-<td>delete <code>T</code> from x</td>
-<td>remove <code>T</code> from end of x</td>
-<td><code>ed("AC", "AT")</code></td>
-<td>+1</td>
-</tr>
-<tr class="odd">
-<td>insert <code>T</code> into x</td>
-<td>append <code>T</code> to match y’s last</td>
-<td><code>ed("ACT", "A")</code></td>
-<td>+1</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Step 2</strong> — follow the match branch into <code>ed("AC", "A")</code>: compare <code>C</code> vs <code>A</code> — they differ.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 18%">
-<col style="width: 25%">
-<col style="width: 27%">
-<col style="width: 29%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Branch</th>
-<th>Operation</th>
-<th>Recurse on</th>
-<th>Cost so far</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>substitute <code>C</code>→<code>A</code> (+1)</td>
-<td>replace last char</td>
-<td><code>ed("A", "")</code></td>
-<td>+1</td>
-</tr>
-<tr class="even">
-<td>delete <code>C</code> from x (+1)</td>
-<td>drop the <code>C</code></td>
-<td><code>ed("A", "A")</code></td>
-<td>+1</td>
-</tr>
-<tr class="odd">
-<td>insert <code>A</code> into x (+1)</td>
-<td>append <code>A</code> to match y’s last</td>
-<td><code>ed("AC", "")</code></td>
-<td>+1</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Step 3</strong> — follow the delete branch into <code>ed("A", "A")</code>: compare <code>A</code> vs <code>A</code> — match!</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Branch</th>
-<th>Operation</th>
-<th>Recurse on</th>
-<th>Cost so far</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>match <code>A</code>=<code>A</code></td>
-<td>free</td>
-<td><code>ed("", "")</code></td>
-<td>+0</td>
-</tr>
-<tr class="even">
-<td>delete <code>A</code> from x (+1)</td>
-<td></td>
-<td><code>ed("", "A")</code></td>
-<td>+1</td>
-</tr>
-<tr class="odd">
-<td>insert <code>A</code> into x (+1)</td>
-<td></td>
-<td><code>ed("A", "")</code></td>
-<td>+1</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Step 4</strong> — <code>ed("", "")</code>: both strings empty → cost <strong>0</strong>. Done!</p>
-<p>Now unwind the results. At each level, the three values inside <code>min(...)</code> correspond to the three branches — substitute/match, delete, insert — in that order:</p>
-<pre><code>ed("", "")    = 0       (base case: both strings empty)
-
-ed("A", "A")  → compare ‘A’ vs ‘A’: match! (delt=0)
-  substitute/match: ed("","")  + 0 = 0+0 = 0   ← winner
-  delete ‘A’:       ed("","A") + 1 = 1+1 = 2
-  insert ‘A’:       ed("A","") + 1 = 1+1 = 2
-  = min(0, 2, 2) = 0
-
-ed("AC", "A") → compare ‘C’ vs ‘A’: differ (delt=1)
-  substitute C→A:   ed("A","") + 1 = 1+1 = 2
-  delete ‘C’:       ed("A","A")+ 1 = 0+1 = 1   ← winner
-  insert ‘A’:       ed("AC","")+ 1 = 2+1 = 3
-  = min(2, 1, 3) = 1
-
-ed("ACT","AT") → compare ‘T’ vs ‘T’: match! (delt=0)
-  match T=T:        ed("AC","A") + 0 = 1+0 = 1 ← winner
-  delete ‘T’:       ed("AC","AT")+ 1 = ?+1
-  insert ‘T’:       ed("ACT","A")+ 1 = ?+1
-  = min(1, ?, ?) = 1  (other branches not needed to beat 1)</code></pre>
-<p>The optimal path was: <strong>match <code>T</code></strong> → <strong>delete <code>C</code></strong> → <strong>match <code>A</code></strong> → done. This corresponds to the alignment:</p>
+<p>We want the minimum number of edits to turn <code>ACT</code> into <code>AT</code>. The answer is <strong>1</strong> (delete <code>C</code>), but let’s trace how the recursion finds it. Remember: the algorithm evaluates <strong>all three branches</strong> at every step, not just the one that turns out to be optimal.</p>
+<p>The full recursion tree looks like this (we only expand the branches we need to reach all base cases along the optimal path, marking the others with <code>...</code>):</p>
+<pre><code>ed("ACT","AT")  compare T vs T → match (delt=0)
+├─ match:  ed("AC","A") + 0    compare C vs A → differ (delt=1)
+│  ├─ sub:    ed("A","") + 1   base case: y empty → return len(x)=1
+│  │          result: 1 + 1 = 2
+│  ├─ delete: ed("A","A") + 1  compare A vs A → match (delt=0)
+│  │  ├─ match:  ed("","") + 0   base case: both empty → return 0
+│  │  │          result: 0 + 0 = 0
+│  │  ├─ delete: ed("","A") + 1  base case: x empty → return len(y)=1
+│  │  │          result: 1 + 1 = 2
+│  │  └─ insert: ed("A","") + 1  base case: y empty → return len(x)=1
+│  │             result: 1 + 1 = 2
+│  │  → min(0, 2, 2) = 0
+│  │  result: 0 + 1 = 1
+│  └─ insert: ed("AC","") + 1  base case: y empty → return len(x)=2
+│             result: 2 + 1 = 3
+│  → min(2, 1, 3) = 1
+│  result: 1 + 0 = 1
+├─ delete: ed("AC","AT") + 1   ... (other branch, evaluated but not shown)
+└─ insert: ed("ACT","A") + 1   ... (other branch, evaluated but not shown)
+→ min(1, ..., ...) = 1</code></pre>
+<p>Reading the tree bottom-up:</p>
+<ol type="1">
+<li>The base cases return immediately: <code>ed("","") = 0</code>, <code>ed("","A") = 1</code>, <code>ed("A","") = 1</code>, <code>ed("AC","") = 2</code></li>
+<li><code>ed("A","A")</code>: three branches return 0, 2, 2 → <code>min(0, 2, 2) = 0</code> (match <code>A</code>=<code>A</code> is free)</li>
+<li><code>ed("AC","A")</code>: three branches return 2, 1, 3 → <code>min(2, 1, 3) = 1</code> (deleting <code>C</code> is cheapest)</li>
+<li><code>ed("ACT","AT")</code>: match branch gives 1+0 = 1, which is already optimal</li>
+</ol>
+<p>The winning path was: <strong>match <code>T</code></strong> → <strong>delete <code>C</code></strong> → <strong>match <code>A</code></strong> → done. This corresponds to the alignment:</p>
 <pre><code>x: A C T
 y: A - T</code></pre>
-<p>But notice — the algorithm doesn’t just explore this one path. It tries <strong>all three branches at every step</strong>, which means <code>ed("A", "A")</code> and other subproblems get recomputed multiple times. This is what makes it exponentially slow.</p>
+<p>But notice — the algorithm doesn’t just find this one path. It evaluates <strong>all three branches at every level</strong>, including subproblems like <code>ed("AC","AT")</code> and <code>ed("ACT","A")</code> (and all <em>their</em> sub-branches). Even for this tiny example, that’s a lot of redundant work — and it grows exponentially with string length.</p>
 </section>
 <section id="why-is-this-so-slow" class="level3">
 <h3 class="anchored" data-anchor-id="why-is-this-so-slow">Why is this so slow?</h3>
