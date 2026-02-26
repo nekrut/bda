@@ -889,6 +889,900 @@
     ]
   },
   {
+    "objectID": "lectures/lecture14.html",
+    "href": "lectures/lecture14.html",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "",
+    "text": "By the end of this lecture, you will be able to: - Explain why brute-force alignment is impractical for modern sequencing data - Distinguish between mapping and alignment - Build and search substring indexes - Understand hash functions and hash tables in the context of genomics - Describe how BLAST uses word lookup tables to accelerate homology search - Construct and search tries and suffix tries - Explain the relationship between suffix tries, suffix trees, and suffix arrays - Perform the Burrows-Wheeler Transform and understand its properties - Describe how the FM index enables fast, memory-efficient sequence search - Compare and contrast Bowtie2 and BWA-MEM alignment strategies",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#learning-objectives",
+    "href": "lectures/lecture14.html#learning-objectives",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "",
+    "text": "By the end of this lecture, you will be able to: - Explain why brute-force alignment is impractical for modern sequencing data - Distinguish between mapping and alignment - Build and search substring indexes - Understand hash functions and hash tables in the context of genomics - Describe how BLAST uses word lookup tables to accelerate homology search - Construct and search tries and suffix tries - Explain the relationship between suffix tries, suffix trees, and suffix arrays - Perform the Burrows-Wheeler Transform and understand its properties - Describe how the FM index enables fast, memory-efficient sequence search - Compare and contrast Bowtie2 and BWA-MEM alignment strategies",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#a-bit-more-claudification",
+    "href": "lectures/lecture14.html#a-bit-more-claudification",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "A bit more Claudification",
+    "text": "A bit more Claudification\n\n“How Quickly Will A.I. Agents Rip Through the Economy?” – Jack Clark on The Ezra Klein Show (NYT, Feb 24 2026). Jack Clark, co-founder of Anthropic, discusses how AI agents are reshaping work. He notes that Claude is already writing “comfortably the majority” of Anthropic’s own code, and that the value of senior engineers with well-calibrated intuitions is increasing while routine coding tasks are increasingly automated.\nClaude Code Agent Teams documentation. Agent teams let you coordinate multiple Claude Code instances working together – one session acts as team lead, spawning teammates that work independently in their own context windows, communicate with each other, and share a task list.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#introduction-the-challenge-of-large-datasets",
+    "href": "lectures/lecture14.html#introduction-the-challenge-of-large-datasets",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "1. Introduction: The Challenge of Large Datasets",
+    "text": "1. Introduction: The Challenge of Large Datasets\nModern sequencing instruments produce staggering volumes of data. An Illumina NovaSeq 6000 can generate up to 20 billion reads in a single run. Each of those reads must be placed onto a reference genome – for humans, that means searching through \\(3 \\times 10^9\\) base pairs.\n\nWhy Dynamic Programming Fails at Scale\nIn earlier lectures we learned about dynamic programming alignment algorithms like Smith-Waterman and Needleman-Wunsch. These are beautiful algorithms, but they have a critical limitation: time complexity.\nFor a single pairwise alignment of a read of length \\(m\\) against a reference of length \\(n\\):\n\\[T = O(mn)\\]\nThis is fine for comparing two sequences. But what happens at genome scale?\n\n\n\nParameter\nValue\n\n\n\n\nReference genome length (\\(n\\))\n\\(3 \\times 10^9\\) bp (human)\n\n\nNumber of reads (\\(d\\))\n\\(20 \\times 10^9\\) (NovaSeq run)\n\n\nAverage read length (\\(m\\))\n150 bp\n\n\nTotal operations\n\\(d \\times m \\times n\\)\n\n\n\nLet’s compute the total number of operations:\n\\[d \\times m \\times n = 20 \\times 10^9 \\times 150 \\times 3 \\times 10^9 = 9 \\times 10^{21}\\]\nThat is 9 sextillion operations. Even at \\(10^9\\) operations per second per CPU core, this would require:\n\\[\\frac{9 \\times 10^{21}}{10^9 \\times 3.15 \\times 10^7} \\approx 285,000 \\text{ CPU-years}\\]\nOn a cluster of 1,000 CPUs, this would still take over 285 years. Clearly, we cannot align every read against the entire genome using dynamic programming.\n\n\n\n\n\n\nImportantKey Insight\n\n\n\nWe need a fundamentally different strategy. Instead of comparing every read against every position in the genome, we need a way to jump directly to the most promising locations. This is the idea behind indexing.\n\n\nThe rest of this lecture traces the intellectual journey from simple indexes to the sophisticated data structures used by modern aligners like Bowtie2 and BWA-MEM.\n\n\n\n\n\n\nNoteRoadmap\n\n\n\nHere is the path we will follow – each step motivated by limitations of the previous one:\n\n\n\nStep\nData Structure / Tool\nLimitation it addresses\n\n\n\n\n1\nBrute Force\n(baseline – too slow)\n\n\n2\nSubstring Index\n(fixed k, many false hits)\n\n\n3\nHash Tables\n(fast lookup for k-mers)\n\n\n4\nBLAST\n(word lookup + extend – fast homology search)\n\n\n5\nTries\n(tree-based prefix lookup)\n\n\n6\nSuffix Trie\n(any-length query, but O(n²) space)\n\n\n7\nSuffix Tree\n(linear space, but 47 GB for human)\n\n\n8\nSuffix Array\n(12 GB, simpler)\n\n\n9\nBWT\n(compressible and searchable)\n\n\n10\nFM Index\n(~1.25 GB, fast search)\n\n\n11\nBowtie2 / BWA-MEM\n(practical tools you will use)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#mapping-vs.-alignment",
+    "href": "lectures/lecture14.html#mapping-vs.-alignment",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "2. Mapping vs. Alignment",
+    "text": "2. Mapping vs. Alignment\nBefore diving into indexing, let’s clarify two terms that are often confused.\nThe tools we will study in this lecture were shaped by a handful of researchers. Heng Li, a student of Richard Durbin, created BWA, SAMtools, and minimap2 – his tools are used in virtually every genomics study published today. Ben Langmead, a student of Steven Salzberg, developed Bowtie and Bowtie2, among the most widely cited alignment tools in history. And Webb Miller pioneered the foundational sequence alignment algorithms (including BLASTZ and multiz) that made comparative genomics possible. You will encounter their work throughout this lecture.\nHeng Li provides a useful distinction between two terms that are often confused:\n\n\n\n\n\n\n\n\nConcept\nDefinition\nGoal\n\n\n\n\nMapping\nDetermining the most likely genomic region a read originates from\nFind the location\n\n\nAlignment\nDetermining the base-by-base correspondence between read and reference\nFind the exact placement\n\n\n\nMapping is like determining that your sequence likely came from chromosome 17. Alignment is determining the exact base-pair coordinates (e.g., chr17:7,668,402-7,668,551) and finding that there is a G&gt;A substitution at position 120 of the read.\nIn practice, most tools do both: they first map (find candidate locations using an index) and then align (perform local alignment at those locations). This two-phase approach – often called seed-and-extend – is the foundation of nearly all modern read aligners.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#indexing-with-substrings",
+    "href": "lectures/lecture14.html#indexing-with-substrings",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "3. Indexing with Substrings",
+    "text": "3. Indexing with Substrings\n\nThe Inverted Index Concept\nThink about the index at the back of a book. When you want to find where “transcription” is discussed, you don’t read the entire book – you look up the word in the index, which tells you the page numbers. This is an inverted index: given a term, it returns the locations where that term appears.\nWe can apply the same idea to DNA sequences:\n\nForward index: Given a position, what substring is there? (This is just the genome itself.)\nInverted index: Given a substring, where does it occur? (This is what we need for mapping.)\n\n\n\nBuilding an Index from Substrings\nTo create an index from a text \\(T\\), we:\n\nExtract all substrings of a fixed length \\(L\\) (these are called L-mers or k-mers)\nRecord each substring along with the position where it occurs\nOrganize these entries so that lookups are fast\n\nFor example, with text CGTGCCTACTTACTTACAT and \\(L = 5\\):\n\n\n\nPosition\n5-mer\n\n\n\n\n0\nCGTGC\n\n\n1\nGTGCC\n\n\n2\nTGCCT\n\n\n3\nGCCTA\n\n\n…\n…\n\n\n\n\n\nSearching the Index\nTo find where a pattern \\(P\\) occurs:\n\nExtract a substring of length \\(L\\) from \\(P\\)\nLook it up in the index to get candidate positions\nExtend the match at each candidate position to verify the full pattern\n\n\n\nTrade-offs\nThe choice of \\(L\\) (substring length) and the interval between extracted substrings involve trade-offs:\n\n\n\n\n\n\n\n\nParameter\nLarger value\nSmaller value\n\n\n\n\nSubstring length \\(L\\)\nMore specific (fewer false hits), more memory\nLess specific (more false hits), less memory\n\n\nExtraction interval\nFaster indexing, less memory, may miss some matches\nSlower indexing, more memory, more complete\n\n\n\n\n\nSpecificity in Practice\nHow unique are k-mers in real genomes? Here are approximate numbers for human chromosome 1 (about 249 Mb):\n\n\n\nk-mer length\nUnique k-mers\n% of possible\nAverage occurrences\n\n\n\n\n8\n65,536\n100%\n~3,800\n\n\n10\n1,048,372\n99.97%\n~238\n\n\n12\n16,543,411\n98.5%\n~15\n\n\n14\n175,891,774\n65.5%\n~1.4\n\n\n16\n237,533,060\n5.5%\n~1.05\n\n\n\nNotice that even with 16-mers, only about 5.5% of possible 16-mers appear, but almost every one that does appear is unique. This means longer k-mers give us very specific index hits. This is why most aligners use seed lengths of at least 16-22 bp – shorter seeds produce too many spurious hits, overwhelming the extension phase.\n\nInteractive Substring Index Demo\nEnter a text and pattern, set substring length, and see how the index is built and searched.\n\n  \n    Text:\n    \n  \n  \n    Pattern:\n    \n  \n  \n    Length (L):\n    \n  \n  \n    Interval:\n    \n  \n\n\n  Build Index\n  Search Pattern\n  Reset",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#hashing-and-hash-functions",
+    "href": "lectures/lecture14.html#hashing-and-hash-functions",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "4. Hashing and Hash Functions",
+    "text": "4. Hashing and Hash Functions\nBefore we go further with indexing, we need to understand a fundamental computer science concept that underlies fast lookups: hashing. If you have never taken a computer science course, don’t worry – the idea is intuitive once you see it.\n\nWhat is a Hash Function?\nImagine you work in a library and need to file thousands of books so you can find any one instantly. One strategy: assign each book to a numbered shelf based on a simple rule applied to its title. For example, “count the letters in the title and take the remainder when dividing by 100.” Book titles with 312 letters go to shelf 12 (since 312 mod 100 = 12).\nA hash function is exactly this kind of rule. It takes an input (of any size) and converts it to a fixed-size number:\n\\[h: \\text{input} \\rightarrow \\text{integer in range } [0, N)\\]\n\n\nProperties of Good Hash Functions\n\n\n\n\n\n\n\n\nProperty\nWhat it means\nWhy it matters\n\n\n\n\nDeterministic\nSame input always gives same output\nYou can find things again!\n\n\nUniform distribution\nOutputs are spread evenly across the range\nNo shelf gets overcrowded\n\n\nFast to compute\nO(1) or O(k) for k-length input\nThe whole point is speed\n\n\n\n\n\nHow Hash Tables Work\nA hash table (also called a hash map or dictionary) uses a hash function to create a fast lookup structure:\n\nCreate an array of \\(N\\) “buckets”\nTo store a key-value pair: compute \\(h(\\text{key})\\), put the pair in that bucket\nTo retrieve a value: compute \\(h(\\text{key})\\), go directly to that bucket\n\nThe result? O(1) average-case lookup – constant time regardless of how many items are stored. Compare this to searching a sorted list (\\(O(\\log n)\\)) or an unsorted list (\\(O(n)\\)).\n\n\nA Simple DNA Hash Function\nFor DNA k-mers, we can convert each base to a 2-bit number:\n\n\n\nBase\nBinary\n\n\n\n\nA\n00\n\n\nC\n01\n\n\nG\n10\n\n\nT\n11\n\n\n\nSince we use 2 bits per base, each position can hold 4 values (A=0, C=1, G=2, T=3). We can read a k-mer as a base-4 number to get a unique integer. For a 3-mer, the first base is multiplied by \\(4^2 = 16\\), the second by \\(4^1 = 4\\), and the third by \\(4^0 = 1\\):\n\\[h(\\text{ACG}) = 0 \\times 4^2 + 1 \\times 4^1 + 2 \\times 4^0 = 0 + 4 + 2 = 6\\]\nThis is perfect for DNA because it maps every possible k-mer to a unique integer (for small k), and it is extremely fast to compute.\n\n\nCollisions\nWhat happens when two different keys hash to the same bucket? This is called a collision. For our library analogy, two books with titles of the same length get assigned to the same shelf.\nCommon collision resolution strategies:\n\nChaining: Each bucket holds a linked list of all items that hash there\nOpen addressing: If a bucket is full, try the next one (linear probing)\n\nWith a good hash function and a large enough table, collisions are rare and lookups remain fast.\n\n\nWhy This Matters for Genomics\nHash tables are everywhere in bioinformatics:\n\nK-mer counting (jellyfish, KMC): hash each k-mer, increment its count\nSequence indexing (BLAST): hash seed words for fast lookup\nGenome assembly (de Bruijn graphs): hash k-mers to find overlaps\nMinimizers: hash k-mers to select representative seeds\n\n\n\nInteractive Hash Table Demo\nType DNA k-mers to see them hashed and placed in buckets. Watch collisions happen!\n\n  \n    K-mer to insert:\n    \n  \n  \n    Table size:\n    \n  \n  Insert\n  Batch Insert (random)\n  Clear",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#how-blast-works-putting-it-all-together",
+    "href": "lectures/lecture14.html#how-blast-works-putting-it-all-together",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "5. How BLAST Works: Putting It All Together",
+    "text": "5. How BLAST Works: Putting It All Together\nIn the previous lecture we learned about dynamic programming alignment (Smith-Waterman) and the seed-and-extend strategy used by LASTZ. Now let’s look at BLAST (Basic Local Alignment Search Tool) – arguably the most widely used program in all of biology – and see how it combines indexing, lookup tables, and local alignment into a remarkably fast homology search engine.\nBLAST was introduced in 1990 by Altschul et al. and has been cited over 100,000 times. Its key insight: instead of aligning a query against every position in a database, first identify short exact or near-exact matches (seeds), then extend only the promising ones.\n\nThe BLAST Pipeline\nBLAST operates in three stages, each progressively more expensive but applied to fewer candidates:\nStage 1: Word matching (very fast, many hits)\n    ↓  filter\nStage 2: Ungapped extension (fast, fewer hits)\n    ↓  filter\nStage 3: Gapped extension (slow, few hits → final alignments)\n\n\nStage 1: The Word Lookup Table\nThis is where indexing enters the picture. BLAST breaks the query sequence into overlapping words (short subsequences of length \\(w\\)). For protein BLAST (blastp), the default word size is \\(w = 3\\); for nucleotide BLAST (blastn), it is \\(w = 11\\).\nFor a query protein of length \\(m\\), this produces \\(m - w + 1\\) overlapping words:\nQuery:  M  E  T  H  I  O  N  I  N  E\nWords:  MET  ETH  THI  HIO  ION  ONI  NIN  INE\n        (w=3, so 10 - 3 + 1 = 8 words)\nBut here is BLAST’s clever trick: it doesn’t just look for exact word matches. For each query word, BLAST generates a neighborhood – all words that score above a threshold \\(T\\) when compared using a substitution matrix (like BLOSUM62, which you saw in the previous lecture).\nFor example, the word MET might have neighbors like MEA, MES, LET – any 3-mer that scores \\(\\geq T\\) against MET using BLOSUM62. Lowering \\(T\\) increases sensitivity (more neighbors, more potential matches) but slows the search.\n\n\nThe Lookup Table\nAll neighborhood words are organized into a lookup table – essentially a hash table that maps each word to the query positions where it (or one of its neighbors) appears:\n\n\n\nWord\nQuery position(s)\n\n\n\n\nMET\n0\n\n\nMEA\n0\n\n\nLET\n0\n\n\nETH\n1\n\n\n…\n…\n\n\n\nBLAST then scans the database sequence and checks each database word against this lookup table. Because lookup tables provide O(1) access (the same hash table concept from Section 4), this scan is extremely fast – the dominant cost is simply reading the database.\n\nConnection to Section 4 (Hashing): The BLAST lookup table is a direct application of the hash tables we discussed earlier. Each word is hashed to a bucket, and checking whether a database word has a query match is a constant-time hash lookup. This is what makes BLAST so fast: the expensive Smith-Waterman alignment is never run unless the lookup table produces a hit.\n\n\n\nStage 2: Ungapped Extension\nEach lookup table hit (called a seed) is extended in both directions without gaps, computing a running alignment score. Extension continues as long as the score stays close to its running maximum. If the score drops by more than a threshold \\(X\\) below the maximum (the X-drop criterion), extension stops.\nIf the resulting ungapped alignment – called a High-scoring Segment Pair (HSP) – scores above a cutoff, it passes to the next stage. Most seeds are eliminated here.\n\nConnection to Lecture 13: This is exactly the ungapped extension step you saw in the LASTZ pipeline. The X-drop criterion is the same idea.\n\n\n\nStage 3: Gapped Extension\nSurviving HSPs are extended using gapped Smith-Waterman alignment (the full dynamic programming algorithm from Lecture 13). This is the most computationally expensive step, but by this point only a tiny fraction of the database remains as candidates.\nThe final alignments are scored, and statistical significance is assessed using E-values (expected number of alignments with this score or better that would occur by chance in a database of this size).\n\n\nBLAST vs. Newer Aligners\n\n\n\n\n\n\n\n\nFeature\nBLAST\nBowtie2 / BWA-MEM\n\n\n\n\nPrimary use\nQuery vs. database (homology search)\nReads vs. reference genome (mapping)\n\n\nIndex\nLookup table from query words\nFM index of reference genome\n\n\nWord size\n3 (protein), 11 (nucleotide)\n22 (Bowtie2), variable MEMs (BWA-MEM)\n\n\nIndex built on\nQuery sequence\nReference genome (built once)\n\n\nSubstitution matrix\nBLOSUM62 (protein), match/mismatch (DNA)\nMatch/mismatch penalties\n\n\nSensitivity\nHigh (neighborhood words)\nTuned for fast mapping\n\n\nSpeed\nFast for database search\nFaster for read mapping\n\n\n\nThe critical difference: BLAST indexes the query and scans the database, while Bowtie2/BWA-MEM index the reference (once) and map reads against it. When you have billions of short reads to map against a single reference, pre-indexing the reference is far more efficient.\n\nKey Reference: Altschul SF, Gish W, Miller W, Myers EW, Lipman DJ. “Basic local alignment search tool.” Journal of Molecular Biology 215, 403-410 (1990). DOI: 10.1016/S0022-2836(05)80360-2",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#tries",
+    "href": "lectures/lecture14.html#tries",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "6. Tries",
+    "text": "6. Tries\nNow let’s move from hash-based lookups to tree-based data structures. A trie (often pronounced to rhyme with “try” to distinguish it from “tree,” though both pronunciations are used – the name comes from retrieval) is a tree-based data structure where:\n\nEach edge is labeled with a single character\nEach node represents a prefix of some stored key\nThere is at most one outgoing edge per character from any node\nKeys are spelled out along root-to-leaf paths\n\n\nWhy Tries?\nTries give us O(m) lookup time for a query of length \\(m\\) – independent of how many keys are stored. This is ideal for searching patterns in indexed text.\n\nWhy tries matter in biology: Tries are the foundation for tools like Kraken (for taxonomic classification of metagenomic reads), which builds a trie of k-mers labeled with taxonomic IDs to classify millions of reads per minute.\n\n\n\nUsing Tries for Substring Indexing\nWe can build a trie from all substrings of length \\(L\\) extracted from a text \\(T\\):\n\nExtract each L-mer and its position\nInsert each L-mer into the trie, storing position(s) at the leaf\nTo query: walk down the trie following the pattern characters\n\nIf at any point there is no edge matching the next character, the pattern does not exist in the index.\n\n\nInteractive Trie Builder\nEnter a text and substring length to build a trie. Type a pattern in the search field to see the path traced through the trie.\n\n  \n    Text:\n    \n  \n  \n    Substring length:\n    \n  \n  Build Trie\n  \n    Search:\n    \n  \n\n\n\n\n\n\n\n\nStep-by-Step Trie Construction\nWatch how the trie grows as each substring is inserted one at a time. New nodes and edges added at each step are highlighted in green.\n\n\nStep-by-Step Trie Construction\nStep through each substring insertion to see the trie grow incrementally.\n\n  \n    Text:\n    \n  \n  \n    Substring length:\n    \n  \n  Reset\n\n\n  ← Prev\n  Next →\n  ▶ Play\n  Step 0 / 0",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#suffix-tries",
+    "href": "lectures/lecture14.html#suffix-tries",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "7. Suffix Tries",
+    "text": "7. Suffix Tries\nThe substring index approach requires choosing a fixed length \\(L\\). But what if we want to find any substring, of any length? The answer is to index all suffixes of the text. This is directly relevant to genomics: when aligning a read, we don’t know in advance how long the matching region will be (due to mutations, indels, and varying read lengths), so we need an index that can handle queries of any length.\n\nWhat is a Suffix?\nA suffix of a string \\(T\\) is any substring that extends to the end. For $T = $ abaaba:\n\n\n\nIndex\nSuffix\n\n\n\n\n0\nabaaba\n\n\n1\nbaaba\n\n\n2\naaba\n\n\n3\naba\n\n\n4\nba\n\n\n5\na\n\n\n\n\n\nThe Sentinel Character\nWe append a special character $ to the end of the text. The $ is lexicographically smaller than any other character and appears nowhere else. This ensures:\n\nNo suffix is a prefix of another suffix\nEvery suffix ends at a unique leaf in the trie\n\nSo $T = $ abaaba$ has suffixes: abaaba$, baaba$, aaba$, aba$, ba$, a$, $.\n\n\nBuilding a Suffix Trie\nA suffix trie is simply a trie built from all suffixes of \\(T\\). Insert each suffix one by one.\n\n\nOperations on a Suffix Trie\nGiven a suffix trie of text \\(T\\) and a query pattern \\(P\\):\n\nIs \\(P\\) a substring of \\(T\\)? Follow the path for \\(P\\). If you can follow all characters, yes.\nIs \\(P\\) a suffix of \\(T\\)? Follow the path for \\(P\\). The path must end at a node with a $ edge leading to a leaf.\nHow many times does \\(P\\) occur? Follow the path for \\(P\\), then count the number of leaves in the subtree below.\nWhat is the longest repeated substring? Find the deepest internal node (node with multiple children that is not a leaf).\n\n\n\nWorked Example: abaaba$\nLet’s trace through searching for aba in the suffix trie of abaaba$:\n\nStart at root\nFollow edge a – found, continue\nFollow edge b – found, continue\nFollow edge a – found, arrived at a node\n\nSince we followed all characters successfully, aba is a substring. The subtree below has 2 leaves (positions 0 and 3), so aba occurs 2 times.\nNow search for abc:\n\nFollow edge a – found\nFollow edge b – found\nFollow edge c – no such edge! Fall off the trie. abc is not a substring.\n\n\n\nInteractive Suffix Trie\nEnter a short string to build its suffix trie. Search for patterns to see the path traced (green = match, red = fall-off).\n\n  \n    Text (keep to 5-6 chars -- suffix tries grow quadratically!):\n    \n  \n  Build Suffix Trie\n  \n    Search pattern:\n    \n  \n\n\n\n\n\n\n\n\nStep-by-Step Suffix Trie Construction\nWatch each suffix being inserted one at a time. The newest suffix’s path is highlighted in green so you can see how the trie grows with each insertion.\n\n\nStep-by-Step Suffix Trie Construction\nEach step inserts one suffix. Green highlights show nodes added or traversed for the latest suffix.\n\n  \n    Text (keep short!):\n    \n  \n  Reset\n\n\n  ← Prev\n  Next →\n  ▶ Play\n  Step 0 / 0",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#from-tries-to-trees-suffix-trees",
+    "href": "lectures/lecture14.html#from-tries-to-trees-suffix-trees",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "8. From Tries to Trees (Suffix Trees)",
+    "text": "8. From Tries to Trees (Suffix Trees)\n\nThe Problem with Suffix Tries\nSuffix tries are conceptually clean, but they have a major practical problem: size. A suffix trie for a text of length \\(n\\) can have up to \\(O(n^2)\\) nodes. For a genome of 3 billion base pairs, that is simply too much.\n\n\nThe Solution: Collapse Non-Branching Paths\nA suffix tree is obtained by taking a suffix trie and collapsing every path of non-branching nodes into a single edge. Instead of one character per edge, each edge is labeled with a substring.\nFor example, in a suffix trie if you have a chain: root –a–&gt; node1 –b–&gt; node2 –a–&gt; leaf, and node1 and node2 each have only one child, we collapse this to: root –aba–&gt; leaf.\n\n\nProperties of Suffix Trees\n\n\n\nProperty\nSuffix Trie\nSuffix Tree\n\n\n\n\nNodes\n\\(O(n^2)\\)\n\\(O(n)\\)\n\n\nEdges\n\\(O(n^2)\\)\n\\(O(n)\\)\n\n\nEdge labels\nSingle characters\nSubstrings\n\n\nBuild time\n\\(O(n^2)\\)\n\\(O(n)\\) (Ukkonen’s algorithm)\n\n\n\nThe suffix tree has at most \\(2n\\) nodes (for a text of length \\(n\\)), making it linear in size.\n\n\nSame Operations, More Compact\nAll the operations we could do with a suffix trie work on suffix trees too:\n\nCheck if a pattern exists: follow edges, potentially matching partway through an edge\nCount occurrences: count leaves below the match point\nFind longest repeated substring: deepest internal node (counting total characters on path)\n\n\n\nSuffix Trees in Practice: MUMmer\nThe MUMmer tool uses suffix trees to rapidly align whole genomes against each other. It finds Maximal Unique Matches (MUMs) – long stretches that occur exactly once in each genome – as anchors for whole-genome alignment. MUMmer was used to compare the first assembled human genomes and remains the go-to tool for bacterial genome comparisons, capable of aligning two 5 Mb bacterial genomes in seconds.\n\n\nStep-by-Step: From Suffix Trie to Suffix Tree\nWatch the suffix trie being built suffix by suffix, then see it collapse into a suffix tree. This shows both the quadratic growth of the trie and the dramatic compression when non-branching paths are merged.\n\n\nStep-by-Step: Build Suffix Trie, Then Collapse to Tree\nFirst build the suffix trie step by step, then click \"Collapse to Tree\" to watch non-branching paths merge.\n\n  \n    Text:\n    \n  \n  Reset\n\n\n  ← Prev\n  Next →\n  ▶ Play\n  Collapse to Tree\n  Step 0 / 0\n\n\n  \n    Suffix Trie (building...)\n    \n  \n  \n    Suffix Tree (collapsed)\n    \n  \n\n\n\n\n\n\n\nMemory Limitation\nDespite having \\(O(n)\\) nodes, suffix trees have large constant factors. Each node stores pointers, edge labels, and suffix links. In practice, a suffix tree for the human genome requires approximately 47 GB of RAM – feasible on a server, but not ideal.\n\n\nSuffix Trie to Suffix Tree Comparison\nSee a suffix trie and its collapsed suffix tree side by side. Search for patterns in the tree.\n\n  \n    Text:\n    \n  \n  Build Both\n  \n    Search pattern:\n    \n  \n\n\n  \n    Suffix Trie (O(n2) nodes)\n    \n  \n  \n    Suffix Tree (O(n) nodes)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#suffix-arrays",
+    "href": "lectures/lecture14.html#suffix-arrays",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "9. Suffix Arrays",
+    "text": "9. Suffix Arrays\n\nAn Even More Compact Representation\nSuffix trees solve the node-count problem, but they still carry a lot of overhead: pointers, edge labels, suffix links. Can we do better?\nThe trade-off we will accept: suffix arrays give up the \\(O(m)\\) query time of suffix trees, settling for \\(O(m \\log n)\\) with binary search. But the memory savings – from ~47 GB down to ~12 GB for the human genome – make this trade-off worthwhile in practice.\n\nBiological application: Suffix arrays are used internally by many alignment tools and are the basis for the enhanced suffix array used by STAR (the most popular RNA-seq aligner).\n\nA suffix array is a beautifully simple data structure: it is just an array of integers representing the sorted order of all suffixes.\n\n\nConstruction\nGiven text \\(T\\) with sentinel $:\n\nList all suffixes with their starting positions\nSort the suffixes lexicographically\nStore only the starting positions in sorted order\n\nFor $T = $ abaaba$:\n\n\n\nRank\nStarting Position\nSuffix\n\n\n\n\n0\n6\n$\n\n\n1\n5\na$\n\n\n2\n2\naaba$\n\n\n3\n3\naba$\n\n\n4\n0\nabaaba$\n\n\n5\n4\nba$\n\n\n6\n1\nbaaba$\n\n\n\nThe suffix array is: [6, 5, 2, 3, 0, 4, 1]\n\n\nSearching with Binary Search\nSince the suffixes are sorted, we can use binary search to find any pattern in \\(O(m \\log n)\\) time, where \\(m\\) is the pattern length and \\(n\\) is the text length.\nTo check if pattern \\(P\\) occurs:\n\nBinary search for the lexicographic range where \\(P\\) would fall\nAt each step, compare \\(P\\) with the suffix at the current position\nIf found, all suffixes in that range start with \\(P\\)\n\n\n\nMemory\nA suffix array for a text of length \\(n\\) requires just \\(n\\) integers. Using 4 bytes per integer:\n\\[\\text{Human genome}: 3 \\times 10^9 \\times 4 \\text{ bytes} = 12 \\text{ GB}\\]\nThis is a significant improvement over the 47 GB for a suffix tree.\n\n\nRelationship to Suffix Trees\nThere is an elegant connection: if you perform a depth-first traversal of a suffix tree, visiting children in alphabetical order, the order in which you visit the leaves gives you the suffix array.\n\nInteractive Suffix Array\nEnter a text to see the suffix array constructed. Search for a pattern to see binary search in action.\n\n  \n    Text:\n    \n  \n  Build Suffix Array\n  \n    Search pattern:\n    \n  \n  Binary Search",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#burrows-wheeler-transform-bwt",
+    "href": "lectures/lecture14.html#burrows-wheeler-transform-bwt",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "10. Burrows-Wheeler Transform (BWT)",
+    "text": "10. Burrows-Wheeler Transform (BWT)\nWe’ve been building toward this: the BWT is the core data structure inside both Bowtie2 and BWA-MEM – the two aligners you will use most often in practice.\n\n\n\n\n\n\nTipWhy not just use suffix arrays?\n\n\n\nSuffix arrays are compact compared to suffix trees (12 GB vs. 47 GB for the human genome), but 12 GB is still too large to fit in the RAM of most workstations. The BWT achieves something remarkable: it can be compressed to under 1 GB while still supporting fast pattern search. This is why it – not the suffix array directly – became the foundation for practical alignment tools.\n\n\nThe BWT is intimately connected to the suffix array we just studied. The sorted rotations in the BWT matrix are the same as the sorted suffixes – the suffix array gives the starting positions, and the BWT gives the last character of each rotation. The FM index, which we will build in Section 11, exploits this connection to combine the BWT’s compressibility with the suffix array’s position information.\nThe Burrows-Wheeler Transform is one of the most elegant algorithms in computer science. Originally invented for data compression (1994), it turned out to be the key ingredient for modern read aligners. The BWT rearranges a string in a way that is simultaneously compressible, reversible, and searchable.\n\nStep-by-Step Construction\nGiven a string \\(T\\) (with $ appended – recall from Section 7, $ is a sentinel character smaller than all others, ensuring each suffix and each rotation is unique):\n\nWrite all rotations of \\(T\\)\nSort the rotations lexicographically\nTake the last column – this is the BWT\n\nA rotation of a string means moving the first character to the end. So abaaba$ → baaba$a → aaba$ab → and so on, until you cycle back to the original string.\n\n\nWorked Example\nLet $T = $ abaaba$:\nStep 1: All rotations\n\n\n\nRotation\n\n\n\n\nabaaba$\n\n\nbaaba$a\n\n\naaba$ab\n\n\naba$aba\n\n\nba$abaa\n\n\na$abaab\n\n\n$abaaba\n\n\n\nStep 2: Sort lexicographically\n\n\n\nRow\nSorted Rotation\nFirst\nLast\n\n\n\n\n0\n$abaaba\n$\na\n\n\n1\na$abaab\na\nb\n\n\n2\naaba$ab\na\nb\n\n\n3\naba$aba\na\na\n\n\n4\nabaaba$\na\n$\n\n\n5\nba$abaa\nb\na\n\n\n6\nbaaba$a\nb\na\n\n\n\nStep 3: The BWT is the last column: abba$aa\n\n\nThree Remarkable Properties\n\nProperty 1: Compressible\nThe BWT tends to group identical characters together. In our example, abba$aa has runs of repeated characters. This makes it highly amenable to run-length encoding – a key property for compression (used in bzip2).\n\n\nProperty 2: Reversible\nDespite appearing to scramble the text, the BWT can be perfectly reversed to recover the original text. This uses the LF mapping property.\n\n\nProperty 3: Searchable\nThe BWT supports fast pattern search without decompressing – this is what makes it useful for genomics.\n\n\n\nThe LF Mapping Property\nThe LF mapping states: the \\(i\\)-th occurrence of character \\(c\\) in the Last column (L) corresponds to the \\(i\\)-th occurrence of \\(c\\) in the First column (F).\nConcrete example – tracing one character step by step:\nLook at row 0 of our BWT matrix. The L column has a at row 0. This is the 1st a in L (scanning top to bottom). By the LF mapping, it maps to the 1st a in F – which is at row 1.\n         F               L\nRow 0:   $  abaaba       a  ← 1st 'a' in L  ──→  maps to 1st 'a' in F (row 1)\nRow 1:   a  $abaab       b\nRow 2:   a  aba$ab       b\nRow 3:   a  ba$aba       a  ← 2nd 'a' in L  ──→  maps to 2nd 'a' in F (row 2)\nRow 4:   a  baaba$       $\nRow 5:   b  a$abaa       a  ← 3rd 'a' in L  ──→  maps to 3rd 'a' in F (row 3)\nRow 6:   b  aaba$a       a  ← 4th 'a' in L  ──→  maps to 4th 'a' in F (row 4)\nNotice the pattern: the \\(i\\)-th occurrence of any character in L always maps to the \\(i\\)-th occurrence of that same character in F.\n\nWhy does this work? Let’s trace one example and then state the general rule.\nConcrete trace: Look at the 2nd a in L, which is at row 3. Row 3’s rotation is aba$aba. The last character (L) is a, and the rotation that follows this a is ba$aba – which is the rotation at row 3 itself. Now, the 2nd a in F is at row 2, whose rotation is aaba$ab. This rotation also sorts to the same relative position among all a-prefixed rotations.\nThe general argument in three steps:\n\nAll rotations starting with a form a contiguous block in the sorted matrix (rows 1-4 in F). Within this block, they are sorted by what comes after the leading a.\nEach a in L represents the character just before its row’s rotation. The rotation that follows each of these a’s is a complete rotation of the original text.\nSorting these “following rotations” gives the same relative order as sorting the F-block, because it’s the same set of strings. So the 1st a in L and the 1st a in F refer to the same occurrence, the 2nd to the 2nd, and so on.\n\nThis holds for every character, not just a.\n\n\n\nReversing the BWT\nUsing LF mapping, we can recover the original text:\n\nStart at the row containing $ in the F column (row 0)\nRead character from L column: a\nUse LF mapping to jump to the corresponding row\nRepeat until $ is reached\nRead characters in reverse to get the original text\n\n\nInteractive Burrows-Wheeler Transform\nEnter a string to see the BWT constructed step by step. Then try reversing it and searching for patterns.\n\n  \n    Text:\n    \n  \n  Build BWT\n  Reverse BWT\n\n\n  \n    Search pattern:\n    \n  \n  Search (Backward)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#fm-index",
+    "href": "lectures/lecture14.html#fm-index",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "11. FM Index",
+    "text": "11. FM Index\nThe BWT is powerful, but it lacks one critical piece of information: where in the original text do the matches occur? The BWT tells us how many matches exist (from the range size), but not their positions.\nThe FM index (Ferragina and Manzini, 2000) combines the BWT with auxiliary data structures to create a complete, practical search index.\n\nComponents of the FM Index\n\n\n\n\n\n\n\n\nComponent\nWhat it stores\nSize (human genome)\n\n\n\n\nF column\nJust the counts of each character\nNegligible (~16 bytes)\n\n\nL column (BWT)\nThe Burrows-Wheeler Transform\n~750 MB (with compression)\n\n\nTally/Checkpoint table\nCumulative character counts at intervals\n~400 MB\n\n\nSA sample\nEvery \\(k\\)-th suffix array value\n~100 MB\n\n\nTotal\n\n~1.25 GB\n\n\n\nCompare this to: raw genome (3 GB), suffix array (12 GB), suffix tree (47 GB). The FM index is remarkably compact.\n\n\nHow the Tally Table Works\nInstead of counting characters in L on every query (which would be \\(O(n)\\)), we precompute checkpoints: cumulative counts of each character at regular intervals (say, every 128 rows).\nTo count occurrences of character \\(c\\) in \\(L[0..i]\\): 1. Find the nearest checkpoint before position \\(i\\) 2. Read the precomputed count 3. Scan the few rows between the checkpoint and \\(i\\)\nThis gives us \\(O(1)\\) effective lookup time.\n\n\nHow Position Lookup Works\nThe SA sample stores suffix array values at every \\(k\\)-th position. To find the text position for a BWT match at row \\(i\\):\n\nIf \\(SA[i]\\) is stored, return it directly\nOtherwise, follow LF mapping steps until you reach a stored position\nAdd the number of steps taken\n\nSince we follow at most \\(k\\) LF steps, position lookup is \\(O(k)\\).\n\n\nThe Search Algorithm\nThe idea is beautifully simple: we process the pattern from right to left, one character at a time. Why backward? Because the F column is sorted, so each character narrows our search to a contiguous block of rows. Processing right-to-left means we are always extending a prefix in the sorted rotation matrix – which is exactly what binary search on the suffix array would do, but we achieve it in \\(O(1)\\) per character using the precomputed tables instead of \\(O(\\log n)\\).\nAt each step, we maintain a range \\([lo, hi]\\) in the sorted rotation matrix. This range represents all rows whose corresponding suffixes start with the portion of the pattern we have processed so far. Adding one more character to the left narrows this range using two lookups in our precomputed tables.\nThe full FM index search for pattern \\(P[0..m-1]\\):\nInitialize: lo = 0, hi = n - 1\nFor i = m-1 down to 0:\n    c = P[i]\n    lo = C[c] + Occ(c, lo - 1)\n    hi = C[c] + Occ(c, hi) - 1\n    If lo &gt; hi: pattern not found\nReturn: hi - lo + 1 occurrences\nWhere: - \\(C[c]\\) = number of characters in \\(T\\) that are lexicographically smaller than \\(c\\) (the start of \\(c\\)’s block in F) - \\(Occ(c, i)\\) = number of occurrences of \\(c\\) in \\(L[0..i]\\) (computed using the tally table)\n\nNote: By convention, \\(Occ(c, -1) = 0\\) – there are zero occurrences of any character before position 0. This handles the edge case when \\(lo = 0\\).\n\n\n\nWorked Example: Searching for \"aba\" in abaaba$\nLet’s trace the algorithm on our running example. From the BWT matrix in Section 10:\n\n\n\nRow\nF\nL\nSA\n\n\n\n\n0\n$\na\n6\n\n\n1\na\nb\n5\n\n\n2\na\nb\n2\n\n\n3\na\na\n3\n\n\n4\na\n$\n0\n\n\n5\nb\na\n4\n\n\n6\nb\na\n1\n\n\n\nPrecomputed tables:\n\n\\(C[\\$] = 0\\), \\(C[a] = 1\\), \\(C[b] = 5\\)   (count of characters lexicographically smaller)\n\\(L = [a, b, b, a, \\$, a, a]\\)   (the BWT)\n\nInitialize: \\(lo = 0,\\; hi = 6\\)\nIteration 1 (\\(i = 2\\), \\(c = P[2] =\\) a, the rightmost character):\n\\[lo = C[a] + Occ(a, -1) = 1 + 0 = 1\\] \\[hi = C[a] + Occ(a, 6) - 1 = 1 + 4 - 1 = 4\\]\nRange \\([1, 4]\\): these are the 4 rows whose suffixes start with a.\nIteration 2 (\\(i = 1\\), \\(c = P[1] =\\) b):\n\\(Occ(b, 0)\\): count b in \\(L[0..0] = [a]\\) → 0.   \\(Occ(b, 4)\\): count b in \\(L[0..4] = [a, b, b, a, \\$]\\) → 2.\n\\[lo = C[b] + Occ(b, 0) = 5 + 0 = 5\\] \\[hi = C[b] + Occ(b, 4) - 1 = 5 + 2 - 1 = 6\\]\nRange \\([5, 6]\\): these are the 2 rows whose suffixes start with ba.\nIteration 3 (\\(i = 0\\), \\(c = P[0] =\\) a, the leftmost character):\n\\(Occ(a, 4)\\): count a in \\(L[0..4] = [a, b, b, a, \\$]\\) → 2.   \\(Occ(a, 6)\\): count a in \\(L[0..6]\\) → 4.\n\\[lo = C[a] + Occ(a, 4) = 1 + 2 = 3\\] \\[hi = C[a] + Occ(a, 6) - 1 = 1 + 4 - 1 = 4\\]\nRange \\([3, 4]\\): 2 occurrences found. The suffix array tells us their text positions: \\(SA[3] = 3\\) and \\(SA[4] = 0\\). Indeed, aba appears at position 0 (abaaba$) and position 3 (aba$).\n\nEach iteration took just two table lookups (\\(C\\) and \\(Occ\\)) – no character-by-character scanning. For a genome-scale FM index, searching a 100 bp pattern takes exactly 100 iterations regardless of genome size.\n\n\nInteractive FM Index\nSee the full FM index data structure. Search for a pattern and watch checkpoints and tally lookups highlighted step by step.\n\n  \n    Text:\n    \n  \n  Build FM Index\n  \n    Search pattern:\n    \n  \n  Search",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#bowtie2-algorithm",
+    "href": "lectures/lecture14.html#bowtie2-algorithm",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "12. Bowtie2 Algorithm",
+    "text": "12. Bowtie2 Algorithm\nNow that we understand the FM index, let’s see how modern read aligners use it. Bowtie2 (Langmead & Salzberg, 2012) is one of the most widely used short-read aligners.\n\nOverview\nBowtie2 uses a seed-and-extend strategy:\n\nSeed: Extract short substrings from the read and find exact matches using the FM index\nExtend: Use dynamic programming to extend seeds into full alignments\n\n\n\nHow Bowtie2 Uses the FM Index for Seeding\nEach seed is looked up in the FM index using the backward search from Section 11. The algorithm processes the seed characters from right to left, narrowing the \\([lo, hi]\\) range at each step. If the range is non-empty at the end, the seed has exact matches in the reference, and the suffix array sample provides their genomic positions.\nBowtie2 also allows a small number of mismatches within seeds. It achieves this by trying multiple “seed variants” – backtracking during the FM index search to substitute alternative characters at certain positions. This is more expensive than pure exact matching but catches seeds that differ from the reference by one or two bases.\n\n\nSeed Extraction\nBowtie2 extracts seeds of configurable length (default: 22 bp for end-to-end mode) from the read. Seeds can be extracted at regular intervals along the read.\nFor a 100 bp read with seed length 22 and interval 11:\nRead:   ACGTACGTACGTACGTACGTACGTACGTACGTACGT...\nSeed 1: ACGTACGTACGTACGTACGTAC (pos 0-21)\nSeed 2:            TACGTACGTACGTACGTACGTA (pos 11-32)\nSeed 3:                       CGTACGTACGTACGTACGTAC (pos 22-43)\n...\n\n\nWorked Example: Aligning a Read with a SNP\nConsider a 50 bp read that has a single G→A SNP at position 25:\nReference: ...ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTAC...\nRead:       ACGTACGTACGTACGTACGTACGTAACGTACGTACGTACGTACGTACGTAC\n                                    ^\n                                   SNP (G→A at pos 25)\nBowtie2 extracts seeds (length 22, interval 11):\nSeed 1: ACGTACGTACGTACGTACGTACG  (pos 0-21)  → exact FM index match ✓\nSeed 2: TACGTACGTACGTACGTACGTACG (pos 11-32)  → contains SNP, no exact match ✗\nSeed 3: ACGTAACGTACGTACGTACGTACG (pos 22-43)  → contains SNP, no exact match ✗\nSeed 1 hits the reference. Bowtie2 uses that hit as an anchor and extends the alignment in both directions using dynamic programming. The extension discovers the G→A mismatch at position 25 and produces a full alignment with one penalty.\n\n\nScoring Model\nBowtie2 uses a configurable scoring model:\n\n\n\nEvent\nDefault Score\n\n\n\n\nMatch\n0 (no bonus in end-to-end mode)\n\n\nMismatch\n-6\n\n\nGap open\n-5\n\n\nGap extend\n-3\n\n\nRead gap open\n-5\n\n\nRead gap extend\n-3\n\n\n\n\nWhy does a match score 0? Bowtie2 uses a penalty-based scoring system in end-to-end mode, where the maximum possible score is 0 (a perfect match with no mismatches or gaps). Every error subtracts from this score. This is different from the reward-based scoring you may be used to from Smith-Waterman. In local mode, matches do receive a bonus (+2 by default).\n\n\n\nAlignment Modes\n\n\n\n\n\n\n\n\nMode\nDescription\nUse when\n\n\n\n\nEnd-to-end\nAlign entire read, penalize unaligned ends\nStandard short-read alignment\n\n\nLocal\nAllow soft-clipping of read ends\nReads may have adapter contamination\n\n\n\n\n\nHandling Multimapping and MAPQ\nWhen a read maps to multiple genomic locations, Bowtie2 assigns a mapping quality (MAPQ) score reflecting confidence that the reported position is correct. MAPQ is a Phred-scaled probability: \\(MAPQ = -10 \\log_{10}(P_{\\text{wrong}})\\). A MAPQ of 0 means the read maps equally well to multiple locations; a MAPQ of 42 (Bowtie2’s maximum) means high confidence in a unique placement. Downstream tools like variant callers use MAPQ to weight or filter alignments.\n\n\nParameter Tuning Guide\n\n\n\n\n\n\n\n\nParameter\nDefault\nWhen to change\n\n\n\n\n--seed-len (-L)\n22\nLower (e.g., 16-20) for divergent references or high mutation rates; higher (e.g., 28-32) to increase speed at the cost of sensitivity\n\n\n--seed-interval (-i)\nf(read length)\nLower for higher sensitivity, higher for speed\n\n\n--local\noff\nUse when reads may contain adapter sequence or when you want soft-clipping\n\n\n-N\n0\nSet to 1 to allow one mismatch in seeds (slower but more sensitive)\n\n\n-k\n1 (best)\nIncrease to report multiple alignments (e.g., -k 10 for multimapping analysis)\n\n\n\n\n\nKey Features\n\nFM index for memory-efficient seed finding\nSupports gapped alignment (unlike Bowtie1)\nMultiple alignment modes (best, all valid, up to \\(k\\))\nPaired-end aware – uses mate pair information to improve mapping\nFast for short reads – optimized for reads up to ~250 bp",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#bwa-mem-algorithm",
+    "href": "lectures/lecture14.html#bwa-mem-algorithm",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "13. BWA-MEM Algorithm",
+    "text": "13. BWA-MEM Algorithm\nBWA-MEM (Li, 2013) is the other dominant short-read aligner. It also uses the FM index but with a different seeding strategy.\n\nMaximal Exact Matches (MEMs)\nInstead of fixed-length seeds, BWA-MEM finds Maximal Exact Matches (MEMs): the longest substrings of the read that match the reference exactly.\nA MEM is maximal in the sense that it cannot be extended in either direction without introducing a mismatch.\n\n\nHow MEMs Are Found Using the FM Index\nBWA-MEM finds MEMs by extending the FM index backward search until the match range becomes empty. Starting at each position \\(i\\) in the read:\n\nBegin a backward search from position \\(i\\), processing characters leftward\nAt each step, the \\([lo, hi]\\) range narrows. Track the range size\nWhen the range becomes empty (no matches), stop – the longest match ending at \\(i\\) was the step just before the range emptied\nThen extend rightward from position \\(i\\) as well, checking if the match can grow\nThe resulting longest bidirectional exact match is a MEM\n\nThis is more efficient than it sounds: BWA-MEM processes all positions in a single sweep using the FM index, reusing range information from adjacent positions.\n\n\nSuper-Maximal Exact Matches (SMEMs)\nBWA-MEM further refines MEMs into SMEMs: MEMs that are not contained within any longer MEM. An SMEM is the longest exact match covering each read position.\nConsider aligning a read against a reference where there is a single SNP (T→G) at read position 12:\nReference: ACGTACGTACGT T CGTACGTAC\nRead:      ACGTACGTACGT G CGTACGTAC\n           |           |           |\n           pos 0       pos 12      pos 21\n\nSMEM 1: ACGTACGTACGT  (read pos 0-11,  length 12) — exact match left of SNP\nSMEM 2: CGTACGTAC     (read pos 13-21, length 9)  — exact match right of SNP\nNeither SMEM can be extended without hitting the mismatch at position 12. Together, they cover the entire read except the SNP position – giving BWA-MEM two anchor points for alignment.\n\n\nChaining\nOnce SMEMs are found, BWA-MEM groups them into chains: sets of SMEMs that are collinear (they appear in the same order and with consistent spacing in both the read and the reference).\nRead:        [---SMEM1---]---[--SMEM2--]------[---SMEM3---]\nReference:   [---SMEM1---]---[--SMEM2--]------[---SMEM3---]\n                ↑ same order, consistent gaps → forms one chain\n\nRead:        [---SMEM1---]---[--SMEM2--]\nReference:       [--SMEM2--]---[---SMEM1---]\n                ↑ reversed order → different chains (possible inversion)\nChaining is critical because it distinguishes true alignments from spurious seed hits. A chain of collinear SMEMs strongly suggests a real genomic origin, while isolated seeds may be coincidental matches in repetitive regions.\n\n\nThe BWA-MEM Pipeline\n\nSMEM finding: Use FM index to find all SMEMs (minimum length: 19 bp by default)\nRe-seeding: For very long SMEMs (&gt; 28 bp), re-seed with shorter fragments to handle mismatches within long matching regions\nChaining: Group SMEMs that are collinear (consistent order and spacing) into chains\nSmith-Waterman: Extend the best chains using banded Smith-Waterman dynamic programming to produce full alignments with gaps and mismatches\nPairing: For paired-end reads, resolve pairs using insert-size distribution\n\n\n\nHandling Repetitive Regions\nRepetitive sequences (e.g., Alu elements, LINE-1, centromeric repeats) are a major challenge. A seed from a repetitive region may match thousands of positions. BWA-MEM handles this by:\n\nDropping overrepresented seeds: If an SMEM matches more than 500 positions (configurable with -c), BWA-MEM discards it and relies on neighboring, more specific seeds\nRe-seeding: Long SMEMs in repetitive regions are broken into shorter fragments that may be more specific\nMAPQ scoring: Reads in repetitive regions receive low MAPQ scores, flagging uncertainty for downstream analysis\n\n\n\nKey Features\n\nFlexible read length: Works well from 70 bp to 1 Mbp\nSplit-read alignment: Can align chimeric reads (important for structural variants)\nBetter for longer reads: The MEM seeding strategy scales well with read length\nRobust to errors: Re-seeding handles higher error rates",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#bowtie2-vs.-bwa-mem-comparison",
+    "href": "lectures/lecture14.html#bowtie2-vs.-bwa-mem-comparison",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "14. Bowtie2 vs. BWA-MEM Comparison",
+    "text": "14. Bowtie2 vs. BWA-MEM Comparison\nBoth tools use the FM index at their core, but they differ in strategy and strengths.\n\nSide-by-Side Comparison\n\n\n\n\n\n\n\n\nFeature\nBowtie2\nBWA-MEM\n\n\n\n\nIndex\nFM index (BWT)\nFM index (BWT)\n\n\nSeeding\nFixed-length extracted seeds\nMaximal Exact Matches (MEMs)\n\n\nSeed length\nConfigurable (default 22)\nVariable (adaptive)\n\n\nExtension\nDynamic programming\nBanded Smith-Waterman\n\n\nOptimal read length\n50-250 bp\n70 bp - 1 Mbp\n\n\nGapped alignment\nYes\nYes\n\n\nSplit-read\nLimited\nYes\n\n\nSpeed (short reads)\nVery fast\nFast\n\n\nSpeed (long reads)\nSlower\nBetter\n\n\nMemory\n~3.2 GB (human)\n~5.4 GB (human)\n\n\nRuntime (30x human WGS)\n~2-4 hours\n~2-6 hours\n\n\n\n\n\nWhen to Use Which\n\n\n\n\n\n\n\nScenario\nRecommended Tool\n\n\n\n\nShort Illumina reads (&lt; 250 bp), standard WGS/WES\nEither works well\n\n\nRNA-seq (with splice-aware aligner like HISAT2)\nHISAT2 (Bowtie2 family)\n\n\nLonger reads (PacBio HiFi, Nanopore)\nBWA-MEM (or minimap2)\n\n\nStructural variant detection\nBWA-MEM\n\n\nChIP-seq, ATAC-seq\nBowtie2\n\n\nVery large cohort studies (speed critical)\nBowtie2\n\n\nMixed read lengths\nBWA-MEM\n\n\n\n\n\nPractical Recommendations\n\nFor most standard Illumina sequencing projects, BWA-MEM is the default choice recommended by the GATK Best Practices pipeline. Its MEM-based seeding is robust and efficient across a wide range of read lengths.\n\n\nFor specialized applications like ChIP-seq peak calling, Bowtie2’s scoring model and reporting options (e.g., reporting only unique alignments) may be preferable.\n\n\n\nBowtie2 vs. BWA-MEM: Seeding Strategy Comparison\nSee how the same read is processed differently by each algorithm's seeding approach.Note: This is a simplified visualization. Real MEMs are found by matching against a reference genome using the FM index. Here, we approximate MEMs as contiguous non-N regions to illustrate the concept of variable-length vs. fixed-length seeds.\n\n  \n    Read sequence:\n    \n  \n  \n    Bowtie2 seed length:\n    \n  \n  \n    Min MEM length:\n    \n  \n  Compare\n\n\n\n  \n    Bowtie2 (Fixed Seeds)\n    \n  \n  \n    BWA-MEM (MEMs)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#summary",
+    "href": "lectures/lecture14.html#summary",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "Summary",
+    "text": "Summary\nWe have traced a remarkable intellectual journey:\n\n\n\n\n\n\n\n\n\nData Structure / Tool\nSpace\nQuery Time\nKey Idea\n\n\n\n\nBrute force\nO(1)\nO(mn) per read\nCompare everywhere\n\n\nSubstring index\nO(nL)\nO(L + hits)\nFixed-length k-mers\n\n\nHash table\nO(n)\nO(1) average\nDirect address via hash\n\n\nBLAST\nO(query)\nO(db) scan\nWord lookup table + extend\n\n\nTrie\nO(n L)\nO(m)\nTree-structured prefix lookup\n\n\nSuffix trie\nO(n^2)\nO(m)\nAll suffixes in a trie\n\n\nSuffix tree\nO(n)\nO(m)\nCollapsed suffix trie\n\n\nSuffix array\nO(n)\nO(m log n)\nSorted suffix positions\n\n\nFM index\nO(n) compressed\nO(m)\nBWT + auxiliary tables\n\n\n\nBLAST uses hash-table-based word lookup to speed up homology search against large databases. The FM index goes further: compact storage, fast search, and exact matches in time proportional to the pattern length alone. This is why both Bowtie2 and BWA-MEM – the tools you will use most often for read alignment – are built on top of the FM index rather than BLAST-style lookup tables.\n\n\n\n\n\n\nImportantThe Key Lesson\n\n\n\nIn computational biology, the right data structure can make the difference between an analysis that takes centuries and one that takes minutes. Algorithmic thinking is not a luxury – it is a necessity.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture14.html#references",
+    "href": "lectures/lecture14.html#references",
+    "title": "Lecture 14: Finding Sequence Matches Quickly",
+    "section": "References",
+    "text": "References\n\nAltschul SF, Gish W, Miller W, Myers EW, Lipman DJ. “Basic local alignment search tool.” Journal of Molecular Biology 215, 403-410 (1990). DOI: 10.1016/S0022-2836(05)80360-2\nLangmead B, Salzberg SL. “Fast gapped-read alignment with Bowtie 2.” Nature Methods 9, 357-359 (2012).\nLi H. “Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM.” arXiv:1303.3997 (2013).\nLi H, Durbin R. “Fast and accurate short read alignment with Burrows-Wheeler transform.” Bioinformatics 25, 1754-1760 (2009).\nBurrows M, Wheeler DJ. “A block-sorting lossless data compression algorithm.” Technical Report 124, Digital Equipment Corporation (1994).\nFerragina P, Manzini G. “Opportunistic data structures with applications.” Proceedings of FOCS 2000 (2000).\nLangmead B. Teaching materials and lecture notes, langmead-lab.org/teaching.\nKurtz S et al. “Versatile and open software for comparing large genomes.” Genome Biology 5, R12 (2004). [MUMmer]",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "14. Finding Sequence Matches Quickly"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html",
+    "href": "lectures/lecture11.html",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "",
+    "text": "Last class you published your CV as a GitHub Pages site. Today we’ll use an AI coding agent—Claude Code—to transform that simple page into a full Quarto website with a blog. All from a single prompt.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#claude-code-in-a-codespace",
+    "href": "lectures/lecture11.html#claude-code-in-a-codespace",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Claude Code in a Codespace",
+    "text": "Claude Code in a Codespace\nClaude Code is a CLI tool that runs in the terminal. We’ll install it inside a GitHub Codespace—the same environment you used in lectures 9 and 10. No local installation, no OS differences.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#step-1-open-a-codespace-on-your-cv-repo",
+    "href": "lectures/lecture11.html#step-1-open-a-codespace-on-your-cv-repo",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Step 1: Open a Codespace on your CV repo",
+    "text": "Step 1: Open a Codespace on your CV repo\n1. Go to your cv repo on GitHub\n2. Click Code → Codespaces → “+” (same as lectures 9 and 10)\n3. Open the terminal",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#step-2-install-claude-code",
+    "href": "lectures/lecture11.html#step-2-install-claude-code",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Step 2: Install Claude Code",
+    "text": "Step 2: Install Claude Code\nRun:\ncurl -fsSL https://claude.ai/install.sh | bash\nThen restart the terminal (or run source ~/.bashrc) so claude is on PATH.\nVerify it works:\nclaude --version",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#step-3-set-your-api-key",
+    "href": "lectures/lecture11.html#step-3-set-your-api-key",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Step 3: Set your API key",
+    "text": "Step 3: Set your API key\nI will provide each of you with an Anthropic API key. Run these commands exactly to configure Claude Code to use it without a browser login.\nFirst, set the key (replace your-key-here with the key I gave you):\nexport ANTHROPIC_API_KEY=\"your-key-here\"\nThen create a helper script:\nmkdir -p ~/.claude\necho 'echo ${ANTHROPIC_API_KEY}' &gt; ~/.claude/anthropic_key_helper.sh\nchmod +x ~/.claude/anthropic_key_helper.sh\nThen write the Claude Code config files. Copy-paste this entire block:\nLAST20=$(echo -n \"$ANTHROPIC_API_KEY\" | tail -c 20)\n\ncat &gt; ~/.claude.json &lt;&lt; EOF\n{\n  \"customApiKeyResponses\": {\n    \"approved\": [\"$LAST20\"],\n    \"rejected\": []\n  },\n  \"hasCompletedOnboarding\": true\n}\nEOF\n\ncat &gt; ~/.claude/claude.json &lt;&lt; EOF\n{\n  \"apiKeyHelper\": \"$HOME/.claude/anthropic_key_helper.sh\"\n}\nEOF\nThis tells Claude Code to get the API key from your helper script and skip the browser login.\n\n\n\n\n\n\nWarning\n\n\n\nKeep your API key private. Do not share it, post it on GitHub, or commit it to a repository. Anyone with your key can make API calls billed to the account.\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe export command lasts for the current terminal session only. If you close and reopen the terminal, re-run export ANTHROPIC_API_KEY=\"your-key-here\" before starting Claude Code.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#step-4-start-claude-code",
+    "href": "lectures/lecture11.html#step-4-start-claude-code",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Step 4: Start Claude Code",
+    "text": "Step 4: Start Claude Code\nclaude\nYou’re already in the cv repo directory since the Codespace opened there.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#quarto.yml-the-site-configuration",
+    "href": "lectures/lecture11.html#quarto.yml-the-site-configuration",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "_quarto.yml — the site configuration",
+    "text": "_quarto.yml — the site configuration\nThis is the master config file for your Quarto website. It defines:\n\nProject type: website\nSite title: your name\nNavbar: navigation links (Home, Blog)\nTheme: visual styling (e.g., cosmo, minty, lux)\n\nA typical _quarto.yml looks like:\nproject:\n  type: website\n\nwebsite:\n  title: \"Your Name\"\n  navbar:\n    left:\n      - href: index.md\n        text: Home\n      - href: blog.qmd\n        text: Blog\n\nformat:\n  html:\n    theme: cosmo\n    toc: true",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#blog.qmd-the-blog-listing-page",
+    "href": "lectures/lecture11.html#blog.qmd-the-blog-listing-page",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "blog.qmd — the blog listing page",
+    "text": "blog.qmd — the blog listing page\nThis file tells Quarto to automatically list all blog posts from the posts/ directory:\n---\ntitle: \"Blog\"\nlisting:\n  contents: posts\n  sort: \"date desc\"\n  type: default\n---\nEvery time you add a new post to posts/, it appears here automatically.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#posts-directory-your-blog-posts",
+    "href": "lectures/lecture11.html#posts-directory-your-blog-posts",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "posts/ directory — your blog posts",
+    "text": "posts/ directory — your blog posts\nEach blog post lives in its own subfolder inside posts/:\nposts/\n  creating-this-website/\n    index.qmd\nA blog post is just a markdown file with a YAML header:\n---\ntitle: \"How I Created This Website\"\nauthor: \"Your Name\"\ndate: \"2026-02-17\"\ncategories: [web, tutorial]\n---\n\nYour post content here in regular markdown...",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#githubworkflowspublish.yml-automated-deployment",
+    "href": "lectures/lecture11.html#githubworkflowspublish.yml-automated-deployment",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": ".github/workflows/publish.yml — automated deployment",
+    "text": ".github/workflows/publish.yml — automated deployment\nThis file tells GitHub: “Every time someone pushes to main, install Quarto, render the site, and deploy it to GitHub Pages.”\non:\n  push:\n    branches: main\n\nname: Quarto Publish\n\npermissions:\n  contents: read\n  pages: write\n  id-token: write\n\njobs:\n  build-deploy:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: quarto-dev/quarto-actions/setup@v2\n      - uses: quarto-dev/quarto-actions/render@v2\n      - uses: actions/upload-pages-artifact@v3\n        with:\n          path: _site\n      - uses: actions/deploy-pages@v4\n\n\n\n\n\n\nImportant\n\n\n\nThis is a GitHub Actions workflow. GitHub Actions is a CI/CD (Continuous Integration / Continuous Deployment) system built into GitHub. It runs automated tasks in response to events like pushes, pull requests, or schedules. Each .yml file in .github/workflows/ defines a workflow.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#gitignore-files-git-should-ignore",
+    "href": "lectures/lecture11.html#gitignore-files-git-should-ignore",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": ".gitignore — files Git should ignore",
+    "text": ".gitignore — files Git should ignore\nClaude Code adds entries to .gitignore so that build artifacts don’t clutter your repo:\n_site/\n.quarto/",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-about-_config.yml",
+    "href": "lectures/lecture11.html#what-about-_config.yml",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What about _config.yml?",
+    "text": "What about _config.yml?\nIf you added a Jekyll theme in Lecture 10, Claude Code will remove _config.yml. Quarto replaces Jekyll—the theme is now controlled by _quarto.yml instead.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#why-quarto",
+    "href": "lectures/lecture11.html#why-quarto",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Why Quarto?",
+    "text": "Why Quarto?\n\nMore control: navbar, sidebar, table of contents, search—all configurable\nBlog support built in: just drop .qmd files in posts/\nMultiple output formats: the same source can render to HTML, PDF, Word, or slides\nCode execution: Quarto can run Python, R, or Julia code and embed the output directly\nThe tool we use in this class: the course website you’re reading right now is built with Quarto",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-is-quarto",
+    "href": "lectures/lecture11.html#what-is-quarto",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What is Quarto?",
+    "text": "What is Quarto?\nQuarto is an open-source scientific and technical publishing system. It takes markdown files (.qmd or .md) and renders them into websites, documents, presentations, or books. It was created by Posit (the company behind RStudio) and is now the standard tool for reproducible scientific publishing.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-is-github-actions",
+    "href": "lectures/lecture11.html#what-is-github-actions",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What is GitHub Actions?",
+    "text": "What is GitHub Actions?\nGitHub Actions is GitHub’s built-in automation platform. You define workflows as YAML files in .github/workflows/. Each workflow:\n\nTriggers on an event (push, pull request, schedule)\nRuns on a virtual machine (Ubuntu, macOS, or Windows)\nExecutes a series of steps (install tools, run commands, deploy)\n\nIn our case, the workflow installs Quarto, renders the site, and deploys to GitHub Pages.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-is-cicd",
+    "href": "lectures/lecture11.html#what-is-cicd",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What is CI/CD?",
+    "text": "What is CI/CD?\nCI/CD stands for Continuous Integration / Continuous Deployment:\n\nCI: automatically test/build your project on every push\nCD: automatically deploy to production after a successful build\n\nOur Quarto workflow is a CD pipeline: push → build → deploy.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-is-yaml",
+    "href": "lectures/lecture11.html#what-is-yaml",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What is YAML?",
+    "text": "What is YAML?\nYAML (“YAML Ain’t Markup Language”) is a human-readable data format used for configuration files. Key rules:\n\nIndentation matters (use spaces, not tabs)\nKey-value pairs: title: \"My Site\"\nLists: items start with -\nNesting: indent child items under their parent\n\nwebsite:\n  title: \"My Site\"        # key-value pair\n  navbar:\n    left:                  # nested object\n      - href: index.md     # list item\n        text: Home\n      - href: blog.qmd\n        text: Blog\n\n\n\n\n\n\nWarning\n\n\n\nYAML is whitespace-sensitive. A single wrong indent will break your config. If something isn’t working, check your indentation first.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-we-did-today",
+    "href": "lectures/lecture11.html#what-we-did-today",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What we did today",
+    "text": "What we did today\n\nInstalled Claude Code in a Codespace and set our API key\nPointed it at our CV repository\nGave it a single prompt to build a Quarto website with a blog\nSwitched GitHub Pages from branch deployment to GitHub Actions\nGot a live site with a navbar, CV homepage, and blog",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#what-claude-code-did-for-us",
+    "href": "lectures/lecture11.html#what-claude-code-did-for-us",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "What Claude Code did for us",
+    "text": "What Claude Code did for us\n\n\n\nFile\nPurpose\n\n\n\n\n_quarto.yml\nSite configuration (title, navbar, theme)\n\n\nblog.qmd\nBlog listing page\n\n\nposts/.../index.qmd\nFirst blog post\n\n\n.github/workflows/publish.yml\nAutomated build and deploy\n\n\n.gitignore\nExclude build artifacts",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture11.html#key-takeaways",
+    "href": "lectures/lecture11.html#key-takeaways",
+    "title": "Lecture 11: Building a Website with Claude Code",
+    "section": "Key takeaways",
+    "text": "Key takeaways\n\nAI coding agents operate on your project directly—not just generate snippets\nQuarto is a powerful publishing system that turns markdown into websites\nGitHub Actions automates deployment so pushing = publishing\nYAML is the configuration language for both Quarto and GitHub Actions\nOne clear prompt can scaffold an entire project",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "11. Building a Website with Claude Code"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html",
+    "href": "lectures/lecture1.html",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "",
+    "text": "In this lectures I will give overview of the course: what we will cover and what we will learn. This lecture will also guide you through setting up GitHub and GitHub Codespaces. We’ll use Codespaces as our development environment - it works on any computer (Chromebook, Windows, Mac) with just a web browser.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-1-sign-up",
+    "href": "lectures/lecture1.html#step-1-sign-up",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 1: Sign Up",
+    "text": "Step 1: Sign Up\n\nGo to github.com\nClick Sign up\nEnter your email address (use your PSU email for educational benefits)\nCreate a password\nChoose a username (this will be visible publicly)\nComplete the verification puzzle\nClick Create account\n\n\n\n\n\n\n\nTipEducational Benefits\n\n\n\nUsing your .edu email gives you access to GitHub Education, which includes free GitHub Pro features, free access to various developer tools, and GitHub Copilot.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-2-verify-your-email",
+    "href": "lectures/lecture1.html#step-2-verify-your-email",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 2: Verify Your Email",
+    "text": "Step 2: Verify Your Email\n\nCheck your email inbox for a verification email from GitHub\nClick the verification link\nYou now have a GitHub account!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-1-open-codespace",
+    "href": "lectures/lecture1.html#step-1-open-codespace",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 1: Open Codespace",
+    "text": "Step 1: Open Codespace\n\nGo to your new repository on GitHub\nClick the green Code button\nSelect the Codespaces tab\nClick Create codespace on main\n\nWait about 30 seconds for your Codespace to start. You’ll see VS Code running in your browser!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-2-explore-the-interface",
+    "href": "lectures/lecture1.html#step-2-explore-the-interface",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 2: Explore the Interface",
+    "text": "Step 2: Explore the Interface\nYour Codespace has:\n\nFile Explorer (left sidebar) - browse and create files\nEditor (center) - write and edit code\nTerminal (bottom) - run commands",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#step-3-open-the-terminal",
+    "href": "lectures/lecture1.html#step-3-open-the-terminal",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Step 3: Open the Terminal",
+    "text": "Step 3: Open the Terminal\nIf the terminal isn’t visible:\n\nClick Terminal in the menu bar\nSelect New Terminal\n\nOr press Ctrl+` (backtick)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#make-a-change",
+    "href": "lectures/lecture1.html#make-a-change",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Make a Change",
+    "text": "Make a Change\n\nClick on README.md in the file explorer\nAdd some text, like: “This is my first repository!”\nSave the file (Ctrl+S or Cmd+S)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#check-status",
+    "href": "lectures/lecture1.html#check-status",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Check Status",
+    "text": "Check Status\nIn the terminal, see what changed:\ngit status\nYou’ll see README.md listed as modified.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#stage-changes",
+    "href": "lectures/lecture1.html#stage-changes",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Stage Changes",
+    "text": "Stage Changes\nAdd the file to be committed:\ngit add README.md\nOr add all changes:\ngit add .",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#commit-changes",
+    "href": "lectures/lecture1.html#commit-changes",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Commit Changes",
+    "text": "Commit Changes\nSave your changes with a message:\ngit commit -m \"Update README with description\"\n\n\n\n\n\n\nTipWriting Good Commit Messages\n\n\n\n\nUse present tense: “Add feature” not “Added feature”\nBe specific: “Fix login button color” not “Fix bug”\nKeep it short (50 characters or less)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#push-to-github",
+    "href": "lectures/lecture1.html#push-to-github",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Push to GitHub",
+    "text": "Push to GitHub\nUpload your commit to GitHub:\ngit push\nGo to your repository on GitHub and refresh - you’ll see your changes!",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#pull-from-github",
+    "href": "lectures/lecture1.html#pull-from-github",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Pull from GitHub",
+    "text": "Pull from GitHub\nIf changes were made elsewhere, download them:\ngit pull",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#key-points",
+    "href": "lectures/lecture1.html#key-points",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Key Points",
+    "text": "Key Points\n\nGitHub Codespaces works on any computer with a browser\nNo software installation needed - everything runs in the cloud\nThe basic workflow is: edit → stage → commit → push\nGood commit messages help you and others understand changes",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#next-steps",
+    "href": "lectures/lecture1.html#next-steps",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nComplete the GitHub Hello World tutorial\nLearn about Pull Requests for collaboration",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture1.html#test-results-summary",
+    "href": "lectures/lecture1.html#test-results-summary",
+    "title": "Lecture 1: Getting Started with GitHub",
+    "section": "Test Results Summary",
+    "text": "Test Results Summary\n\ndata = [\n  {score: \"0-3\", count: 0},\n  {score: \"4-6\", count: 5},\n  {score: \"7-9\", count: 5},\n  {score: \"10-12\", count: 4},\n  {score: \"13-15\", count: 1}\n]\n\nPlot.plot({\n  marks: [\n    Plot.barY(data, {x: \"score\", y: \"count\", fill: \"#4a90d9\"}),\n    Plot.ruleY([0])\n  ],\n  x: {label: \"Score Range\"},\n  y: {label: \"Number of Students\"},\n  title: \"Test 1 Score Distribution (n=15)\",\n  width: 500,\n  height: 300\n})\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSummary Statistics:\n\nStudents: 15\nAverage: 8.1/15 (54.2%)\nMedian: 8/15\nRange: 5-13/15\n\nPer-Question Analysis:\n\n\n\nQuestion\nCorrect\nIncorrect\n% Correct\n\n\n\n\n1\n3\n12\n20%\n\n\n2\n9\n6\n60%\n\n\n3\n13\n2\n87%\n\n\n4\n5\n10\n33%\n\n\n5\n5\n10\n33%\n\n\n6\n10\n5\n67%\n\n\n7\n12\n3\n80%\n\n\n8\n3\n12\n20%\n\n\n9\n4\n11\n27%\n\n\n10\n6\n9\n40%\n\n\n11\n6\n9\n40%\n\n\n12\n9\n6\n60%\n\n\n13\n12\n3\n80%\n\n\n14\n11\n4\n73%\n\n\n15\n14\n1\n93%\n\n\n\nAnalysis by Topic:\nStudents performed strongest on Agentic CLI concepts (Q13-15, avg 82%), with excellent understanding of reviewing changes before accepting them (Q15, 93%) and writing good prompts (Q14, 73%). Python questions (Q1-4, avg 50%) showed solid results on list comprehensions (Q3, 87%) and dictionary syntax (Q2, 60%), though string slicing (Q1, 20%) needs review. Bash performance (Q5-8, avg 50%) was mixed—students understood file copying (Q7, 80%) and ls -la (Q6, 67%), but pipe commands (Q8, 20%) need reinforcement. Git questions (Q9-12, avg 42%) were the weakest area, with students grasping git status (Q12, 60%) but struggling with git add . (Q9, 27%) and the add-commit-push workflow (Q10, 40%).",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "1. Getting Started with GitHub"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "",
+    "text": "Abstract artistic visualization of biological data analysis\nImage by Bob Harris"
+  },
+  {
+    "objectID": "index.html#goals-of-this-class",
+    "href": "index.html#goals-of-this-class",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "Goals of this class",
+    "text": "Goals of this class\nGenomic data analysis is a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This primary analysis uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don’t yet contain biological insights.\nThe secondary analysis extracts meaning from these intermediate data. It’s typically done on a case-by-case basis using frameworks like Jupyter, RStudio, or Observable, since the approach depends on your experimental design. This is where programming, data management, and version control skills become critical.\n\n\n\nData analysis as a pyramid. Primary data (sequencing reads) is processed into smaller intermediate datasets, which are then analyzed to produce final insights—the content of your theses, publications, and blog posts. As you climb the pyramid, standardization (availability of standard tools and procedures) and computational demands all decrease.\n\n\nIn this course we will try to learn key skills for climbing this pyramid. The course will be divided into the following sections:\n\nFoundations | Tools - UNIX shell, Python for data manipulation, Python for visualization, version control with Git/GitHub, and responsible use of agentic AI tools.\nFoundations | Computational approaches - algorithms for alignment, mapping, assembly, and composition analysis.\n\nApplication | Datatypes and analysis - hands-on primary and secondary analyses in genome assembly, transcriptomics, variation, epigenetics, and community analysis.\nApplication | Class projects - class will be divided into groups with each group given a research project."
+  },
+  {
+    "objectID": "index.html#lectures",
+    "href": "index.html#lectures",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "Lectures",
+    "text": "Lectures\n\n\n\nTable 1: Course schedule\n\n\n\n\n\n#\nDate\nTopic\n\n\n\n\n1\nJan 13\nGetting Started with GitHub\n\n\n2\nJan 15\nIntroduction to Bash\n\n\n3\nJan 20\nPy1: Data analysis ecosystem - Crunch, load, visualize\n\n\n4\nJan 22\nPy2: Simple sequence manipulation\n\n\n5\nJan 27\nPy3: Parsing FASTA\n\n\n6\nJan 29\nPy4: FASTQ and Quality Scores\n\n\n7\nFeb 3\nPy5: Data Manipulation with Pandas\n\n\n8\nFeb 5\nPy6: Building graphs with Altair\n\n\n9\nFeb 10\nGit and GitHub\n\n\n10\nFeb 12\nPublishing Your CV with GitHub Pages\n\n\n11\nFeb 17\nBuilding a Website with Claude Code\n\n\n12\nFeb 19\nResponsible Use of Coding Agents\n\n\n13\nFeb 24\nSequence Alignment\n\n\n14\nFeb 26\n-\n\n\n15\nMar 3\n-\n\n\n16\nMar 5\n-\n\n\n-\n-\nSpring break\n\n\n17\nMar 17\n-\n\n\n18\nMar 19\n-\n\n\n19\nMar 24\n-\n\n\n20\nMar 26\n-\n\n\n21\nMar 31\n-\n\n\n22\nApr 2\n-\n\n\n23\nApr 7\n-\n\n\n24\nApr 9\n-\n\n\n25\nApr 14\n-\n\n\n26\nApr 16\n-\n\n\n27\nApr 21\n-\n\n\n28\nApr 23\n-\n\n\n29\nApr 28\n-\n\n\n30\nApr 30\n-"
+  },
+  {
+    "objectID": "index.html#grading",
+    "href": "index.html#grading",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "Grading",
+    "text": "Grading\n\n\n\nComponent\nWeight\n\n\n\n\nThursday Quizzes\n10%\n\n\nSection Exams (3 × 16.7%)\n50%\n\n\nFinal Project\n40%\n\n\n\nThursday Quizzes — Short weekly quizzes covering material from the previous week’s lectures. These are designed to ensure that you do read the material that is given as homework.\nSection Exams — Three take-home exams, one after each major section: (1) Tools, (2) Computational approaches, (3) Datatypes and analysis.\nFinal Project — Group research project applying course concepts to a real biological dataset."
+  },
+  {
+    "objectID": "index.html#academic-integrity",
+    "href": "index.html#academic-integrity",
+    "title": "BMMB554 | Biological data analysis",
+    "section": "Academic integrity",
+    "text": "Academic integrity\n\nAcademic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see Penn State Policy G-9).\nDishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.\nUse of AI Tools: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.\n\nEducational Equity\nPenn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.\nReport incidents of bias at https://equity.psu.edu/report-bias.\n\n\nDisability Accommodations\nPenn State welcomes students with disabilities into the University’s educational programs. If you have a disability-related need for reasonable academic adjustments, contact Student Disability Resources at your campus.\n\n\nCounseling and Mental Health\nStudents facing personal or academic stressors may benefit from counseling or other support. Contact Counseling and Psychological Services (CAPS) or the Penn State Crisis Line at 877-229-6400 (24/7).\n\n\n\nThis page complies with Penn State accessibility requirements."
+  },
+  {
+    "objectID": "lectures/lecture10.html",
+    "href": "lectures/lecture10.html",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "",
+    "text": "Last class I asked you to convert your CV to a markdown document. Now let’s turn it into a live website—for free, in about five minutes.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#how-does-it-compare",
+    "href": "lectures/lecture10.html#how-does-it-compare",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "How does it compare?",
+    "text": "How does it compare?\n\n\n\n\n\n\n\n\n\nFeature\nGitHub Pages\nGoogle Sites\nWordPress\n\n\n\n\nCost\nFree\nFree\nFree (limited) / Paid\n\n\nCustom domain\nYes\nYes\nPaid only\n\n\nMarkdown support\nNative\nNo\nPlugin\n\n\nVersion control\nGit built-in\nNo\nNo\n\n\nSetup time\n~5 min\n~10 min\n~30 min\n\n\nCustomization\nFull (HTML/CSS/Jekyll)\nDrag-and-drop\nThemes + plugins",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#step-by-step",
+    "href": "lectures/lecture10.html#step-by-step",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Step-by-step",
+    "text": "Step-by-step\n1. Go to github.com and click the “+” button in the top-right corner, then select “New repository”\n\n2. Fill in the details:\n\nRepository name: cv\nVisibility: Public\nCheck “Add a README file”\n\n\n3. Click “Create repository”\n\n\n\n\n\n\nTip\n\n\n\nThe repo must be public for free GitHub Pages hosting. Private repos require GitHub Pro.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#built-in-themes",
+    "href": "lectures/lecture10.html#built-in-themes",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Built-in themes",
+    "text": "Built-in themes\n\n\n\nTheme\nStyle\nGood for\n\n\n\n\nminimal\nClean, left sidebar\nCVs, personal pages\n\n\ncayman\nGreen-blue gradient header\nProject landing pages\n\n\nslate\nDark header, gray body\nTechnical docs\n\n\narchitect\nBlueprint/technical feel\nEngineering portfolios\n\n\ntactile\nLinen texture, warm\nCreative portfolios\n\n\n\nTo try a different theme, just change the value in _config.yml:\necho 'theme: jekyll-theme-cayman' &gt; _config.yml\ngit add _config.yml\ngit commit -m \"Switch to Cayman theme\"\ngit push",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#customize-the-title",
+    "href": "lectures/lecture10.html#customize-the-title",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Customize the title",
+    "text": "Customize the title\nYou can add a title and description to _config.yml:\ntheme: jekyll-theme-minimal\ntitle: \"Miffy B. Pluis, PhD\"\ndescription: \"Professor of Burrow Architecture & Lapine Behavioral Sciences\"\nThese appear in the sidebar (for minimal) or header (for other themes).",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#text-styling",
+    "href": "lectures/lecture10.html#text-styling",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Text styling",
+    "text": "Text styling\n**bold text**\n*italic text*\n~~strikethrough~~\n`inline code`\nRenders as: bold text, italic text, strikethrough, inline code",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#headings",
+    "href": "lectures/lecture10.html#headings",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Headings",
+    "text": "Headings\n# Heading 1\n## Heading 2\n### Heading 3\nUse # for your name, ## for major sections (Education, Experience), ### for subsections.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#links-and-images",
+    "href": "lectures/lecture10.html#links-and-images",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Links and images",
+    "text": "Links and images\n[link text](https://example.com)\n![alt text](image.png)",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#lists",
+    "href": "lectures/lecture10.html#lists",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Lists",
+    "text": "Lists\n- Unordered item\n- Another item\n  - Nested item\n\n1. First item\n2. Second item\n3. Third item",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#horizontal-rules",
+    "href": "lectures/lecture10.html#horizontal-rules",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Horizontal rules",
+    "text": "Horizontal rules\n---\nA line with just --- creates a horizontal divider—useful for separating CV sections.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#blockquotes",
+    "href": "lectures/lecture10.html#blockquotes",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Blockquotes",
+    "text": "Blockquotes\n&gt; This is a blockquote.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#tables",
+    "href": "lectures/lecture10.html#tables",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Tables",
+    "text": "Tables\n| Year | Role | Institution |\n|------|------|-------------|\n| 2020 | Professor | Utrecht |\n| 2014 | Assoc. Prof. | ETH |\nPipes (|) define columns, dashes (---) separate the header row.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#putting-it-together",
+    "href": "lectures/lecture10.html#putting-it-together",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Putting it together",
+    "text": "Putting it together\nA typical CV section in markdown:\n## Education\n\n**PhD in Theoretical Carrot Biochemistry**, Wageningen University, 2008\nDissertation: *\"Orange Is the New Green\"*\nAdvisor: Prof. Boris Bear\n\n**MSc in Meadow Ecology** (cum laude), Utrecht University, 2004\n\n---\n\n\n\n\n\n\nTip\n\n\n\nLook at Miffy’s CV (index.md) for a complete working example of all these elements in action.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#commands-used-today",
+    "href": "lectures/lecture10.html#commands-used-today",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Commands used today",
+    "text": "Commands used today\n\n\n\nCommand\nWhat it does\n\n\n\n\ncurl -o index.md URL\nDownload a file from the web\n\n\ngit add index.md\nStage the file for commit\n\n\ngit commit -m \"Add CV\"\nSave a snapshot with a message\n\n\ngit push\nUpload commits to GitHub",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#key-takeaways",
+    "href": "lectures/lecture10.html#key-takeaways",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "Key takeaways",
+    "text": "Key takeaways\n\nGitHub Pages = free website hosting from any public repo\nindex.md = the homepage — name matters\nJekyll themes = visual polish with zero code\nThe whole workflow: create repo → add content → push → enable Pages → done",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#publish-your-cv",
+    "href": "lectures/lecture10.html#publish-your-cv",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "1. Publish your CV",
+    "text": "1. Publish your CV\nFormat your CV the way you like and send me a linjk using this form.",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
+    "objectID": "lectures/lecture10.html#install-ai-agents",
+    "href": "lectures/lecture10.html#install-ai-agents",
+    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
+    "section": "2. Install AI agents",
+    "text": "2. Install AI agents\n\nInstall Claude Code — follow the quickstart guide for your OS\nInstall Gemini CLI — follow the README instructions",
+    "crumbs": [
+      "Home",
+      "Lectures",
+      "10. Publishing Your CV with GitHub Pages"
+    ]
+  },
+  {
     "objectID": "lectures/lecture12.html",
     "href": "lectures/lecture12.html",
     "title": "Lecture 12: Responsible Use of Coding Agents",
@@ -1162,672 +2056,6 @@
       "Home",
       "Lectures",
       "12. Responsible Use of Coding Agents"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html",
-    "href": "lectures/lecture10.html",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "",
-    "text": "Last class I asked you to convert your CV to a markdown document. Now let’s turn it into a live website—for free, in about five minutes.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#how-does-it-compare",
-    "href": "lectures/lecture10.html#how-does-it-compare",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "How does it compare?",
-    "text": "How does it compare?\n\n\n\n\n\n\n\n\n\nFeature\nGitHub Pages\nGoogle Sites\nWordPress\n\n\n\n\nCost\nFree\nFree\nFree (limited) / Paid\n\n\nCustom domain\nYes\nYes\nPaid only\n\n\nMarkdown support\nNative\nNo\nPlugin\n\n\nVersion control\nGit built-in\nNo\nNo\n\n\nSetup time\n~5 min\n~10 min\n~30 min\n\n\nCustomization\nFull (HTML/CSS/Jekyll)\nDrag-and-drop\nThemes + plugins",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#step-by-step",
-    "href": "lectures/lecture10.html#step-by-step",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Step-by-step",
-    "text": "Step-by-step\n1. Go to github.com and click the “+” button in the top-right corner, then select “New repository”\n\n2. Fill in the details:\n\nRepository name: cv\nVisibility: Public\nCheck “Add a README file”\n\n\n3. Click “Create repository”\n\n\n\n\n\n\nTip\n\n\n\nThe repo must be public for free GitHub Pages hosting. Private repos require GitHub Pro.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#built-in-themes",
-    "href": "lectures/lecture10.html#built-in-themes",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Built-in themes",
-    "text": "Built-in themes\n\n\n\nTheme\nStyle\nGood for\n\n\n\n\nminimal\nClean, left sidebar\nCVs, personal pages\n\n\ncayman\nGreen-blue gradient header\nProject landing pages\n\n\nslate\nDark header, gray body\nTechnical docs\n\n\narchitect\nBlueprint/technical feel\nEngineering portfolios\n\n\ntactile\nLinen texture, warm\nCreative portfolios\n\n\n\nTo try a different theme, just change the value in _config.yml:\necho 'theme: jekyll-theme-cayman' &gt; _config.yml\ngit add _config.yml\ngit commit -m \"Switch to Cayman theme\"\ngit push",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#customize-the-title",
-    "href": "lectures/lecture10.html#customize-the-title",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Customize the title",
-    "text": "Customize the title\nYou can add a title and description to _config.yml:\ntheme: jekyll-theme-minimal\ntitle: \"Miffy B. Pluis, PhD\"\ndescription: \"Professor of Burrow Architecture & Lapine Behavioral Sciences\"\nThese appear in the sidebar (for minimal) or header (for other themes).",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#text-styling",
-    "href": "lectures/lecture10.html#text-styling",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Text styling",
-    "text": "Text styling\n**bold text**\n*italic text*\n~~strikethrough~~\n`inline code`\nRenders as: bold text, italic text, strikethrough, inline code",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#headings",
-    "href": "lectures/lecture10.html#headings",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Headings",
-    "text": "Headings\n# Heading 1\n## Heading 2\n### Heading 3\nUse # for your name, ## for major sections (Education, Experience), ### for subsections.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#links-and-images",
-    "href": "lectures/lecture10.html#links-and-images",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Links and images",
-    "text": "Links and images\n[link text](https://example.com)\n![alt text](image.png)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#lists",
-    "href": "lectures/lecture10.html#lists",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Lists",
-    "text": "Lists\n- Unordered item\n- Another item\n  - Nested item\n\n1. First item\n2. Second item\n3. Third item",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#horizontal-rules",
-    "href": "lectures/lecture10.html#horizontal-rules",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Horizontal rules",
-    "text": "Horizontal rules\n---\nA line with just --- creates a horizontal divider—useful for separating CV sections.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#blockquotes",
-    "href": "lectures/lecture10.html#blockquotes",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Blockquotes",
-    "text": "Blockquotes\n&gt; This is a blockquote.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#tables",
-    "href": "lectures/lecture10.html#tables",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Tables",
-    "text": "Tables\n| Year | Role | Institution |\n|------|------|-------------|\n| 2020 | Professor | Utrecht |\n| 2014 | Assoc. Prof. | ETH |\nPipes (|) define columns, dashes (---) separate the header row.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#putting-it-together",
-    "href": "lectures/lecture10.html#putting-it-together",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Putting it together",
-    "text": "Putting it together\nA typical CV section in markdown:\n## Education\n\n**PhD in Theoretical Carrot Biochemistry**, Wageningen University, 2008\nDissertation: *\"Orange Is the New Green\"*\nAdvisor: Prof. Boris Bear\n\n**MSc in Meadow Ecology** (cum laude), Utrecht University, 2004\n\n---\n\n\n\n\n\n\nTip\n\n\n\nLook at Miffy’s CV (index.md) for a complete working example of all these elements in action.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#commands-used-today",
-    "href": "lectures/lecture10.html#commands-used-today",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Commands used today",
-    "text": "Commands used today\n\n\n\nCommand\nWhat it does\n\n\n\n\ncurl -o index.md URL\nDownload a file from the web\n\n\ngit add index.md\nStage the file for commit\n\n\ngit commit -m \"Add CV\"\nSave a snapshot with a message\n\n\ngit push\nUpload commits to GitHub",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#key-takeaways",
-    "href": "lectures/lecture10.html#key-takeaways",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "Key takeaways",
-    "text": "Key takeaways\n\nGitHub Pages = free website hosting from any public repo\nindex.md = the homepage — name matters\nJekyll themes = visual polish with zero code\nThe whole workflow: create repo → add content → push → enable Pages → done",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#publish-your-cv",
-    "href": "lectures/lecture10.html#publish-your-cv",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "1. Publish your CV",
-    "text": "1. Publish your CV\nFormat your CV the way you like and send me a linjk using this form.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture10.html#install-ai-agents",
-    "href": "lectures/lecture10.html#install-ai-agents",
-    "title": "Lecture 10: Publishing Your CV with GitHub Pages",
-    "section": "2. Install AI agents",
-    "text": "2. Install AI agents\n\nInstall Claude Code — follow the quickstart guide for your OS\nInstall Gemini CLI — follow the README instructions",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "10. Publishing Your CV with GitHub Pages"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "BMMB554 | Biological data analysis",
-    "section": "",
-    "text": "Abstract artistic visualization of biological data analysis\nImage by Bob Harris"
-  },
-  {
-    "objectID": "index.html#goals-of-this-class",
-    "href": "index.html#goals-of-this-class",
-    "title": "BMMB554 | Biological data analysis",
-    "section": "Goals of this class",
-    "text": "Goals of this class\nGenomic data analysis is a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This primary analysis uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don’t yet contain biological insights.\nThe secondary analysis extracts meaning from these intermediate data. It’s typically done on a case-by-case basis using frameworks like Jupyter, RStudio, or Observable, since the approach depends on your experimental design. This is where programming, data management, and version control skills become critical.\n\n\n\nData analysis as a pyramid. Primary data (sequencing reads) is processed into smaller intermediate datasets, which are then analyzed to produce final insights—the content of your theses, publications, and blog posts. As you climb the pyramid, standardization (availability of standard tools and procedures) and computational demands all decrease.\n\n\nIn this course we will try to learn key skills for climbing this pyramid. The course will be divided into the following sections:\n\nFoundations | Tools - UNIX shell, Python for data manipulation, Python for visualization, version control with Git/GitHub, and responsible use of agentic AI tools.\nFoundations | Computational approaches - algorithms for alignment, mapping, assembly, and composition analysis.\n\nApplication | Datatypes and analysis - hands-on primary and secondary analyses in genome assembly, transcriptomics, variation, epigenetics, and community analysis.\nApplication | Class projects - class will be divided into groups with each group given a research project."
-  },
-  {
-    "objectID": "index.html#lectures",
-    "href": "index.html#lectures",
-    "title": "BMMB554 | Biological data analysis",
-    "section": "Lectures",
-    "text": "Lectures\n\n\n\nTable 1: Course schedule\n\n\n\n\n\n#\nDate\nTopic\n\n\n\n\n1\nJan 13\nGetting Started with GitHub\n\n\n2\nJan 15\nIntroduction to Bash\n\n\n3\nJan 20\nPy1: Data analysis ecosystem - Crunch, load, visualize\n\n\n4\nJan 22\nPy2: Simple sequence manipulation\n\n\n5\nJan 27\nPy3: Parsing FASTA\n\n\n6\nJan 29\nPy4: FASTQ and Quality Scores\n\n\n7\nFeb 3\nPy5: Data Manipulation with Pandas\n\n\n8\nFeb 5\nPy6: Building graphs with Altair\n\n\n9\nFeb 10\nGit and GitHub\n\n\n10\nFeb 12\nPublishing Your CV with GitHub Pages\n\n\n11\nFeb 17\nBuilding a Website with Claude Code\n\n\n12\nFeb 19\nResponsible Use of Coding Agents\n\n\n13\nFeb 24\nSequence Alignment\n\n\n14\nFeb 26\n-\n\n\n15\nMar 3\n-\n\n\n16\nMar 5\n-\n\n\n-\n-\nSpring break\n\n\n17\nMar 17\n-\n\n\n18\nMar 19\n-\n\n\n19\nMar 24\n-\n\n\n20\nMar 26\n-\n\n\n21\nMar 31\n-\n\n\n22\nApr 2\n-\n\n\n23\nApr 7\n-\n\n\n24\nApr 9\n-\n\n\n25\nApr 14\n-\n\n\n26\nApr 16\n-\n\n\n27\nApr 21\n-\n\n\n28\nApr 23\n-\n\n\n29\nApr 28\n-\n\n\n30\nApr 30\n-"
-  },
-  {
-    "objectID": "index.html#grading",
-    "href": "index.html#grading",
-    "title": "BMMB554 | Biological data analysis",
-    "section": "Grading",
-    "text": "Grading\n\n\n\nComponent\nWeight\n\n\n\n\nThursday Quizzes\n10%\n\n\nSection Exams (3 × 16.7%)\n50%\n\n\nFinal Project\n40%\n\n\n\nThursday Quizzes — Short weekly quizzes covering material from the previous week’s lectures. These are designed to ensure that you do read the material that is given as homework.\nSection Exams — Three take-home exams, one after each major section: (1) Tools, (2) Computational approaches, (3) Datatypes and analysis.\nFinal Project — Group research project applying course concepts to a real biological dataset."
-  },
-  {
-    "objectID": "index.html#academic-integrity",
-    "href": "index.html#academic-integrity",
-    "title": "BMMB554 | Biological data analysis",
-    "section": "Academic integrity",
-    "text": "Academic integrity\n\nAcademic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see Penn State Policy G-9).\nDishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.\nUse of AI Tools: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.\n\nEducational Equity\nPenn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.\nReport incidents of bias at https://equity.psu.edu/report-bias.\n\n\nDisability Accommodations\nPenn State welcomes students with disabilities into the University’s educational programs. If you have a disability-related need for reasonable academic adjustments, contact Student Disability Resources at your campus.\n\n\nCounseling and Mental Health\nStudents facing personal or academic stressors may benefit from counseling or other support. Contact Counseling and Psychological Services (CAPS) or the Penn State Crisis Line at 877-229-6400 (24/7).\n\n\n\nThis page complies with Penn State accessibility requirements."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "lectures/lecture1.html",
-    "href": "lectures/lecture1.html",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "",
-    "text": "In this lectures I will give overview of the course: what we will cover and what we will learn. This lecture will also guide you through setting up GitHub and GitHub Codespaces. We’ll use Codespaces as our development environment - it works on any computer (Chromebook, Windows, Mac) with just a web browser.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-1-sign-up",
-    "href": "lectures/lecture1.html#step-1-sign-up",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 1: Sign Up",
-    "text": "Step 1: Sign Up\n\nGo to github.com\nClick Sign up\nEnter your email address (use your PSU email for educational benefits)\nCreate a password\nChoose a username (this will be visible publicly)\nComplete the verification puzzle\nClick Create account\n\n\n\n\n\n\n\nTipEducational Benefits\n\n\n\nUsing your .edu email gives you access to GitHub Education, which includes free GitHub Pro features, free access to various developer tools, and GitHub Copilot.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-2-verify-your-email",
-    "href": "lectures/lecture1.html#step-2-verify-your-email",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 2: Verify Your Email",
-    "text": "Step 2: Verify Your Email\n\nCheck your email inbox for a verification email from GitHub\nClick the verification link\nYou now have a GitHub account!",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-1-open-codespace",
-    "href": "lectures/lecture1.html#step-1-open-codespace",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 1: Open Codespace",
-    "text": "Step 1: Open Codespace\n\nGo to your new repository on GitHub\nClick the green Code button\nSelect the Codespaces tab\nClick Create codespace on main\n\nWait about 30 seconds for your Codespace to start. You’ll see VS Code running in your browser!",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-2-explore-the-interface",
-    "href": "lectures/lecture1.html#step-2-explore-the-interface",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 2: Explore the Interface",
-    "text": "Step 2: Explore the Interface\nYour Codespace has:\n\nFile Explorer (left sidebar) - browse and create files\nEditor (center) - write and edit code\nTerminal (bottom) - run commands",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#step-3-open-the-terminal",
-    "href": "lectures/lecture1.html#step-3-open-the-terminal",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Step 3: Open the Terminal",
-    "text": "Step 3: Open the Terminal\nIf the terminal isn’t visible:\n\nClick Terminal in the menu bar\nSelect New Terminal\n\nOr press Ctrl+` (backtick)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#make-a-change",
-    "href": "lectures/lecture1.html#make-a-change",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Make a Change",
-    "text": "Make a Change\n\nClick on README.md in the file explorer\nAdd some text, like: “This is my first repository!”\nSave the file (Ctrl+S or Cmd+S)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#check-status",
-    "href": "lectures/lecture1.html#check-status",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Check Status",
-    "text": "Check Status\nIn the terminal, see what changed:\ngit status\nYou’ll see README.md listed as modified.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#stage-changes",
-    "href": "lectures/lecture1.html#stage-changes",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Stage Changes",
-    "text": "Stage Changes\nAdd the file to be committed:\ngit add README.md\nOr add all changes:\ngit add .",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#commit-changes",
-    "href": "lectures/lecture1.html#commit-changes",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Commit Changes",
-    "text": "Commit Changes\nSave your changes with a message:\ngit commit -m \"Update README with description\"\n\n\n\n\n\n\nTipWriting Good Commit Messages\n\n\n\n\nUse present tense: “Add feature” not “Added feature”\nBe specific: “Fix login button color” not “Fix bug”\nKeep it short (50 characters or less)",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#push-to-github",
-    "href": "lectures/lecture1.html#push-to-github",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Push to GitHub",
-    "text": "Push to GitHub\nUpload your commit to GitHub:\ngit push\nGo to your repository on GitHub and refresh - you’ll see your changes!",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#pull-from-github",
-    "href": "lectures/lecture1.html#pull-from-github",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Pull from GitHub",
-    "text": "Pull from GitHub\nIf changes were made elsewhere, download them:\ngit pull",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#key-points",
-    "href": "lectures/lecture1.html#key-points",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Key Points",
-    "text": "Key Points\n\nGitHub Codespaces works on any computer with a browser\nNo software installation needed - everything runs in the cloud\nThe basic workflow is: edit → stage → commit → push\nGood commit messages help you and others understand changes",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#next-steps",
-    "href": "lectures/lecture1.html#next-steps",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Next Steps",
-    "text": "Next Steps\n\nComplete the GitHub Hello World tutorial\nLearn about Pull Requests for collaboration",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture1.html#test-results-summary",
-    "href": "lectures/lecture1.html#test-results-summary",
-    "title": "Lecture 1: Getting Started with GitHub",
-    "section": "Test Results Summary",
-    "text": "Test Results Summary\n\ndata = [\n  {score: \"0-3\", count: 0},\n  {score: \"4-6\", count: 5},\n  {score: \"7-9\", count: 5},\n  {score: \"10-12\", count: 4},\n  {score: \"13-15\", count: 1}\n]\n\nPlot.plot({\n  marks: [\n    Plot.barY(data, {x: \"score\", y: \"count\", fill: \"#4a90d9\"}),\n    Plot.ruleY([0])\n  ],\n  x: {label: \"Score Range\"},\n  y: {label: \"Number of Students\"},\n  title: \"Test 1 Score Distribution (n=15)\",\n  width: 500,\n  height: 300\n})\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSummary Statistics:\n\nStudents: 15\nAverage: 8.1/15 (54.2%)\nMedian: 8/15\nRange: 5-13/15\n\nPer-Question Analysis:\n\n\n\nQuestion\nCorrect\nIncorrect\n% Correct\n\n\n\n\n1\n3\n12\n20%\n\n\n2\n9\n6\n60%\n\n\n3\n13\n2\n87%\n\n\n4\n5\n10\n33%\n\n\n5\n5\n10\n33%\n\n\n6\n10\n5\n67%\n\n\n7\n12\n3\n80%\n\n\n8\n3\n12\n20%\n\n\n9\n4\n11\n27%\n\n\n10\n6\n9\n40%\n\n\n11\n6\n9\n40%\n\n\n12\n9\n6\n60%\n\n\n13\n12\n3\n80%\n\n\n14\n11\n4\n73%\n\n\n15\n14\n1\n93%\n\n\n\nAnalysis by Topic:\nStudents performed strongest on Agentic CLI concepts (Q13-15, avg 82%), with excellent understanding of reviewing changes before accepting them (Q15, 93%) and writing good prompts (Q14, 73%). Python questions (Q1-4, avg 50%) showed solid results on list comprehensions (Q3, 87%) and dictionary syntax (Q2, 60%), though string slicing (Q1, 20%) needs review. Bash performance (Q5-8, avg 50%) was mixed—students understood file copying (Q7, 80%) and ls -la (Q6, 67%), but pipe commands (Q8, 20%) need reinforcement. Git questions (Q9-12, avg 42%) were the weakest area, with students grasping git status (Q12, 60%) but struggling with git add . (Q9, 27%) and the add-commit-push workflow (Q10, 40%).",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "1. Getting Started with GitHub"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html",
-    "href": "lectures/lecture11.html",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "",
-    "text": "Last class you published your CV as a GitHub Pages site. Today we’ll use an AI coding agent—Claude Code—to transform that simple page into a full Quarto website with a blog. All from a single prompt.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#claude-code-in-a-codespace",
-    "href": "lectures/lecture11.html#claude-code-in-a-codespace",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Claude Code in a Codespace",
-    "text": "Claude Code in a Codespace\nClaude Code is a CLI tool that runs in the terminal. We’ll install it inside a GitHub Codespace—the same environment you used in lectures 9 and 10. No local installation, no OS differences.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#step-1-open-a-codespace-on-your-cv-repo",
-    "href": "lectures/lecture11.html#step-1-open-a-codespace-on-your-cv-repo",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Step 1: Open a Codespace on your CV repo",
-    "text": "Step 1: Open a Codespace on your CV repo\n1. Go to your cv repo on GitHub\n2. Click Code → Codespaces → “+” (same as lectures 9 and 10)\n3. Open the terminal",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#step-2-install-claude-code",
-    "href": "lectures/lecture11.html#step-2-install-claude-code",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Step 2: Install Claude Code",
-    "text": "Step 2: Install Claude Code\nRun:\ncurl -fsSL https://claude.ai/install.sh | bash\nThen restart the terminal (or run source ~/.bashrc) so claude is on PATH.\nVerify it works:\nclaude --version",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#step-3-set-your-api-key",
-    "href": "lectures/lecture11.html#step-3-set-your-api-key",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Step 3: Set your API key",
-    "text": "Step 3: Set your API key\nI will provide each of you with an Anthropic API key. Run these commands exactly to configure Claude Code to use it without a browser login.\nFirst, set the key (replace your-key-here with the key I gave you):\nexport ANTHROPIC_API_KEY=\"your-key-here\"\nThen create a helper script:\nmkdir -p ~/.claude\necho 'echo ${ANTHROPIC_API_KEY}' &gt; ~/.claude/anthropic_key_helper.sh\nchmod +x ~/.claude/anthropic_key_helper.sh\nThen write the Claude Code config files. Copy-paste this entire block:\nLAST20=$(echo -n \"$ANTHROPIC_API_KEY\" | tail -c 20)\n\ncat &gt; ~/.claude.json &lt;&lt; EOF\n{\n  \"customApiKeyResponses\": {\n    \"approved\": [\"$LAST20\"],\n    \"rejected\": []\n  },\n  \"hasCompletedOnboarding\": true\n}\nEOF\n\ncat &gt; ~/.claude/claude.json &lt;&lt; EOF\n{\n  \"apiKeyHelper\": \"$HOME/.claude/anthropic_key_helper.sh\"\n}\nEOF\nThis tells Claude Code to get the API key from your helper script and skip the browser login.\n\n\n\n\n\n\nWarning\n\n\n\nKeep your API key private. Do not share it, post it on GitHub, or commit it to a repository. Anyone with your key can make API calls billed to the account.\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe export command lasts for the current terminal session only. If you close and reopen the terminal, re-run export ANTHROPIC_API_KEY=\"your-key-here\" before starting Claude Code.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#step-4-start-claude-code",
-    "href": "lectures/lecture11.html#step-4-start-claude-code",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Step 4: Start Claude Code",
-    "text": "Step 4: Start Claude Code\nclaude\nYou’re already in the cv repo directory since the Codespace opened there.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#quarto.yml-the-site-configuration",
-    "href": "lectures/lecture11.html#quarto.yml-the-site-configuration",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "_quarto.yml — the site configuration",
-    "text": "_quarto.yml — the site configuration\nThis is the master config file for your Quarto website. It defines:\n\nProject type: website\nSite title: your name\nNavbar: navigation links (Home, Blog)\nTheme: visual styling (e.g., cosmo, minty, lux)\n\nA typical _quarto.yml looks like:\nproject:\n  type: website\n\nwebsite:\n  title: \"Your Name\"\n  navbar:\n    left:\n      - href: index.md\n        text: Home\n      - href: blog.qmd\n        text: Blog\n\nformat:\n  html:\n    theme: cosmo\n    toc: true",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#blog.qmd-the-blog-listing-page",
-    "href": "lectures/lecture11.html#blog.qmd-the-blog-listing-page",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "blog.qmd — the blog listing page",
-    "text": "blog.qmd — the blog listing page\nThis file tells Quarto to automatically list all blog posts from the posts/ directory:\n---\ntitle: \"Blog\"\nlisting:\n  contents: posts\n  sort: \"date desc\"\n  type: default\n---\nEvery time you add a new post to posts/, it appears here automatically.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#posts-directory-your-blog-posts",
-    "href": "lectures/lecture11.html#posts-directory-your-blog-posts",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "posts/ directory — your blog posts",
-    "text": "posts/ directory — your blog posts\nEach blog post lives in its own subfolder inside posts/:\nposts/\n  creating-this-website/\n    index.qmd\nA blog post is just a markdown file with a YAML header:\n---\ntitle: \"How I Created This Website\"\nauthor: \"Your Name\"\ndate: \"2026-02-17\"\ncategories: [web, tutorial]\n---\n\nYour post content here in regular markdown...",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#githubworkflowspublish.yml-automated-deployment",
-    "href": "lectures/lecture11.html#githubworkflowspublish.yml-automated-deployment",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": ".github/workflows/publish.yml — automated deployment",
-    "text": ".github/workflows/publish.yml — automated deployment\nThis file tells GitHub: “Every time someone pushes to main, install Quarto, render the site, and deploy it to GitHub Pages.”\non:\n  push:\n    branches: main\n\nname: Quarto Publish\n\npermissions:\n  contents: read\n  pages: write\n  id-token: write\n\njobs:\n  build-deploy:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: quarto-dev/quarto-actions/setup@v2\n      - uses: quarto-dev/quarto-actions/render@v2\n      - uses: actions/upload-pages-artifact@v3\n        with:\n          path: _site\n      - uses: actions/deploy-pages@v4\n\n\n\n\n\n\nImportant\n\n\n\nThis is a GitHub Actions workflow. GitHub Actions is a CI/CD (Continuous Integration / Continuous Deployment) system built into GitHub. It runs automated tasks in response to events like pushes, pull requests, or schedules. Each .yml file in .github/workflows/ defines a workflow.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#gitignore-files-git-should-ignore",
-    "href": "lectures/lecture11.html#gitignore-files-git-should-ignore",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": ".gitignore — files Git should ignore",
-    "text": ".gitignore — files Git should ignore\nClaude Code adds entries to .gitignore so that build artifacts don’t clutter your repo:\n_site/\n.quarto/",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-about-_config.yml",
-    "href": "lectures/lecture11.html#what-about-_config.yml",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What about _config.yml?",
-    "text": "What about _config.yml?\nIf you added a Jekyll theme in Lecture 10, Claude Code will remove _config.yml. Quarto replaces Jekyll—the theme is now controlled by _quarto.yml instead.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#why-quarto",
-    "href": "lectures/lecture11.html#why-quarto",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Why Quarto?",
-    "text": "Why Quarto?\n\nMore control: navbar, sidebar, table of contents, search—all configurable\nBlog support built in: just drop .qmd files in posts/\nMultiple output formats: the same source can render to HTML, PDF, Word, or slides\nCode execution: Quarto can run Python, R, or Julia code and embed the output directly\nThe tool we use in this class: the course website you’re reading right now is built with Quarto",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-is-quarto",
-    "href": "lectures/lecture11.html#what-is-quarto",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What is Quarto?",
-    "text": "What is Quarto?\nQuarto is an open-source scientific and technical publishing system. It takes markdown files (.qmd or .md) and renders them into websites, documents, presentations, or books. It was created by Posit (the company behind RStudio) and is now the standard tool for reproducible scientific publishing.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-is-github-actions",
-    "href": "lectures/lecture11.html#what-is-github-actions",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What is GitHub Actions?",
-    "text": "What is GitHub Actions?\nGitHub Actions is GitHub’s built-in automation platform. You define workflows as YAML files in .github/workflows/. Each workflow:\n\nTriggers on an event (push, pull request, schedule)\nRuns on a virtual machine (Ubuntu, macOS, or Windows)\nExecutes a series of steps (install tools, run commands, deploy)\n\nIn our case, the workflow installs Quarto, renders the site, and deploys to GitHub Pages.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-is-cicd",
-    "href": "lectures/lecture11.html#what-is-cicd",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What is CI/CD?",
-    "text": "What is CI/CD?\nCI/CD stands for Continuous Integration / Continuous Deployment:\n\nCI: automatically test/build your project on every push\nCD: automatically deploy to production after a successful build\n\nOur Quarto workflow is a CD pipeline: push → build → deploy.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-is-yaml",
-    "href": "lectures/lecture11.html#what-is-yaml",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What is YAML?",
-    "text": "What is YAML?\nYAML (“YAML Ain’t Markup Language”) is a human-readable data format used for configuration files. Key rules:\n\nIndentation matters (use spaces, not tabs)\nKey-value pairs: title: \"My Site\"\nLists: items start with -\nNesting: indent child items under their parent\n\nwebsite:\n  title: \"My Site\"        # key-value pair\n  navbar:\n    left:                  # nested object\n      - href: index.md     # list item\n        text: Home\n      - href: blog.qmd\n        text: Blog\n\n\n\n\n\n\nWarning\n\n\n\nYAML is whitespace-sensitive. A single wrong indent will break your config. If something isn’t working, check your indentation first.",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-we-did-today",
-    "href": "lectures/lecture11.html#what-we-did-today",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What we did today",
-    "text": "What we did today\n\nInstalled Claude Code in a Codespace and set our API key\nPointed it at our CV repository\nGave it a single prompt to build a Quarto website with a blog\nSwitched GitHub Pages from branch deployment to GitHub Actions\nGot a live site with a navbar, CV homepage, and blog",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#what-claude-code-did-for-us",
-    "href": "lectures/lecture11.html#what-claude-code-did-for-us",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "What Claude Code did for us",
-    "text": "What Claude Code did for us\n\n\n\nFile\nPurpose\n\n\n\n\n_quarto.yml\nSite configuration (title, navbar, theme)\n\n\nblog.qmd\nBlog listing page\n\n\nposts/.../index.qmd\nFirst blog post\n\n\n.github/workflows/publish.yml\nAutomated build and deploy\n\n\n.gitignore\nExclude build artifacts",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
-    ]
-  },
-  {
-    "objectID": "lectures/lecture11.html#key-takeaways",
-    "href": "lectures/lecture11.html#key-takeaways",
-    "title": "Lecture 11: Building a Website with Claude Code",
-    "section": "Key takeaways",
-    "text": "Key takeaways\n\nAI coding agents operate on your project directly—not just generate snippets\nQuarto is a powerful publishing system that turns markdown into websites\nGitHub Actions automates deployment so pushing = publishing\nYAML is the configuration language for both Quarto and GitHub Actions\nOne clear prompt can scaffold an entire project",
-    "crumbs": [
-      "Home",
-      "Lectures",
-      "11. Building a Website with Claude Code"
     ]
   },
   {
