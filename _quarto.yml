@@ -49,6 +49,8 @@ website:
             text: "12. Responsible Use of Coding Agents"
           - href: lectures/lecture13.ipynb
             text: "13. Sequence Alignment"
+          - href: lectures/lecture14.qmd
+            text: "14. Finding Sequence Matches Quickly"
 
 format:
   html:

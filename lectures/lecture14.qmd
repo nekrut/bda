@@ -1,0 +1,2870 @@
+---
+title: "Lecture 14: Finding Sequence Matches Quickly"
+---
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+- Explain why brute-force alignment is impractical for modern sequencing data
+- Distinguish between mapping and alignment
+- Build and search substring indexes
+- Understand hash functions and hash tables in the context of genomics
+- Describe how BLAST uses word lookup tables to accelerate homology search
+- Construct and search tries and suffix tries
+- Explain the relationship between suffix tries, suffix trees, and suffix arrays
+- Perform the Burrows-Wheeler Transform and understand its properties
+- Describe how the FM index enables fast, memory-efficient sequence search
+- Compare and contrast Bowtie2 and BWA-MEM alignment strategies
+
+---
+
+## A bit more Claudification
+
+- [**"How Quickly Will A.I. Agents Rip Through the Economy?"** -- Jack Clark on The Ezra Klein Show (NYT, Feb 24 2026)](https://www.nytimes.com/2026/02/24/opinion/ezra-klein-podcast-jack-clark.html?unlocked_article_code=1.O1A.2xFR.5XLPsiVA2rjD&smid=url-share). Jack Clark, co-founder of Anthropic, discusses how AI agents are reshaping work. He notes that Claude is already writing "comfortably the majority" of Anthropic's own code, and that the value of senior engineers with well-calibrated intuitions is increasing while routine coding tasks are increasingly automated.
+- [**Claude Code Agent Teams documentation**](https://code.claude.com/docs/en/agent-teams). Agent teams let you coordinate multiple Claude Code instances working together -- one session acts as team lead, spawning teammates that work independently in their own context windows, communicate with each other, and share a task list. 
+---
+
+## 1. Introduction: The Challenge of Large Datasets
+
+Modern sequencing instruments produce staggering volumes of data. An Illumina NovaSeq 6000 can generate **up to 20 billion reads** in a single run. Each of those reads must be placed onto a reference genome -- for humans, that means searching through **$3 \times 10^9$ base pairs**.
+
+### Why Dynamic Programming Fails at Scale
+
+In earlier lectures we learned about dynamic programming alignment algorithms like Smith-Waterman and Needleman-Wunsch. These are beautiful algorithms, but they have a critical limitation: **time complexity**.
+
+For a single pairwise alignment of a read of length $m$ against a reference of length $n$:
+
+$$T = O(mn)$$
+
+This is fine for comparing two sequences. But what happens at genome scale?
+
+| Parameter | Value |
+|-----------|-------|
+| Reference genome length ($n$) | $3 \times 10^9$ bp (human) |
+| Number of reads ($d$) | $20 \times 10^9$ (NovaSeq run) |
+| Average read length ($m$) | 150 bp |
+| Total operations | $d \times m \times n$ |
+
+Let's compute the total number of operations:
+
+$$d \times m \times n = 20 \times 10^9 \times 150 \times 3 \times 10^9 = 9 \times 10^{21}$$
+
+That is **9 sextillion operations**. Even at $10^9$ operations per second per CPU core, this would require:
+
+$$\frac{9 \times 10^{21}}{10^9 \times 3.15 \times 10^7} \approx 285,000 \text{ CPU-years}$$
+
+On a cluster of 1,000 CPUs, this would still take **over 285 years**. Clearly, we cannot align every read against the entire genome using dynamic programming.
+
+:::{.callout-important}
+## Key Insight
+We need a fundamentally different strategy. Instead of comparing every read against every position in the genome, we need a way to *jump directly* to the most promising locations. This is the idea behind **indexing**.
+:::
+
+The rest of this lecture traces the intellectual journey from simple indexes to the sophisticated data structures used by modern aligners like Bowtie2 and BWA-MEM.
+
+:::{.callout-note}
+## Roadmap
+Here is the path we will follow -- each step motivated by limitations of the previous one:
+
+| Step | Data Structure / Tool | Limitation it addresses |
+|:----:|----------------------|------------------------|
+| 1 | **Brute Force** | *(baseline -- too slow)* |
+| 2 | **Substring Index** | *(fixed k, many false hits)* |
+| 3 | **Hash Tables** | *(fast lookup for k-mers)* |
+| 4 | **BLAST** | *(word lookup + extend -- fast homology search)* |
+| 5 | **Tries** | *(tree-based prefix lookup)* |
+| 6 | **Suffix Trie** | *(any-length query, but O(n²) space)* |
+| 7 | **Suffix Tree** | *(linear space, but 47 GB for human)* |
+| 8 | **Suffix Array** | *(12 GB, simpler)* |
+| 9 | **BWT** | *(compressible and searchable)* |
+| 10 | **FM Index** | *(~1.25 GB, fast search)* |
+| 11 | **Bowtie2 / BWA-MEM** | *(practical tools you will use)* |
+:::
+
+---
+
+## 2. Mapping vs. Alignment
+
+Before diving into indexing, let's clarify two terms that are often confused.
+
+The tools we will study in this lecture were shaped by a handful of researchers. [Heng Li](https://en.wikipedia.org/wiki/Heng_Li), a student of [Richard Durbin](https://en.wikipedia.org/wiki/Richard_Durbin_(scientist)), created BWA, SAMtools, and minimap2 -- his tools are used in virtually every genomics study published today. [Ben Langmead](https://www.langmead-lab.org/), a student of [Steven Salzberg](https://en.wikipedia.org/wiki/Steven_Salzberg), developed Bowtie and Bowtie2, among the most widely cited alignment tools in history. And [Webb Miller](https://en.wikipedia.org/wiki/Webb_Miller) pioneered the foundational sequence alignment algorithms (including BLASTZ and multiz) that made comparative genomics possible. You will encounter their work throughout this lecture.
+
+Heng Li provides a useful distinction between two terms that are often confused:
+
+| Concept | Definition | Goal |
+|---------|-----------|------|
+| **Mapping** | Determining the most likely genomic region a read originates from | Find the *location* |
+| **Alignment** | Determining the base-by-base correspondence between read and reference | Find the *exact placement* |
+
+**Mapping** is like determining that your sequence likely came from chromosome 17. **Alignment** is determining the exact base-pair coordinates (e.g., chr17:7,668,402-7,668,551) and finding that there is a G>A substitution at position 120 of the read.
+
+In practice, most tools do both: they first **map** (find candidate locations using an index) and then **align** (perform local alignment at those locations). This two-phase approach -- often called **seed-and-extend** -- is the foundation of nearly all modern read aligners.
+
+---
+
+## 3. Indexing with Substrings
+
+### The Inverted Index Concept
+
+Think about the index at the back of a book. When you want to find where "transcription" is discussed, you don't read the entire book -- you look up the word in the index, which tells you the page numbers. This is an **inverted index**: given a term, it returns the locations where that term appears.
+
+We can apply the same idea to DNA sequences:
+
+- **Forward index**: Given a position, what substring is there? (This is just the genome itself.)
+- **Inverted index**: Given a substring, where does it occur? (This is what we need for mapping.)
+
+### Building an Index from Substrings
+
+To create an index from a text $T$, we:
+
+1. **Extract** all substrings of a fixed length $L$ (these are called **L-mers** or **k-mers**)
+2. **Record** each substring along with the position where it occurs
+3. **Organize** these entries so that lookups are fast
+
+For example, with text `CGTGCCTACTTACTTACAT` and $L = 5$:
+
+| Position | 5-mer |
+|----------|-------|
+| 0 | CGTGC |
+| 1 | GTGCC |
+| 2 | TGCCT |
+| 3 | GCCTA |
+| ... | ... |
+
+### Searching the Index
+
+To find where a pattern $P$ occurs:
+
+1. Extract a substring of length $L$ from $P$
+2. Look it up in the index to get candidate positions
+3. **Extend** the match at each candidate position to verify the full pattern
+
+### Trade-offs
+
+The choice of $L$ (substring length) and the interval between extracted substrings involve trade-offs:
+
+| Parameter | Larger value | Smaller value |
+|-----------|-------------|---------------|
+| Substring length $L$ | More specific (fewer false hits), more memory | Less specific (more false hits), less memory |
+| Extraction interval | Faster indexing, less memory, may miss some matches | Slower indexing, more memory, more complete |
+
+### Specificity in Practice
+
+How unique are k-mers in real genomes? Here are approximate numbers for human chromosome 1 (about 249 Mb):
+
+| k-mer length | Unique k-mers | % of possible | Average occurrences |
+|--------------|--------------|---------------|-------------------|
+| 8 | 65,536 | 100% | ~3,800 |
+| 10 | 1,048,372 | 99.97% | ~238 |
+| 12 | 16,543,411 | 98.5% | ~15 |
+| 14 | 175,891,774 | 65.5% | ~1.4 |
+| 16 | 237,533,060 | 5.5% | ~1.05 |
+
+Notice that even with 16-mers, only about 5.5% of possible 16-mers appear, but almost every one that does appear is unique. This means longer k-mers give us very specific index hits. This is why most aligners use seed lengths of at least 16-22 bp -- shorter seeds produce too many spurious hits, overwhelming the extension phase.
+
+```{=html}
+
+<div id="viz-substring-index" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive Substring Index Demo</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a text and pattern, set substring length, and see how the index is built and searched.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="si-text" type="text" value="CGTGCCTACTTACTTACAT" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Pattern:</label>
+    <input id="si-pattern" type="text" value="TACTTAC" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div style="min-width:100px;">
+    <label style="font-size:0.85em; font-weight:bold;">Length (L):</label>
+    <input id="si-length" type="number" value="5" min="2" max="10" style="width:80px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div style="min-width:100px;">
+    <label style="font-size:0.85em; font-weight:bold;">Interval:</label>
+    <input id="si-interval" type="number" value="1" min="1" max="5" style="width:80px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+</div>
+<div style="display:flex; gap:8px; margin-bottom:12px;">
+  <button id="si-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build Index</button>
+  <button id="si-search" style="padding:8px 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Search Pattern</button>
+  <button id="si-reset" style="padding:8px 16px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">Reset</button>
+</div>
+<div id="si-text-display" style="font-family:monospace; font-size:1.3em; padding:10px; background:#f5f5f5; border-radius:4px; margin-bottom:10px; letter-spacing:2px; overflow-x:auto; white-space:nowrap;"></div>
+<div id="si-index-table" style="max-height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+<div id="si-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; min-height:40px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let index = {};
+
+  function buildIndex() {
+    const text = $('si-text').value.toUpperCase();
+    const L = parseInt($('si-length').value);
+    const interval = parseInt($('si-interval').value);
+    index = {};
+    const display = $('si-text-display');
+    display.innerHTML = text.split('').map((c, i) =>
+      `<span id="si-c-${i}" style="display:inline-block;width:1.1em;text-align:center;">${c}</span>`
+    ).join('');
+
+    for (let i = 0; i <= text.length - L; i += interval) {
+      const sub = text.substring(i, i + L);
+      if (!index[sub]) index[sub] = [];
+      index[sub].push(i);
+    }
+
+    let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+    html += '<tr style="background:#2196F3;color:white;"><th style="padding:4px 8px;text-align:left;">Substring</th><th style="padding:4px 8px;text-align:left;">Positions</th></tr>';
+    const sorted = Object.keys(index).sort();
+    sorted.forEach((key, i) => {
+      const bg = i % 2 === 0 ? '#f9f9f9' : '#fff';
+      html += `<tr id="si-row-${key}" style="background:${bg};"><td style="padding:4px 8px;font-family:monospace;">${key}</td><td style="padding:4px 8px;">${index[key].join(', ')}</td></tr>`;
+    });
+    html += '</table>';
+    $('si-index-table').innerHTML = html;
+    $('si-log').innerHTML = `<strong>Index built!</strong> Extracted ${sorted.length} unique ${L}-mers from text of length ${text.length} (interval=${interval}).`;
+  }
+
+  function searchPattern() {
+    const text = $('si-text').value.toUpperCase();
+    const pattern = $('si-pattern').value.toUpperCase();
+    const L = parseInt($('si-length').value);
+    if (Object.keys(index).length === 0) { buildIndex(); }
+
+    // Reset highlights
+    for (let i = 0; i < text.length; i++) {
+      const el = document.getElementById(`si-c-${i}`);
+      if (el) el.style.background = 'none';
+    }
+    document.querySelectorAll('[id^="si-row-"]').forEach(r => r.style.background = '');
+
+    if (pattern.length < L) {
+      $('si-log').innerHTML = `<span style="color:#f44336;">Pattern must be at least ${L} characters long (the substring length).</span>`;
+      return;
+    }
+
+    const queryMer = pattern.substring(0, L);
+    const rowEl = document.getElementById(`si-row-${queryMer}`);
+    if (rowEl) rowEl.style.background = '#FF9800';
+
+    const candidates = index[queryMer] || [];
+    let log = `<strong>Searching for:</strong> <code>${pattern}</code><br>`;
+    log += `<strong>Query ${L}-mer:</strong> <code>${queryMer}</code> &rarr; `;
+
+    if (candidates.length === 0) {
+      log += `<span style="color:#f44336;">Not found in index. No matches.</span>`;
+      $('si-log').innerHTML = log;
+      return;
+    }
+
+    log += `Found at positions: ${candidates.join(', ')}<br><strong>Verification:</strong><br>`;
+    let matches = [];
+    candidates.forEach(pos => {
+      const sub = text.substring(pos, pos + pattern.length);
+      if (sub === pattern) {
+        matches.push(pos);
+        for (let j = pos; j < pos + pattern.length && j < text.length; j++) {
+          const el = document.getElementById(`si-c-${j}`);
+          if (el) el.style.background = '#4CAF50';
+        }
+        log += `&nbsp;&nbsp;Position ${pos}: <code>${sub}</code> = <code>${pattern}</code> <span style="color:#4CAF50;">&#10004; Match!</span><br>`;
+      } else {
+        for (let j = pos; j < pos + pattern.length && j < text.length; j++) {
+          const el = document.getElementById(`si-c-${j}`);
+          if (el && el.style.background !== 'rgb(76, 175, 80)') el.style.background = '#ffcdd2';
+        }
+        log += `&nbsp;&nbsp;Position ${pos}: <code>${sub}</code> &ne; <code>${pattern}</code> <span style="color:#f44336;">&#10008; Mismatch</span><br>`;
+      }
+    });
+    log += `<strong>Result: ${matches.length} match(es)</strong> at position(s): ${matches.join(', ') || 'none'}`;
+    $('si-log').innerHTML = log;
+  }
+
+  $('si-build').addEventListener('click', buildIndex);
+  $('si-search').addEventListener('click', searchPattern);
+  $('si-reset').addEventListener('click', () => {
+    index = {};
+    $('si-text-display').innerHTML = '';
+    $('si-index-table').innerHTML = '';
+    $('si-log').innerHTML = '';
+  });
+  buildIndex();
+})();
+</script>
+```
+
+---
+
+## 4. Hashing and Hash Functions
+
+Before we go further with indexing, we need to understand a fundamental computer science concept that underlies fast lookups: **hashing**. If you have never taken a computer science course, don't worry -- the idea is intuitive once you see it.
+
+### What is a Hash Function?
+
+Imagine you work in a library and need to file thousands of books so you can find any one instantly. One strategy: assign each book to a numbered shelf based on a simple rule applied to its title. For example, "count the letters in the title and take the remainder when dividing by 100." Book titles with 312 letters go to shelf 12 (since 312 mod 100 = 12).
+
+A **hash function** is exactly this kind of rule. It takes an input (of any size) and converts it to a fixed-size number:
+
+$$h: \text{input} \rightarrow \text{integer in range } [0, N)$$
+
+### Properties of Good Hash Functions
+
+| Property | What it means | Why it matters |
+|----------|--------------|----------------|
+| **Deterministic** | Same input always gives same output | You can find things again! |
+| **Uniform distribution** | Outputs are spread evenly across the range | No shelf gets overcrowded |
+| **Fast to compute** | O(1) or O(k) for k-length input | The whole point is speed |
+
+### How Hash Tables Work
+
+A **hash table** (also called a hash map or dictionary) uses a hash function to create a fast lookup structure:
+
+1. Create an array of $N$ "buckets"
+2. To **store** a key-value pair: compute $h(\text{key})$, put the pair in that bucket
+3. To **retrieve** a value: compute $h(\text{key})$, go directly to that bucket
+
+The result? **O(1) average-case lookup** -- constant time regardless of how many items are stored. Compare this to searching a sorted list ($O(\log n)$) or an unsorted list ($O(n)$).
+
+### A Simple DNA Hash Function
+
+For DNA k-mers, we can convert each base to a 2-bit number:
+
+| Base | Binary |
+|------|--------|
+| A | 00 |
+| C | 01 |
+| G | 10 |
+| T | 11 |
+
+Since we use 2 bits per base, each position can hold 4 values (A=0, C=1, G=2, T=3). We can read a k-mer as a **base-4 number** to get a unique integer. For a 3-mer, the first base is multiplied by $4^2 = 16$, the second by $4^1 = 4$, and the third by $4^0 = 1$:
+
+$$h(\text{ACG}) = 0 \times 4^2 + 1 \times 4^1 + 2 \times 4^0 = 0 + 4 + 2 = 6$$
+
+This is perfect for DNA because it maps every possible k-mer to a unique integer (for small k), and it is extremely fast to compute.
+
+### Collisions
+
+What happens when two different keys hash to the same bucket? This is called a **collision**. For our library analogy, two books with titles of the same length get assigned to the same shelf.
+
+Common collision resolution strategies:
+
+- **Chaining**: Each bucket holds a linked list of all items that hash there
+- **Open addressing**: If a bucket is full, try the next one (linear probing)
+
+With a good hash function and a large enough table, collisions are rare and lookups remain fast.
+
+### Why This Matters for Genomics
+
+Hash tables are everywhere in bioinformatics:
+
+- **K-mer counting** (jellyfish, KMC): hash each k-mer, increment its count
+- **Sequence indexing** (BLAST): hash seed words for fast lookup
+- **Genome assembly** (de Bruijn graphs): hash k-mers to find overlaps
+- **Minimizers**: hash k-mers to select representative seeds
+
+```{=html}
+
+<div id="viz-hash-table" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive Hash Table Demo</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Type DNA k-mers to see them hashed and placed in buckets. Watch collisions happen!</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">K-mer to insert:</label>
+    <input id="ht-kmer" type="text" value="ACG" maxlength="6" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div style="min-width:120px;">
+    <label style="font-size:0.85em; font-weight:bold;">Table size:</label>
+    <input id="ht-size" type="number" value="8" min="4" max="16" style="width:80px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="ht-insert" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Insert</button>
+  <button id="ht-batch" style="padding:8px 16px; background:#FF9800; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Batch Insert (random)</button>
+  <button id="ht-clear" style="padding:8px 16px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Clear</button>
+</div>
+<div id="ht-calc" style="padding:8px; background:#e3f2fd; border-radius:4px; font-family:monospace; font-size:0.9em; margin-bottom:10px; min-height:24px;"></div>
+<svg id="ht-svg" width="100%" height="320" style="border:1px solid #eee; border-radius:4px; background:#fafafa;"></svg>
+<div id="ht-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:10px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  const baseVal = {A:0, C:1, G:2, T:3};
+  let tableSize = 8;
+  let buckets = [];
+  let collisionCount = 0;
+
+  function hashKmer(kmer) {
+    let h = 0;
+    for (let i = 0; i < kmer.length; i++) {
+      h = h * 4 + (baseVal[kmer[i]] || 0);
+    }
+    return h % tableSize;
+  }
+
+  function initTable() {
+    tableSize = parseInt($('ht-size').value) || 8;
+    buckets = Array.from({length: tableSize}, () => []);
+    collisionCount = 0;
+    render();
+    $('ht-log').innerHTML = '';
+    $('ht-calc').innerHTML = '';
+  }
+
+  function render() {
+    const svg = $('ht-svg');
+    const w = svg.clientWidth || 860;
+    const bucketW = Math.min(100, (w - 40) / tableSize);
+    const startX = (w - bucketW * tableSize) / 2;
+    let html = '';
+    for (let i = 0; i < tableSize; i++) {
+      const x = startX + i * bucketW;
+      html += `<rect x="${x}" y="40" width="${bucketW - 4}" height="40" fill="#e3f2fd" stroke="#2196F3" rx="4"/>`;
+      html += `<text x="${x + bucketW/2 - 2}" y="65" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565C0">${i}</text>`;
+      buckets[i].forEach((kmer, j) => {
+        const yy = 95 + j * 32;
+        const color = j === 0 ? '#4CAF50' : '#FF9800';
+        html += `<rect x="${x}" y="${yy}" width="${bucketW - 4}" height="28" fill="${color}" rx="4"/>`;
+        html += `<text x="${x + bucketW/2 - 2}" y="${yy + 19}" text-anchor="middle" font-size="11" font-family="monospace" fill="white" font-weight="bold">${kmer}</text>`;
+      });
+    }
+    html += `<text x="${w/2}" y="20" text-anchor="middle" font-size="13" fill="#666">Hash Table Buckets (size=${tableSize}) | Collisions: ${collisionCount}</text>`;
+    svg.innerHTML = html;
+  }
+
+  function insertKmer(kmer) {
+    kmer = kmer.toUpperCase().replace(/[^ACGT]/g, '');
+    if (kmer.length === 0) return;
+    const h = hashKmer(kmer);
+    let calcStr = kmer.split('').map((c, i) => {
+      const power = kmer.length - 1 - i;
+      return `${baseVal[c]}x4<sup>${power}</sup>`;
+    }).join(' + ');
+    let rawVal = 0;
+    for (let i = 0; i < kmer.length; i++) rawVal = rawVal * 4 + (baseVal[kmer[i]] || 0);
+    calcStr += ` = ${rawVal} mod ${tableSize} = <strong>${h}</strong>`;
+    $('ht-calc').innerHTML = `h(${kmer}) = ${calcStr}`;
+
+    if (buckets[h].length > 0) {
+      collisionCount++;
+      $('ht-log').innerHTML = `<span style="color:#FF9800;"><strong>Collision!</strong> Bucket ${h} already has [${buckets[h].join(', ')}]. Adding ${kmer} via chaining.</span>`;
+    } else {
+      $('ht-log').innerHTML = `Inserted <strong>${kmer}</strong> into bucket ${h}.`;
+    }
+    buckets[h].push(kmer);
+    render();
+  }
+
+  function batchInsert() {
+    const bases = 'ACGT';
+    const k = 3;
+    for (let n = 0; n < 6; n++) {
+      let kmer = '';
+      for (let i = 0; i < k; i++) kmer += bases[Math.floor(Math.random() * 4)];
+      insertKmer(kmer);
+    }
+  }
+
+  initTable();
+  $('ht-insert').addEventListener('click', () => insertKmer($('ht-kmer').value));
+  $('ht-kmer').addEventListener('keydown', e => { if (e.key === 'Enter') insertKmer($('ht-kmer').value); });
+  $('ht-batch').addEventListener('click', batchInsert);
+  $('ht-clear').addEventListener('click', initTable);
+  $('ht-size').addEventListener('change', initTable);
+})();
+</script>
+```
+
+---
+
+## 5. How BLAST Works: Putting It All Together
+
+In the previous lecture we learned about dynamic programming alignment (Smith-Waterman) and the seed-and-extend strategy used by LASTZ. Now let's look at **BLAST** (Basic Local Alignment Search Tool) -- arguably the most widely used program in all of biology -- and see how it combines indexing, lookup tables, and local alignment into a remarkably fast homology search engine.
+
+BLAST was introduced in 1990 by [Altschul et al.](https://doi.org/10.1016/S0022-2836(05)80360-2) and has been cited over 100,000 times. Its key insight: **instead of aligning a query against every position in a database, first identify short exact or near-exact matches (seeds), then extend only the promising ones.**
+
+### The BLAST Pipeline
+
+BLAST operates in three stages, each progressively more expensive but applied to fewer candidates:
+
+```
+Stage 1: Word matching (very fast, many hits)
+    ↓  filter
+Stage 2: Ungapped extension (fast, fewer hits)
+    ↓  filter
+Stage 3: Gapped extension (slow, few hits → final alignments)
+```
+
+### Stage 1: The Word Lookup Table
+
+This is where indexing enters the picture. BLAST breaks the **query** sequence into overlapping **words** (short subsequences of length $w$). For protein BLAST (blastp), the default word size is $w = 3$; for nucleotide BLAST (blastn), it is $w = 11$.
+
+For a query protein of length $m$, this produces $m - w + 1$ overlapping words:
+
+```
+Query:  M  E  T  H  I  O  N  I  N  E
+Words:  MET  ETH  THI  HIO  ION  ONI  NIN  INE
+        (w=3, so 10 - 3 + 1 = 8 words)
+```
+
+But here is BLAST's clever trick: it doesn't just look for **exact** word matches. For each query word, BLAST generates a **neighborhood** -- all words that score above a threshold $T$ when compared using a substitution matrix (like BLOSUM62, which you saw in the previous lecture).
+
+For example, the word `MET` might have neighbors like `MEA`, `MES`, `LET` -- any 3-mer that scores $\geq T$ against `MET` using BLOSUM62. Lowering $T$ increases sensitivity (more neighbors, more potential matches) but slows the search.
+
+### The Lookup Table
+
+All neighborhood words are organized into a **lookup table** -- essentially a hash table that maps each word to the query positions where it (or one of its neighbors) appears:
+
+| Word | Query position(s) |
+|------|-------------------|
+| MET | 0 |
+| MEA | 0 |
+| LET | 0 |
+| ETH | 1 |
+| ... | ... |
+
+BLAST then scans the database sequence and checks each database word against this lookup table. Because lookup tables provide **O(1)** access (the same hash table concept from Section 4), this scan is extremely fast -- the dominant cost is simply reading the database.
+
+> **Connection to Section 4 (Hashing)**: The BLAST lookup table is a direct application of the hash tables we discussed earlier. Each word is hashed to a bucket, and checking whether a database word has a query match is a constant-time hash lookup. This is what makes BLAST so fast: the expensive Smith-Waterman alignment is never run unless the lookup table produces a hit.
+
+### Stage 2: Ungapped Extension
+
+Each lookup table hit (called a **seed**) is extended in both directions **without gaps**, computing a running alignment score. Extension continues as long as the score stays close to its running maximum. If the score drops by more than a threshold $X$ below the maximum (the **X-drop** criterion), extension stops.
+
+If the resulting ungapped alignment -- called a **High-scoring Segment Pair (HSP)** -- scores above a cutoff, it passes to the next stage. Most seeds are eliminated here.
+
+> **Connection to Lecture 13**: This is exactly the ungapped extension step you saw in the LASTZ pipeline. The X-drop criterion is the same idea.
+
+### Stage 3: Gapped Extension
+
+Surviving HSPs are extended using **gapped** Smith-Waterman alignment (the full dynamic programming algorithm from Lecture 13). This is the most computationally expensive step, but by this point only a tiny fraction of the database remains as candidates.
+
+The final alignments are scored, and statistical significance is assessed using **E-values** (expected number of alignments with this score or better that would occur by chance in a database of this size).
+
+### BLAST vs. Newer Aligners
+
+| Feature | BLAST | Bowtie2 / BWA-MEM |
+|---------|-------|-------------------|
+| **Primary use** | Query vs. database (homology search) | Reads vs. reference genome (mapping) |
+| **Index** | Lookup table from query words | FM index of reference genome |
+| **Word size** | 3 (protein), 11 (nucleotide) | 22 (Bowtie2), variable MEMs (BWA-MEM) |
+| **Index built on** | Query sequence | Reference genome (built once) |
+| **Substitution matrix** | BLOSUM62 (protein), match/mismatch (DNA) | Match/mismatch penalties |
+| **Sensitivity** | High (neighborhood words) | Tuned for fast mapping |
+| **Speed** | Fast for database search | Faster for read mapping |
+
+The critical difference: BLAST indexes the **query** and scans the **database**, while Bowtie2/BWA-MEM index the **reference** (once) and map **reads** against it. When you have billions of short reads to map against a single reference, pre-indexing the reference is far more efficient.
+
+> **Key Reference**: Altschul SF, Gish W, Miller W, Myers EW, Lipman DJ. "Basic local alignment search tool." *Journal of Molecular Biology* 215, 403-410 (1990). [DOI: 10.1016/S0022-2836(05)80360-2](https://doi.org/10.1016/S0022-2836(05)80360-2)
+
+---
+
+## 6. Tries
+
+Now let's move from hash-based lookups to **tree-based** data structures. A **trie** (often pronounced to rhyme with "try" to distinguish it from "tree," though both pronunciations are used -- the name comes from re**trie**val) is a tree-based data structure where:
+
+- Each **edge** is labeled with a single character
+- Each **node** represents a prefix of some stored key
+- There is at most **one outgoing edge per character** from any node
+- Keys are **spelled out** along root-to-leaf paths
+
+### Why Tries?
+
+Tries give us **O(m)** lookup time for a query of length $m$ -- independent of how many keys are stored. This is ideal for searching patterns in indexed text.
+
+> **Why tries matter in biology**: Tries are the foundation for tools like **Kraken** (for taxonomic classification of metagenomic reads), which builds a trie of k-mers labeled with taxonomic IDs to classify millions of reads per minute.
+
+### Using Tries for Substring Indexing
+
+We can build a trie from all substrings of length $L$ extracted from a text $T$:
+
+1. Extract each L-mer and its position
+2. Insert each L-mer into the trie, storing position(s) at the leaf
+3. To query: walk down the trie following the pattern characters
+
+If at any point there is no edge matching the next character, the pattern does not exist in the index.
+
+```{=html}
+
+<div id="viz-trie" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive Trie Builder</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a text and substring length to build a trie. Type a pattern in the search field to see the path traced through the trie.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="tr-text" type="text" value="ABAB" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div>
+    <label style="font-size:0.85em; font-weight:bold;">Substring length:</label>
+    <input id="tr-len" type="number" value="2" min="1" max="6" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="tr-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build Trie</button>
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Search:</label>
+    <input id="tr-search" type="text" placeholder="type to search..." style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+</div>
+<svg id="tr-svg" width="100%" height="360" style="border:1px solid #eee; border-radius:4px; background:#fafafa;"></svg>
+<div id="tr-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let trieRoot = null;
+  let nodePositions = [];
+
+  function makeTrie() {
+    return {children: {}, positions: [], id: 0};
+  }
+
+  function insertTrie(root, word, pos) {
+    let node = root;
+    for (const ch of word) {
+      if (!node.children[ch]) node.children[ch] = makeTrie();
+      node = node.children[ch];
+    }
+    node.positions.push(pos);
+  }
+
+  let nextId = 0;
+  function assignIds(node) {
+    node.id = nextId++;
+    for (const ch of Object.keys(node.children).sort()) assignIds(node.children[ch]);
+  }
+
+  function layoutTree(node, depth, left, right) {
+    const x = (left + right) / 2;
+    const y = 40 + depth * 70;
+    const result = [{node, x, y, children: []}];
+    const kids = Object.keys(node.children).sort();
+    if (kids.length > 0) {
+      const step = (right - left) / kids.length;
+      kids.forEach((ch, i) => {
+        const childLayout = layoutTree(node.children[ch], depth + 1, left + i * step, left + (i + 1) * step);
+        result[0].children.push({char: ch, layout: childLayout});
+        result.push(...childLayout);
+      });
+    }
+    return result;
+  }
+
+  function renderTrie(highlight) {
+    const svg = $('tr-svg');
+    const w = svg.clientWidth || 860;
+    if (!trieRoot) { svg.innerHTML = '<text x="' + w/2 + '" y="180" text-anchor="middle" fill="#999">Click "Build Trie" to start</text>'; return; }
+
+    nextId = 0;
+    assignIds(trieRoot);
+    const layout = layoutTree(trieRoot, 0, 20, w - 20);
+    nodePositions = layout;
+
+    const hl = highlight || new Set();
+    let html = '';
+    // Draw edges
+    layout.forEach(item => {
+      item.children.forEach(c => {
+        const child = c.layout[0];
+        const edgeHl = hl.has(item.node.id) && hl.has(child.node.id);
+        const color = edgeHl ? '#4CAF50' : '#999';
+        const sw = edgeHl ? 3 : 1.5;
+        html += `<line x1="${item.x}" y1="${item.y}" x2="${child.x}" y2="${child.y}" stroke="${color}" stroke-width="${sw}"/>`;
+        const mx = (item.x + child.x) / 2 - 5;
+        const my = (item.y + child.y) / 2;
+        html += `<text x="${mx}" y="${my}" font-size="13" font-weight="bold" fill="${edgeHl ? '#2E7D32' : '#2196F3'}">${c.char}</text>`;
+      });
+    });
+    // Draw nodes
+    layout.forEach(item => {
+      const isLeaf = Object.keys(item.node.children).length === 0;
+      const nodeHl = hl.has(item.node.id);
+      const fill = nodeHl ? '#4CAF50' : (isLeaf ? '#FF9800' : '#2196F3');
+      const r = isLeaf ? 14 : 10;
+      html += `<circle cx="${item.x}" cy="${item.y}" r="${r}" fill="${fill}" stroke="white" stroke-width="2" style="cursor:pointer;" data-nid="${item.node.id}"/>`;
+      if (isLeaf && item.node.positions.length > 0) {
+        html += `<text x="${item.x}" y="${item.y + 4}" text-anchor="middle" font-size="10" fill="white" font-weight="bold">${item.node.positions.join(',')}</text>`;
+      }
+    });
+    svg.innerHTML = html;
+  }
+
+  function buildTrie() {
+    const text = $('tr-text').value.toUpperCase();
+    const L = parseInt($('tr-len').value);
+    trieRoot = makeTrie();
+    for (let i = 0; i <= text.length - L; i++) {
+      insertTrie(trieRoot, text.substring(i, i + L), i);
+    }
+    renderTrie();
+    $('tr-log').innerHTML = `Trie built from <strong>${text}</strong> with ${L}-mers.`;
+  }
+
+  function searchTrie() {
+    const query = $('tr-search').value.toUpperCase();
+    if (!trieRoot || query.length === 0) { renderTrie(); return; }
+    const hl = new Set();
+    let node = trieRoot;
+    hl.add(node.id);
+    let found = true;
+    for (const ch of query) {
+      if (node.children[ch]) {
+        node = node.children[ch];
+        hl.add(node.id);
+      } else {
+        found = false;
+        break;
+      }
+    }
+    renderTrie(hl);
+    if (found) {
+      const posInfo = node.positions.length > 0 ? ` at position(s): ${node.positions.join(', ')}` : ' (prefix match, not a complete indexed substring)';
+      $('tr-log').innerHTML = `<span style="color:#4CAF50;"><strong>Found "${query}"</strong>${posInfo}</span>`;
+    } else {
+      $('tr-log').innerHTML = `<span style="color:#f44336;"><strong>"${query}" not found</strong> -- path ended (no matching edge).</span>`;
+    }
+  }
+
+  $('tr-build').addEventListener('click', buildTrie);
+  $('tr-search').addEventListener('input', searchTrie);
+  buildTrie();
+})();
+</script>
+```
+
+### Step-by-Step Trie Construction
+
+Watch how the trie grows as each substring is inserted one at a time. New nodes and edges added at each step are highlighted in green.
+
+```{=html}
+
+<div id="viz-trie-step" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Step-by-Step Trie Construction</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Step through each substring insertion to see the trie grow incrementally.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="trs-text" type="text" value="ABAB" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div>
+    <label style="font-size:0.85em; font-weight:bold;">Substring length:</label>
+    <input id="trs-len" type="number" value="2" min="1" max="6" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="trs-reset" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Reset</button>
+</div>
+<div style="display:flex; gap:8px; margin-bottom:10px; align-items:center; flex-wrap:wrap;">
+  <button id="trs-prev" style="padding:6px 14px; background:#78909C; color:white; border:none; border-radius:4px; cursor:pointer;">&larr; Prev</button>
+  <button id="trs-next" style="padding:6px 14px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Next &rarr;</button>
+  <button id="trs-play" style="padding:6px 14px; background:#FF9800; color:white; border:none; border-radius:4px; cursor:pointer;">&#9654; Play</button>
+  <span id="trs-counter" style="font-size:0.9em; color:#666; margin-left:8px;">Step 0 / 0</span>
+</div>
+<svg id="trs-svg" width="100%" height="360" style="border:1px solid #eee; border-radius:4px; background:#fafafa;"></svg>
+<div id="trs-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let substrings = [];
+  let step = 0;
+  let playTimer = null;
+
+  function makeTrie() { return {children: {}, positions: [], _id: 0}; }
+  let gid = 0;
+
+  function insertTrie(root, word, pos) {
+    let node = root;
+    const newIds = new Set();
+    for (const ch of word) {
+      if (!node.children[ch]) {
+        node.children[ch] = makeTrie();
+        node.children[ch]._id = gid++;
+        newIds.add(node.children[ch]._id);
+      }
+      node = node.children[ch];
+    }
+    node.positions.push(pos);
+    return newIds;
+  }
+
+  function layoutTree(node, depth, left, right) {
+    const x = (left + right) / 2;
+    const y = 40 + depth * 70;
+    const entry = {node, x, y, childEntries: []};
+    const kids = Object.keys(node.children).sort();
+    if (kids.length > 0) {
+      const step = (right - left) / kids.length;
+      kids.forEach((ch, i) => {
+        const ce = layoutTree(node.children[ch], depth + 1, left + i * step, left + (i + 1) * step);
+        entry.childEntries.push({char: ch, entry: ce});
+      });
+    }
+    return entry;
+  }
+
+  function flatL(e) { let a = [e]; e.childEntries.forEach(c => { a = a.concat(flatL(c.entry)); }); return a; }
+
+  function renderTrie(root, newIds) {
+    const svg = $('trs-svg');
+    const w = svg.clientWidth || 860;
+    const layout = layoutTree(root, 0, 20, w - 20);
+    const flat = flatL(layout);
+    const maxY = Math.max(...flat.map(e => e.y)) + 40;
+    svg.setAttribute('height', Math.max(maxY, 200));
+    const hl = newIds || new Set();
+    let html = '';
+    function drawEdges(entry) {
+      entry.childEntries.forEach(c => {
+        const ce = c.entry;
+        const isNew = hl.has(ce.node._id);
+        const color = isNew ? '#4CAF50' : '#999';
+        const sw = isNew ? 3 : 1.5;
+        html += `<line x1="${entry.x}" y1="${entry.y}" x2="${ce.x}" y2="${ce.y}" stroke="${color}" stroke-width="${sw}"/>`;
+        const mx = (entry.x + ce.x) / 2 - 5;
+        const my = (entry.y + ce.y) / 2;
+        html += `<text x="${mx}" y="${my}" font-size="13" font-weight="bold" fill="${isNew ? '#2E7D32' : '#2196F3'}">${c.char}</text>`;
+        drawEdges(ce);
+      });
+    }
+    drawEdges(layout);
+    flat.forEach(item => {
+      const isLeaf = Object.keys(item.node.children).length === 0;
+      const isNew = hl.has(item.node._id);
+      const fill = isNew ? '#4CAF50' : (isLeaf ? '#FF9800' : '#2196F3');
+      const r = isLeaf ? 14 : 10;
+      html += `<circle cx="${item.x}" cy="${item.y}" r="${r}" fill="${fill}" stroke="white" stroke-width="2"/>`;
+      if (isLeaf && item.node.positions.length > 0) {
+        html += `<text x="${item.x}" y="${item.y + 4}" text-anchor="middle" font-size="10" fill="white" font-weight="bold">${item.node.positions.join(',')}</text>`;
+      }
+    });
+    svg.innerHTML = html;
+  }
+
+  function reset() {
+    if (playTimer) { clearInterval(playTimer); playTimer = null; $('trs-play').innerHTML = '&#9654; Play'; }
+    const text = $('trs-text').value.toUpperCase();
+    const L = parseInt($('trs-len').value);
+    substrings = [];
+    for (let i = 0; i <= text.length - L; i++) {
+      substrings.push({word: text.substring(i, i + L), pos: i});
+    }
+    step = 0;
+    gid = 1;
+    renderStep();
+  }
+
+  function renderStep() {
+    gid = 1;
+    const root = makeTrie(); root._id = 0;
+    let lastNewIds = new Set();
+    for (let i = 0; i < step; i++) {
+      const ids = insertTrie(root, substrings[i].word, substrings[i].pos);
+      if (i === step - 1) lastNewIds = ids;
+    }
+    renderTrie(root, lastNewIds);
+    $('trs-counter').textContent = `Step ${step} / ${substrings.length}`;
+    if (step === 0) {
+      $('trs-log').innerHTML = 'Click <strong>Next</strong> or <strong>Play</strong> to begin inserting substrings.';
+    } else {
+      const s = substrings[step - 1];
+      const newCount = lastNewIds.size;
+      $('trs-log').innerHTML = `Step ${step}: Inserted "<strong>${s.word}</strong>" (position ${s.pos}).` +
+        (newCount > 0 ? ` <span style="color:#4CAF50;">Added ${newCount} new node(s).</span>` : ' <span style="color:#2196F3;">No new nodes needed (path already existed).</span>');
+    }
+  }
+
+  function nextStep() {
+    if (step < substrings.length) { step++; renderStep(); }
+    else if (playTimer) { clearInterval(playTimer); playTimer = null; $('trs-play').innerHTML = '&#9654; Play'; }
+  }
+
+  function prevStep() {
+    if (step > 0) { step--; renderStep(); }
+  }
+
+  function togglePlay() {
+    if (playTimer) {
+      clearInterval(playTimer); playTimer = null;
+      $('trs-play').innerHTML = '&#9654; Play';
+    } else {
+      if (step >= substrings.length) { step = 0; renderStep(); }
+      $('trs-play').innerHTML = '&#9724; Pause';
+      playTimer = setInterval(() => { nextStep(); }, 800);
+    }
+  }
+
+  $('trs-reset').addEventListener('click', reset);
+  $('trs-prev').addEventListener('click', prevStep);
+  $('trs-next').addEventListener('click', nextStep);
+  $('trs-play').addEventListener('click', togglePlay);
+  reset();
+})();
+</script>
+```
+
+---
+
+## 7. Suffix Tries
+
+The substring index approach requires choosing a fixed length $L$. But what if we want to find **any** substring, of **any** length? The answer is to index **all suffixes** of the text. This is directly relevant to genomics: when aligning a read, we don't know in advance how long the matching region will be (due to mutations, indels, and varying read lengths), so we need an index that can handle queries of any length.
+
+### What is a Suffix?
+
+A suffix of a string $T$ is any substring that extends to the end. For $T = $ `abaaba`:
+
+| Index | Suffix |
+|-------|--------|
+| 0 | abaaba |
+| 1 | baaba |
+| 2 | aaba |
+| 3 | aba |
+| 4 | ba |
+| 5 | a |
+
+### The Sentinel Character
+
+We append a special character `$` to the end of the text. The `$` is **lexicographically smaller** than any other character and appears nowhere else. This ensures:
+
+1. No suffix is a prefix of another suffix
+2. Every suffix ends at a unique leaf in the trie
+
+So $T = $ `abaaba$` has suffixes: `abaaba$`, `baaba$`, `aaba$`, `aba$`, `ba$`, `a$`, `$`.
+
+### Building a Suffix Trie
+
+A **suffix trie** is simply a trie built from all suffixes of $T$. Insert each suffix one by one.
+
+### Operations on a Suffix Trie
+
+Given a suffix trie of text $T$ and a query pattern $P$:
+
+1. **Is $P$ a substring of $T$?** Follow the path for $P$. If you can follow all characters, yes.
+2. **Is $P$ a suffix of $T$?** Follow the path for $P$. The path must end at a node with a `$` edge leading to a leaf.
+3. **How many times does $P$ occur?** Follow the path for $P$, then count the number of leaves in the subtree below.
+4. **What is the longest repeated substring?** Find the deepest internal node (node with multiple children that is not a leaf).
+
+### Worked Example: `abaaba$`
+
+Let's trace through searching for `aba` in the suffix trie of `abaaba$`:
+
+- Start at root
+- Follow edge `a` -- found, continue
+- Follow edge `b` -- found, continue
+- Follow edge `a` -- found, arrived at a node
+
+Since we followed all characters successfully, `aba` **is a substring**. The subtree below has 2 leaves (positions 0 and 3), so `aba` occurs **2 times**.
+
+Now search for `abc`:
+
+- Follow edge `a` -- found
+- Follow edge `b` -- found
+- Follow edge `c` -- **no such edge!** Fall off the trie. `abc` is **not a substring**.
+
+```{=html}
+
+<div id="viz-suffix-trie" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive Suffix Trie</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a short string to build its suffix trie. Search for patterns to see the path traced (green = match, red = fall-off).</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text (keep to 5-6 chars -- suffix tries grow quadratically!):</label>
+    <input id="st-text" type="text" value="abaaba" maxlength="8" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="st-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build Suffix Trie</button>
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Search pattern:</label>
+    <input id="st-search" type="text" placeholder="e.g. aba" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+</div>
+<svg id="st-svg" width="100%" height="450" style="border:1px solid #eee; border-radius:4px; background:#fafafa; overflow:visible;"></svg>
+<div id="st-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+
+  function makeNode() { return {children: {}, suffixIndex: -1, _id: 0}; }
+  let gid = 0;
+
+  function buildSuffixTrie(text) {
+    gid = 0;
+    const root = makeNode();
+    root._id = gid++;
+    for (let i = 0; i < text.length; i++) {
+      let node = root;
+      for (let j = i; j < text.length; j++) {
+        const ch = text[j];
+        if (!node.children[ch]) {
+          node.children[ch] = makeNode();
+          node.children[ch]._id = gid++;
+        }
+        node = node.children[ch];
+      }
+      node.suffixIndex = i;
+    }
+    return root;
+  }
+
+  function countLeaves(node) {
+    const kids = Object.keys(node.children);
+    if (kids.length === 0) return 1;
+    let c = 0;
+    kids.forEach(k => c += countLeaves(node.children[k]));
+    return c;
+  }
+
+  function layoutST(node, depth, left, right) {
+    const x = (left + right) / 2;
+    const y = 30 + depth * 55;
+    const entry = {node, x, y, childEntries: []};
+    const kids = Object.keys(node.children).sort();
+    if (kids.length > 0) {
+      const step = (right - left) / kids.length;
+      kids.forEach((ch, i) => {
+        const childEntry = layoutST(node.children[ch], depth + 1, left + i * step, left + (i + 1) * step);
+        entry.childEntries.push({char: ch, entry: childEntry});
+      });
+    }
+    return entry;
+  }
+
+  function flattenLayout(entry) {
+    let arr = [entry];
+    entry.childEntries.forEach(c => { arr = arr.concat(flattenLayout(c.entry)); });
+    return arr;
+  }
+
+  function renderST(root, highlightIds, failId) {
+    const svg = $('st-svg');
+    const w = svg.clientWidth || 860;
+    const layout = layoutST(root, 0, 10, w - 10);
+    const flat = flattenLayout(layout);
+    const maxY = Math.max(...flat.map(e => e.y)) + 40;
+    svg.setAttribute('height', Math.max(maxY, 200));
+
+    const hl = highlightIds || new Set();
+    let html = '';
+
+    function drawEdges(entry) {
+      entry.childEntries.forEach(c => {
+        const ce = c.entry;
+        const bothHl = hl.has(entry.node._id) && hl.has(ce.node._id);
+        const isFail = failId !== undefined && ((entry.node._id === failId) || (ce.node._id === failId));
+        const color = isFail && bothHl ? '#f44336' : bothHl ? '#4CAF50' : '#bbb';
+        const sw = bothHl ? 2.5 : 1;
+        html += `<line x1="${entry.x}" y1="${entry.y}" x2="${ce.x}" y2="${ce.y}" stroke="${color}" stroke-width="${sw}"/>`;
+        const mx = (entry.x + ce.x) / 2;
+        const my = (entry.y + ce.y) / 2 - 4;
+        html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="12" font-weight="bold" fill="${bothHl ? color : '#2196F3'}">${c.char}</text>`;
+        drawEdges(ce);
+      });
+    }
+    drawEdges(layout);
+
+    flat.forEach(e => {
+      const isLeaf = Object.keys(e.node.children).length === 0;
+      const inPath = hl.has(e.node._id);
+      const fill = inPath ? '#4CAF50' : (isLeaf ? '#FF9800' : '#ccc');
+      const r = isLeaf ? 12 : 7;
+      html += `<circle cx="${e.x}" cy="${e.y}" r="${r}" fill="${fill}" stroke="white" stroke-width="1.5"/>`;
+      if (isLeaf && e.node.suffixIndex >= 0) {
+        html += `<text x="${e.x}" y="${e.y + 4}" text-anchor="middle" font-size="9" fill="white" font-weight="bold">${e.node.suffixIndex}</text>`;
+      }
+    });
+    svg.innerHTML = html;
+  }
+
+  let currentRoot = null;
+
+  function build() {
+    const text = $('st-text').value.toLowerCase() + '$';
+    currentRoot = buildSuffixTrie(text);
+    renderST(currentRoot);
+    $('st-log').innerHTML = `Suffix trie built for "<strong>${text}</strong>" (${text.length} suffixes). Leaf numbers = suffix starting positions.`;
+  }
+
+  function search() {
+    const pattern = $('st-search').value.toLowerCase();
+    if (!currentRoot || pattern.length === 0) { if (currentRoot) renderST(currentRoot); return; }
+    const hl = new Set();
+    let node = currentRoot;
+    hl.add(node._id);
+    let failNode;
+    let found = true;
+    for (const ch of pattern) {
+      if (node.children[ch]) {
+        node = node.children[ch];
+        hl.add(node._id);
+      } else {
+        found = false;
+        failNode = node._id;
+        break;
+      }
+    }
+    renderST(currentRoot, hl, failNode);
+    if (found) {
+      const occ = countLeaves(node);
+      const isSuffix = node.children['$'] !== undefined || Object.keys(node.children).length === 0;
+      let msg = `<span style="color:#4CAF50;"><strong>"${pattern}" found!</strong> Occurs <strong>${occ}</strong> time(s).`;
+      if (isSuffix) msg += ` It is also a suffix.`;
+      msg += `</span>`;
+      $('st-log').innerHTML = msg;
+    } else {
+      $('st-log').innerHTML = `<span style="color:#f44336;"><strong>"${pattern}" NOT found.</strong> No edge for the next character -- fell off the trie.</span>`;
+    }
+  }
+
+  $('st-build').addEventListener('click', build);
+  $('st-search').addEventListener('input', search);
+  build();
+})();
+</script>
+```
+
+### Step-by-Step Suffix Trie Construction
+
+Watch each suffix being inserted one at a time. The newest suffix's path is highlighted in green so you can see how the trie grows with each insertion.
+
+```{=html}
+
+<div id="viz-st-step" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Step-by-Step Suffix Trie Construction</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Each step inserts one suffix. Green highlights show nodes added or traversed for the latest suffix.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text (keep short!):</label>
+    <input id="sts-text" type="text" value="abab" maxlength="7" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="sts-reset" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Reset</button>
+</div>
+<div style="display:flex; gap:8px; margin-bottom:10px; align-items:center; flex-wrap:wrap;">
+  <button id="sts-prev" style="padding:6px 14px; background:#78909C; color:white; border:none; border-radius:4px; cursor:pointer;">&larr; Prev</button>
+  <button id="sts-next" style="padding:6px 14px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Next &rarr;</button>
+  <button id="sts-play" style="padding:6px 14px; background:#FF9800; color:white; border:none; border-radius:4px; cursor:pointer;">&#9654; Play</button>
+  <span id="sts-counter" style="font-size:0.9em; color:#666; margin-left:8px;">Step 0 / 0</span>
+</div>
+<svg id="sts-svg" width="100%" height="450" style="border:1px solid #eee; border-radius:4px; background:#fafafa; overflow:visible;"></svg>
+<div id="sts-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let fullText = '';
+  let suffixes = [];
+  let step = 0;
+  let playTimer = null;
+
+  function makeNode() { return {children: {}, suffIdx: -1, _id: 0}; }
+  let gid = 0;
+
+  function insertSuffix(root, text, startIdx) {
+    let node = root;
+    const touchedIds = new Set();
+    touchedIds.add(node._id);
+    const newIds = new Set();
+    for (let j = startIdx; j < text.length; j++) {
+      const ch = text[j];
+      if (!node.children[ch]) {
+        node.children[ch] = makeNode();
+        node.children[ch]._id = gid++;
+        newIds.add(node.children[ch]._id);
+      }
+      node = node.children[ch];
+      touchedIds.add(node._id);
+    }
+    node.suffIdx = startIdx;
+    return {touchedIds, newIds};
+  }
+
+  function layoutST(node, depth, left, right) {
+    const x = (left + right) / 2;
+    const y = 30 + depth * 55;
+    const entry = {node, x, y, childEntries: []};
+    const kids = Object.keys(node.children).sort();
+    if (kids.length > 0) {
+      const s = (right - left) / kids.length;
+      kids.forEach((ch, i) => {
+        const ce = layoutST(node.children[ch], depth + 1, left + i * s, left + (i + 1) * s);
+        entry.childEntries.push({char: ch, entry: ce});
+      });
+    }
+    return entry;
+  }
+
+  function flatL(e) { let a = [e]; e.childEntries.forEach(c => { a = a.concat(flatL(c.entry)); }); return a; }
+
+  function renderST(root, touchedIds, newIds) {
+    const svg = $('sts-svg');
+    const w = svg.clientWidth || 860;
+    const layout = layoutST(root, 0, 10, w - 10);
+    const flat = flatL(layout);
+    const maxY = Math.max(...flat.map(e => e.y)) + 40;
+    svg.setAttribute('height', Math.max(maxY, 200));
+    const touched = touchedIds || new Set();
+    const added = newIds || new Set();
+    let html = '';
+    function drawEdges(entry) {
+      entry.childEntries.forEach(c => {
+        const ce = c.entry;
+        const isNew = added.has(ce.node._id);
+        const isTouched = touched.has(entry.node._id) && touched.has(ce.node._id);
+        const color = isNew ? '#4CAF50' : isTouched ? '#81C784' : '#bbb';
+        const sw = isTouched ? 2.5 : 1;
+        html += `<line x1="${entry.x}" y1="${entry.y}" x2="${ce.x}" y2="${ce.y}" stroke="${color}" stroke-width="${sw}"/>`;
+        const mx = (entry.x + ce.x) / 2;
+        const my = (entry.y + ce.y) / 2 - 4;
+        html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="12" font-weight="bold" fill="${isTouched ? '#2E7D32' : '#2196F3'}">${c.char}</text>`;
+        drawEdges(ce);
+      });
+    }
+    drawEdges(layout);
+    flat.forEach(e => {
+      const isLeaf = Object.keys(e.node.children).length === 0;
+      const isNew = added.has(e.node._id);
+      const isTouched = touched.has(e.node._id);
+      const fill = isNew ? '#4CAF50' : isTouched ? '#81C784' : (isLeaf ? '#FF9800' : '#ccc');
+      const r = isLeaf ? 12 : 7;
+      html += `<circle cx="${e.x}" cy="${e.y}" r="${r}" fill="${fill}" stroke="white" stroke-width="1.5"/>`;
+      if (isLeaf && e.node.suffIdx >= 0) {
+        html += `<text x="${e.x}" y="${e.y + 4}" text-anchor="middle" font-size="9" fill="white" font-weight="bold">${e.node.suffIdx}</text>`;
+      }
+    });
+    svg.innerHTML = html;
+  }
+
+  function reset() {
+    if (playTimer) { clearInterval(playTimer); playTimer = null; $('sts-play').innerHTML = '&#9654; Play'; }
+    fullText = $('sts-text').value.toLowerCase() + '$';
+    suffixes = [];
+    for (let i = 0; i < fullText.length; i++) {
+      suffixes.push({start: i, text: fullText.substring(i)});
+    }
+    step = 0;
+    renderStep();
+  }
+
+  function renderStep() {
+    gid = 1;
+    const root = makeNode(); root._id = 0;
+    let lastTouched = new Set();
+    let lastNew = new Set();
+    for (let i = 0; i < step; i++) {
+      const result = insertSuffix(root, fullText, suffixes[i].start);
+      if (i === step - 1) {
+        lastTouched = result.touchedIds;
+        lastNew = result.newIds;
+      }
+    }
+    renderST(root, lastTouched, lastNew);
+    $('sts-counter').textContent = `Step ${step} / ${suffixes.length}`;
+    if (step === 0) {
+      $('sts-log').innerHTML = `Text: "<strong>${fullText}</strong>" (${suffixes.length} suffixes). Click <strong>Next</strong> or <strong>Play</strong> to insert suffixes one by one.`;
+    } else {
+      const s = suffixes[step - 1];
+      $('sts-log').innerHTML = `Step ${step}: Inserted suffix "<strong>${s.text}</strong>" (starting at position ${s.start}).` +
+        (lastNew.size > 0 ? ` <span style="color:#4CAF50;">Added ${lastNew.size} new node(s).</span>` : ' <span style="color:#2196F3;">No new nodes needed.</span>');
+    }
+  }
+
+  function nextStep() {
+    if (step < suffixes.length) { step++; renderStep(); }
+    else if (playTimer) { clearInterval(playTimer); playTimer = null; $('sts-play').innerHTML = '&#9654; Play'; }
+  }
+  function prevStep() { if (step > 0) { step--; renderStep(); } }
+  function togglePlay() {
+    if (playTimer) {
+      clearInterval(playTimer); playTimer = null;
+      $('sts-play').innerHTML = '&#9654; Play';
+    } else {
+      if (step >= suffixes.length) { step = 0; renderStep(); }
+      $('sts-play').innerHTML = '&#9724; Pause';
+      playTimer = setInterval(() => { nextStep(); }, 1000);
+    }
+  }
+
+  $('sts-reset').addEventListener('click', reset);
+  $('sts-prev').addEventListener('click', prevStep);
+  $('sts-next').addEventListener('click', nextStep);
+  $('sts-play').addEventListener('click', togglePlay);
+  reset();
+})();
+</script>
+```
+
+---
+
+## 8. From Tries to Trees (Suffix Trees)
+
+### The Problem with Suffix Tries
+
+Suffix tries are conceptually clean, but they have a major practical problem: **size**. A suffix trie for a text of length $n$ can have up to $O(n^2)$ nodes. For a genome of 3 billion base pairs, that is simply too much.
+
+### The Solution: Collapse Non-Branching Paths
+
+A **suffix tree** is obtained by taking a suffix trie and **collapsing** every path of non-branching nodes into a single edge. Instead of one character per edge, each edge is labeled with a *substring*.
+
+For example, in a suffix trie if you have a chain: root --a--> node1 --b--> node2 --a--> leaf, and node1 and node2 each have only one child, we collapse this to: root --aba--> leaf.
+
+### Properties of Suffix Trees
+
+| Property | Suffix Trie | Suffix Tree |
+|----------|-------------|-------------|
+| Nodes | $O(n^2)$ | $O(n)$ |
+| Edges | $O(n^2)$ | $O(n)$ |
+| Edge labels | Single characters | Substrings |
+| Build time | $O(n^2)$ | $O(n)$ (Ukkonen's algorithm) |
+
+The suffix tree has **at most $2n$ nodes** (for a text of length $n$), making it linear in size.
+
+### Same Operations, More Compact
+
+All the operations we could do with a suffix trie work on suffix trees too:
+
+- Check if a pattern exists: follow edges, potentially matching partway through an edge
+- Count occurrences: count leaves below the match point
+- Find longest repeated substring: deepest internal node (counting total characters on path)
+
+### Suffix Trees in Practice: MUMmer
+
+The [MUMmer](http://mummer.sourceforge.net/) tool uses suffix trees to rapidly align whole genomes against each other. It finds **Maximal Unique Matches (MUMs)** -- long stretches that occur exactly once in each genome -- as anchors for whole-genome alignment. MUMmer was used to compare the first assembled human genomes and remains the go-to tool for bacterial genome comparisons, capable of aligning two 5 Mb bacterial genomes in seconds.
+
+### Step-by-Step: From Suffix Trie to Suffix Tree
+
+Watch the suffix trie being built suffix by suffix, then see it collapse into a suffix tree. This shows both the quadratic growth of the trie and the dramatic compression when non-branching paths are merged.
+
+```{=html}
+
+<div id="viz-collapse-step" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Step-by-Step: Build Suffix Trie, Then Collapse to Tree</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">First build the suffix trie step by step, then click "Collapse to Tree" to watch non-branching paths merge.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="cs-text" type="text" value="abab" maxlength="7" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="cs-reset" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Reset</button>
+</div>
+<div style="display:flex; gap:8px; margin-bottom:10px; align-items:center; flex-wrap:wrap;">
+  <button id="cs-prev" style="padding:6px 14px; background:#78909C; color:white; border:none; border-radius:4px; cursor:pointer;">&larr; Prev</button>
+  <button id="cs-next" style="padding:6px 14px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Next &rarr;</button>
+  <button id="cs-play" style="padding:6px 14px; background:#FF9800; color:white; border:none; border-radius:4px; cursor:pointer;">&#9654; Play</button>
+  <button id="cs-collapse" style="padding:6px 14px; background:#9C27B0; color:white; border:none; border-radius:4px; cursor:pointer;">Collapse to Tree</button>
+  <span id="cs-counter" style="font-size:0.9em; color:#666; margin-left:8px;">Step 0 / 0</span>
+</div>
+<div style="display:flex; gap:10px; flex-wrap:wrap;">
+  <div style="flex:1; min-width:400px;">
+    <div id="cs-left-label" style="text-align:center; font-weight:bold; color:#666; margin-bottom:4px;">Suffix Trie (building...)</div>
+    <svg id="cs-trie-svg" width="100%" height="400" style="border:1px solid #eee; border-radius:4px; background:#fafafa; overflow:visible;"></svg>
+  </div>
+  <div id="cs-right-panel" style="flex:1; min-width:400px; display:none;">
+    <div style="text-align:center; font-weight:bold; color:#9C27B0; margin-bottom:4px;">Suffix Tree (collapsed)</div>
+    <svg id="cs-tree-svg" width="100%" height="400" style="border:1px solid #f3e5f5; border-radius:4px; background:#fdf5ff; overflow:visible;"></svg>
+  </div>
+</div>
+<div id="cs-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let fullText = '';
+  let suffixes = [];
+  let step = 0;
+  let playTimer = null;
+  let collapsed = false;
+
+  function makeNode() { return {children: {}, suffIdx: -1, _id: 0}; }
+  let gid = 0;
+
+  function insertSuffix(root, text, startIdx) {
+    let node = root;
+    for (let j = startIdx; j < text.length; j++) {
+      const ch = text[j];
+      if (!node.children[ch]) {
+        node.children[ch] = makeNode();
+        node.children[ch]._id = gid++;
+      }
+      node = node.children[ch];
+    }
+    node.suffIdx = startIdx;
+  }
+
+  function collapseToTree(trieNode) {
+    const treeNode = {children: {}, suffIdx: trieNode.suffIdx, _id: gid++, label: ''};
+    const keys = Object.keys(trieNode.children).sort();
+    keys.forEach(ch => {
+      let label = ch;
+      let child = trieNode.children[ch];
+      while (Object.keys(child.children).length === 1 && child.suffIdx < 0) {
+        const nextCh = Object.keys(child.children)[0];
+        label += nextCh;
+        child = child.children[nextCh];
+      }
+      const coll = collapseToTree(child);
+      coll.label = label;
+      treeNode.children[label] = coll;
+    });
+    return treeNode;
+  }
+
+  function layoutGeneric(node, getKids, depth, left, right) {
+    const x = (left + right) / 2;
+    const y = 30 + depth * 60;
+    const entry = {node, x, y, childEntries: []};
+    const kids = getKids(node);
+    if (kids.length > 0) {
+      const s = (right - left) / kids.length;
+      kids.forEach((k, i) => {
+        const ce = layoutGeneric(k.child, getKids, depth + 1, left + i * s, left + (i + 1) * s);
+        entry.childEntries.push({label: k.label, entry: ce});
+      });
+    }
+    return entry;
+  }
+
+  function flatL(e) { let a = [e]; e.childEntries.forEach(c => { a = a.concat(flatL(c.entry)); }); return a; }
+
+  function renderGeneric(svgEl, layout, highlightColor) {
+    const flat = flatL(layout);
+    const maxY = Math.max(...flat.map(e => e.y)) + 40;
+    svgEl.setAttribute('height', Math.max(maxY, 200));
+    const edgeColor = highlightColor || '#bbb';
+    const labelColor = highlightColor || '#2196F3';
+    let html = '';
+    function drawEdges(entry) {
+      entry.childEntries.forEach(c => {
+        const ce = c.entry;
+        html += `<line x1="${entry.x}" y1="${entry.y}" x2="${ce.x}" y2="${ce.y}" stroke="${edgeColor}" stroke-width="1.5"/>`;
+        const mx = (entry.x + ce.x) / 2;
+        const my = (entry.y + ce.y) / 2 - 4;
+        html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="11" font-weight="bold" fill="${labelColor}">${c.label}</text>`;
+        drawEdges(ce);
+      });
+    }
+    drawEdges(layout);
+    flat.forEach(e => {
+      const isLeaf = e.childEntries.length === 0;
+      const fill = isLeaf ? '#FF9800' : '#ccc';
+      const r = isLeaf ? 12 : 7;
+      html += `<circle cx="${e.x}" cy="${e.y}" r="${r}" fill="${fill}" stroke="white" stroke-width="1.5"/>`;
+      if (isLeaf && e.node.suffIdx >= 0) {
+        html += `<text x="${e.x}" y="${e.y + 4}" text-anchor="middle" font-size="9" fill="white" font-weight="bold">${e.node.suffIdx}</text>`;
+      }
+    });
+    svgEl.innerHTML = html;
+  }
+
+  function getTrieKids(node) {
+    return Object.keys(node.children).sort().map(ch => ({label: ch, child: node.children[ch]}));
+  }
+  function getTreeKids(node) {
+    return Object.keys(node.children).sort().map(lbl => ({label: lbl, child: node.children[lbl]}));
+  }
+
+  function countNodes(node, getKids) {
+    let c = 1;
+    getKids(node).forEach(k => { c += countNodes(k.child, getKids); });
+    return c;
+  }
+
+  function reset() {
+    if (playTimer) { clearInterval(playTimer); playTimer = null; $('cs-play').innerHTML = '&#9654; Play'; }
+    fullText = $('cs-text').value.toLowerCase() + '$';
+    suffixes = [];
+    for (let i = 0; i < fullText.length; i++) {
+      suffixes.push({start: i, text: fullText.substring(i)});
+    }
+    step = 0;
+    collapsed = false;
+    $('cs-right-panel').style.display = 'none';
+    $('cs-left-label').textContent = 'Suffix Trie (building...)';
+    renderStep();
+  }
+
+  function buildTrieUpToStep() {
+    gid = 1;
+    const root = makeNode(); root._id = 0;
+    for (let i = 0; i < step; i++) {
+      insertSuffix(root, fullText, suffixes[i].start);
+    }
+    return root;
+  }
+
+  function renderStep() {
+    const root = buildTrieUpToStep();
+    const svg1 = $('cs-trie-svg');
+    const w1 = svg1.clientWidth || 420;
+    const layout = layoutGeneric(root, getTrieKids, 0, 10, w1 - 10);
+    renderGeneric(svg1, layout);
+    const nodeCount = countNodes(root, getTrieKids);
+    $('cs-counter').textContent = `Step ${step} / ${suffixes.length}`;
+    if (step === 0) {
+      $('cs-log').innerHTML = `Text: "<strong>${fullText}</strong>" (${suffixes.length} suffixes). Click <strong>Next</strong> to insert suffixes, or <strong>Play</strong> to animate.`;
+    } else {
+      const s = suffixes[step - 1];
+      $('cs-log').innerHTML = `Step ${step}: Inserted suffix "<strong>${s.text}</strong>" (pos ${s.start}). Trie now has <strong>${nodeCount}</strong> nodes.`;
+    }
+    if (collapsed) doCollapse();
+  }
+
+  function doCollapse() {
+    collapsed = true;
+    const root = buildTrieUpToStep();
+    const treeRoot = collapseToTree(root);
+    const svg2 = $('cs-tree-svg');
+    const w2 = svg2.clientWidth || 420;
+    const treeLayout = layoutGeneric(treeRoot, getTreeKids, 0, 10, w2 - 10);
+    renderGeneric(svg2, treeLayout, '#9C27B0');
+    $('cs-right-panel').style.display = 'block';
+    $('cs-left-label').textContent = 'Suffix Trie';
+    const trieNodes = countNodes(root, getTrieKids);
+    const treeNodes = countNodes(treeRoot, getTreeKids);
+    $('cs-log').innerHTML = `Suffix trie: <strong>${trieNodes}</strong> nodes &rarr; Suffix tree: <strong>${treeNodes}</strong> nodes (<strong>${Math.round((1 - treeNodes/trieNodes)*100)}% reduction</strong>). Non-branching paths have been collapsed into multi-character edges.`;
+  }
+
+  function nextStep() {
+    if (step < suffixes.length) { step++; renderStep(); }
+    else if (playTimer) { clearInterval(playTimer); playTimer = null; $('cs-play').innerHTML = '&#9654; Play'; }
+  }
+  function prevStep() { if (step > 0) { step--; renderStep(); } }
+  function togglePlay() {
+    if (playTimer) {
+      clearInterval(playTimer); playTimer = null;
+      $('cs-play').innerHTML = '&#9654; Play';
+    } else {
+      if (step >= suffixes.length) { step = 0; collapsed = false; $('cs-right-panel').style.display = 'none'; renderStep(); }
+      $('cs-play').innerHTML = '&#9724; Pause';
+      playTimer = setInterval(() => { nextStep(); }, 1000);
+    }
+  }
+
+  $('cs-reset').addEventListener('click', reset);
+  $('cs-prev').addEventListener('click', prevStep);
+  $('cs-next').addEventListener('click', nextStep);
+  $('cs-play').addEventListener('click', togglePlay);
+  $('cs-collapse').addEventListener('click', doCollapse);
+  reset();
+})();
+</script>
+```
+
+### Memory Limitation
+
+Despite having $O(n)$ nodes, suffix trees have large constant factors. Each node stores pointers, edge labels, and suffix links. In practice, a suffix tree for the human genome requires approximately **47 GB of RAM** -- feasible on a server, but not ideal.
+
+```{=html}
+
+<div id="viz-suffix-tree" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Suffix Trie to Suffix Tree Comparison</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">See a suffix trie and its collapsed suffix tree side by side. Search for patterns in the tree.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="stt-text" type="text" value="abaab" maxlength="7" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="stt-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build Both</button>
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Search pattern:</label>
+    <input id="stt-search" type="text" placeholder="e.g. ab" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+</div>
+<div style="display:flex; gap:10px; flex-wrap:wrap;">
+  <div style="flex:1; min-width:400px;">
+    <div style="text-align:center; font-weight:bold; color:#666; margin-bottom:4px;">Suffix Trie (O(n<sup>2</sup>) nodes)</div>
+    <svg id="stt-trie-svg" width="100%" height="350" style="border:1px solid #eee; border-radius:4px; background:#fafafa;"></svg>
+  </div>
+  <div style="flex:1; min-width:400px;">
+    <div style="text-align:center; font-weight:bold; color:#666; margin-bottom:4px;">Suffix Tree (O(n) nodes)</div>
+    <svg id="stt-tree-svg" width="100%" height="350" style="border:1px solid #eee; border-radius:4px; background:#fafafa;"></svg>
+  </div>
+</div>
+<div id="stt-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let trieRoot = null, treeRoot = null, fullText = '';
+
+  function makeN() { return {children: {}, suffIdx: -1, _id: 0}; }
+  let gid = 0;
+
+  function buildSTrie(text) {
+    gid = 0;
+    const root = makeN(); root._id = gid++;
+    for (let i = 0; i < text.length; i++) {
+      let nd = root;
+      for (let j = i; j < text.length; j++) {
+        if (!nd.children[text[j]]) { nd.children[text[j]] = makeN(); nd.children[text[j]]._id = gid++; }
+        nd = nd.children[text[j]];
+      }
+      nd.suffIdx = i;
+    }
+    return root;
+  }
+
+  // Collapse trie into tree
+  function collapseToTree(trieNode) {
+    const treeNode = {children: {}, suffIdx: trieNode.suffIdx, _id: gid++, label: ''};
+    const keys = Object.keys(trieNode.children).sort();
+    keys.forEach(ch => {
+      let label = ch;
+      let child = trieNode.children[ch];
+      while (Object.keys(child.children).length === 1 && child.suffIdx < 0) {
+        const nextCh = Object.keys(child.children)[0];
+        label += nextCh;
+        child = child.children[nextCh];
+      }
+      const collapsed = collapseToTree(child);
+      collapsed.label = label;
+      treeNode.children[label] = collapsed;
+    });
+    return treeNode;
+  }
+
+  function layoutGeneric(node, getKids, depth, left, right) {
+    const x = (left + right) / 2;
+    const y = 30 + depth * 65;
+    const entry = {node, x, y, childEntries: []};
+    const kids = getKids(node);
+    if (kids.length > 0) {
+      const step = (right - left) / kids.length;
+      kids.forEach((k, i) => {
+        const ce = layoutGeneric(k.child, getKids, depth + 1, left + i * step, left + (i + 1) * step);
+        entry.childEntries.push({label: k.label, entry: ce});
+      });
+    }
+    return entry;
+  }
+
+  function flatL(e) { let a = [e]; e.childEntries.forEach(c => { a = a.concat(flatL(c.entry)); }); return a; }
+
+  function renderGeneric(svgEl, layout, hl) {
+    const w = svgEl.clientWidth || 420;
+    const flat = flatL(layout);
+    const maxY = Math.max(...flat.map(e => e.y)) + 30;
+    svgEl.setAttribute('height', Math.max(maxY, 200));
+    const hlSet = hl || new Set();
+    let html = '';
+    function drawE(entry) {
+      entry.childEntries.forEach(c => {
+        const ce = c.entry;
+        const both = hlSet.has(entry.node._id) && hlSet.has(ce.node._id);
+        const col = both ? '#4CAF50' : '#bbb';
+        html += `<line x1="${entry.x}" y1="${entry.y}" x2="${ce.x}" y2="${ce.y}" stroke="${col}" stroke-width="${both?2.5:1}"/>`;
+        const mx = (entry.x + ce.x) / 2;
+        const my = (entry.y + ce.y) / 2 - 4;
+        html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="11" font-weight="bold" fill="${both?'#2E7D32':'#2196F3'}">${c.label}</text>`;
+        drawE(ce);
+      });
+    }
+    drawE(layout);
+    flat.forEach(e => {
+      const isLeaf = e.childEntries.length === 0;
+      const inP = hlSet.has(e.node._id);
+      const fill = inP ? '#4CAF50' : (isLeaf ? '#FF9800' : '#ccc');
+      const r = isLeaf ? 12 : 7;
+      html += `<circle cx="${e.x}" cy="${e.y}" r="${r}" fill="${fill}" stroke="white" stroke-width="1.5"/>`;
+      if (isLeaf && e.node.suffIdx >= 0) {
+        html += `<text x="${e.x}" y="${e.y+4}" text-anchor="middle" font-size="9" fill="white" font-weight="bold">${e.node.suffIdx}</text>`;
+      }
+    });
+    svgEl.innerHTML = html;
+  }
+
+  function getTrieKids(node) {
+    return Object.keys(node.children).sort().map(ch => ({label: ch, child: node.children[ch]}));
+  }
+  function getTreeKids(node) {
+    return Object.keys(node.children).sort().map(lbl => ({label: lbl, child: node.children[lbl]}));
+  }
+
+  function build() {
+    fullText = $('stt-text').value.toLowerCase() + '$';
+    trieRoot = buildSTrie(fullText);
+    treeRoot = collapseToTree(trieRoot);
+    const svg1 = $('stt-trie-svg'), svg2 = $('stt-tree-svg');
+    const w1 = svg1.clientWidth || 420, w2 = svg2.clientWidth || 420;
+    const tLayout = layoutGeneric(trieRoot, getTrieKids, 0, 10, w1 - 10);
+    const sLayout = layoutGeneric(treeRoot, getTreeKids, 0, 10, w2 - 10);
+    renderGeneric(svg1, tLayout);
+    renderGeneric(svg2, sLayout);
+    const trieNodes = flatL(tLayout).length;
+    const treeNodes = flatL(sLayout).length;
+    $('stt-log').innerHTML = `Suffix trie: <strong>${trieNodes}</strong> nodes | Suffix tree: <strong>${treeNodes}</strong> nodes (${Math.round((1-treeNodes/trieNodes)*100)}% reduction).`;
+  }
+
+  function search() {
+    const pattern = $('stt-search').value.toLowerCase();
+    if (!treeRoot || !trieRoot) return;
+    const svg1 = $('stt-trie-svg'), svg2 = $('stt-tree-svg');
+    const w1 = svg1.clientWidth || 420, w2 = svg2.clientWidth || 420;
+
+    // Search trie
+    const hlTrie = new Set();
+    let nd = trieRoot; hlTrie.add(nd._id);
+    for (const ch of pattern) {
+      if (nd.children[ch]) { nd = nd.children[ch]; hlTrie.add(nd._id); } else break;
+    }
+    const tLayout = layoutGeneric(trieRoot, getTrieKids, 0, 10, w1 - 10);
+    renderGeneric(svg1, tLayout, hlTrie);
+
+    // Search tree
+    const hlTree = new Set();
+    nd = treeRoot; hlTree.add(nd._id);
+    let pi = 0; let found = true;
+    while (pi < pattern.length) {
+      const keys = Object.keys(nd.children).sort();
+      let matched = false;
+      for (const lbl of keys) {
+        if (lbl[0] === pattern[pi]) {
+          const child = nd.children[lbl];
+          let li = 0;
+          while (li < lbl.length && pi < pattern.length && lbl[li] === pattern[pi]) { li++; pi++; }
+          hlTree.add(child._id);
+          nd = child;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) { found = false; break; }
+    }
+    const sLayout = layoutGeneric(treeRoot, getTreeKids, 0, 10, w2 - 10);
+    renderGeneric(svg2, sLayout, hlTree);
+
+    if (found && pattern.length > 0) {
+      $('stt-log').innerHTML = `<span style="color:#4CAF50;"><strong>"${pattern}" found</strong> in both structures.</span>`;
+    } else if (pattern.length > 0) {
+      $('stt-log').innerHTML = `<span style="color:#f44336;"><strong>"${pattern}" not found.</strong></span>`;
+    }
+  }
+
+  $('stt-build').addEventListener('click', build);
+  $('stt-search').addEventListener('input', search);
+  build();
+})();
+</script>
+```
+
+---
+
+## 9. Suffix Arrays
+
+### An Even More Compact Representation
+
+Suffix trees solve the node-count problem, but they still carry a lot of overhead: pointers, edge labels, suffix links. Can we do better?
+
+The trade-off we will accept: suffix arrays give up the $O(m)$ query time of suffix trees, settling for $O(m \log n)$ with binary search. But the memory savings -- from ~47 GB down to ~12 GB for the human genome -- make this trade-off worthwhile in practice.
+
+> **Biological application**: Suffix arrays are used internally by many alignment tools and are the basis for the enhanced suffix array used by **STAR** (the most popular RNA-seq aligner).
+
+A **suffix array** is a beautifully simple data structure: it is just an array of integers representing the **sorted order of all suffixes**.
+
+### Construction
+
+Given text $T$ with sentinel `$`:
+
+1. List all suffixes with their starting positions
+2. Sort the suffixes **lexicographically**
+3. Store only the **starting positions** in sorted order
+
+For $T = $ `abaaba$`:
+
+| Rank | Starting Position | Suffix |
+|------|-------------------|--------|
+| 0 | 6 | `$` |
+| 1 | 5 | `a$` |
+| 2 | 2 | `aaba$` |
+| 3 | 3 | `aba$` |
+| 4 | 0 | `abaaba$` |
+| 5 | 4 | `ba$` |
+| 6 | 1 | `baaba$` |
+
+The suffix array is: **[6, 5, 2, 3, 0, 4, 1]**
+
+### Searching with Binary Search
+
+Since the suffixes are sorted, we can use **binary search** to find any pattern in $O(m \log n)$ time, where $m$ is the pattern length and $n$ is the text length.
+
+To check if pattern $P$ occurs:
+
+1. Binary search for the lexicographic range where $P$ would fall
+2. At each step, compare $P$ with the suffix at the current position
+3. If found, all suffixes in that range start with $P$
+
+### Memory
+
+A suffix array for a text of length $n$ requires just $n$ integers. Using 4 bytes per integer:
+
+$$\text{Human genome}: 3 \times 10^9 \times 4 \text{ bytes} = 12 \text{ GB}$$
+
+This is a significant improvement over the 47 GB for a suffix tree.
+
+### Relationship to Suffix Trees
+
+There is an elegant connection: if you perform a **depth-first traversal** of a suffix tree, visiting children in alphabetical order, the order in which you visit the leaves gives you the suffix array.
+
+```{=html}
+
+<div id="viz-suffix-array" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive Suffix Array</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a text to see the suffix array constructed. Search for a pattern to see binary search in action.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="sa-text" type="text" value="abaaba" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="sa-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build Suffix Array</button>
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Search pattern:</label>
+    <input id="sa-pattern" type="text" placeholder="e.g. aba" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="sa-search" style="padding:8px 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Binary Search</button>
+</div>
+<div id="sa-table" style="overflow-x:auto; margin-bottom:10px;"></div>
+<div id="sa-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let suffixArr = [];
+  let fullText = '';
+
+  function buildSA() {
+    fullText = $('sa-text').value.toLowerCase() + '$';
+    const suffixes = [];
+    for (let i = 0; i < fullText.length; i++) {
+      suffixes.push({pos: i, suf: fullText.substring(i)});
+    }
+    suffixes.sort((a, b) => a.suf < b.suf ? -1 : a.suf > b.suf ? 1 : 0);
+    suffixArr = suffixes;
+    renderTable([]);
+    $('sa-log').innerHTML = `Suffix array for "<strong>${fullText}</strong>": [${suffixes.map(s=>s.pos).join(', ')}]`;
+  }
+
+  function renderTable(highlights) {
+    let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+    html += '<tr style="background:#2196F3;color:white;"><th style="padding:6px;">Rank</th><th style="padding:6px;">SA[i]</th><th style="padding:6px;">Suffix</th><th style="padding:6px;">Status</th></tr>';
+    suffixArr.forEach((s, i) => {
+      const hl = highlights.find(h => h.rank === i);
+      let bg = i % 2 === 0 ? '#f9f9f9' : '#fff';
+      let status = '';
+      if (hl) {
+        if (hl.type === 'match') { bg = '#c8e6c9'; status = '<span style="color:#4CAF50;">&#10004; Match</span>'; }
+        else if (hl.type === 'mid') { bg = '#fff9c4'; status = '<span style="color:#FF9800;">&#9654; Checking</span>'; }
+        else if (hl.type === 'lo') { bg = '#e3f2fd'; status = '<span style="color:#2196F3;">lo</span>'; }
+        else if (hl.type === 'hi') { bg = '#e3f2fd'; status = '<span style="color:#2196F3;">hi</span>'; }
+        else if (hl.type === 'range') { bg = '#c8e6c9'; status = '<span style="color:#4CAF50;">&#10004; In range</span>'; }
+      }
+      html += `<tr style="background:${bg};"><td style="padding:4px 8px;text-align:center;">${i}</td><td style="padding:4px 8px;text-align:center;font-weight:bold;">${s.pos}</td><td style="padding:4px 8px;font-family:monospace;">${s.suf}</td><td style="padding:4px 8px;text-align:center;">${status}</td></tr>`;
+    });
+    html += '</table>';
+    $('sa-table').innerHTML = html;
+  }
+
+  function searchSA() {
+    const pattern = $('sa-pattern').value.toLowerCase();
+    if (suffixArr.length === 0 || pattern.length === 0) return;
+
+    // Binary search for left boundary
+    let lo = 0, hi = suffixArr.length - 1;
+    const steps = [];
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2);
+      const suf = suffixArr[mid].suf;
+      const cmp = suf.substring(0, pattern.length);
+      steps.push({lo, hi, mid, cmp, result: cmp < pattern ? 'go right' : 'go left or found'});
+      if (cmp < pattern) lo = mid + 1;
+      else hi = mid - 1;
+    }
+    const left = lo;
+
+    lo = left; hi = suffixArr.length - 1;
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2);
+      const suf = suffixArr[mid].suf;
+      const cmp = suf.substring(0, pattern.length);
+      if (cmp > pattern) hi = mid - 1;
+      else lo = mid + 1;
+    }
+    const right = hi;
+
+    const highlights = [];
+    if (left <= right) {
+      for (let i = left; i <= right; i++) highlights.push({rank: i, type: 'range'});
+    }
+    renderTable(highlights);
+
+    let logHtml = `<strong>Binary search for "${pattern}":</strong><br>`;
+    steps.forEach((s, i) => {
+      logHtml += `Step ${i+1}: lo=${s.lo}, hi=${s.hi}, mid=${s.mid}, compare "${s.cmp}" vs "${pattern}" &rarr; ${s.result}<br>`;
+    });
+    if (left <= right) {
+      const positions = [];
+      for (let i = left; i <= right; i++) positions.push(suffixArr[i].pos);
+      logHtml += `<span style="color:#4CAF50;"><strong>Found ${right-left+1} occurrence(s) at position(s): ${positions.sort((a,b)=>a-b).join(', ')}</strong></span>`;
+    } else {
+      logHtml += `<span style="color:#f44336;"><strong>Pattern not found.</strong></span>`;
+    }
+    $('sa-log').innerHTML = logHtml;
+  }
+
+  $('sa-build').addEventListener('click', buildSA);
+  $('sa-search').addEventListener('click', searchSA);
+  $('sa-pattern').addEventListener('keydown', e => { if (e.key === 'Enter') searchSA(); });
+  buildSA();
+})();
+</script>
+```
+
+---
+
+## 10. Burrows-Wheeler Transform (BWT)
+
+We've been building toward this: the BWT is the core data structure inside both Bowtie2 and BWA-MEM -- the two aligners you will use most often in practice.
+
+:::{.callout-tip}
+## Why not just use suffix arrays?
+Suffix arrays are compact compared to suffix trees (12 GB vs. 47 GB for the human genome), but 12 GB is still too large to fit in the RAM of most workstations. The BWT achieves something remarkable: it can be compressed to **under 1 GB** while still supporting fast pattern search. This is why it -- not the suffix array directly -- became the foundation for practical alignment tools.
+:::
+
+The BWT is intimately connected to the suffix array we just studied. The sorted rotations in the BWT matrix are the same as the sorted suffixes -- the suffix array gives the starting positions, and the BWT gives the last character of each rotation. The FM index, which we will build in Section 11, exploits this connection to combine the BWT's compressibility with the suffix array's position information.
+
+The **Burrows-Wheeler Transform** is one of the most elegant algorithms in computer science. Originally invented for data compression (1994), it turned out to be the key ingredient for modern read aligners. The BWT rearranges a string in a way that is simultaneously **compressible**, **reversible**, and **searchable**.
+
+### Step-by-Step Construction
+
+Given a string $T$ (with `$` appended -- recall from Section 7, `$` is a sentinel character smaller than all others, ensuring each suffix and each rotation is unique):
+
+1. **Write all rotations** of $T$
+2. **Sort** the rotations lexicographically
+3. **Take the last column** -- this is the BWT
+
+A **rotation** of a string means moving the first character to the end. So `abaaba$` → `baaba$a` → `aaba$ab` → and so on, until you cycle back to the original string.
+
+### Worked Example
+
+Let $T = $ `abaaba$`:
+
+**Step 1: All rotations**
+
+| Rotation |
+|----------|
+| `abaaba$` |
+| `baaba$a` |
+| `aaba$ab` |
+| `aba$aba` |
+| `ba$abaa` |
+| `a$abaab` |
+| `$abaaba` |
+
+**Step 2: Sort lexicographically**
+
+| Row | Sorted Rotation | First | Last |
+|-----|----------------|-------|------|
+| 0 | `$abaaba` | `$` | **a** |
+| 1 | `a$abaab` | a | **b** |
+| 2 | `aaba$ab` | a | **b** |
+| 3 | `aba$aba` | a | **a** |
+| 4 | `abaaba$` | a | **`$`** |
+| 5 | `ba$abaa` | b | **a** |
+| 6 | `baaba$a` | b | **a** |
+
+**Step 3: The BWT is the last column**: `abba$aa`
+
+### Three Remarkable Properties
+
+#### Property 1: Compressible
+
+The BWT tends to group identical characters together. In our example, `abba$aa` has runs of repeated characters. This makes it highly amenable to **run-length encoding** -- a key property for compression (used in bzip2).
+
+#### Property 2: Reversible
+
+Despite appearing to scramble the text, the BWT can be **perfectly reversed** to recover the original text. This uses the **LF mapping** property.
+
+#### Property 3: Searchable
+
+The BWT supports fast pattern search without decompressing -- this is what makes it useful for genomics.
+
+### The LF Mapping Property
+
+The **LF mapping** states: the $i$-th occurrence of character $c$ in the **Last** column (L) corresponds to the $i$-th occurrence of $c$ in the **First** column (F).
+
+**Concrete example -- tracing one character step by step:**
+
+Look at row 0 of our BWT matrix. The L column has `a` at row 0. This is the **1st** `a` in L (scanning top to bottom). By the LF mapping, it maps to the **1st** `a` in F -- which is at row 1.
+
+```
+         F               L
+Row 0:   $  abaaba       a  ← 1st 'a' in L  ──→  maps to 1st 'a' in F (row 1)
+Row 1:   a  $abaab       b
+Row 2:   a  aba$ab       b
+Row 3:   a  ba$aba       a  ← 2nd 'a' in L  ──→  maps to 2nd 'a' in F (row 2)
+Row 4:   a  baaba$       $
+Row 5:   b  a$abaa       a  ← 3rd 'a' in L  ──→  maps to 3rd 'a' in F (row 3)
+Row 6:   b  aaba$a       a  ← 4th 'a' in L  ──→  maps to 4th 'a' in F (row 4)
+```
+
+Notice the pattern: the $i$-th occurrence of any character in L always maps to the $i$-th occurrence of that same character in F.
+
+> **Why does this work?** Let's trace one example and then state the general rule.
+>
+> **Concrete trace:** Look at the 2nd `a` in L, which is at row 3. Row 3's rotation is `aba$aba`. The last character (L) is `a`, and the rotation that *follows* this `a` is `ba$aba` -- which is the rotation at row 3 itself. Now, the 2nd `a` in F is at row 2, whose rotation is `aaba$ab`. This rotation also sorts to the same relative position among all `a`-prefixed rotations.
+>
+> **The general argument in three steps:**
+>
+> 1. All rotations starting with `a` form a contiguous block in the sorted matrix (rows 1-4 in F). Within this block, they are sorted by what comes *after* the leading `a`.
+> 2. Each `a` in L represents the character just *before* its row's rotation. The rotation that follows each of these `a`'s is a complete rotation of the original text.
+> 3. Sorting these "following rotations" gives the same relative order as sorting the F-block, because it's the same set of strings. So the 1st `a` in L and the 1st `a` in F refer to the same occurrence, the 2nd to the 2nd, and so on.
+>
+> This holds for every character, not just `a`.
+
+### Reversing the BWT
+
+Using LF mapping, we can recover the original text:
+
+1. Start at the row containing `$` in the F column (row 0)
+2. Read character from L column: `a`
+3. Use LF mapping to jump to the corresponding row
+4. Repeat until `$` is reached
+5. Read characters in reverse to get the original text
+
+```{=html}
+
+<div id="viz-bwt" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive Burrows-Wheeler Transform</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a string to see the BWT constructed step by step. Then try reversing it and searching for patterns.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="bwt-text" type="text" value="abaaba" maxlength="12" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="bwt-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build BWT</button>
+  <button id="bwt-reverse" style="padding:8px 16px; background:#FF9800; color:white; border:none; border-radius:4px; cursor:pointer;">Reverse BWT</button>
+</div>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Search pattern:</label>
+    <input id="bwt-pattern" type="text" placeholder="e.g. aba" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="bwt-search" style="padding:8px 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Search (Backward)</button>
+</div>
+<div id="bwt-matrix" style="overflow-x:auto; margin-bottom:10px;"></div>
+<div id="bwt-result" style="padding:6px; background:#e8f5e9; border-radius:4px; font-family:monospace; font-size:1.1em; margin-bottom:8px; min-height:24px; text-align:center;"></div>
+<div id="bwt-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; min-height:30px; max-height:250px; overflow-y:auto;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let rotations = [], sortedRots = [], bwtStr = '', fCol = '', lCol = '';
+
+  function buildBWT() {
+    const text = $('bwt-text').value.toLowerCase() + '$';
+    rotations = [];
+    for (let i = 0; i < text.length; i++) {
+      rotations.push(text.substring(i) + text.substring(0, i));
+    }
+    sortedRots = rotations.slice().sort();
+    fCol = sortedRots.map(r => r[0]).join('');
+    lCol = sortedRots.map(r => r[r.length - 1]).join('');
+    bwtStr = lCol;
+    renderMatrix([]);
+    $('bwt-result').innerHTML = `BWT("<strong>${text}</strong>") = <strong style="color:#2196F3; font-size:1.3em;">${bwtStr}</strong>`;
+    $('bwt-log').innerHTML = `<strong>Construction:</strong> Generated ${text.length} rotations, sorted lexicographically, extracted last column.<br>First column (F): <code>${fCol}</code><br>Last column (L = BWT): <code>${lCol}</code>`;
+  }
+
+  function renderMatrix(highlights, searchRange) {
+    let html = '<table style="border-collapse:collapse; font-size:0.85em; font-family:monospace; margin:0 auto;">';
+    html += '<tr style="background:#2196F3; color:white;"><th style="padding:4px 6px;">Row</th><th style="padding:4px 6px;">F</th><th style="padding:4px 6px;">Rotation</th><th style="padding:4px 6px;">L</th></tr>';
+    sortedRots.forEach((rot, i) => {
+      const hl = highlights.find(h => h.row === i);
+      let bg = i % 2 === 0 ? '#f9f9f9' : '#fff';
+      let fStyle = '', lStyle = '';
+      if (searchRange && i >= searchRange.lo && i <= searchRange.hi) {
+        bg = '#c8e6c9';
+      }
+      if (hl) {
+        if (hl.type === 'lf') { lStyle = 'background:#FF9800;color:white;padding:2px 4px;border-radius:3px;'; }
+        if (hl.type === 'f') { fStyle = 'background:#2196F3;color:white;padding:2px 4px;border-radius:3px;'; }
+      }
+      const f = rot[0], l = rot[rot.length - 1];
+      const middle = rot.substring(1, rot.length - 1);
+      html += `<tr style="background:${bg};"><td style="padding:3px 6px;text-align:center;color:#999;">${i}</td>`;
+      html += `<td style="padding:3px 6px;text-align:center;"><span style="${fStyle}">${f}</span></td>`;
+      html += `<td style="padding:3px 6px;">${f}${middle}${l}</td>`;
+      html += `<td style="padding:3px 6px;text-align:center;"><span style="${lStyle}">${l}</span></td></tr>`;
+    });
+    html += '</table>';
+    $('bwt-matrix').innerHTML = html;
+  }
+
+  function reverseBWT() {
+    if (bwtStr.length === 0) { buildBWT(); }
+    const n = bwtStr.length;
+    // Build LF mapping
+    const L = bwtStr.split('');
+    const F = L.slice().sort();
+
+    // Count occurrences up to each position
+    function rankAt(col, idx) {
+      let count = 0;
+      for (let i = 0; i < idx; i++) { if (col[i] === col[idx]) count++; }
+      return count;
+    }
+
+    // LF mapping: for each position i in L, find corresponding position in F
+    function lfMap(i) {
+      const ch = L[i];
+      const r = rankAt(L, i);
+      let count = 0;
+      for (let j = 0; j < n; j++) {
+        if (F[j] === ch) {
+          if (count === r) return j;
+          count++;
+        }
+      }
+      return 0;
+    }
+
+    // Start at the row where F = $, read L[row], follow LF mapping
+    let row = F.indexOf('$');
+    let recovered = '';
+    let logHtml = '<strong>Reversing BWT using LF mapping:</strong><br>';
+    const hlSteps = [];
+    for (let step = 0; step < n - 1; step++) {
+      const ch = L[row];
+      recovered = ch + recovered;
+      const nextRow = lfMap(row);
+      logHtml += `Step ${step+1}: Row ${row}, L[${row}]='<strong>${ch}</strong>' &rarr; LF maps to Row ${nextRow}<br>`;
+      row = nextRow;
+    }
+    logHtml += `<br><span style="color:#4CAF50;"><strong>Recovered text: ${recovered}</strong></span>`;
+    $('bwt-log').innerHTML = logHtml;
+    $('bwt-result').innerHTML = `Reversed BWT: <strong style="color:#4CAF50; font-size:1.3em;">${recovered}</strong>`;
+  }
+
+  function searchBWT() {
+    const pattern = $('bwt-pattern').value.toLowerCase();
+    if (sortedRots.length === 0 || pattern.length === 0) return;
+
+    const n = sortedRots.length;
+    // Backward search
+    let lo = 0, hi = n - 1;
+    let logHtml = `<strong>Backward search for "${pattern}":</strong><br>`;
+    logHtml += `Starting with full range [0, ${hi}]<br>`;
+
+    for (let i = pattern.length - 1; i >= 0; i--) {
+      const ch = pattern[i];
+      // Find new lo: first row in [lo..hi] where L column = ch
+      let newLo = -1, newHi = -1;
+
+      // Count character ranks for LF mapping
+      // First column positions for each character
+      const charStarts = {};
+      for (let j = 0; j < n; j++) {
+        const fc = fCol[j];
+        if (!(fc in charStarts)) charStarts[fc] = j;
+      }
+
+      if (!(ch in charStarts)) {
+        logHtml += `Character '${ch}' not in text. <span style="color:#f44336;"><strong>Not found.</strong></span>`;
+        $('bwt-log').innerHTML = logHtml;
+        renderMatrix([], null);
+        $('bwt-result').innerHTML = `<span style="color:#f44336;">Pattern "${pattern}" not found.</span>`;
+        return;
+      }
+
+      // Count occurrences of ch in L[0..lo-1] and L[0..hi]
+      let countBefore = 0;
+      for (let j = 0; j < lo; j++) { if (lCol[j] === ch) countBefore++; }
+      let countTo = 0;
+      for (let j = 0; j <= hi; j++) { if (lCol[j] === ch) countTo++; }
+
+      newLo = charStarts[ch] + countBefore;
+      newHi = charStarts[ch] + countTo - 1;
+
+      logHtml += `Processing '${ch}': C['${ch}']=${charStarts[ch]}, Occ('${ch}',${lo-1})=${countBefore}, Occ('${ch}',${hi})=${countTo} &rarr; lo=${charStarts[ch]}+${countBefore}=${newLo}, hi=${charStarts[ch]}+${countTo}&minus;1=${newHi} &rarr; [${newLo}, ${newHi}]<br>`;
+
+      if (newLo > newHi) {
+        logHtml += `<span style="color:#f44336;"><strong>Range empty. Pattern not found.</strong></span>`;
+        $('bwt-log').innerHTML = logHtml;
+        renderMatrix([], null);
+        $('bwt-result').innerHTML = `<span style="color:#f44336;">Pattern "${pattern}" not found.</span>`;
+        return;
+      }
+      lo = newLo;
+      hi = newHi;
+    }
+
+    logHtml += `<br><span style="color:#4CAF50;"><strong>Found ${hi - lo + 1} occurrence(s) in rows ${lo} to ${hi}.</strong></span>`;
+    $('bwt-log').innerHTML = logHtml;
+    renderMatrix([], {lo, hi});
+    $('bwt-result').innerHTML = `<span style="color:#4CAF50;"><strong>"${pattern}" found ${hi-lo+1} time(s)</strong></span>`;
+  }
+
+  $('bwt-build').addEventListener('click', buildBWT);
+  $('bwt-reverse').addEventListener('click', reverseBWT);
+  $('bwt-search').addEventListener('click', searchBWT);
+  $('bwt-pattern').addEventListener('keydown', e => { if (e.key === 'Enter') searchBWT(); });
+  buildBWT();
+})();
+</script>
+```
+
+---
+
+## 11. FM Index
+
+The BWT is powerful, but it lacks one critical piece of information: **where in the original text** do the matches occur? The BWT tells us *how many* matches exist (from the range size), but not their positions.
+
+The **FM index** (Ferragina and Manzini, 2000) combines the BWT with auxiliary data structures to create a complete, practical search index.
+
+### Components of the FM Index
+
+| Component | What it stores | Size (human genome) |
+|-----------|---------------|-------------------|
+| **F column** | Just the counts of each character | Negligible (~16 bytes) |
+| **L column (BWT)** | The Burrows-Wheeler Transform | ~750 MB (with compression) |
+| **Tally/Checkpoint table** | Cumulative character counts at intervals | ~400 MB |
+| **SA sample** | Every $k$-th suffix array value | ~100 MB |
+| **Total** | | **~1.25 GB** |
+
+Compare this to: raw genome (3 GB), suffix array (12 GB), suffix tree (47 GB). The FM index is remarkably compact.
+
+### How the Tally Table Works
+
+Instead of counting characters in L on every query (which would be $O(n)$), we precompute **checkpoints**: cumulative counts of each character at regular intervals (say, every 128 rows).
+
+To count occurrences of character $c$ in $L[0..i]$:
+1. Find the nearest checkpoint before position $i$
+2. Read the precomputed count
+3. Scan the few rows between the checkpoint and $i$
+
+This gives us $O(1)$ effective lookup time.
+
+### How Position Lookup Works
+
+The SA sample stores suffix array values at every $k$-th position. To find the text position for a BWT match at row $i$:
+
+1. If $SA[i]$ is stored, return it directly
+2. Otherwise, follow LF mapping steps until you reach a stored position
+3. Add the number of steps taken
+
+Since we follow at most $k$ LF steps, position lookup is $O(k)$.
+
+### The Search Algorithm
+
+The idea is beautifully simple: we process the pattern **from right to left**, one character at a time. Why backward? Because the F column is sorted, so each character narrows our search to a contiguous block of rows. Processing right-to-left means we are always extending a prefix in the sorted rotation matrix -- which is exactly what binary search on the suffix array would do, but we achieve it in $O(1)$ per character using the precomputed tables instead of $O(\log n)$.
+
+At each step, we maintain a range $[lo, hi]$ in the sorted rotation matrix. This range represents all rows whose corresponding suffixes start with the portion of the pattern we have processed so far. Adding one more character to the left **narrows** this range using two lookups in our precomputed tables.
+
+The full FM index search for pattern $P[0..m-1]$:
+
+```
+Initialize: lo = 0, hi = n - 1
+For i = m-1 down to 0:
+    c = P[i]
+    lo = C[c] + Occ(c, lo - 1)
+    hi = C[c] + Occ(c, hi) - 1
+    If lo > hi: pattern not found
+Return: hi - lo + 1 occurrences
+```
+
+Where:
+- $C[c]$ = number of characters in $T$ that are lexicographically smaller than $c$ (the start of $c$'s block in F)
+- $Occ(c, i)$ = number of occurrences of $c$ in $L[0..i]$ (computed using the tally table)
+
+> **Note**: By convention, $Occ(c, -1) = 0$ -- there are zero occurrences of any character before position 0. This handles the edge case when $lo = 0$.
+
+### Worked Example: Searching for `"aba"` in `abaaba$`
+
+Let's trace the algorithm on our running example. From the BWT matrix in Section 10:
+
+| Row | F | L | SA |
+|-----|---|---|----|
+| 0 | `$` | `a` | 6 |
+| 1 | `a` | `b` | 5 |
+| 2 | `a` | `b` | 2 |
+| 3 | `a` | `a` | 3 |
+| 4 | `a` | `$` | 0 |
+| 5 | `b` | `a` | 4 |
+| 6 | `b` | `a` | 1 |
+
+**Precomputed tables:**
+
+- $C[\$] = 0$, $C[a] = 1$, $C[b] = 5$ &nbsp; (count of characters lexicographically smaller)
+- $L = [a, b, b, a, \$, a, a]$ &nbsp; (the BWT)
+
+**Initialize:** $lo = 0,\; hi = 6$
+
+**Iteration 1** ($i = 2$, $c = P[2] =$ `a`, the rightmost character):
+
+$$lo = C[a] + Occ(a, -1) = 1 + 0 = 1$$
+$$hi = C[a] + Occ(a, 6) - 1 = 1 + 4 - 1 = 4$$
+
+Range $[1, 4]$: these are the 4 rows whose suffixes start with `a`.
+
+**Iteration 2** ($i = 1$, $c = P[1] =$ `b`):
+
+$Occ(b, 0)$: count `b` in $L[0..0] = [a]$ → 0. &nbsp; $Occ(b, 4)$: count `b` in $L[0..4] = [a, b, b, a, \$]$ → 2.
+
+$$lo = C[b] + Occ(b, 0) = 5 + 0 = 5$$
+$$hi = C[b] + Occ(b, 4) - 1 = 5 + 2 - 1 = 6$$
+
+Range $[5, 6]$: these are the 2 rows whose suffixes start with `ba`.
+
+**Iteration 3** ($i = 0$, $c = P[0] =$ `a`, the leftmost character):
+
+$Occ(a, 4)$: count `a` in $L[0..4] = [a, b, b, a, \$]$ → 2. &nbsp; $Occ(a, 6)$: count `a` in $L[0..6]$ → 4.
+
+$$lo = C[a] + Occ(a, 4) = 1 + 2 = 3$$
+$$hi = C[a] + Occ(a, 6) - 1 = 1 + 4 - 1 = 4$$
+
+Range $[3, 4]$: **2 occurrences** found. The suffix array tells us their text positions: $SA[3] = 3$ and $SA[4] = 0$. Indeed, `aba` appears at position 0 (`abaaba$`) and position 3 (`aba$`).
+
+> Each iteration took just two table lookups ($C$ and $Occ$) -- no character-by-character scanning. For a genome-scale FM index, searching a 100 bp pattern takes exactly 100 iterations regardless of genome size.
+
+```{=html}
+
+<div id="viz-fm-index" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Interactive FM Index</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">See the full FM index data structure. Search for a pattern and watch checkpoints and tally lookups highlighted step by step.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Text:</label>
+    <input id="fm-text" type="text" value="abaaba" maxlength="14" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="fm-build" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Build FM Index</button>
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Search pattern:</label>
+    <input id="fm-pattern" type="text" placeholder="e.g. aba" style="width:100%; padding:6px; font-family:monospace; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="fm-search" style="padding:8px 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Search</button>
+</div>
+<div id="fm-components" style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:10px;">
+  <div id="fm-ctable" style="flex:1; min-width:150px;"></div>
+  <div id="fm-main" style="flex:3; min-width:400px; overflow-x:auto;"></div>
+</div>
+<div id="fm-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; min-height:30px; max-height:250px; overflow-y:auto;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let fmData = {};
+
+  function buildFM() {
+    const text = $('fm-text').value.toLowerCase() + '$';
+    const n = text.length;
+
+    // Build BWT
+    const rots = [];
+    for (let i = 0; i < n; i++) rots.push(text.substring(i) + text.substring(0, i));
+    const sorted = rots.slice().sort();
+    const F = sorted.map(r => r[0]);
+    const L = sorted.map(r => r[r.length - 1]);
+
+    // Build suffix array
+    const suffixes = [];
+    for (let i = 0; i < n; i++) suffixes.push({pos: i, suf: text.substring(i)});
+    suffixes.sort((a, b) => a.suf < b.suf ? -1 : a.suf > b.suf ? 1 : 0);
+    const SA = suffixes.map(s => s.pos);
+
+    // C table: number of chars lexicographically smaller
+    const chars = [...new Set(text.split(''))].sort();
+    const C = {};
+    chars.forEach(c => {
+      C[c] = 0;
+      for (const ch of text) { if (ch < c) C[c]++; }
+    });
+
+    // Occ table (tally): cumulative count of each char in L[0..i]
+    const Occ = {};
+    chars.forEach(c => {
+      Occ[c] = new Array(n).fill(0);
+      let count = 0;
+      for (let i = 0; i < n; i++) {
+        if (L[i] === c) count++;
+        Occ[c][i] = count;
+      }
+    });
+
+    fmData = {text, n, F, L, SA, C, Occ, chars, sorted};
+    renderFM([]);
+    $('fm-log').innerHTML = `FM index built for "<strong>${text}</strong>". Components: C table, BWT (L column), Tally (Occ), SA.`;
+  }
+
+  function renderFM(highlights, range) {
+    const {n, F, L, SA, C, Occ, chars, sorted} = fmData;
+    if (!n) return;
+
+    // C table
+    let cHtml = '<div style="font-size:0.8em;"><strong>C[ ] table</strong><br><em>(chars before c)</em>';
+    cHtml += '<table style="border-collapse:collapse;margin-top:4px;">';
+    chars.forEach(c => {
+      cHtml += `<tr><td style="padding:2px 6px;font-family:monospace;font-weight:bold;border:1px solid #ddd;">${c === '$' ? '$' : c}</td><td style="padding:2px 6px;text-align:center;border:1px solid #ddd;">${C[c]}</td></tr>`;
+    });
+    cHtml += '</table></div>';
+    $('fm-ctable').innerHTML = cHtml;
+
+    // Main table
+    let html = '<table style="border-collapse:collapse;font-size:0.8em;font-family:monospace;width:100%;">';
+    html += '<tr style="background:#2196F3;color:white;"><th style="padding:3px 4px;">i</th><th style="padding:3px 4px;">SA</th><th style="padding:3px 4px;">F</th><th style="padding:3px 4px;">L</th>';
+    chars.forEach(c => { html += `<th style="padding:3px 4px;">Occ(${c === '$' ? '$' : c})</th>`; });
+    html += '</tr>';
+
+    for (let i = 0; i < n; i++) {
+      const hl = highlights.find(h => h.row === i);
+      const inRange = range && i >= range.lo && i <= range.hi;
+      let bg = i % 2 === 0 ? '#f9f9f9' : '#fff';
+      if (inRange) bg = '#c8e6c9';
+      if (hl && hl.type === 'active') bg = '#fff9c4';
+      html += `<tr style="background:${bg};">`;
+      html += `<td style="padding:2px 4px;text-align:center;color:#999;border:1px solid #eee;">${i}</td>`;
+      html += `<td style="padding:2px 4px;text-align:center;border:1px solid #eee;">${SA[i]}</td>`;
+      html += `<td style="padding:2px 4px;text-align:center;font-weight:bold;border:1px solid #eee;color:#1565C0;">${F[i]}</td>`;
+      html += `<td style="padding:2px 4px;text-align:center;font-weight:bold;border:1px solid #eee;color:#c62828;">${L[i]}</td>`;
+      chars.forEach(c => {
+        html += `<td style="padding:2px 4px;text-align:center;border:1px solid #eee;">${Occ[c][i]}</td>`;
+      });
+      html += '</tr>';
+    }
+    html += '</table>';
+    $('fm-main').innerHTML = html;
+  }
+
+  function searchFM() {
+    const pattern = $('fm-pattern').value.toLowerCase();
+    const {n, F, L, SA, C, Occ, chars} = fmData;
+    if (!n || pattern.length === 0) return;
+
+    let lo = 0, hi = n - 1;
+    let logHtml = `<strong>FM index search for "${pattern}"</strong> (backward, right to left):<br>`;
+    logHtml += `Initial range: [${lo}, ${hi}]<br><br>`;
+
+    for (let i = pattern.length - 1; i >= 0; i--) {
+      const c = pattern[i];
+      if (!(c in C)) {
+        logHtml += `Character '${c}' not in alphabet. <span style="color:#f44336;"><strong>Not found.</strong></span>`;
+        $('fm-log').innerHTML = logHtml;
+        renderFM([], null);
+        return;
+      }
+      const occLo = lo > 0 ? Occ[c][lo - 1] : 0;
+      const occHi = Occ[c][hi];
+      const newLo = C[c] + occLo;
+      const newHi = C[c] + occHi - 1;
+
+      logHtml += `<strong>Step: char '${c}' (position ${i})</strong><br>`;
+      logHtml += `&nbsp;&nbsp;C['${c}'] = ${C[c]}<br>`;
+      logHtml += `&nbsp;&nbsp;Occ('${c}', ${lo > 0 ? lo-1 : -1}) = ${occLo}<br>`;
+      logHtml += `&nbsp;&nbsp;Occ('${c}', ${hi}) = ${occHi}<br>`;
+      logHtml += `&nbsp;&nbsp;new lo = ${C[c]} + ${occLo} = ${newLo}<br>`;
+      logHtml += `&nbsp;&nbsp;new hi = ${C[c]} + ${occHi} - 1 = ${newHi}<br>`;
+
+      if (newLo > newHi) {
+        logHtml += `<span style="color:#f44336;"><strong>Range empty. Pattern not found.</strong></span>`;
+        $('fm-log').innerHTML = logHtml;
+        renderFM([], null);
+        return;
+      }
+      lo = newLo;
+      hi = newHi;
+      logHtml += `&nbsp;&nbsp;Range: [${lo}, ${hi}]<br><br>`;
+    }
+
+    const positions = [];
+    for (let i = lo; i <= hi; i++) positions.push(SA[i]);
+    positions.sort((a, b) => a - b);
+
+    logHtml += `<span style="color:#4CAF50;"><strong>Found ${hi - lo + 1} occurrence(s) at text position(s): ${positions.join(', ')}</strong></span>`;
+    $('fm-log').innerHTML = logHtml;
+    renderFM([], {lo, hi});
+  }
+
+  $('fm-build').addEventListener('click', buildFM);
+  $('fm-search').addEventListener('click', searchFM);
+  $('fm-pattern').addEventListener('keydown', e => { if (e.key === 'Enter') searchFM(); });
+  buildFM();
+})();
+</script>
+```
+
+---
+
+## 12. Bowtie2 Algorithm
+
+Now that we understand the FM index, let's see how modern read aligners use it. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (Langmead & Salzberg, 2012) is one of the most widely used short-read aligners.
+
+### Overview
+
+Bowtie2 uses a **seed-and-extend** strategy:
+
+1. **Seed**: Extract short substrings from the read and find exact matches using the FM index
+2. **Extend**: Use dynamic programming to extend seeds into full alignments
+
+### How Bowtie2 Uses the FM Index for Seeding
+
+Each seed is looked up in the FM index using the **backward search** from Section 11. The algorithm processes the seed characters from right to left, narrowing the $[lo, hi]$ range at each step. If the range is non-empty at the end, the seed has exact matches in the reference, and the suffix array sample provides their genomic positions.
+
+Bowtie2 also allows a small number of mismatches within seeds. It achieves this by trying multiple "seed variants" -- backtracking during the FM index search to substitute alternative characters at certain positions. This is more expensive than pure exact matching but catches seeds that differ from the reference by one or two bases.
+
+### Seed Extraction
+
+Bowtie2 extracts seeds of configurable length (default: 22 bp for end-to-end mode) from the read. Seeds can be extracted at regular intervals along the read.
+
+For a 100 bp read with seed length 22 and interval 11:
+
+```
+Read:   ACGTACGTACGTACGTACGTACGTACGTACGTACGT...
+Seed 1: ACGTACGTACGTACGTACGTAC (pos 0-21)
+Seed 2:            TACGTACGTACGTACGTACGTA (pos 11-32)
+Seed 3:                       CGTACGTACGTACGTACGTAC (pos 22-43)
+...
+```
+
+### Worked Example: Aligning a Read with a SNP
+
+Consider a 50 bp read that has a single G→A SNP at position 25:
+
+```
+Reference: ...ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTAC...
+Read:       ACGTACGTACGTACGTACGTACGTAACGTACGTACGTACGTACGTACGTAC
+                                    ^
+                                   SNP (G→A at pos 25)
+```
+
+Bowtie2 extracts seeds (length 22, interval 11):
+
+```
+Seed 1: ACGTACGTACGTACGTACGTACG  (pos 0-21)  → exact FM index match ✓
+Seed 2: TACGTACGTACGTACGTACGTACG (pos 11-32)  → contains SNP, no exact match ✗
+Seed 3: ACGTAACGTACGTACGTACGTACG (pos 22-43)  → contains SNP, no exact match ✗
+```
+
+Seed 1 hits the reference. Bowtie2 uses that hit as an **anchor** and extends the alignment in both directions using dynamic programming. The extension discovers the G→A mismatch at position 25 and produces a full alignment with one penalty.
+
+### Scoring Model
+
+Bowtie2 uses a configurable scoring model:
+
+| Event | Default Score |
+|-------|--------------|
+| Match | 0 (no bonus in end-to-end mode) |
+| Mismatch | -6 |
+| Gap open | -5 |
+| Gap extend | -3 |
+| Read gap open | -5 |
+| Read gap extend | -3 |
+
+> **Why does a match score 0?** Bowtie2 uses a **penalty-based** scoring system in end-to-end mode, where the maximum possible score is 0 (a perfect match with no mismatches or gaps). Every error subtracts from this score. This is different from the reward-based scoring you may be used to from Smith-Waterman. In **local** mode, matches do receive a bonus (+2 by default).
+
+### Alignment Modes
+
+| Mode | Description | Use when |
+|------|-------------|----------|
+| **End-to-end** | Align entire read, penalize unaligned ends | Standard short-read alignment |
+| **Local** | Allow soft-clipping of read ends | Reads may have adapter contamination |
+
+### Handling Multimapping and MAPQ
+
+When a read maps to multiple genomic locations, Bowtie2 assigns a **mapping quality (MAPQ)** score reflecting confidence that the reported position is correct. MAPQ is a Phred-scaled probability: $MAPQ = -10 \log_{10}(P_{\text{wrong}})$. A MAPQ of 0 means the read maps equally well to multiple locations; a MAPQ of 42 (Bowtie2's maximum) means high confidence in a unique placement. Downstream tools like variant callers use MAPQ to weight or filter alignments.
+
+### Parameter Tuning Guide
+
+| Parameter | Default | When to change |
+|-----------|---------|----------------|
+| `--seed-len` (`-L`) | 22 | Lower (e.g., 16-20) for divergent references or high mutation rates; higher (e.g., 28-32) to increase speed at the cost of sensitivity |
+| `--seed-interval` (`-i`) | f(read length) | Lower for higher sensitivity, higher for speed |
+| `--local` | off | Use when reads may contain adapter sequence or when you want soft-clipping |
+| `-N` | 0 | Set to 1 to allow one mismatch in seeds (slower but more sensitive) |
+| `-k` | 1 (best) | Increase to report multiple alignments (e.g., `-k 10` for multimapping analysis) |
+
+### Key Features
+
+- **FM index** for memory-efficient seed finding
+- **Supports gapped alignment** (unlike Bowtie1)
+- **Multiple alignment modes** (best, all valid, up to $k$)
+- **Paired-end aware** -- uses mate pair information to improve mapping
+- **Fast for short reads** -- optimized for reads up to ~250 bp
+
+---
+
+## 13. BWA-MEM Algorithm
+
+[BWA-MEM](https://github.com/lh3/bwa) (Li, 2013) is the other dominant short-read aligner. It also uses the FM index but with a different seeding strategy.
+
+### Maximal Exact Matches (MEMs)
+
+Instead of fixed-length seeds, BWA-MEM finds **Maximal Exact Matches (MEMs)**: the longest substrings of the read that match the reference exactly.
+
+A MEM is **maximal** in the sense that it cannot be extended in either direction without introducing a mismatch.
+
+### How MEMs Are Found Using the FM Index
+
+BWA-MEM finds MEMs by extending the FM index backward search until the match range becomes empty. Starting at each position $i$ in the read:
+
+1. Begin a backward search from position $i$, processing characters leftward
+2. At each step, the $[lo, hi]$ range narrows. Track the range size
+3. When the range becomes empty (no matches), stop -- the longest match ending at $i$ was the step just before the range emptied
+4. Then extend rightward from position $i$ as well, checking if the match can grow
+5. The resulting longest bidirectional exact match is a MEM
+
+This is more efficient than it sounds: BWA-MEM processes all positions in a single sweep using the FM index, reusing range information from adjacent positions.
+
+### Super-Maximal Exact Matches (SMEMs)
+
+BWA-MEM further refines MEMs into **SMEMs**: MEMs that are not contained within any longer MEM. An SMEM is the longest exact match covering each read position.
+
+Consider aligning a read against a reference where there is a single SNP (T→G) at read position 12:
+
+```
+Reference: ACGTACGTACGT T CGTACGTAC
+Read:      ACGTACGTACGT G CGTACGTAC
+           |           |           |
+           pos 0       pos 12      pos 21
+
+SMEM 1: ACGTACGTACGT  (read pos 0-11,  length 12) — exact match left of SNP
+SMEM 2: CGTACGTAC     (read pos 13-21, length 9)  — exact match right of SNP
+```
+
+Neither SMEM can be extended without hitting the mismatch at position 12. Together, they cover the entire read except the SNP position -- giving BWA-MEM two anchor points for alignment.
+
+### Chaining
+
+Once SMEMs are found, BWA-MEM groups them into **chains**: sets of SMEMs that are **collinear** (they appear in the same order and with consistent spacing in both the read and the reference).
+
+```
+Read:        [---SMEM1---]---[--SMEM2--]------[---SMEM3---]
+Reference:   [---SMEM1---]---[--SMEM2--]------[---SMEM3---]
+                ↑ same order, consistent gaps → forms one chain
+
+Read:        [---SMEM1---]---[--SMEM2--]
+Reference:       [--SMEM2--]---[---SMEM1---]
+                ↑ reversed order → different chains (possible inversion)
+```
+
+Chaining is critical because it distinguishes true alignments from spurious seed hits. A chain of collinear SMEMs strongly suggests a real genomic origin, while isolated seeds may be coincidental matches in repetitive regions.
+
+### The BWA-MEM Pipeline
+
+1. **SMEM finding**: Use FM index to find all SMEMs (minimum length: 19 bp by default)
+2. **Re-seeding**: For very long SMEMs (> 28 bp), re-seed with shorter fragments to handle mismatches within long matching regions
+3. **Chaining**: Group SMEMs that are collinear (consistent order and spacing) into chains
+4. **Smith-Waterman**: Extend the best chains using banded Smith-Waterman dynamic programming to produce full alignments with gaps and mismatches
+5. **Pairing**: For paired-end reads, resolve pairs using insert-size distribution
+
+### Handling Repetitive Regions
+
+Repetitive sequences (e.g., Alu elements, LINE-1, centromeric repeats) are a major challenge. A seed from a repetitive region may match thousands of positions. BWA-MEM handles this by:
+
+- **Dropping overrepresented seeds**: If an SMEM matches more than 500 positions (configurable with `-c`), BWA-MEM discards it and relies on neighboring, more specific seeds
+- **Re-seeding**: Long SMEMs in repetitive regions are broken into shorter fragments that may be more specific
+- **MAPQ scoring**: Reads in repetitive regions receive low MAPQ scores, flagging uncertainty for downstream analysis
+
+### Key Features
+
+- **Flexible read length**: Works well from 70 bp to 1 Mbp
+- **Split-read alignment**: Can align chimeric reads (important for structural variants)
+- **Better for longer reads**: The MEM seeding strategy scales well with read length
+- **Robust to errors**: Re-seeding handles higher error rates
+
+---
+
+## 14. Bowtie2 vs. BWA-MEM Comparison
+
+Both tools use the FM index at their core, but they differ in strategy and strengths.
+
+### Side-by-Side Comparison
+
+| Feature | Bowtie2 | BWA-MEM |
+|---------|---------|---------|
+| **Index** | FM index (BWT) | FM index (BWT) |
+| **Seeding** | Fixed-length extracted seeds | Maximal Exact Matches (MEMs) |
+| **Seed length** | Configurable (default 22) | Variable (adaptive) |
+| **Extension** | Dynamic programming | Banded Smith-Waterman |
+| **Optimal read length** | 50-250 bp | 70 bp - 1 Mbp |
+| **Gapped alignment** | Yes | Yes |
+| **Split-read** | Limited | Yes |
+| **Speed (short reads)** | Very fast | Fast |
+| **Speed (long reads)** | Slower | Better |
+| **Memory** | ~3.2 GB (human) | ~5.4 GB (human) |
+| **Runtime (30x human WGS)** | ~2-4 hours | ~2-6 hours |
+
+### When to Use Which
+
+| Scenario | Recommended Tool |
+|----------|-----------------|
+| Short Illumina reads (< 250 bp), standard WGS/WES | Either works well |
+| RNA-seq (with splice-aware aligner like HISAT2) | HISAT2 (Bowtie2 family) |
+| Longer reads (PacBio HiFi, Nanopore) | BWA-MEM (or minimap2) |
+| Structural variant detection | BWA-MEM |
+| ChIP-seq, ATAC-seq | Bowtie2 |
+| Very large cohort studies (speed critical) | Bowtie2 |
+| Mixed read lengths | BWA-MEM |
+
+### Practical Recommendations
+
+> **For most standard Illumina sequencing projects**, BWA-MEM is the default choice recommended by the GATK Best Practices pipeline. Its MEM-based seeding is robust and efficient across a wide range of read lengths.
+
+> **For specialized applications** like ChIP-seq peak calling, Bowtie2's scoring model and reporting options (e.g., reporting only unique alignments) may be preferable.
+
+```{=html}
+
+<div id="viz-comparison" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;">Bowtie2 vs. BWA-MEM: Seeding Strategy Comparison</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">See how the same read is processed differently by each algorithm's seeding approach.<br><em>Note: This is a simplified visualization. Real MEMs are found by matching against a reference genome using the FM index. Here, we approximate MEMs as contiguous non-N regions to illustrate the concept of variable-length vs. fixed-length seeds.</em></p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:1; min-width:250px;">
+    <label style="font-size:0.85em; font-weight:bold;">Read sequence:</label>
+    <input id="cmp-read" type="text" value="ACGTACGTNNCGTACGTAC" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div>
+    <label style="font-size:0.85em; font-weight:bold;">Bowtie2 seed length:</label>
+    <input id="cmp-seedlen" type="number" value="5" min="3" max="15" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <div>
+    <label style="font-size:0.85em; font-weight:bold;">Min MEM length:</label>
+    <input id="cmp-memlen" type="number" value="4" min="2" max="10" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+  </div>
+  <button id="cmp-run" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer;">Compare</button>
+</div>
+
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+  <div style="flex:1; min-width:380px;">
+    <div style="text-align:center; font-weight:bold; color:#1565C0; margin-bottom:6px;">Bowtie2 (Fixed Seeds)</div>
+    <svg id="cmp-bt2" width="100%" height="120" style="border:1px solid #e3f2fd; border-radius:4px; background:#f5f9ff;"></svg>
+  </div>
+  <div style="flex:1; min-width:380px;">
+    <div style="text-align:center; font-weight:bold; color:#2E7D32; margin-bottom:6px;">BWA-MEM (MEMs)</div>
+    <svg id="cmp-bwa" width="100%" height="120" style="border:1px solid #e8f5e9; border-radius:4px; background:#f5fff5;"></svg>
+  </div>
+</div>
+<div id="cmp-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:8px; min-height:30px;"></div>
+</div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  const colors = ['#2196F3','#4CAF50','#FF9800','#9C27B0','#f44336','#00BCD4','#795548','#E91E63'];
+
+  function run() {
+    const read = $('cmp-read').value.toUpperCase();
+    const seedLen = parseInt($('cmp-seedlen').value);
+    const minMEM = parseInt($('cmp-memlen').value);
+    const n = read.length;
+
+    // Bowtie2-style: fixed seeds at regular intervals
+    const seeds = [];
+    const interval = Math.max(1, Math.floor(seedLen / 2));
+    for (let i = 0; i <= n - seedLen; i += interval) {
+      seeds.push({start: i, end: i + seedLen, seq: read.substring(i, i + seedLen)});
+    }
+
+    // BWA-MEM-style: MEMs simulated as runs of non-N characters.
+    // Note: Real MEMs are found by matching against a reference genome via the FM index.
+    // Here we approximate to illustrate the concept of variable-length seeds.
+    const mems = [];
+    let start = -1;
+    for (let i = 0; i <= n; i++) {
+      if (i < n && read[i] !== 'N') {
+        if (start < 0) start = i;
+      } else {
+        if (start >= 0 && (i - start) >= minMEM) {
+          mems.push({start, end: i, seq: read.substring(start, i)});
+        }
+        start = -1;
+      }
+    }
+
+    // Render Bowtie2
+    const svg1 = $('cmp-bt2');
+    const w1 = svg1.clientWidth || 400;
+    const charW = Math.min(20, (w1 - 40) / n);
+    const offsetX = (w1 - charW * n) / 2;
+    let html1 = '';
+    // Read
+    for (let i = 0; i < n; i++) {
+      html1 += `<text x="${offsetX + i * charW + charW/2}" y="25" text-anchor="middle" font-size="12" font-family="monospace" fill="#333">${read[i]}</text>`;
+    }
+    // Seeds
+    seeds.forEach((s, idx) => {
+      const c = colors[idx % colors.length];
+      const x = offsetX + s.start * charW;
+      const w = (s.end - s.start) * charW;
+      const y = 40 + (idx % 3) * 24;
+      html1 += `<rect x="${x}" y="${y}" width="${w}" height="18" fill="${c}" opacity="0.7" rx="3"/>`;
+      html1 += `<text x="${x + w/2}" y="${y + 13}" text-anchor="middle" font-size="9" fill="white" font-weight="bold">${s.seq}</text>`;
+    });
+    svg1.innerHTML = html1;
+
+    // Render BWA-MEM
+    const svg2 = $('cmp-bwa');
+    const w2 = svg2.clientWidth || 400;
+    const charW2 = Math.min(20, (w2 - 40) / n);
+    const offsetX2 = (w2 - charW2 * n) / 2;
+    let html2 = '';
+    for (let i = 0; i < n; i++) {
+      html2 += `<text x="${offsetX2 + i * charW2 + charW2/2}" y="25" text-anchor="middle" font-size="12" font-family="monospace" fill="#333">${read[i]}</text>`;
+    }
+    mems.forEach((m, idx) => {
+      const c = colors[idx % colors.length];
+      const x = offsetX2 + m.start * charW2;
+      const w = (m.end - m.start) * charW2;
+      const y = 45 + (idx % 2) * 28;
+      html2 += `<rect x="${x}" y="${y}" width="${w}" height="20" fill="${c}" opacity="0.7" rx="3"/>`;
+      html2 += `<text x="${x + w/2}" y="${y + 14}" text-anchor="middle" font-size="9" fill="white" font-weight="bold">${m.seq}</text>`;
+    });
+    svg2.innerHTML = html2;
+
+    $('cmp-log').innerHTML = `<strong>Bowtie2:</strong> ${seeds.length} fixed-length seeds (${seedLen} bp each, interval ${interval}). <strong>BWA-MEM:</strong> ${mems.length} MEM(s) (min length ${minMEM}, variable length). BWA-MEM seeds adapt to the sequence, producing fewer but longer matches.`;
+  }
+
+  $('cmp-run').addEventListener('click', run);
+  run();
+})();
+</script>
+```
+
+---
+
+## Summary
+
+We have traced a remarkable intellectual journey:
+
+| Data Structure / Tool | Space | Query Time | Key Idea |
+|----------------------|-------|------------|----------|
+| Brute force | O(1) | O(mn) per read | Compare everywhere |
+| Substring index | O(nL) | O(L + hits) | Fixed-length k-mers |
+| Hash table | O(n) | O(1) average | Direct address via hash |
+| **BLAST** | **O(query)** | **O(db) scan** | **Word lookup table + extend** |
+| Trie | O(n L) | O(m) | Tree-structured prefix lookup |
+| Suffix trie | O(n^2) | O(m) | All suffixes in a trie |
+| Suffix tree | O(n) | O(m) | Collapsed suffix trie |
+| Suffix array | O(n) | O(m log n) | Sorted suffix positions |
+| **FM index** | **O(n)** compressed | **O(m)** | **BWT + auxiliary tables** |
+
+BLAST uses hash-table-based word lookup to speed up homology search against large databases. The FM index goes further: compact storage, fast search, and exact matches in time proportional to the pattern length alone. This is why both Bowtie2 and BWA-MEM -- the tools you will use most often for read alignment -- are built on top of the FM index rather than BLAST-style lookup tables.
+
+:::{.callout-important}
+## The Key Lesson
+In computational biology, the right data structure can make the difference between an analysis that takes centuries and one that takes minutes. Algorithmic thinking is not a luxury -- it is a necessity.
+:::
+
+---
+
+## References
+
+1. Altschul SF, Gish W, Miller W, Myers EW, Lipman DJ. "Basic local alignment search tool." *Journal of Molecular Biology* 215, 403-410 (1990). [DOI: 10.1016/S0022-2836(05)80360-2](https://doi.org/10.1016/S0022-2836(05)80360-2)
+2. Langmead B, Salzberg SL. "Fast gapped-read alignment with Bowtie 2." *Nature Methods* 9, 357-359 (2012).
+3. Li H. "Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM." *arXiv:1303.3997* (2013).
+4. Li H, Durbin R. "Fast and accurate short read alignment with Burrows-Wheeler transform." *Bioinformatics* 25, 1754-1760 (2009).
+5. Burrows M, Wheeler DJ. "A block-sorting lossless data compression algorithm." *Technical Report 124, Digital Equipment Corporation* (1994).
+6. Ferragina P, Manzini G. "Opportunistic data structures with applications." *Proceedings of FOCS 2000* (2000).
+7. Langmead B. Teaching materials and lecture notes, [langmead-lab.org/teaching](https://www.langmead-lab.org/teaching.html).
+8. Kurtz S et al. "Versatile and open software for comparing large genomes." *Genome Biology* 5, R12 (2004). [MUMmer]
