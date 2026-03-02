@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>miffy_academic_cv – BMMB554</title>
+<title>lecture15_literature_summary – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -235,23 +235,33 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#miffy-b.-pluis-phd" id="toc-miffy-b.-pluis-phd" class="nav-link active" data-scroll-target="#miffy-b.-pluis-phd">Miffy B. Pluis, PhD</a>
+  <li><a href="#lecture-15-k-mers-in-genomics-literature-summary-proposed-outline" id="toc-lecture-15-k-mers-in-genomics-literature-summary-proposed-outline" class="nav-link active" data-scroll-target="#lecture-15-k-mers-in-genomics-literature-summary-proposed-outline">Lecture 15: K-mers in Genomics — Literature Summary &amp; Proposed Outline</a>
   <ul class="collapse">
-  <li><a href="#education" id="toc-education" class="nav-link" data-scroll-target="#education">Education</a></li>
-  <li><a href="#academic-appointments" id="toc-academic-appointments" class="nav-link" data-scroll-target="#academic-appointments">Academic Appointments</a></li>
-  <li><a href="#research-interests" id="toc-research-interests" class="nav-link" data-scroll-target="#research-interests">Research Interests</a></li>
-  <li><a href="#selected-publications" id="toc-selected-publications" class="nav-link" data-scroll-target="#selected-publications">Selected Publications</a></li>
-  <li><a href="#grants-funding" id="toc-grants-funding" class="nav-link" data-scroll-target="#grants-funding">Grants &amp; Funding</a></li>
-  <li><a href="#awards-honors" id="toc-awards-honors" class="nav-link" data-scroll-target="#awards-honors">Awards &amp; Honors</a></li>
-  <li><a href="#teaching" id="toc-teaching" class="nav-link" data-scroll-target="#teaching">Teaching</a></li>
-  <li><a href="#phd-students-supervised" id="toc-phd-students-supervised" class="nav-link" data-scroll-target="#phd-students-supervised">PhD Students Supervised</a></li>
-  <li><a href="#service-leadership" id="toc-service-leadership" class="nav-link" data-scroll-target="#service-leadership">Service &amp; Leadership</a></li>
-  <li><a href="#outreach-public-engagement" id="toc-outreach-public-engagement" class="nav-link" data-scroll-target="#outreach-public-engagement">Outreach &amp; Public Engagement</a></li>
-  <li><a href="#languages" id="toc-languages" class="nav-link" data-scroll-target="#languages">Languages</a></li>
-  <li><a href="#personal-interests" id="toc-personal-interests" class="nav-link" data-scroll-target="#personal-interests">Personal Interests</a></li>
+  <li><a href="#annotated-bibliography" id="toc-annotated-bibliography" class="nav-link" data-scroll-target="#annotated-bibliography">Annotated Bibliography</a>
+  <ul class="collapse">
+  <li><a href="#foundational-k-mer-concepts-counting" id="toc-foundational-k-mer-concepts-counting" class="nav-link" data-scroll-target="#foundational-k-mer-concepts-counting">1. Foundational K-mer Concepts &amp; Counting</a></li>
+  <li><a href="#k-mer-spectrum-analysis-genome-characterization" id="toc-k-mer-spectrum-analysis-genome-characterization" class="nav-link" data-scroll-target="#k-mer-spectrum-analysis-genome-characterization">2. K-mer Spectrum Analysis &amp; Genome Characterization</a></li>
+  <li><a href="#de-bruijn-graphs-genome-assembly" id="toc-de-bruijn-graphs-genome-assembly" class="nav-link" data-scroll-target="#de-bruijn-graphs-genome-assembly">3. De Bruijn Graphs &amp; Genome Assembly</a></li>
+  <li><a href="#minimizers-related-theory" id="toc-minimizers-related-theory" class="nav-link" data-scroll-target="#minimizers-related-theory">4. Minimizers &amp; Related Theory</a></li>
+  <li><a href="#syncmers" id="toc-syncmers" class="nav-link" data-scroll-target="#syncmers">5. Syncmers</a></li>
+  <li><a href="#minimap2" id="toc-minimap2" class="nav-link" data-scroll-target="#minimap2">6. Minimap2</a></li>
+  <li><a href="#sequence-similarity-via-k-mer-sketching" id="toc-sequence-similarity-via-k-mer-sketching" class="nav-link" data-scroll-target="#sequence-similarity-via-k-mer-sketching">7. Sequence Similarity via K-mer Sketching</a></li>
+  <li><a href="#metagenomic-classification" id="toc-metagenomic-classification" class="nav-link" data-scroll-target="#metagenomic-classification">8. Metagenomic Classification</a></li>
+  </ul></li>
+  <li><a href="#proposed-lecture-outline" id="toc-proposed-lecture-outline" class="nav-link" data-scroll-target="#proposed-lecture-outline">Proposed Lecture Outline</a>
+  <ul class="collapse">
+  <li><a href="#part-i-k-mer-fundamentals" id="toc-part-i-k-mer-fundamentals" class="nav-link" data-scroll-target="#part-i-k-mer-fundamentals">Part I: K-mer Fundamentals</a></li>
+  <li><a href="#part-ii-k-mers-in-assembly" id="toc-part-ii-k-mers-in-assembly" class="nav-link" data-scroll-target="#part-ii-k-mers-in-assembly">Part II: K-mers in Assembly</a></li>
+  <li><a href="#part-iii-subsampling-the-need-for-speed" id="toc-part-iii-subsampling-the-need-for-speed" class="nav-link" data-scroll-target="#part-iii-subsampling-the-need-for-speed">Part III: Subsampling — The Need for Speed</a></li>
+  <li><a href="#part-iv-minimizers-in-action" id="toc-part-iv-minimizers-in-action" class="nav-link" data-scroll-target="#part-iv-minimizers-in-action">Part IV: Minimizers in Action</a></li>
+  <li><a href="#part-v-applications" id="toc-part-v-applications" class="nav-link" data-scroll-target="#part-v-applications">Part V: Applications</a></li>
+  </ul></li>
+  <li><a href="#key-concepts-to-emphasize" id="toc-key-concepts-to-emphasize" class="nav-link" data-scroll-target="#key-concepts-to-emphasize">Key Concepts to Emphasize</a></li>
+  <li><a href="#practical-considerations-to-weave-in" id="toc-practical-considerations-to-weave-in" class="nav-link" data-scroll-target="#practical-considerations-to-weave-in">Practical Considerations to Weave In</a></li>
+  <li><a href="#validation-status" id="toc-validation-status" class="nav-link" data-scroll-target="#validation-status">Validation Status</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/data/Miffy_Academic_CV.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture15_literature_summary.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
@@ -259,119 +269,333 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="miffy-b.-pluis-phd" class="level1">
-<h1>Miffy B. Pluis, PhD</h1>
-<p><strong>Professor of Burrow Architecture &amp; Lapine Behavioral Sciences</strong> Department of Meadow Studies, University of Utrecht-den-Haag Snuffie Lane 1955, 3500 AA Utrecht, The Netherlands</p>
-<p>Email: m.b.pluis@uu-meadow.nl | ORCID: 0000-0002-EARS-0001</p>
+<section id="lecture-15-k-mers-in-genomics-literature-summary-proposed-outline" class="level1">
+<h1>Lecture 15: K-mers in Genomics — Literature Summary &amp; Proposed Outline</h1>
+<blockquote class="blockquote">
+<p><strong>Status:</strong> Ready for review before lecture generation <strong>Scope:</strong> From basic k-mer concepts through minimizers to the minimap2 algorithm <strong>Format:</strong> Quarto page (standard lecture format)</p>
+</blockquote>
 <hr>
-<section id="education" class="level2">
-<h2 class="anchored" data-anchor-id="education">Education</h2>
-<p><strong>PhD in Theoretical Carrot Biochemistry</strong>, Wageningen University, 2008 Dissertation: <em>“Orange Is the New Green: Carotenoid Bioavailability in Subterranean Root Systems and Its Implications for Lagomorph Nutrition”</em> Advisor: Prof.&nbsp;Boris Bear</p>
-<p><strong>MSc in Meadow Ecology &amp; Floral Arrangement</strong> (cum laude), Utrecht University, 2004 Thesis: <em>“Spatial Distribution of Wildflowers in Dutch Polders: A Sensory Perspective”</em></p>
-<p><strong>BSc in General Curiosity Studies</strong>, Leiden University, 2002</p>
+<section id="annotated-bibliography" class="level2">
+<h2 class="anchored" data-anchor-id="annotated-bibliography">Annotated Bibliography</h2>
+<section id="foundational-k-mer-concepts-counting" class="level3">
+<h3 class="anchored" data-anchor-id="foundational-k-mer-concepts-counting">1. Foundational K-mer Concepts &amp; Counting</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Jellyfish</strong></td>
+<td>Marcais G, Kingsford C. <em>Bioinformatics</em> 27(6):764-770, 2011</td>
+<td>Lock-free parallel hash table for k-mer counting using CAS hardware operations. Processes large genomes in minutes.</td>
+</tr>
+<tr class="even">
+<td><strong>KMC 2</strong></td>
+<td>Deorowicz S, Kokot M, Grabowski S, Debudaj-Grabysz A. <em>Bioinformatics</em> 31(10):1569-1576, 2015</td>
+<td>Disk-based k-mer counting with LSD radix sort. ~2x faster than Jellyfish 2 on large datasets, ~12 GB RAM.</td>
+</tr>
+<tr class="odd">
+<td><strong>KMC 3</strong></td>
+<td>Kokot M, Dlugosz M, Deorowicz S. <em>Bioinformatics</em> 33(17):2759-2761, 2017</td>
+<td>Extended KMC with k-mer set operations (union, intersection, subtraction).</td>
+</tr>
+<tr class="even">
+<td><strong>K-mer data structures review</strong></td>
+<td>Marchet C, Boucher C, Puglisi SJ, Medvedev P, Salson M, Chikhi R. <em>Genome Research</em> 31(1):1-12, 2021</td>
+<td>Comprehensive survey of k-mer-based data structures for indexing/querying large sequence collections.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="k-mer-spectrum-analysis-genome-characterization" class="level3">
+<h3 class="anchored" data-anchor-id="k-mer-spectrum-analysis-genome-characterization">2. K-mer Spectrum Analysis &amp; Genome Characterization</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>GenomeScope</strong></td>
+<td>Vurture GW, Sedlazeck FJ, Nattestad M, et al.&nbsp;<em>Bioinformatics</em> 33(14):2202-2204, 2017</td>
+<td>K-mer frequency histograms to estimate genome size, heterozygosity, and repeat content without a reference.</td>
+</tr>
+<tr class="even">
+<td><strong>GenomeScope 2.0</strong></td>
+<td>Ranallo-Benavidez TR, Jaron KS, Schatz MC. <em>Nature Communications</em> 11:1432, 2020</td>
+<td>Extended to polyploid genomes using Möbius inversion formula.</td>
+</tr>
+<tr class="odd">
+<td><strong>Merqury</strong> <em>(seed paper)</em></td>
+<td>Rhie A, Walenz BP, Koren S, Phillippy AM. <em>Genome Biology</em> 21:245, 2020</td>
+<td>Reference-free assembly QC using k-mer set operations: spectra-asm plots, QV estimation, haplotype phasing assessment via hap-mers. Built on Meryl.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="de-bruijn-graphs-genome-assembly" class="level3">
+<h3 class="anchored" data-anchor-id="de-bruijn-graphs-genome-assembly">3. De Bruijn Graphs &amp; Genome Assembly</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Eulerian path assembly</strong></td>
+<td>Pevzner PA, Tang H, Waterman MS. <em>PNAS</em> 98(17):9748-9753, 2001</td>
+<td>Foundational paper: genome assembly as finding Eulerian paths in de Bruijn graphs built from k-mers.</td>
+</tr>
+<tr class="even">
+<td><strong>De Bruijn graph tutorial</strong></td>
+<td>Compeau PEC, Pevzner PA, Tesler G. <em>Nature Biotechnology</em> 29(11):987-991, 2011</td>
+<td>Accessible tutorial — k-mer prefixes/suffixes as nodes, k-mers as edges, Eulerian cycles for reconstruction. Ideal pedagogical reference.</td>
+</tr>
+<tr class="odd">
+<td><strong>SPAdes</strong></td>
+<td>Bankevich A, et al.&nbsp;<em>Journal of Computational Biology</em> 19(5):455-477, 2012</td>
+<td>Practical multi-k de Bruijn graph assembler for single-cell and standard data.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="minimizers-related-theory" class="level3">
+<h3 class="anchored" data-anchor-id="minimizers-related-theory">4. Minimizers &amp; Related Theory</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Minimizers (original)</strong></td>
+<td>Roberts M, Hayes W, Hunt BR, Mount SM, Yorke JA. <em>Bioinformatics</em> 20(18):3363-3369, 2004</td>
+<td>Seminal paper: select the smallest k-mer in a sliding window to subsample seeds. Reduces storage while preserving matching sensitivity.</td>
+</tr>
+<tr class="even">
+<td><strong>Winnowing</strong></td>
+<td>Schleimer S, Wilkerson DS, Aiken A. <em>SIGMOD</em> pp.76-85, 2003</td>
+<td>Local document fingerprinting with provable density guarantees. Independent invention of the minimizer concept in the plagiarism-detection domain.</td>
+</tr>
+<tr class="odd">
+<td><strong>Universal hitting sets</strong></td>
+<td>Orenstein Y, et al.&nbsp;<em>PLoS Computational Biology</em> 13(10):e1005777, 2017</td>
+<td>DOCKS algorithm for universal hitting sets to improve minimizer density. Achieved density factor 1.737, disproving the conjectured lower bound of 2.</td>
+</tr>
+<tr class="even">
+<td><strong>Improved minimizers (Miniception)</strong></td>
+<td>Zheng H, Kingsford C, Marcais G. <em>Bioinformatics</em> 36(S1):i119-i127, 2020</td>
+<td>Further improvements to minimizer ordering and density.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="syncmers" class="level3">
+<h3 class="anchored" data-anchor-id="syncmers">5. Syncmers</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Syncmers</strong></td>
+<td>Edgar RC. <em>PeerJ</em> 9:e10805, 2021</td>
+<td>K-mers selected by internal s-mer position (not surrounding context). Context-independent — cannot be invalidated by flanking mutations. Lower density and higher conservation than minimizers.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="minimap2" class="level3">
+<h3 class="anchored" data-anchor-id="minimap2">6. Minimap2</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Minimap2</strong> <em>(seed paper)</em></td>
+<td>Li H. <em>Bioinformatics</em> 34(18):3094-3100, 2018</td>
+<td>The definitive minimizer-based aligner. <strong>Pipeline:</strong> (1) Index reference minimizers in hash table → (2) Query minimizers find anchors → (3) Chain anchors via DP with gap costs → (4) Base-level alignment with two-piece affine gap + Z-drop heuristic. Handles short reads, long reads (15% error), cDNA, and contigs. 3-4x faster than BWA-MEM; 30x+ faster than long-read mappers.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sequence-similarity-via-k-mer-sketching" class="level3">
+<h3 class="anchored" data-anchor-id="sequence-similarity-via-k-mer-sketching">7. Sequence Similarity via K-mer Sketching</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Mash</strong> <em>(seed paper)</em></td>
+<td>Ondov BD, Treangen TJ, Melsted P, et al.&nbsp;<em>Genome Biology</em> 17:132, 2016</td>
+<td>MinHash applied to genomic k-mer sets. “Sketch” = smallest hash values. Mash distance approximates mutation rate via Jaccard index. Clustered 54,118 RefSeq genomes in 33 CPU hours.</td>
+</tr>
+<tr class="even">
+<td><strong>Sourmash</strong></td>
+<td>Brown CT, Irber L. <em>JOSS</em> 1(5):27, 2016</td>
+<td>Scaled MinHash (FracMinHash): consistent fraction of hashes regardless of dataset size. Supports containment searches for metagenomics.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metagenomic-classification" class="level3">
+<h3 class="anchored" data-anchor-id="metagenomic-classification">8. Metagenomic Classification</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paper</th>
+<th>Citation</th>
+<th>Key Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Kraken</strong></td>
+<td>Wood DE, Salzberg SL. <em>Genome Biology</em> 15:R46, 2014</td>
+<td>K-mer → LCA mapping for taxonomic classification. 4.1M reads/min, 909x faster than Megablast.</td>
+</tr>
+<tr class="even">
+<td><strong>Kraken 2</strong></td>
+<td>Wood DE, Lu J, Langmead B. <em>Genome Biology</em> 20:257, 2019</td>
+<td>Stores minimizers instead of full k-mers — 85% memory reduction. Bridges minimizer theory with practical metagenomics.</td>
+</tr>
+</tbody>
+</table>
 <hr>
 </section>
-<section id="academic-appointments" class="level2">
-<h2 class="anchored" data-anchor-id="academic-appointments">Academic Appointments</h2>
-<p><strong>Full Professor</strong>, Department of Meadow Studies, University of Utrecht-den-Haag, 2020–present</p>
-<p><strong>Associate Professor</strong>, Institute for Advanced Hutch Sciences, ETH Bunnyrich, 2014–2020</p>
-<p><strong>Assistant Professor</strong>, Faculty of Whisker Physics, University of Amsterdam, 2009–2014</p>
-<p><strong>Postdoctoral Fellow</strong>, Laboratory of Small Mammal Happiness, Max Planck Institute for Cozy Afternoons, Heidelberg, 2008–2009</p>
-<hr>
 </section>
-<section id="research-interests" class="level2">
-<h2 class="anchored" data-anchor-id="research-interests">Research Interests</h2>
-<p>Burrow structural engineering, inter-species friendship dynamics, minimalist living in complex environments, the biophysics of ear thermoregulation, emotional intelligence in lagomorphs, the cultural significance of the color orange.</p>
-<hr>
-</section>
-<section id="selected-publications" class="level2">
-<h2 class="anchored" data-anchor-id="selected-publications">Selected Publications</h2>
+<section id="proposed-lecture-outline" class="level2">
+<h2 class="anchored" data-anchor-id="proposed-lecture-outline">Proposed Lecture Outline</h2>
+<section id="part-i-k-mer-fundamentals" class="level3">
+<h3 class="anchored" data-anchor-id="part-i-k-mer-fundamentals">Part I: K-mer Fundamentals</h3>
 <ol type="1">
-<li><p><strong>Pluis, M.B.</strong>, Bear, B., &amp; Snuffy, S. (2024). “Long ears, deep thoughts: Auricular surface area as a predictor of emotional processing in rabbits.” <em>Nature Lapine Neuroscience</em>, 17(3), 112–128.</p></li>
-<li><p>Pig, G., <strong>Pluis, M.B.</strong>, &amp; Pup, M. (2023). “Friendship networks across species boundaries: A 68-year longitudinal study.” <em>Proceedings of the Royal Society of Animal Companions</em>, 291, 20230442.</p></li>
-<li><p><strong>Pluis, M.B.</strong> (2022). “Silence as communication: Non-verbal signaling via minimalist facial morphology.” <em>Journal of Expressive Ethology</em>, 45(1), 33–51.</p></li>
-<li><p><strong>Pluis, M.B.</strong> &amp; de Bruin, D. (2021). “Optimal burrow ventilation under North Sea climate conditions: A computational fluid dynamics approach.” <em>Annual Review of Hutch Engineering</em>, 8, 201–219.</p></li>
-<li><p><strong>Pluis, M.B.</strong>, Elephant, E., &amp; Duckling, A. (2020). “Simple shapes, complex emotions: How geometric body plans encode affective states.” <em>PLOS Feelings</em>, 15(7), e0241955.</p></li>
-<li><p>Bear, B. &amp; <strong>Pluis, M.B.</strong> (2019). “Carry capacity of small cotton tails during high-wind events in coastal dune habitats.” <em>Wind &amp; Whiskers</em>, 22(4), 88–97.</p></li>
-<li><p><strong>Pluis, M.B.</strong> (2018). “A unified field theory of coziness: Thermal, social, and spatial determinants of contentment in enclosed spaces.” <em>Physical Review Comfort</em>, 101(2), 024517.</p></li>
-<li><p><strong>Pluis, M.B.</strong>, Owl, W., &amp; Poppy, P. (2016). “Cross-modal perception in rabbits: Do flowers smell like they look?” <em>Multisensory Research</em>, 29(6–7), 553–571.</p></li>
-<li><p><strong>Pluis, M.B.</strong> (2012). “Why small is beautiful: Allometric scaling of curiosity in mammals under 2 kg.” <em>Ecology of Wonder</em>, 3(1), 14–29.</p></li>
-<li><p><strong>Pluis, M.B.</strong> &amp; Bruna, D. (2010). “First principles of minimalist design in natural habitats: Lessons from the Dutch rabbit.” <em>Architectural Digest of Burrows</em>, 1(1), 1–18.</p></li>
+<li><strong>What is a k-mer?</strong> — Definition, sliding window, 4^k complexity, canonical k-mers, reverse complements</li>
+<li><strong>K-mer counting</strong> — Hash-based approaches (Jellyfish: in-memory lock-free; KMC: disk-based radix sort); practical considerations (choice of k, error k-mers vs true k-mers)</li>
+<li><strong>K-mer spectrum</strong> — Frequency histogram interpretation; GenomeScope: genome size, heterozygosity, repeat content; Merqury: assembly QC via spectra-asm plots</li>
+</ol>
+</section>
+<section id="part-ii-k-mers-in-assembly" class="level3">
+<h3 class="anchored" data-anchor-id="part-ii-k-mers-in-assembly">Part II: K-mers in Assembly</h3>
+<ol start="4" type="1">
+<li><strong>De Bruijn graphs</strong> — K-mers as edges, (k-1)-mers as nodes; Eulerian paths; comparison with overlap-layout-consensus; SPAdes as practical example</li>
+</ol>
+</section>
+<section id="part-iii-subsampling-the-need-for-speed" class="level3">
+<h3 class="anchored" data-anchor-id="part-iii-subsampling-the-need-for-speed">Part III: Subsampling — The Need for Speed</h3>
+<ol start="5" type="1">
+<li><strong>The scaling problem</strong> — Why full k-mer indexing doesn’t scale; motivation for subsampling</li>
+<li><strong>Minimizers</strong> — Roberts et al.&nbsp;2004: smallest k-mer in a window; density and conservation; connection to winnowing (Schleimer et al.&nbsp;2003)</li>
+<li><strong>Improving minimizers</strong> — Universal hitting sets (Orenstein et al.&nbsp;2017); random vs optimized orderings</li>
+<li><strong>Syncmers</strong> — Edgar 2021: context-independent selection; comparison with minimizers</li>
+</ol>
+</section>
+<section id="part-iv-minimizers-in-action" class="level3">
+<h3 class="anchored" data-anchor-id="part-iv-minimizers-in-action">Part IV: Minimizers in Action</h3>
+<ol start="9" type="1">
+<li><strong>Minimap2 deep dive</strong> — Four stages: indexing (minimizer hash table), seeding (anchor lookup), chaining (DP with gap penalties), alignment (two-piece affine gap, Z-drop); versatility across read types</li>
+<li><strong>Sketching for similarity</strong> — Mash/MinHash: Jaccard distance from k-mer sketches; sourmash: scaled MinHash for containment</li>
+</ol>
+</section>
+<section id="part-v-applications" class="level3">
+<h3 class="anchored" data-anchor-id="part-v-applications">Part V: Applications</h3>
+<ol start="11" type="1">
+<li><strong>Metagenomic classification</strong> — Kraken: k-mer → LCA taxonomy; Kraken 2: minimizer compression (85% memory savings)</li>
+<li><strong>Summary and connections</strong> — How k-mers unify counting, assembly, alignment, comparison, and classification</li>
 </ol>
 <hr>
 </section>
-<section id="grants-funding" class="level2">
-<h2 class="anchored" data-anchor-id="grants-funding">Grants &amp; Funding</h2>
+</section>
+<section id="key-concepts-to-emphasize" class="level2">
+<h2 class="anchored" data-anchor-id="key-concepts-to-emphasize">Key Concepts to Emphasize</h2>
 <ul>
-<li><strong>European Research Council (ERC) Consolidator Grant</strong> — “COZYSCIENCE: Toward a Quantitative Framework for Comfort in Lagomorph Dwellings” (€2.0M, 2021–2026)</li>
-<li><strong>Netherlands Organisation for Scientific Research (NWO) Vidi Grant</strong> — “The Neurobiology of Simple Happiness” (€800K, 2015–2020)</li>
-<li><strong>NWO Veni Grant</strong> — “Ear-Mediated Thermoregulation in Temperate Grassland Rabbits” (€250K, 2010–2013)</li>
-<li><strong>Dick Bruna Foundation Fellowship</strong> for Interdisciplinary Creativity (2009)</li>
+<li><strong>K-mer spectrum as a fingerprint</strong> — The shape of the histogram tells you about genome properties before any assembly</li>
+<li><strong>De Bruijn graphs as the bridge</strong> — K-mers aren’t just counted; they define graph structure for assembly</li>
+<li><strong>Minimizers as the key innovation</strong> — A simple idea (pick the smallest in a window) that enables minimap2, Kraken 2, and many other tools</li>
+<li><strong>Seed-chain-align paradigm</strong> — The core of minimap2; how minimizers replace traditional seeding</li>
+<li><strong>Practical tradeoffs</strong> — Choice of k, window size w, memory vs speed, sensitivity vs specificity</li>
+</ul>
+</section>
+<section id="practical-considerations-to-weave-in" class="level2">
+<h2 class="anchored" data-anchor-id="practical-considerations-to-weave-in">Practical Considerations to Weave In</h2>
+<ul>
+<li>Effect of sequencing errors on k-mer counts (error k-mers appear once)</li>
+<li>Canonical k-mers (lexicographically smaller of k-mer and reverse complement)</li>
+<li>Choice of k: too small → ambiguity; too large → sensitivity to errors</li>
+<li>Window size w for minimizers: smaller w → more seeds, higher sensitivity, more memory</li>
 </ul>
 <hr>
 </section>
-<section id="awards-honors" class="level2">
-<h2 class="anchored" data-anchor-id="awards-honors">Awards &amp; Honors</h2>
-<ul>
-<li>Ig Nobel Prize in Friendship Studies, 2023</li>
-<li>Knight of the Order of Orange-Nassow (Carrot Division), 2021</li>
-<li>Dutch Science Communicator of the Year (voted by children aged 4–8), 2019</li>
-<li>Best Poster Award, 12th International Conference on Cute Animal Behavior (ICCAB), Tokyo, 2017</li>
-<li>Wageningen University Medal for Outstanding Vegetable-Related Research, 2008</li>
-</ul>
-<hr>
-</section>
-<section id="teaching" class="level2">
-<h2 class="anchored" data-anchor-id="teaching">Teaching</h2>
-<ul>
-<li><strong>MDWS 101</strong>: <em>Introduction to Meadow Walking</em> (undergraduate, ~200 students/year)</li>
-<li><strong>MDWS 301</strong>: <em>Advanced Topics in Being Small and Brave</em> (undergraduate seminar)</li>
-<li><strong>HTCH 510</strong>: <em>Burrow Design Studio</em> (graduate, project-based)</li>
-<li><strong>LAGM 620</strong>: <em>Seminar in Lapine Philosophy: Silence, Simplicity, and Kindness</em> (graduate)</li>
-</ul>
-<hr>
-</section>
-<section id="phd-students-supervised" class="level2">
-<h2 class="anchored" data-anchor-id="phd-students-supervised">PhD Students Supervised</h2>
-<ol type="1">
-<li><strong>Melanie Mouse</strong> (2023–present) — “Cheese vs.&nbsp;Carrots: A Comparative Nutritional Psychology of Comfort Foods”</li>
-<li><strong>Grunty Pig</strong> (2020–2024) — “Mud as Medium: Wallowing Behavior and Its Cognitive Benefits” <em>(defended with distinction)</em></li>
-<li><strong>Boris Bear Jr.</strong> (2017–2021) — “Hibernation Envy Among Non-Hibernating Species” <em>(now Asst. Prof., University of the Arctic)</em></li>
-<li><strong>Aggie Duckling</strong> (2014–2018) — “Aquatic-Terrestrial Friendship Maintenance: The Role of Puddle Proximity” <em>(now at Pond Research Institute)</em></li>
-</ol>
-<hr>
-</section>
-<section id="service-leadership" class="level2">
-<h2 class="anchored" data-anchor-id="service-leadership">Service &amp; Leadership</h2>
-<ul>
-<li><strong>Editor-in-Chief</strong>, <em>Journal of Small Mammal Wellbeing</em> (2022–present)</li>
-<li><strong>Board Member</strong>, International Lagomorph Research Consortium (2019–present)</li>
-<li><strong>Founding Director</strong>, Utrecht Centre for Interspecies Friendship Studies (2020–present)</li>
-<li><strong>Reviewer</strong> for <em>Nature</em>, <em>Science</em>, <em>Bunny Letters</em>, and <em>Proceedings of the Meadow Academy</em></li>
-</ul>
-<hr>
-</section>
-<section id="outreach-public-engagement" class="level2">
-<h2 class="anchored" data-anchor-id="outreach-public-engagement">Outreach &amp; Public Engagement</h2>
-<ul>
-<li>Featured in over 30 picture books (translated into 50+ languages), reaching an estimated readership of 85 million</li>
-<li>Annual “Science is for Everybunny” lecture series for primary school children</li>
-<li>TEDx Utrecht talk: <em>“What Rabbits Can Teach Us About Living Simply”</em> (2.3M views)</li>
-<li>Regular contributor to <em>de Volkskrant</em> science column, “Kleine Gedachten” (Little Thoughts)</li>
-<li>Ambassador, World Wildlife Fund — Grassland Habitat Conservation Programme</li>
-</ul>
-<hr>
-</section>
-<section id="languages" class="level2">
-<h2 class="anchored" data-anchor-id="languages">Languages</h2>
-<p>Dutch (native), English (fluent), German (conversational), Silence (expert)</p>
-<hr>
-</section>
-<section id="personal-interests" class="level2">
-<h2 class="anchored" data-anchor-id="personal-interests">Personal Interests</h2>
-<p>Cycling through tulip fields, stargazing, museum visits with friends, drawing (primarily self-portraits in a minimalist style), and the quiet enjoyment of freshly pulled carrots.</p>
-<hr>
-<p><em>References available upon request. Please allow extra time for correspondence — my paws are very small.</em></p>
+<section id="validation-status" class="level2">
+<h2 class="anchored" data-anchor-id="validation-status">Validation Status</h2>
+<p>All citations independently verified by validator agent: - Paper metadata (authors, years, journals): <strong>Accurate</strong> - Paper content summaries: <strong>Faithful to originals</strong> - Topic coverage: <strong>Comprehensive for a single lecture</strong> - Conceptual flow: <strong>Logical and pedagogically sound</strong> - No major gaps identified</p>
+<p><strong>Total papers: 19</strong> across 8 topic areas</p>
 
 
 </section>
@@ -816,4 +1040,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/data/Miffy_Academic_CV.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture15_literature_summary.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

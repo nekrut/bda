@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 15: K-mers, Minimizers, and Minimap2 – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-afa37c5c79185640b9c231024f4fe5ea.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture15.html">15. K-mers, Minimizers, and Minimap2</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. Finding Sequence Matches Quickly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">15. K-mers, Minimizers, and Minimap2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#what-is-a-k-mer" id="toc-what-is-a-k-mer" class="nav-link" data-scroll-target="#what-is-a-k-mer">1. What is a K-mer?</a>
+  <ul class="collapse">
+  <li><a href="#how-many-possible-k-mers" id="toc-how-many-possible-k-mers" class="nav-link" data-scroll-target="#how-many-possible-k-mers">How Many Possible K-mers?</a></li>
+  <li><a href="#reverse-complements-and-canonical-k-mers" id="toc-reverse-complements-and-canonical-k-mers" class="nav-link" data-scroll-target="#reverse-complements-and-canonical-k-mers">Reverse Complements and Canonical K-mers</a></li>
+  </ul></li>
+  <li><a href="#k-mer-counting" id="toc-k-mer-counting" class="nav-link" data-scroll-target="#k-mer-counting">2. K-mer Counting</a>
+  <ul class="collapse">
+  <li><a href="#jellyfish-in-memory-lock-free-counting" id="toc-jellyfish-in-memory-lock-free-counting" class="nav-link" data-scroll-target="#jellyfish-in-memory-lock-free-counting">Jellyfish: In-Memory Lock-Free Counting</a></li>
+  <li><a href="#kmc-disk-based-counting" id="toc-kmc-disk-based-counting" class="nav-link" data-scroll-target="#kmc-disk-based-counting">KMC: Disk-Based Counting</a></li>
+  <li><a href="#error-k-mers-vs-true-k-mers" id="toc-error-k-mers-vs-true-k-mers" class="nav-link" data-scroll-target="#error-k-mers-vs-true-k-mers">Error K-mers vs True K-mers</a></li>
+  <li><a href="#choosing-k" id="toc-choosing-k" class="nav-link" data-scroll-target="#choosing-k">Choosing k</a></li>
+  </ul></li>
+  <li><a href="#the-k-mer-spectrum" id="toc-the-k-mer-spectrum" class="nav-link" data-scroll-target="#the-k-mer-spectrum">3. The K-mer Spectrum</a>
+  <ul class="collapse">
+  <li><a href="#reading-the-spectrum" id="toc-reading-the-spectrum" class="nav-link" data-scroll-target="#reading-the-spectrum">Reading the Spectrum</a></li>
+  <li><a href="#understanding-the-k-mer-spectrum-shape" id="toc-understanding-the-k-mer-spectrum-shape" class="nav-link" data-scroll-target="#understanding-the-k-mer-spectrum-shape">Understanding the K-mer Spectrum Shape</a></li>
+  <li><a href="#genomescope-genome-profiling-from-k-mers" id="toc-genomescope-genome-profiling-from-k-mers" class="nav-link" data-scroll-target="#genomescope-genome-profiling-from-k-mers">GenomeScope: Genome Profiling from K-mers</a></li>
+  <li><a href="#merqury-assembly-quality-assessment" id="toc-merqury-assembly-quality-assessment" class="nav-link" data-scroll-target="#merqury-assembly-quality-assessment">Merqury: Assembly Quality Assessment</a></li>
+  </ul></li>
+  <li><a href="#the-scaling-problem" id="toc-the-scaling-problem" class="nav-link" data-scroll-target="#the-scaling-problem">4. The Scaling Problem</a></li>
+  <li><a href="#minimizers" id="toc-minimizers" class="nav-link" data-scroll-target="#minimizers">5. Minimizers</a>
+  <ul class="collapse">
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#why-minimizers-work" id="toc-why-minimizers-work" class="nav-link" data-scroll-target="#why-minimizers-work">Why Minimizers Work</a></li>
+  <li><a href="#connection-to-winnowing" id="toc-connection-to-winnowing" class="nav-link" data-scroll-target="#connection-to-winnowing">Connection to Winnowing</a></li>
+  </ul></li>
+  <li><a href="#minimap2-a-deep-dive" id="toc-minimap2-a-deep-dive" class="nav-link" data-scroll-target="#minimap2-a-deep-dive">6. Minimap2: A Deep Dive</a>
+  <ul class="collapse">
+  <li><a href="#stage-1-indexing" id="toc-stage-1-indexing" class="nav-link" data-scroll-target="#stage-1-indexing">Stage 1: Indexing</a></li>
+  <li><a href="#stage-2-seeding-anchor-finding" id="toc-stage-2-seeding-anchor-finding" class="nav-link" data-scroll-target="#stage-2-seeding-anchor-finding">Stage 2: Seeding (Anchor Finding)</a></li>
+  <li><a href="#stage-3-chaining" id="toc-stage-3-chaining" class="nav-link" data-scroll-target="#stage-3-chaining">Stage 3: Chaining</a></li>
+  <li><a href="#stage-4-base-level-alignment" id="toc-stage-4-base-level-alignment" class="nav-link" data-scroll-target="#stage-4-base-level-alignment">Stage 4: Base-Level Alignment</a></li>
+  <li><a href="#minimap2-versatility" id="toc-minimap2-versatility" class="nav-link" data-scroll-target="#minimap2-versatility">Minimap2 Versatility</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">7. Summary</a>
+  <ul class="collapse">
+  <li><a href="#looking-ahead" id="toc-looking-ahead" class="nav-link" data-scroll-target="#looking-ahead">Looking Ahead</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture15.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture15.html">15. K-mers, Minimizers, and Minimap2</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 15: K-mers, Minimizers, and Minimap2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to: - Define k-mers and explain how they are extracted from sequences using a sliding window - Calculate the number of possible k-mers for a given k and explain canonical k-mers - Describe how Jellyfish and KMC count k-mers at scale using different strategies - Interpret a k-mer frequency histogram to estimate genome size, heterozygosity, and repeat content - Explain why full k-mer indexing does not scale and how minimizers solve this problem - Define minimizers and compute them for a given sequence, window size, and k - Describe the four stages of the minimap2 alignment pipeline - Explain the role of two-piece affine gap scoring and the Z-drop heuristic in minimap2</p>
+<hr>
+</section>
+<section id="what-is-a-k-mer" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-k-mer">1. What is a K-mer?</h2>
+<p>In the previous lecture, we saw how substring indexes and hash tables enable fast sequence lookup. Now we formalize one of the most fundamental concepts in computational genomics: the <strong>k-mer</strong>.</p>
+<p>A <strong>k-mer</strong> is a contiguous subsequence of length <span class="math inline">\(k\)</span> from a longer sequence. Given a sequence of length <span class="math inline">\(L\)</span>, the number of k-mers is:</p>
+<p><span class="math display">\[n = L - k + 1\]</span></p>
+<p>For example, the sequence <code>ACGTACG</code> (length 7) contains <span class="math inline">\(7 - 3 + 1 = 5\)</span> distinct 3-mers:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Position</th>
+<th>3-mer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>ACG</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>CGT</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>GTA</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>TAC</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>ACG</td>
+</tr>
+</tbody>
+</table>
+<p>Notice that position 0 and position 4 yield the same 3-mer <code>ACG</code>. This is important – k-mers can repeat, and counting those repetitions is the foundation of k-mer analysis.</p>
+<section id="how-many-possible-k-mers" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-possible-k-mers">How Many Possible K-mers?</h3>
+<p>Since DNA has 4 bases (A, C, G, T), the total number of <strong>distinct</strong> k-mers of length <span class="math inline">\(k\)</span> is:</p>
+<p><span class="math display">\[4^k\]</span></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>k</th>
+<th>Possible k-mers</th>
+<th>Context</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3</td>
+<td>64</td>
+<td>Codons</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>1,024</td>
+<td>Small seeds</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>4,194,304</td>
+<td>~4 million</td>
+</tr>
+<tr class="even">
+<td>15</td>
+<td>1,073,741,824</td>
+<td>~1 billion</td>
+</tr>
+<tr class="odd">
+<td>21</td>
+<td>4,398,046,511,104</td>
+<td>~4.4 trillion</td>
+</tr>
+<tr class="even">
+<td>31</td>
+<td>~4.6 <span class="math inline">\(\times 10^{18}\)</span></td>
+<td>Exceeds any genome</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <span class="math inline">\(k \geq 18\)</span>, the number of possible k-mers (<span class="math inline">\(4^{18} \approx 6.9 \times 10^{10}\)</span>) exceeds the length of the human genome (~<span class="math inline">\(3 \times 10^9\)</span> bp). This means most k-mers of length 18 or longer appear <strong>at most once</strong> in a genome, making them excellent unique identifiers for genomic positions.</p>
+</div>
+</div>
+</section>
+<section id="reverse-complements-and-canonical-k-mers" class="level3">
+<h3 class="anchored" data-anchor-id="reverse-complements-and-canonical-k-mers">Reverse Complements and Canonical K-mers</h3>
+<p>DNA is double-stranded. A k-mer on the forward strand has a <strong>reverse complement</strong> on the reverse strand. For example:</p>
+<ul>
+<li>Forward: <code>ACGTAC</code></li>
+<li>Reverse complement: <code>GTACGT</code></li>
+</ul>
+<p>When we count k-mers, we usually do not know which strand a read came from. To handle this, we use <strong>canonical k-mers</strong>: for each k-mer, we take the <strong>lexicographically smaller</strong> of the k-mer and its reverse complement.</p>
+<p><span class="math display">\[\text{canonical}(s) = \min(s, \text{revcomp}(s))\]</span></p>
+<p>For <code>ACGTAC</code> vs <code>GTACGT</code>: since <code>ACGTAC</code> &lt; <code>GTACGT</code> lexicographically, the canonical form is <code>ACGTAC</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why Canonical K-mers Matter
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using canonical k-mers ensures that a k-mer and its reverse complement are counted together. This halves the number of distinct k-mers we need to track and correctly handles reads from either strand. Most k-mer counting tools (Jellyfish, KMC) use canonical k-mers by default.</p>
+</div>
+</div>
+<div id="viz-kmer-extract" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Interactive K-mer Extraction Demo</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a DNA sequence and k value to see the sliding window extract k-mers. Toggle canonical mode to see reverse complement handling.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:2; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">DNA Sequence:</label>
+    <input id="ke-seq" type="text" value="ACGTACGTAG" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:80px;">
+    <label style="font-size:0.85em; font-weight:bold;">k:</label>
+    <input id="ke-k" type="number" value="5" min="2" max="12" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:120px;">
+    <label style="font-size:0.85em; font-weight:bold;">
+      <input id="ke-canonical" type="checkbox"> Canonical
+    </label>
+  </div>
+  <button id="ke-run" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Extract</button>
+</div>
+<div id="ke-seq-display" style="font-family:monospace; font-size:1.4em; padding:10px; background:#f5f5f5; border-radius:4px; margin-bottom:10px; letter-spacing:3px; overflow-x:auto; white-space:nowrap;"></div>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+  <div style="flex:1; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Step through:</label><br>
+    <button id="ke-prev" style="padding:6px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">Prev</button>
+    <button id="ke-next" style="padding:6px 14px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Next</button>
+    <span id="ke-pos" style="margin-left:8px; font-size:0.9em;"></span>
+  </div>
+</div>
+<div id="ke-table" style="max-height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+<div id="ke-stats" style="padding:10px; background:#e8f5e9; border-radius:4px; font-size:0.9em;"></div>
+</div>
+
+<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+  var currentPos = 0;
+  var kmers = [];
+
+  function revcomp(s) {
+    var comp = {A:'T', T:'A', C:'G', G:'C'};
+    return s.split('').reverse().map(function(c) { return comp[c] || c; }).join('');
+  }
+
+  function canonical(s) {
+    var rc = revcomp(s);
+    return s <= rc ? s : rc;
+  }
+
+  function extract() {
+    var seq = $('ke-seq').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('ke-k').value);
+    var useCanonical = $('ke-canonical').checked;
+    if (k < 2 || k > seq.length) return;
+
+    kmers = [];
+    for (var i = 0; i <= seq.length - k; i++) {
+      var kmer = seq.substring(i, i + k);
+      var rc = revcomp(kmer);
+      var can = canonical(kmer);
+      kmers.push({pos: i, kmer: kmer, rc: rc, canonical: can});
+    }
+    currentPos = 0;
+    renderSeq(seq, k);
+    renderTable(useCanonical);
+    highlight(seq, k);
+    renderStats(useCanonical);
+  }
+
+  function renderSeq(seq, k) {
+    var html = '';
+    for (var i = 0; i < seq.length; i++) {
+      html += '<span id="ke-c-' + i + '" style="display:inline-block;width:1.2em;text-align:center;padding:2px 0;border-radius:3px;">' + seq[i] + '</span>';
+    }
+    $('ke-seq-display').innerHTML = html;
+  }
+
+  function highlight(seq, k) {
+    for (var i = 0; i < seq.length; i++) {
+      var el = document.getElementById('ke-c-' + i);
+      if (el) { el.style.background = 'none'; el.style.color = '#333'; }
+    }
+    if (currentPos >= 0 && currentPos < kmers.length) {
+      for (var j = kmers[currentPos].pos; j < kmers[currentPos].pos + parseInt($('ke-k').value); j++) {
+        var el2 = document.getElementById('ke-c-' + j);
+        if (el2) el2.style.background = '#2196F3';
+        if (el2) el2.style.color = 'white';
+      }
+      $('ke-pos').textContent = 'Position ' + currentPos + ' of ' + (kmers.length - 1);
+      var rows = document.querySelectorAll('[id^="ke-row-"]');
+      rows.forEach(function(r) { r.style.background = ''; });
+      var activeRow = document.getElementById('ke-row-' + currentPos);
+      if (activeRow) activeRow.style.background = '#bbdefb';
+    }
+  }
+
+  function renderTable(useCanonical) {
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+    html += '<tr style="background:#2196F3;color:white;"><th style="padding:4px 8px;">Pos</th><th style="padding:4px 8px;">K-mer</th>';
+    if (useCanonical) html += '<th style="padding:4px 8px;">Rev Comp</th><th style="padding:4px 8px;">Canonical</th>';
+    html += '</tr>';
+    kmers.forEach(function(item, i) {
+      var bg = i % 2 === 0 ? '#f9f9f9' : '#fff';
+      html += '<tr id="ke-row-' + i + '" style="background:' + bg + ';">';
+      html += '<td style="padding:4px 8px;text-align:center;">' + item.pos + '</td>';
+      html += '<td style="padding:4px 8px;font-family:monospace;">' + item.kmer + '</td>';
+      if (useCanonical) {
+        html += '<td style="padding:4px 8px;font-family:monospace;">' + item.rc + '</td>';
+        html += '<td style="padding:4px 8px;font-family:monospace;font-weight:bold;">' + item.canonical + '</td>';
+      }
+      html += '</tr>';
+    });
+    html += '</table>';
+    $('ke-table').innerHTML = html;
+  }
+
+  function renderStats(useCanonical) {
+    var counts = {};
+    kmers.forEach(function(item) {
+      var key = useCanonical ? item.canonical : item.kmer;
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    var unique = Object.keys(counts).length;
+    var total = kmers.length;
+    $('ke-stats').innerHTML = '<strong>Total k-mers:</strong> ' + total +
+      ' | <strong>Distinct' + (useCanonical ? ' canonical' : '') + ':</strong> ' + unique +
+      ' | <strong>Possible (4<sup>k</sup>):</strong> ' + Math.pow(4, parseInt($('ke-k').value));
+  }
+
+  $('ke-run').addEventListener('click', extract);
+  $('ke-next').addEventListener('click', function() {
+    if (currentPos < kmers.length - 1) { currentPos++; highlight($('ke-seq').value.toUpperCase(), parseInt($('ke-k').value)); }
+  });
+  $('ke-prev').addEventListener('click', function() {
+    if (currentPos > 0) { currentPos--; highlight($('ke-seq').value.toUpperCase(), parseInt($('ke-k').value)); }
+  });
+  $('ke-canonical').addEventListener('change', extract);
+  extract();
+})();
+</script>
+<hr>
+</section>
+</section>
+<section id="k-mer-counting" class="level2">
+<h2 class="anchored" data-anchor-id="k-mer-counting">2. K-mer Counting</h2>
+<p>Counting k-mers – determining how many times each k-mer appears in a dataset – is one of the most fundamental operations in genomics. It is the foundation for genome assembly, error correction, variant detection, and genome profiling. The challenge is scale: a typical Illumina sequencing run produces billions of k-mers that must be counted efficiently.</p>
+<section id="jellyfish-in-memory-lock-free-counting" class="level3">
+<h3 class="anchored" data-anchor-id="jellyfish-in-memory-lock-free-counting">Jellyfish: In-Memory Lock-Free Counting</h3>
+<p><strong>Jellyfish</strong> (<a href="https://doi.org/10.1093/bioinformatics/btr011">Marcais and Kingsford, <em>Bioinformatics</em> 2011</a>) was one of the first tools to count k-mers at the speed of modern sequencing. Its key innovation is a <strong>lock-free hash table</strong> that uses Compare-And-Swap (CAS) hardware instructions for thread-safe parallel counting.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Strategy</td>
+<td>In-memory hash table</td>
+</tr>
+<tr class="even">
+<td>Parallelism</td>
+<td>Lock-free using CAS operations</td>
+</tr>
+<tr class="odd">
+<td>Memory</td>
+<td>Proportional to number of distinct k-mers</td>
+</tr>
+<tr class="even">
+<td>Speed</td>
+<td>Processes large genomes in minutes</td>
+</tr>
+<tr class="odd">
+<td>Limitation</td>
+<td>Requires enough RAM to hold all k-mers</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="kmc-disk-based-counting" class="level3">
+<h3 class="anchored" data-anchor-id="kmc-disk-based-counting">KMC: Disk-Based Counting</h3>
+<p><strong>KMC 2</strong> (<a href="https://doi.org/10.1093/bioinformatics/btv022">Deorowicz et al., <em>Bioinformatics</em> 2015</a>) takes a different approach. Instead of holding everything in memory, KMC partitions k-mers by their prefix, sorts each partition on disk using <strong>LSD radix sort</strong>, and then counts.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Strategy</td>
+<td>Disk-based with radix sort</td>
+</tr>
+<tr class="even">
+<td>Parallelism</td>
+<td>Multi-threaded I/O and sorting</td>
+</tr>
+<tr class="odd">
+<td>Memory</td>
+<td>~12 GB RAM regardless of genome size</td>
+</tr>
+<tr class="even">
+<td>Speed</td>
+<td>~2x faster than Jellyfish 2 on large datasets</td>
+</tr>
+<tr class="odd">
+<td>Extension</td>
+<td><a href="https://doi.org/10.1093/bioinformatics/btx304">KMC 3</a> adds set operations (union, intersection, subtraction)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="error-k-mers-vs-true-k-mers" class="level3">
+<h3 class="anchored" data-anchor-id="error-k-mers-vs-true-k-mers">Error K-mers vs True K-mers</h3>
+<p>Sequencing errors create k-mers that do not exist in the true genome. A single base error in a read produces up to <span class="math inline">\(k\)</span> erroneous k-mers (since the error falls within <span class="math inline">\(k\)</span> overlapping windows). These <strong>error k-mers</strong> typically appear only <strong>once</strong> in the dataset, while true genomic k-mers appear many times (proportional to sequencing depth).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Error k-mers vastly outnumber true k-mers in count – a typical dataset may contain more distinct error k-mers than true k-mers. But error k-mers appear at <strong>frequency 1</strong>, while true k-mers cluster around the <strong>average coverage</strong>. This frequency separation is the basis of k-mer spectrum analysis and error correction.</p>
+</div>
+</div>
+</section>
+<section id="choosing-k" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-k">Choosing k</h3>
+<p>The choice of <span class="math inline">\(k\)</span> involves a fundamental trade-off:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>k too small</th>
+<th>k too large</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Many k-mers map to multiple locations (ambiguity)</td>
+<td>Sequencing errors break k-mers (sensitivity loss)</td>
+</tr>
+<tr class="even">
+<td>Poor specificity for large genomes</td>
+<td>Higher memory requirements</td>
+</tr>
+<tr class="odd">
+<td>Shorter than repeat elements</td>
+<td>May exceed read length</td>
+</tr>
+</tbody>
+</table>
+<p>A common rule of thumb: choose <span class="math inline">\(k\)</span> such that <span class="math inline">\(4^k\)</span> is much larger than the genome size, but <span class="math inline">\(k\)</span> is small relative to the read length. Typical values: <strong><span class="math inline">\(k = 21\)</span> to <span class="math inline">\(31\)</span></strong> for genome assembly, <strong><span class="math inline">\(k = 31\)</span></strong> for k-mer spectrum analysis. The tool <strong>KmerGenie</strong> (<a href="https://doi.org/10.1093/bioinformatics/btt310">Chikhi and Medvedev, <em>Bioinformatics</em> 2014</a>) automates this choice by sampling k-mer abundance histograms across a range of <span class="math inline">\(k\)</span> values and selecting the one that optimizes the expected assembly quality.</p>
+<div id="viz-kmer-count" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Interactive K-mer Counting &amp; Frequency Histogram</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter a sequence (or use the default), set k, and see the k-mer frequency distribution. Notice how repeated k-mers form peaks.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:2; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Sequence:</label>
+    <input id="kc-seq" type="text" value="ACGTACGTACGTAGCTAGCTAGCTACGTACGT" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:80px;">
+    <label style="font-size:0.85em; font-weight:bold;">k:</label>
+    <input id="kc-k" type="number" value="3" min="2" max="8" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <button id="kc-run" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Count</button>
+</div>
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
+  <div style="flex:1; min-width:250px;">
+    <div id="kc-table" style="max-height:300px; overflow-y:auto;"></div>
+  </div>
+  <div style="flex:1; min-width:300px;">
+    <canvas id="kc-canvas" width="400" height="260" style="width:100%; border:1px solid #eee; border-radius:4px; background:#fafafa;"></canvas>
+  </div>
+</div>
+<div id="kc-stats" style="padding:10px; background:#e8f5e9; border-radius:4px; font-size:0.9em; margin-top:10px;"></div>
+</div>
+
+<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+
+  function countKmers() {
+    var seq = $('kc-seq').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('kc-k').value);
+    if (k < 2 || k > seq.length) return;
+
+    var counts = {};
+    for (var i = 0; i <= seq.length - k; i++) {
+      var kmer = seq.substring(i, i + k);
+      counts[kmer] = (counts[kmer] || 0) + 1;
+    }
+
+    // Sort by count descending
+    var sorted = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+
+    // Table
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+    html += '<tr style="background:#2196F3;color:white;"><th style="padding:4px 8px;">K-mer</th><th style="padding:4px 8px;">Count</th></tr>';
+    sorted.forEach(function(kmer, i) {
+      var bg = i % 2 === 0 ? '#f9f9f9' : '#fff';
+      html += '<tr style="background:' + bg + ';"><td style="padding:4px 8px;font-family:monospace;">' + kmer + '</td><td style="padding:4px 8px;text-align:center;">' + counts[kmer] + '</td></tr>';
+    });
+    html += '</table>';
+    $('kc-table').innerHTML = html;
+
+    // Frequency histogram
+    var freqDist = {};
+    sorted.forEach(function(kmer) {
+      var c = counts[kmer];
+      freqDist[c] = (freqDist[c] || 0) + 1;
+    });
+
+    var canvas = $('kc-canvas');
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width;
+    var H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var freqs = Object.keys(freqDist).map(Number).sort(function(a, b) { return a - b; });
+    var maxCount = 0;
+    freqs.forEach(function(f) { if (freqDist[f] > maxCount) maxCount = freqDist[f]; });
+
+    var marginL = 50, marginR = 20, marginT = 30, marginB = 40;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+    var barW = Math.max(8, Math.min(40, plotW / freqs.length - 4));
+
+    // Axes
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, H - marginB);
+    ctx.lineTo(W - marginR, H - marginB);
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = '#333';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('K-mer Frequency', W / 2, H - 5);
+    ctx.save();
+    ctx.translate(14, H / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('# of distinct k-mers', 0, 0);
+    ctx.restore();
+    ctx.font = 'bold 13px Arial';
+    ctx.fillText('Frequency Histogram', W / 2, 18);
+
+    // Bars
+    freqs.forEach(function(freq, i) {
+      var x = marginL + 10 + i * (barW + 4);
+      var barH = (freqDist[freq] / maxCount) * plotH;
+      var y = H - marginB - barH;
+      ctx.fillStyle = '#2196F3';
+      ctx.fillRect(x, y, barW, barH);
+      ctx.fillStyle = '#333';
+      ctx.font = '10px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(freq, x + barW / 2, H - marginB + 14);
+      ctx.fillText(freqDist[freq], x + barW / 2, y - 4);
+    });
+
+    // Stats
+    var total = seq.length - k + 1;
+    var distinct = sorted.length;
+    $('kc-stats').innerHTML = '<strong>Total k-mers:</strong> ' + total +
+      ' | <strong>Distinct:</strong> ' + distinct +
+      ' | <strong>Most common:</strong> ' + sorted[0] + ' (' + counts[sorted[0]] + 'x)' +
+      ' | <strong>Singletons (freq=1):</strong> ' + (freqDist[1] || 0);
+  }
+
+  $('kc-run').addEventListener('click', countKmers);
+  countKmers();
+})();
+</script>
+<hr>
+</section>
+</section>
+<section id="the-k-mer-spectrum" class="level2">
+<h2 class="anchored" data-anchor-id="the-k-mer-spectrum">3. The K-mer Spectrum</h2>
+<p>The <strong>k-mer spectrum</strong> (also called k-mer frequency histogram) is a plot of how many distinct k-mers appear at each frequency. It is one of the most informative views of a sequencing dataset – from this single plot, we can estimate genome size, heterozygosity, repeat content, and sequencing error rate, all <strong>without</strong> a reference genome.</p>
+<section id="reading-the-spectrum" class="level3">
+<h3 class="anchored" data-anchor-id="reading-the-spectrum">Reading the Spectrum</h3>
+<p>A typical k-mer spectrum from whole-genome sequencing has these features:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 55%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Position in Histogram</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Error peak</td>
+<td>Frequency 1-2</td>
+<td>K-mers caused by sequencing errors</td>
+</tr>
+<tr class="even">
+<td>Homozygous peak</td>
+<td>~Coverage</td>
+<td>K-mers from regions identical on both haplotypes</td>
+</tr>
+<tr class="odd">
+<td>Heterozygous peak</td>
+<td>~Coverage/2</td>
+<td>K-mers unique to one haplotype</td>
+</tr>
+<tr class="even">
+<td>Repeat peaks</td>
+<td>2x, 3x, … coverage</td>
+<td>K-mers from duplicated regions</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="understanding-the-k-mer-spectrum-shape" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-k-mer-spectrum-shape">Understanding the K-mer Spectrum Shape</h3>
+<p>The k-mer spectrum is a powerful visual summary of a sequencing dataset. To interpret it properly, it helps to understand what generates each feature of the plot.</p>
+<p><strong>The error peak (multiplicity ~1).</strong> Sequencing errors create k-mers that do not exist in the true genome. Since errors are rare and roughly random, each erroneous k-mer typically appears only once. A single base error in a read corrupts up to <span class="math inline">\(k\)</span> overlapping k-mers, so the total number of error k-mers is large even at low error rates. This produces a tall, sharp peak at multiplicity 1 that dominates the left side of the spectrum. At higher error rates, this peak grows taller and its tail extends slightly further to the right.</p>
+<p><strong>The heterozygous peak (multiplicity ~<span class="math inline">\(C/2\)</span>).</strong> In a diploid genome, positions that differ between the two haplotypes produce k-mers that are present on only one copy. These k-mers are sampled at half the average coverage, producing a peak at approximately <span class="math inline">\(C/2\)</span>. The height of this peak is proportional to the heterozygosity rate – highly heterozygous genomes (like many marine invertebrates) show a prominent heterozygous peak, while inbred lines show almost none.</p>
+<p><strong>The homozygous peak (multiplicity ~<span class="math inline">\(C\)</span>).</strong> K-mers from regions identical on both haplotypes are sampled from both copies and appear at approximately the full coverage <span class="math inline">\(C\)</span>. This is the main peak of the spectrum and represents the majority of unique genomic sequence. Its position directly indicates the average sequencing depth.</p>
+<p><strong>Repeat peaks (multiplicity ~<span class="math inline">\(2C\)</span>, <span class="math inline">\(3C\)</span>, …).</strong> K-mers from genomic regions that are duplicated <span class="math inline">\(n\)</span> times appear at approximately <span class="math inline">\(n \times C\)</span>. Two-copy repeats produce a peak at <span class="math inline">\(2C\)</span>, three-copy repeats at <span class="math inline">\(3C\)</span>, and so on. Genomes with high repeat content (like many plant genomes) show a heavier tail with visible peaks at these higher multiplicities.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>How Genome Properties Shape the Spectrum
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The relative sizes of these peaks encode genome properties: a large heterozygous peak relative to the homozygous peak indicates high heterozygosity. A heavy tail extending to high multiplicities indicates a repeat-rich genome. A narrow homozygous peak indicates uniform coverage, while a broad peak suggests coverage variation (which is why GenomeScope uses a negative binomial rather than a Poisson distribution). The choice of <span class="math inline">\(k\)</span> also matters – smaller <span class="math inline">\(k\)</span> values increase the chance that k-mers from different genomic locations collide, artificially inflating the higher-multiplicity peaks.</p>
+</div>
+</div>
+
+<div id="viz-kmer-spectrum" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Interactive K-mer Spectrum Simulator</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Adjust genome parameters to see how they affect the k-mer frequency spectrum. The simulation uses a mixture of distributions to model error, heterozygous, homozygous, and repeat k-mers.</p>
+<div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Coverage (C): <span id="ks-cov-val">50</span>x</label>
+    <input id="ks-cov" type="range" min="10" max="150" value="50" style="width:100%;">
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Error rate: <span id="ks-err-val">1.0</span>%</label>
+    <input id="ks-err" type="range" min="0" max="50" value="10" style="width:100%;">
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Heterozygosity: <span id="ks-het-val">1.0</span>%</label>
+    <input id="ks-het" type="range" min="0" max="50" value="10" style="width:100%;">
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">Repeat fraction: <span id="ks-rep-val">10</span>%</label>
+    <input id="ks-rep" type="range" min="0" max="50" value="10" style="width:100%;">
+  </div>
+</div>
+<canvas id="ks-canvas" width="860" height="400" style="width:100%; border:1px solid #eee; border-radius:4px; background:#fafafa;"></canvas>
+<div id="ks-legend" style="padding:10px; background:#e8f5e9; border-radius:4px; font-size:0.9em; margin-top:10px;"></div>
+</div>
+
+<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+
+  function poissonPMF(k, lambda) {
+    if (lambda <= 0) return k === 0 ? 1 : 0;
+    var logP = k * Math.log(lambda) - lambda;
+    for (var i = 2; i <= k; i++) logP -= Math.log(i);
+    return Math.exp(logP);
+  }
+
+  function negBinomPMF(k, mean, variance) {
+    if (mean <= 0 || variance <= mean) return poissonPMF(k, mean);
+    var r = (mean * mean) / (variance - mean);
+    var p = mean / variance;
+    var logP = 0;
+    for (var i = 0; i < k; i++) logP += Math.log(r + i) - Math.log(i + 1);
+    logP += r * Math.log(1 - p) + k * Math.log(p);
+    return Math.exp(logP);
+  }
+
+  function draw() {
+    var C = parseInt($('ks-cov').value);
+    var errRate = parseInt($('ks-err').value) / 10;
+    var hetRate = parseInt($('ks-het').value) / 10;
+    var repFrac = parseInt($('ks-rep').value) / 100;
+
+    $('ks-cov-val').textContent = C;
+    $('ks-err-val').textContent = errRate.toFixed(1);
+    $('ks-het-val').textContent = hetRate.toFixed(1);
+    $('ks-rep-val').textContent = Math.round(repFrac * 100);
+
+    var maxX = Math.min(Math.round(C * 4), 300);
+    var spectrum = new Array(maxX + 1);
+    for (var i = 0; i <= maxX; i++) spectrum[i] = 0;
+
+    var genomeSize = 10000;
+    var k = 21;
+    var totalKmers = genomeSize;
+
+    var errKmers = errRate * 0.01 * k * totalKmers * C;
+    var hetKmers = hetRate * 0.01 * totalKmers;
+    var repKmers2 = repFrac * 0.5 * totalKmers;
+    var repKmers3 = repFrac * 0.3 * totalKmers;
+    var repKmers4 = repFrac * 0.2 * totalKmers;
+    var homoKmers = totalKmers - hetKmers - repKmers2 - repKmers3 - repKmers4;
+    if (homoKmers < 0) homoKmers = totalKmers * 0.5;
+
+    var variance = C * 1.3;
+
+    for (var x = 1; x <= maxX; x++) {
+      var errContrib = errKmers * Math.exp(-x * 1.5);
+      var hetContrib = hetKmers * negBinomPMF(x, C / 2, C / 2 * 1.3);
+      var homoContrib = homoKmers * negBinomPMF(x, C, variance);
+      var rep2Contrib = repKmers2 * negBinomPMF(x, 2 * C, 2 * variance);
+      var rep3Contrib = repKmers3 * negBinomPMF(x, 3 * C, 3 * variance);
+      var rep4Contrib = repKmers4 * negBinomPMF(x, 4 * C, 4 * variance);
+      spectrum[x] = errContrib + hetContrib + homoContrib + rep2Contrib + rep3Contrib + rep4Contrib;
+    }
+
+    var canvas = $('ks-canvas');
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width;
+    var H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var marginL = 70, marginR = 30, marginT = 40, marginB = 50;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    // Skip x=1..3 for Y-axis scaling so the error peak doesn't crush the genomic peaks
+    // (GenomeScope plots also typically start from multiplicity ~4)
+    var maxY = 0;
+    for (var x = 4; x <= maxX; x++) {
+      if (spectrum[x] > maxY) maxY = spectrum[x];
+    }
+    if (maxY === 0) maxY = 1;
+    maxY *= 1.15; // add 15% headroom for labels
+
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, marginT + plotH);
+    ctx.lineTo(marginL + plotW, marginT + plotH);
+    ctx.stroke();
+
+    ctx.fillStyle = '#333';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('K-mer multiplicity', marginL + plotW / 2, H - 8);
+    ctx.save();
+    ctx.translate(16, marginT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Number of distinct k-mers', 0, 0);
+    ctx.restore();
+    ctx.font = 'bold 13px Arial';
+    ctx.fillText('Simulated K-mer Spectrum', W / 2, 22);
+
+    var xScale = plotW / maxX;
+    var yScale = plotH / maxY;
+
+    function drawComponent(vals, color, alpha) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(marginL, marginT, plotW, plotH);
+      ctx.clip();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      for (var x = 1; x <= maxX; x++) {
+        var px = marginL + x * xScale;
+        var py = marginT + plotH - vals[x] * yScale;
+        if (x === 1) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1.0;
+      ctx.restore();
+    }
+
+    var errVals = [], hetVals = [], homoVals = [], repVals = [];
+    for (var x = 0; x <= maxX; x++) {
+      errVals[x] = errKmers * Math.exp(-x * 1.5);
+      hetVals[x] = hetKmers * negBinomPMF(x, C / 2, C / 2 * 1.3);
+      homoVals[x] = homoKmers * negBinomPMF(x, C, variance);
+      repVals[x] = repKmers2 * negBinomPMF(x, 2 * C, 2 * variance) +
+                   repKmers3 * negBinomPMF(x, 3 * C, 3 * variance) +
+                   repKmers4 * negBinomPMF(x, 4 * C, 4 * variance);
+    }
+
+    drawComponent(errVals, '#ff5722', 0.5);
+    drawComponent(hetVals, '#9c27b0', 0.5);
+    drawComponent(homoVals, '#2196F3', 0.5);
+    drawComponent(repVals, '#4CAF50', 0.5);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(marginL, marginT, plotW, plotH);
+    ctx.clip();
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (var x = 1; x <= maxX; x++) {
+      var px = marginL + x * xScale;
+      var py = marginT + plotH - spectrum[x] * yScale;
+      if (x === 1) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    function drawLabel(text, xPos, color) {
+      if (xPos < 1 || xPos > maxX) return;
+      var px = marginL + xPos * xScale;
+      var py = marginT + plotH - spectrum[Math.round(xPos)] * yScale - 12;
+      if (py < marginT + 15) py = marginT + 15;
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, px, py);
+      ctx.beginPath();
+      ctx.setLineDash([3, 3]);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.moveTo(px, marginT + plotH);
+      ctx.lineTo(px, py + 4);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    drawLabel('Errors \u2191', 2, '#ff5722');
+    if (hetRate > 0.2) drawLabel('Het (~' + Math.round(C / 2) + 'x)', Math.round(C / 2), '#9c27b0');
+    drawLabel('Homo (~' + C + 'x)', C, '#2196F3');
+    if (repFrac > 0.02) drawLabel('2C', 2 * C, '#4CAF50');
+
+    ctx.font = '10px Arial';
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'center';
+    var tickStep = Math.max(1, Math.round(maxX / 10));
+    for (var x = 0; x <= maxX; x += tickStep) {
+      var px = marginL + x * xScale;
+      ctx.fillText(x, px, marginT + plotH + 16);
+      ctx.beginPath();
+      ctx.strokeStyle = '#ccc';
+      ctx.moveTo(px, marginT + plotH);
+      ctx.lineTo(px, marginT + plotH + 4);
+      ctx.stroke();
+    }
+
+    $('ks-legend').innerHTML =
+      '<span style="color:#ff5722; font-weight:bold;">--- Error peak</span> | ' +
+      '<span style="color:#9c27b0; font-weight:bold;">--- Heterozygous peak (C/2)</span> | ' +
+      '<span style="color:#2196F3; font-weight:bold;">--- Homozygous peak (C)</span> | ' +
+      '<span style="color:#4CAF50; font-weight:bold;">--- Repeat peaks (2C, 3C, ...)</span> | ' +
+      '<span style="font-weight:bold;">--- Total spectrum</span>';
+  }
+
+  $('ks-cov').addEventListener('input', draw);
+  $('ks-err').addEventListener('input', draw);
+  $('ks-het').addEventListener('input', draw);
+  $('ks-rep').addEventListener('input', draw);
+  draw();
+})();
+</script>
+</section>
+<section id="genomescope-genome-profiling-from-k-mers" class="level3">
+<h3 class="anchored" data-anchor-id="genomescope-genome-profiling-from-k-mers">GenomeScope: Genome Profiling from K-mers</h3>
+<p><strong>GenomeScope</strong> (<a href="https://doi.org/10.1093/bioinformatics/btx153">Vurture et al., <em>Bioinformatics</em> 2017</a>) fits a mixture model to the k-mer spectrum to estimate:</p>
+<ul>
+<li><strong>Genome size</strong>: Total number of unique k-mers divided by the average coverage</li>
+<li><strong>Heterozygosity</strong>: Ratio of the heterozygous peak to the homozygous peak</li>
+<li><strong>Repeat fraction</strong>: Area under the high-frequency tail</li>
+</ul>
+<p>The model assumes k-mers are sampled from the genome following a negative binomial distribution (to account for coverage variation). <strong>GenomeScope 2.0</strong> (<a href="https://doi.org/10.1038/s41467-020-14998-3">Ranallo-Benavidez et al., <em>Nature Communications</em> 2020</a>) extended this to polyploid genomes.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Genome Size Estimation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The formula for genome size from k-mer counting is elegantly simple:</p>
+<p><span class="math display">\[G = \frac{N}{C}\]</span></p>
+<p>where <span class="math inline">\(N\)</span> is the total number of k-mers (after error removal) and <span class="math inline">\(C\)</span> is the average k-mer coverage (the position of the homozygous peak). This works because each base in the genome is covered by approximately <span class="math inline">\(C\)</span> k-mers. In practice, GenomeScope fits a negative binomial mixture model to the spectrum to estimate these parameters more precisely, but the core intuition is this simple ratio.</p>
+</div>
+</div>
+</section>
+<section id="merqury-assembly-quality-assessment" class="level3">
+<h3 class="anchored" data-anchor-id="merqury-assembly-quality-assessment">Merqury: Assembly Quality Assessment</h3>
+<p><strong>Merqury</strong> (<a href="https://doi.org/10.1186/s13059-020-02134-9">Rhie et al., <em>Genome Biology</em> 2020</a>) uses k-mer set operations to evaluate genome assemblies <strong>without a reference</strong>:</p>
+<ul>
+<li><strong>Spectra-asm plot</strong>: Which read k-mers are found in the assembly? Missing k-mers indicate gaps; extra k-mers indicate errors.</li>
+<li><strong>QV estimation</strong>: The fraction of k-mers in the assembly not found in the reads gives an estimated base-level quality score.</li>
+<li><strong>Hap-mers</strong>: K-mers unique to one haplotype enable phasing assessment.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The k-mer spectrum is like a fingerprint for your sequencing data. Before running any assembly or alignment, examining the k-mer spectrum tells you fundamental properties of your genome – size, ploidy, repeat content, error rate – and helps you choose appropriate parameters for downstream analysis.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="the-scaling-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-scaling-problem">4. The Scaling Problem</h2>
+<p>We have seen that k-mers are powerful tools for genome analysis. But there is a problem: <strong>storing all k-mers does not scale</strong>.</p>
+<p>Consider indexing the human genome with 15-mers:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Quantity</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Genome length</td>
+<td><span class="math inline">\(3 \times 10^9\)</span> bp</td>
+</tr>
+<tr class="even">
+<td>Number of 15-mers</td>
+<td>~<span class="math inline">\(3 \times 10^9\)</span></td>
+</tr>
+<tr class="odd">
+<td>Bytes per entry (k-mer + position)</td>
+<td>~12 bytes</td>
+</tr>
+<tr class="even">
+<td>Total index size</td>
+<td>~36 GB</td>
+</tr>
+</tbody>
+</table>
+<p>This is manageable for a single genome. But what about mapping long reads? A 10 kb read generates ~10,000 k-mers. Each must be looked up in the index. With millions of reads, we need billions of lookups.</p>
+<p>For more complex tasks – like all-vs-all comparison of reads for overlap detection in genome assembly – the situation is worse. With <span class="math inline">\(N\)</span> reads, we need <span class="math inline">\(O(N^2)\)</span> comparisons, each involving many k-mer lookups.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We do not need to index <strong>every</strong> k-mer. If we can select a <strong>representative subset</strong> of k-mers that still covers the genome densely enough to find all true matches, we can dramatically reduce index size and lookup time. This is the key idea behind <strong>minimizers</strong>.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="minimizers" class="level2">
+<h2 class="anchored" data-anchor-id="minimizers">5. Minimizers</h2>
+<p><strong>Minimizers</strong> (<a href="https://doi.org/10.1093/bioinformatics/bth408">Roberts et al., <em>Bioinformatics</em> 2004</a>) provide an elegant solution to the scaling problem. The idea is simple: instead of using every k-mer as a seed, select only the <strong>smallest</strong> k-mer within each window of consecutive k-mers.</p>
+<section id="definition" class="level3">
+<h3 class="anchored" data-anchor-id="definition">Definition</h3>
+<p>Given parameters: - <span class="math inline">\(k\)</span>: the k-mer size - <span class="math inline">\(w\)</span>: the window size (number of consecutive k-mers in each window)</p>
+<p>A <strong>minimizer</strong> is the lexicographically smallest k-mer among <span class="math inline">\(w\)</span> consecutive k-mers. As the window slides by one position, the minimizer may stay the same or change.</p>
+<p>For a sequence of length <span class="math inline">\(L\)</span>: - Total k-mers: <span class="math inline">\(L - k + 1\)</span> - Total windows of <span class="math inline">\(w\)</span> consecutive k-mers: <span class="math inline">\(L - k - w + 2\)</span> - Each window selects exactly one minimizer (the smallest k-mer in it)</p>
+</section>
+<section id="why-minimizers-work" class="level3">
+<h3 class="anchored" data-anchor-id="why-minimizers-work">Why Minimizers Work</h3>
+<p>The key property: <strong>if two sequences share a substring of length <span class="math inline">\(w + k - 1\)</span>, they must share at least one minimizer</strong>. This is because they share <span class="math inline">\(w\)</span> consecutive k-mers, and the minimum of those k-mers must be the same.</p>
+<p>This guarantee means minimizers preserve matching sensitivity while dramatically reducing the number of seeds:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 40%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Seeds per genome</th>
+<th>Relative size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Every k-mer</td>
+<td><span class="math inline">\(n\)</span></td>
+<td>1x</td>
+</tr>
+<tr class="even">
+<td>Every w-th k-mer</td>
+<td><span class="math inline">\(n/w\)</span></td>
+<td><span class="math inline">\(1/w\)</span> (but misses matches)</td>
+</tr>
+<tr class="odd">
+<td>Minimizers (window <span class="math inline">\(w\)</span>)</td>
+<td>~<span class="math inline">\(2n/(w+1)\)</span></td>
+<td>~<span class="math inline">\(2/(w+1)\)</span> (no missed matches)</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>density</strong> of minimizers – the fraction of k-mers selected – approaches <span class="math inline">\(2/(w+1)\)</span> in random sequences. With <span class="math inline">\(w = 10\)</span>, this means only about 18% of k-mers are kept, an <strong>82% reduction</strong> in index size with no loss of matching sensitivity.</p>
+</section>
+<section id="connection-to-winnowing" class="level3">
+<h3 class="anchored" data-anchor-id="connection-to-winnowing">Connection to Winnowing</h3>
+<p>The minimizer concept was independently invented in document fingerprinting as <strong>winnowing</strong> (<a href="https://doi.org/10.1145/872757.872770">Schleimer et al., <em>SIGMOD</em> 2003</a>), where it was used for plagiarism detection. The winnowing algorithm guarantees that any match of length at least <span class="math inline">\(w + k - 1\)</span> characters will be detected, providing a <strong>density guarantee</strong>: at least one fingerprint is selected in every window of <span class="math inline">\(w\)</span> consecutive k-mers.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Practical Window Sizes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Minimap2 uses <span class="math inline">\(k = 15\)</span> and <span class="math inline">\(w = 10\)</span> for long reads, and <span class="math inline">\(k = 21\)</span> and <span class="math inline">\(w = 11\)</span> for short reads. The <a href="https://doi.org/10.1186/s13059-019-1891-0">Kraken 2</a> metagenomic classifier stores minimizers of length 7 extracted from 31-mers (rather than storing the full 31-mers), achieving an <strong>85% memory reduction</strong> compared to <a href="https://doi.org/10.1186/gb-2014-15-3-r46">Kraken 1</a>.</p>
+</div>
+</div>
+<div id="viz-minimizer" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Interactive Minimizer Selection Demo</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">See how minimizers are selected: the lexicographically smallest k-mer in each window of w consecutive k-mers. Minimizers are highlighted in red.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:2; min-width:200px;">
+    <label style="font-size:0.85em; font-weight:bold;">DNA Sequence:</label>
+    <input id="mn-seq" type="text" value="ACGTACGTAGCTAGCTAG" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:80px;">
+    <label style="font-size:0.85em; font-weight:bold;">k:</label>
+    <input id="mn-k" type="number" value="4" min="2" max="8" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:80px;">
+    <label style="font-size:0.85em; font-weight:bold;">w:</label>
+    <input id="mn-w" type="number" value="3" min="2" max="8" style="width:70px; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <button id="mn-run" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Compute</button>
+</div>
+<div id="mn-seq-display" style="font-family:monospace; font-size:1.3em; padding:10px; background:#f5f5f5; border-radius:4px; margin-bottom:10px; letter-spacing:2px; overflow-x:auto; white-space:nowrap;"></div>
+<div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+  <button id="mn-prev" style="padding:6px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">Prev Window</button>
+  <button id="mn-next" style="padding:6px 14px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Next Window</button>
+  <span id="mn-wininfo" style="font-size:0.9em; margin-left:8px;"></span>
+</div>
+<div id="mn-table" style="max-height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+<div id="mn-stats" style="padding:10px; background:#e8f5e9; border-radius:4px; font-size:0.9em;"></div>
+</div>
+
+<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+  var windows = [];
+  var allKmers = [];
+  var minimizerPositions = {};
+  var currentWin = 0;
+
+  function compute() {
+    var seq = $('mn-seq').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('mn-k').value);
+    var w = parseInt($('mn-w').value);
+    if (k < 2 || w < 2 || k + w - 1 > seq.length) {
+      $('mn-stats').innerHTML = '<span style="color:#f44336;">Sequence too short for given k and w. Need at least k+w-1 = ' + (k + w - 1) + ' bases.</span>';
+      return;
+    }
+
+    // Extract all k-mers
+    allKmers = [];
+    for (var i = 0; i <= seq.length - k; i++) {
+      allKmers.push({pos: i, kmer: seq.substring(i, i + k)});
+    }
+
+    // Find minimizer for each window of w consecutive k-mers
+    windows = [];
+    minimizerPositions = {};
+    for (var i = 0; i <= allKmers.length - w; i++) {
+      var winKmers = allKmers.slice(i, i + w);
+      var minIdx = 0;
+      for (var j = 1; j < winKmers.length; j++) {
+        if (winKmers[j].kmer < winKmers[minIdx].kmer) {
+          minIdx = j;
+        }
+      }
+      var minPos = winKmers[minIdx].pos;
+      windows.push({start: i, end: i + w - 1, minimizerIdx: minIdx, minimizerPos: minPos, minimizerKmer: winKmers[minIdx].kmer});
+      minimizerPositions[minPos] = true;
+    }
+
+    currentWin = 0;
+    renderAll(seq, k, w);
+  }
+
+  function renderAll(seq, k, w) {
+    // Sequence display
+    var html = '';
+    for (var i = 0; i < seq.length; i++) {
+      var bg = minimizerPositions[i] !== undefined ? '#e53935' : 'transparent';
+      var col = minimizerPositions[i] !== undefined ? 'white' : '#333';
+      html += '<span id="mn-c-' + i + '" style="display:inline-block;width:1.2em;text-align:center;padding:2px 0;border-radius:3px;background:' + bg + ';color:' + col + ';">' + seq[i] + '</span>';
+    }
+    $('mn-seq-display').innerHTML = html;
+
+    // Table of all k-mers with minimizer flags
+    var thtml = '<table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+    thtml += '<tr style="background:#2196F3;color:white;"><th style="padding:4px 8px;">Pos</th><th style="padding:4px 8px;">K-mer</th><th style="padding:4px 8px;">Minimizer?</th></tr>';
+    allKmers.forEach(function(item, i) {
+      var isMin = minimizerPositions[item.pos] !== undefined;
+      var bg = isMin ? '#ffcdd2' : (i % 2 === 0 ? '#f9f9f9' : '#fff');
+      thtml += '<tr id="mn-row-' + i + '" style="background:' + bg + ';">';
+      thtml += '<td style="padding:4px 8px;text-align:center;">' + item.pos + '</td>';
+      thtml += '<td style="padding:4px 8px;font-family:monospace;">' + item.kmer + '</td>';
+      thtml += '<td style="padding:4px 8px;text-align:center;">' + (isMin ? 'Yes' : '') + '</td>';
+      thtml += '</tr>';
+    });
+    thtml += '</table>';
+    $('mn-table').innerHTML = thtml;
+
+    // Stats
+    var numMinimizers = Object.keys(minimizerPositions).length;
+    var totalKmers = allKmers.length;
+    var density = (numMinimizers / totalKmers * 100).toFixed(1);
+    var theoreticalDensity = (2 / (w + 1) * 100).toFixed(1);
+    $('mn-stats').innerHTML = '<strong>Total k-mers:</strong> ' + totalKmers +
+      ' | <strong>Windows:</strong> ' + windows.length +
+      ' | <strong>Distinct minimizer positions:</strong> ' + numMinimizers +
+      ' | <strong>Density:</strong> ' + density + '% (theoretical for random: ~' + theoreticalDensity + '%)';
+
+    highlightWindow(seq, k);
+  }
+
+  function highlightWindow(seq, k) {
+    // Reset highlights to base state
+    for (var i = 0; i < seq.length; i++) {
+      var el = document.getElementById('mn-c-' + i);
+      if (el) {
+        if (minimizerPositions[i] !== undefined) {
+          el.style.background = '#e53935';
+          el.style.color = 'white';
+        } else {
+          el.style.background = 'transparent';
+          el.style.color = '#333';
+        }
+        el.style.borderBottom = 'none';
+      }
+    }
+    if (currentWin >= 0 && currentWin < windows.length) {
+      var win = windows[currentWin];
+      // Highlight window range with underline
+      for (var j = allKmers[win.start].pos; j < allKmers[win.end].pos + k; j++) {
+        var el2 = document.getElementById('mn-c-' + j);
+        if (el2) el2.style.borderBottom = '3px solid #1565C0';
+      }
+      // Highlight minimizer in this window
+      for (var j = win.minimizerPos; j < win.minimizerPos + k; j++) {
+        var el3 = document.getElementById('mn-c-' + j);
+        if (el3) { el3.style.background = '#1565C0'; el3.style.color = 'white'; }
+      }
+      $('mn-wininfo').innerHTML = 'Window ' + (currentWin + 1) + '/' + windows.length +
+        ': k-mers at positions ' + win.start + '-' + win.end +
+        ' | Minimizer: <strong>' + win.minimizerKmer + '</strong> at pos ' + win.minimizerPos;
+    }
+  }
+
+  $('mn-run').addEventListener('click', compute);
+  $('mn-next').addEventListener('click', function() {
+    if (currentWin < windows.length - 1) {
+      currentWin++;
+      highlightWindow($('mn-seq').value.toUpperCase().replace(/[^ACGT]/g, ''), parseInt($('mn-k').value));
+    }
+  });
+  $('mn-prev').addEventListener('click', function() {
+    if (currentWin > 0) {
+      currentWin--;
+      highlightWindow($('mn-seq').value.toUpperCase().replace(/[^ACGT]/g, ''), parseInt($('mn-k').value));
+    }
+  });
+  compute();
+})();
+</script>
+<hr>
+</section>
+</section>
+<section id="minimap2-a-deep-dive" class="level2">
+<h2 class="anchored" data-anchor-id="minimap2-a-deep-dive">6. Minimap2: A Deep Dive</h2>
+<p><strong>Minimap2</strong> (<a href="https://doi.org/10.1093/bioinformatics/bty191">Li, <em>Bioinformatics</em> 2018</a>) is arguably the most versatile sequence alignment tool in genomics today. It handles short reads, long noisy reads (PacBio, Oxford Nanopore with ~15% error), cDNA, and genome-to-genome alignment – all in a single tool. It is 3-4x faster than BWA-MEM for short reads and 30x or more faster than previous long-read mappers.</p>
+<p>The secret to minimap2’s speed and versatility is a four-stage pipeline built on minimizers.</p>
+<section id="stage-1-indexing" class="level3">
+<h3 class="anchored" data-anchor-id="stage-1-indexing">Stage 1: Indexing</h3>
+<p>Minimap2 builds an index of the reference genome by:</p>
+<ol type="1">
+<li>Extracting all <span class="math inline">\((w, k)\)</span>-minimizers from the reference</li>
+<li>Storing them in a hash table: <strong>minimizer <span class="math inline">\(\rightarrow\)</span> list of positions</strong></li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Preset</th>
+<th>k</th>
+<th>w</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>map-ont</code></td>
+<td>15</td>
+<td>10</td>
+<td>Oxford Nanopore reads</td>
+</tr>
+<tr class="even">
+<td><code>map-pb</code></td>
+<td>19</td>
+<td>19</td>
+<td>PacBio CLR reads</td>
+</tr>
+<tr class="odd">
+<td><code>sr</code></td>
+<td>21</td>
+<td>11</td>
+<td>Short reads (Illumina)</td>
+</tr>
+<tr class="even">
+<td><code>asm5</code></td>
+<td>19</td>
+<td>19</td>
+<td>Assembly-to-assembly ($&lt;$5% divergence)</td>
+</tr>
+</tbody>
+</table>
+<p>The index for the human genome is typically <strong>~6 GB</strong> in memory – much smaller than a full k-mer index.</p>
+</section>
+<section id="stage-2-seeding-anchor-finding" class="level3">
+<h3 class="anchored" data-anchor-id="stage-2-seeding-anchor-finding">Stage 2: Seeding (Anchor Finding)</h3>
+<p>For each query sequence (read):</p>
+<ol type="1">
+<li>Extract the same <span class="math inline">\((w, k)\)</span>-minimizers from the query</li>
+<li>Look up each minimizer in the reference index</li>
+<li>Each match produces an <strong>anchor</strong>: a pair <span class="math inline">\((x, y)\)</span> where <span class="math inline">\(x\)</span> is the reference position and <span class="math inline">\(y\)</span> is the query position</li>
+</ol>
+<p>The result is a set of anchors – potential match points between query and reference.</p>
+</section>
+<section id="stage-3-chaining" class="level3">
+<h3 class="anchored" data-anchor-id="stage-3-chaining">Stage 3: Chaining</h3>
+<p>Anchors must be grouped into <strong>chains</strong> representing co-linear matches. Minimap2 uses dynamic programming to find the highest-scoring chain:</p>
+<p><span class="math display">\[f(i) = \max \left( s_i, \max_{j &lt; i} \left[ f(j) + s_i - \text{gap\_cost}(i, j) \right] \right)\]</span></p>
+<p>where <span class="math inline">\(s_i\)</span> is the seed score and the gap cost penalizes large jumps in either the reference or query coordinate. The gap cost accounts for both distance between anchors and the difference between reference and query gaps (indels).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Chaining Complexity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A naive implementation of chaining is <span class="math inline">\(O(n^2)\)</span> in the number of anchors. Minimap2 optimizes this with a band-limited approach – it only considers anchors within a distance threshold, achieving practical near-linear performance.</p>
+</div>
+</div>
+</section>
+<section id="stage-4-base-level-alignment" class="level3">
+<h3 class="anchored" data-anchor-id="stage-4-base-level-alignment">Stage 4: Base-Level Alignment</h3>
+<p>For each chain, minimap2 performs base-level alignment between the chained anchors. Two key innovations make this practical for long, noisy reads:</p>
+<p><strong>Two-piece affine gap scoring:</strong></p>
+<p>Instead of the standard affine gap penalty <span class="math inline">\(\gamma(l) = o + e \cdot l\)</span> (gap open <span class="math inline">\(o\)</span> + gap extend <span class="math inline">\(e\)</span> times length <span class="math inline">\(l\)</span>), minimap2 uses:</p>
+<p><span class="math display">\[\gamma(l) = \min(o_1 + e_1 \cdot l, \; o_2 + e_2 \cdot l)\]</span></p>
+<p>where <span class="math inline">\((o_1, e_1)\)</span> penalizes short gaps with a lower open cost, and <span class="math inline">\((o_2, e_2)\)</span> penalizes long gaps with a higher open cost but lower extension cost. This two-piece model better handles the mix of short indels (from sequencing errors) and long gaps (from structural variants or introns).</p>
+<p><strong>Z-drop heuristic:</strong></p>
+<p>Minimap2 stops extending an alignment when the score drops by more than <span class="math inline">\(Z\)</span> below the maximum score seen so far:</p>
+<p><span class="math display">\[\text{Stop if } \; S_{\max} - S_{\text{current}} &gt; Z\]</span></p>
+<p>This prevents wasting time on poor extensions at the ends of alignments, which is critical for long reads where only a portion may align.</p>
+</section>
+<section id="minimap2-versatility" class="level3">
+<h3 class="anchored" data-anchor-id="minimap2-versatility">Minimap2 Versatility</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 44%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mode</th>
+<th>What it aligns</th>
+<th>Key feature</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Long reads to reference</td>
+<td>ONT/PacBio to genome</td>
+<td>Handles 15% error rate</td>
+</tr>
+<tr class="even">
+<td>Short reads to reference</td>
+<td>Illumina to genome</td>
+<td>3-4x faster than BWA-MEM</td>
+</tr>
+<tr class="odd">
+<td>Splice-aware</td>
+<td>cDNA/RNA to genome</td>
+<td>Finds GT-AG splice sites</td>
+</tr>
+<tr class="even">
+<td>Assembly to assembly</td>
+<td>Contigs to reference</td>
+<td>Detects structural variants</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Minimap2 demonstrates how minimizers transform sequence alignment. By replacing exact k-mer indexing with minimizer-based seeding, minimap2 achieves massive speedups while maintaining sensitivity. The four-stage pipeline – <strong>index, seed, chain, align</strong> – has become the dominant paradigm for modern sequence alignment.</p>
+</div>
+</div>
+
+<div id="viz-minimap2" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Minimap2 Pipeline: Seed-Chain-Align Visualization</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Step through the four stages of the minimap2 algorithm. See how minimizer seeds become anchors, chains, and alignments.</p>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:flex-end;">
+  <div style="flex:2; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Reference:</label>
+    <input id="mm-ref" type="text" value="ACGTACGTAGCTAGCTAGCTACGTACGT" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="flex:2; min-width:150px;">
+    <label style="font-size:0.85em; font-weight:bold;">Query:</label>
+    <input id="mm-query" type="text" value="GTAGCTAGCTAG" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:60px;">
+    <label style="font-size:0.85em; font-weight:bold;">k:</label>
+    <input id="mm-k" type="number" value="4" min="2" max="6" style="width:60px; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="min-width:60px;">
+    <label style="font-size:0.85em; font-weight:bold;">w:</label>
+    <input id="mm-w" type="number" value="2" min="1" max="4" style="width:60px; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+</div>
+<div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+  <button id="mm-s1" style="padding:8px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">1. Index Reference</button>
+  <button id="mm-s2" style="padding:8px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">2. Find Seeds</button>
+  <button id="mm-s3" style="padding:8px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">3. Chain Anchors</button>
+  <button id="mm-s4" style="padding:8px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">4. Align</button>
+  <button id="mm-reset" style="padding:8px 14px; background:#f44336; color:white; border:none; border-radius:4px; cursor:pointer;">Reset</button>
+</div>
+<canvas id="mm-canvas" width="860" height="380" style="width:100%; border:1px solid #eee; border-radius:4px; background:#fafafa;"></canvas>
+<div id="mm-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:10px; min-height:40px;"></div>
+</div>
+
+<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+  var stage = 0;
+  var refMinimizers = [];
+  var queryMinimizers = [];
+  var anchors = [];
+  var chains = [];
+
+  function getMinimizers(seq, k, w) {
+    var kmers = [];
+    for (var i = 0; i <= seq.length - k; i++) {
+      kmers.push({pos: i, kmer: seq.substring(i, i + k)});
+    }
+    var selected = {};
+    for (var i = 0; i <= kmers.length - w; i++) {
+      var minIdx = i;
+      for (var j = i + 1; j < i + w; j++) {
+        if (kmers[j].kmer < kmers[minIdx].kmer) minIdx = j;
+      }
+      selected[minIdx] = kmers[minIdx];
+    }
+    var result = [];
+    Object.keys(selected).forEach(function(idx) { result.push(selected[idx]); });
+    result.sort(function(a, b) { return a.pos - b.pos; });
+    return result;
+  }
+
+  function findAnchors(refMins, queryMins) {
+    var anch = [];
+    for (var i = 0; i < queryMins.length; i++) {
+      for (var j = 0; j < refMins.length; j++) {
+        if (queryMins[i].kmer === refMins[j].kmer) {
+          anch.push({rx: refMins[j].pos, qy: queryMins[i].pos, kmer: queryMins[i].kmer});
+        }
+      }
+    }
+    return anch;
+  }
+
+  function chainAnchors(anch) {
+    if (anch.length === 0) return [];
+    // Simplified greedy chaining shown here; minimap2 uses dynamic programming with gap penalties
+    var sorted = anch.slice().sort(function(a, b) { return a.rx - b.rx || a.qy - b.qy; });
+    var bestChain = [sorted[0]];
+    for (var i = 1; i < sorted.length; i++) {
+      var prev = bestChain[bestChain.length - 1];
+      if (sorted[i].rx > prev.rx && sorted[i].qy > prev.qy) {
+        bestChain.push(sorted[i]);
+      }
+    }
+    return bestChain;
+  }
+
+  function draw() {
+    var canvas = $('mm-canvas');
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width;
+    var H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var ref = $('mm-ref').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var query = $('mm-query').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('mm-k').value);
+
+    var marginL = 80, marginR = 30, marginT = 50, marginB = 80;
+    var plotW = W - marginL - marginR;
+    var plotH = H - marginT - marginB;
+
+    // Draw axes
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(marginL, marginT);
+    ctx.lineTo(marginL, marginT + plotH);
+    ctx.lineTo(marginL + plotW, marginT + plotH);
+    ctx.stroke();
+
+    // Axis labels
+    ctx.fillStyle = '#333';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Reference position', marginL + plotW / 2, H - 10);
+    ctx.save();
+    ctx.translate(18, marginT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Query position', 0, 0);
+    ctx.restore();
+
+    // Draw reference sequence along x-axis
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'center';
+    var refScale = plotW / Math.max(ref.length, 1);
+    for (var i = 0; i < ref.length; i++) {
+      ctx.fillStyle = '#666';
+      ctx.fillText(ref[i], marginL + i * refScale + refScale / 2, H - 40);
+    }
+
+    // Draw query sequence along y-axis
+    var queryScale = plotH / Math.max(query.length, 1);
+    for (var i = 0; i < query.length; i++) {
+      ctx.fillStyle = '#666';
+      ctx.textAlign = 'right';
+      ctx.fillText(query[i], marginL - 10, marginT + plotH - i * queryScale - queryScale / 2 + 4);
+    }
+
+    // Title
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    var titles = ['Dot Plot View', 'Stage 1: Index Reference Minimizers', 'Stage 2: Find Seed Anchors', 'Stage 3: Chain Co-linear Anchors', 'Stage 4: Base-Level Alignment'];
+    ctx.fillText(titles[stage], W / 2, 25);
+
+    if (stage === 0) return;
+
+    // Stage 1+: show reference minimizer positions on x-axis
+    if (stage >= 1) {
+      refMinimizers.forEach(function(m) {
+        var x = marginL + m.pos * refScale + refScale / 2;
+        ctx.fillStyle = '#e53935';
+        ctx.beginPath();
+        ctx.arc(x, marginT + plotH + 12, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    }
+
+    // Stage 2+: show anchors as dots
+    if (stage >= 2) {
+      anchors.forEach(function(a) {
+        var x = marginL + a.rx * refScale + refScale / 2;
+        var y = marginT + plotH - a.qy * queryScale - queryScale / 2;
+        ctx.fillStyle = 'rgba(33, 150, 243, 0.6)';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = '#1565C0';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+    }
+
+    // Stage 3+: draw chain lines
+    if (stage >= 3 && chains.length > 1) {
+      ctx.strokeStyle = '#4CAF50';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      for (var i = 0; i < chains.length; i++) {
+        var x = marginL + chains[i].rx * refScale + refScale / 2;
+        var y = marginT + plotH - chains[i].qy * queryScale - queryScale / 2;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Highlight chain anchors
+      chains.forEach(function(a) {
+        var x = marginL + a.rx * refScale + refScale / 2;
+        var y = marginT + plotH - a.qy * queryScale - queryScale / 2;
+        ctx.fillStyle = '#4CAF50';
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    }
+
+    // Stage 4: draw alignment band
+    if (stage >= 4 && chains.length > 1) {
+      var first = chains[0];
+      var last = chains[chains.length - 1];
+      var x1 = marginL + first.rx * refScale + refScale / 2;
+      var y1 = marginT + plotH - first.qy * queryScale - queryScale / 2;
+      var x2 = marginL + (last.rx + k) * refScale;
+      var y2 = marginT + plotH - (last.qy + k) * queryScale;
+      ctx.fillStyle = 'rgba(76, 175, 80, 0.15)';
+      ctx.strokeStyle = '#4CAF50';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      var bandW = 15;
+      ctx.beginPath();
+      ctx.moveTo(x1 - bandW, y1 + bandW);
+      ctx.lineTo(x2 - bandW, y2 + bandW);
+      ctx.lineTo(x2 + bandW, y2 - bandW);
+      ctx.lineTo(x1 + bandW, y1 - bandW);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  function runStage(s) {
+    var ref = $('mm-ref').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var query = $('mm-query').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('mm-k').value);
+    var w = parseInt($('mm-w').value);
+
+    stage = s;
+    var log = '';
+
+    if (s >= 1) {
+      refMinimizers = getMinimizers(ref, k, w);
+      queryMinimizers = getMinimizers(query, k, w);
+      log += '<strong>Stage 1 - Index:</strong> Found ' + refMinimizers.length + ' minimizers in reference, ' + queryMinimizers.length + ' in query.<br/>';
+      $('mm-s1').style.background = '#2196F3';
+    }
+    if (s >= 2) {
+      anchors = findAnchors(refMinimizers, queryMinimizers);
+      log += '<strong>Stage 2 - Seed:</strong> Found ' + anchors.length + ' anchor(s) from shared minimizers.<br/>';
+      $('mm-s2').style.background = '#2196F3';
+    }
+    if (s >= 3) {
+      chains = chainAnchors(anchors);
+      log += '<strong>Stage 3 - Chain:</strong> Best chain has ' + chains.length + ' co-linear anchor(s).<br/>';
+      $('mm-s3').style.background = '#4CAF50';
+    }
+    if (s >= 4) {
+      if (chains.length > 0) {
+        var rStart = chains[0].rx;
+        var rEnd = chains[chains.length - 1].rx + k;
+        var qStart = chains[0].qy;
+        var qEnd = chains[chains.length - 1].qy + k;
+        log += '<strong>Stage 4 - Align:</strong> Base-level alignment in region ref[' + rStart + '..' + rEnd + '] vs query[' + qStart + '..' + qEnd + '] using two-piece affine gap + Z-drop.<br/>';
+      } else {
+        log += '<strong>Stage 4:</strong> No chain to align.<br/>';
+      }
+      $('mm-s4').style.background = '#4CAF50';
+    }
+
+    $('mm-log').innerHTML = log;
+    draw();
+  }
+
+  function resetAll() {
+    stage = 0;
+    refMinimizers = [];
+    queryMinimizers = [];
+    anchors = [];
+    chains = [];
+    ['mm-s1', 'mm-s2', 'mm-s3', 'mm-s4'].forEach(function(id) { $(id).style.background = '#9E9E9E'; });
+    $('mm-log').innerHTML = 'Click the stage buttons in order to step through the minimap2 pipeline.';
+    draw();
+  }
+
+  $('mm-s1').addEventListener('click', function() { runStage(1); });
+  $('mm-s2').addEventListener('click', function() { runStage(2); });
+  $('mm-s3').addEventListener('click', function() { runStage(3); });
+  $('mm-s4').addEventListener('click', function() { runStage(4); });
+  $('mm-reset').addEventListener('click', resetAll);
+
+  resetAll();
+})();
+</script>
+<hr>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">7. Summary</h2>
+<p>This lecture traced the journey from k-mers to modern sequence alignment:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Concept</th>
+<th>Key Idea</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>K-mers</strong></td>
+<td>Sliding window of length k over a sequence; <span class="math inline">\(4^k\)</span> possible</td>
+<td>Foundation of all methods</td>
+</tr>
+<tr class="even">
+<td><strong>K-mer counting</strong></td>
+<td>Hash-based (Jellyfish) or disk-based (KMC) tallying</td>
+<td>Jellyfish, KMC 2/3</td>
+</tr>
+<tr class="odd">
+<td><strong>K-mer spectrum</strong></td>
+<td>Frequency histogram reveals genome properties</td>
+<td>GenomeScope, Merqury</td>
+</tr>
+<tr class="even">
+<td><strong>Minimizers</strong></td>
+<td>Smallest k-mer in a window; reduces index by ~80%</td>
+<td><a href="https://doi.org/10.1093/bioinformatics/bth408">Roberts et al.&nbsp;2004</a></td>
+</tr>
+<tr class="odd">
+<td><strong>Minimap2</strong></td>
+<td>Index-seed-chain-align pipeline using minimizers</td>
+<td><a href="https://doi.org/10.1093/bioinformatics/bty191">Li 2018</a></td>
+</tr>
+</tbody>
+</table>
+<p>The thread connecting everything: <strong>k-mers are the atomic unit of sequence analysis</strong>. We count them to profile genomes. We subsample them with minimizers to build efficient indexes. We chain minimizer hits to find alignments. And we use k-mer set operations to evaluate assemblies.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Big Picture
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The progression in this lecture mirrors a recurring theme in computational genomics: <strong>start with a brute-force approach, understand its limitations, then find a clever subsampling or indexing strategy that preserves the essential information while dramatically reducing computational cost</strong>. K-mers to minimizers is one of the clearest examples of this pattern.</p>
+</div>
+</div>
+<section id="looking-ahead" class="level3">
+<h3 class="anchored" data-anchor-id="looking-ahead">Looking Ahead</h3>
+<p>K-mers and minimizers appear throughout modern genomics:</p>
+<ul>
+<li><strong>Genome assembly</strong>: De Bruijn graphs are built from k-mers (SPAdes, hifiasm). Efficient construction of compacted de Bruijn graphs has been advanced by algorithms like <strong>TwoPaCo</strong> (<a href="https://doi.org/10.1093/bioinformatics/btw609">Minkin et al., <em>Bioinformatics</em> 2017</a>) and <strong>BCALM 2</strong> (<a href="https://doi.org/10.1093/bioinformatics/btw279">Chikhi, Limasset, and Medvedev, <em>Bioinformatics</em> 2016</a>), which use minimizer-based partitioning for scalable graph construction.</li>
+<li><strong>Metagenomic classification</strong>: <a href="https://doi.org/10.1186/s13059-019-1891-0">Kraken 2</a> maps minimizers to taxonomic labels (building on the original <a href="https://doi.org/10.1186/gb-2014-15-3-r46">Kraken</a> by <a href="https://doi.org/10.1186/gb-2014-15-3-r46">Wood and Salzberg, <em>Genome Biology</em> 2014</a>)</li>
+<li><strong>Sequence comparison</strong>: <a href="https://doi.org/10.1186/s13059-016-0997-x">Mash</a> and sourmash use k-mer sketches (MinHash) for fast distance estimation</li>
+<li><strong>Error correction</strong>: Tools like BFC correct reads based on k-mer frequencies</li>
+<li><strong>K-mer set representations</strong>: <a href="https://doi.org/10.1007/978-3-030-45257-5_10">Rahman and Medvedev (<em>RECOMB</em> 2020)</a> introduced <strong>spectrum-preserving string sets (SPSS)</strong>, a compact way to represent a set of k-mers as a collection of strings that preserves all k-mer membership and abundance information. Their UST algorithm finds a near-optimal SPSS by computing a path cover of the compacted de Bruijn graph.</li>
+<li><strong>K-mer data structure surveys</strong>: A comprehensive review by <a href="https://doi.org/10.1101/gr.260604.119">Marchet, Boucher, Puglisi, Medvedev, Salson, and Chikhi (<em>Genome Research</em> 2021)</a> surveys the landscape of data structures for representing and querying k-mer sets across large collections of sequencing datasets, classifying approaches by their supported operations and space-time trade-offs.</li>
+</ul>
+<p>The minimizer concept, born from a 2004 paper on sequence comparison, has become one of the most influential ideas in bioinformatics – enabling tools like minimap2 and Kraken 2 that process data at scales unimaginable two decades ago.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture15.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
