@@ -7,7 +7,7 @@ title: "Lecture 15: K-mers, Minimizers, and Minimap2"
 By the end of this lecture, you will be able to:
 - Define k-mers and explain how they are extracted from sequences using a sliding window
 - Calculate the number of possible k-mers for a given k and explain canonical k-mers
-- Describe how Jellyfish and KMC count k-mers at scale using different strategies
+- Explain how k-mer counting tools handle billions of k-mers
 - Interpret a k-mer frequency histogram to estimate genome size, heterozygosity, and repeat content
 - Explain why full k-mer indexing does not scale and how minimizers solve this problem
 - Define minimizers and compute them for a given sequence, window size, and k
@@ -223,29 +223,7 @@ Using canonical k-mers ensures that a k-mer and its reverse complement are count
 
 Counting k-mers -- determining how many times each k-mer appears in a dataset -- is one of the most fundamental operations in genomics. It is the foundation for genome assembly, error correction, variant detection, and genome profiling. The challenge is scale: a typical Illumina sequencing run produces billions of k-mers that must be counted efficiently.
 
-### Jellyfish: In-Memory Lock-Free Counting
-
-**Jellyfish** ([Marcais and Kingsford, *Bioinformatics* 2011](https://doi.org/10.1093/bioinformatics/btr011)) was one of the first tools to count k-mers at the speed of modern sequencing. Its key innovation is a **lock-free hash table** that uses Compare-And-Swap (CAS) hardware instructions for thread-safe parallel counting.
-
-| Feature | Details |
-|---------|---------|
-| Strategy | In-memory hash table |
-| Parallelism | Lock-free using CAS operations |
-| Memory | Proportional to number of distinct k-mers |
-| Speed | Processes large genomes in minutes |
-| Limitation | Requires enough RAM to hold all k-mers |
-
-### KMC: Disk-Based Counting
-
-**KMC 2** ([Deorowicz et al., *Bioinformatics* 2015](https://doi.org/10.1093/bioinformatics/btv022)) takes a different approach. Instead of holding everything in memory, KMC partitions k-mers by their prefix, sorts each partition on disk using **LSD radix sort**, and then counts.
-
-| Feature | Details |
-|---------|---------|
-| Strategy | Disk-based with radix sort |
-| Parallelism | Multi-threaded I/O and sorting |
-| Memory | ~12 GB RAM regardless of genome size |
-| Speed | ~2x faster than Jellyfish 2 on large datasets |
-| Extension | [KMC 3](https://doi.org/10.1093/bioinformatics/btx304) adds set operations (union, intersection, subtraction) |
+Tools like **Jellyfish** ([Marcais and Kingsford, *Bioinformatics* 2011](https://doi.org/10.1093/bioinformatics/btr011)) and **KMC** ([Deorowicz et al., *Bioinformatics* 2015](https://doi.org/10.1093/bioinformatics/btv022); [KMC 3](https://doi.org/10.1093/bioinformatics/btx304)) solve this problem using hash tables and disk-based sorting, respectively. We will revisit KMC's clever partitioning strategy later, once we have covered minimizers.
 
 ### Error K-mers vs True K-mers
 
@@ -253,7 +231,7 @@ Sequencing errors create k-mers that do not exist in the true genome. A single b
 
 :::{.callout-important}
 ## Key Insight
-Error k-mers vastly outnumber true k-mers in count -- a typical dataset may contain more distinct error k-mers than true k-mers. But error k-mers appear at **frequency 1**, while true k-mers cluster around the **average coverage**. This frequency separation is the basis of k-mer spectrum analysis and error correction.
+Error k-mers vastly outnumber true k-mers in count -- a typical dataset may contain more distinct error k-mers than true k-mers. But error k-mers appear at **frequency 1**, while true k-mers from a haploid genome cluster around the **average coverage** (in a diploid genome, homozygous k-mers appear at ~$C$ and heterozygous k-mers at ~$C/2$). This frequency separation is the basis of k-mer frequency histogram analysis and error correction.
 :::
 
 ### Choosing k
@@ -266,7 +244,7 @@ The choice of $k$ involves a fundamental trade-off:
 | Poor specificity for large genomes | Higher memory requirements |
 | Shorter than repeat elements | May exceed read length |
 
-A common rule of thumb: choose $k$ such that $4^k$ is much larger than the genome size, but $k$ is small relative to the read length. Typical values: **$k = 21$ to $31$** for genome assembly, **$k = 31$** for k-mer spectrum analysis. The tool **KmerGenie** ([Chikhi and Medvedev, *Bioinformatics* 2014](https://doi.org/10.1093/bioinformatics/btt310)) automates this choice by sampling k-mer abundance histograms across a range of $k$ values and selecting the one that optimizes the expected assembly quality.
+A common rule of thumb: choose $k$ such that $4^k$ is much larger than the genome size, but $k$ is small relative to the read length. Typical values: **$k = 21$ to $31$** for genome assembly, **$k = 31$** for k-mer frequency histogram analysis. The tool **KmerGenie** ([Chikhi and Medvedev, *Bioinformatics* 2014](https://doi.org/10.1093/bioinformatics/btt310)) automates this choice by sampling k-mer abundance histograms across a range of $k$ values and selecting the one that optimizes the expected assembly quality.
 
 ```{=html}
 
@@ -398,13 +376,18 @@ A common rule of thumb: choose $k$ such that $4^k$ is much larger than the genom
 
 ---
 
-## 3. The K-mer Spectrum
+## 3. The K-mer Frequency Histogram
 
-The **k-mer spectrum** (also called k-mer frequency histogram) is a plot of how many distinct k-mers appear at each frequency. It is one of the most informative views of a sequencing dataset -- from this single plot, we can estimate genome size, heterozygosity, repeat content, and sequencing error rate, all **without** a reference genome.
+The **k-mer frequency histogram** (also called the k-mer abundance histogram) is a plot of how many distinct k-mers appear at each frequency (multiplicity). It is one of the most informative views of a sequencing dataset -- from this single plot, we can estimate genome size, heterozygosity, repeat content, and sequencing error rate, all **without** a reference genome.
+
+:::{.callout-note}
+## Terminology: Spectrum vs Histogram
+The term "k-mer spectrum" is sometimes used loosely to refer to this histogram, but strictly speaking the **k-mer spectrum** of a genome is the *set of all distinct k-mers* it contains -- much richer information than just the histogram of their counts. In this lecture we use **k-mer frequency histogram** to refer specifically to the count distribution.
+:::
 
 ### Reading the Spectrum
 
-A typical k-mer spectrum from whole-genome sequencing has these features:
+A typical k-mer frequency histogram from whole-genome sequencing has these features:
 
 | Feature | Position in Histogram | Meaning |
 |---------|----------------------|---------|
@@ -413,9 +396,9 @@ A typical k-mer spectrum from whole-genome sequencing has these features:
 | Heterozygous peak | ~Coverage/2 | K-mers unique to one haplotype |
 | Repeat peaks | 2x, 3x, ... coverage | K-mers from duplicated regions |
 
-### Understanding the K-mer Spectrum Shape
+### Understanding the Histogram Shape
 
-The k-mer spectrum is a powerful visual summary of a sequencing dataset. To interpret it properly, it helps to understand what generates each feature of the plot.
+The k-mer frequency histogram is a powerful visual summary of a sequencing dataset. To interpret it properly, it helps to understand what generates each feature of the plot.
 
 **The error peak (multiplicity ~1).** Sequencing errors create k-mers that do not exist in the true genome. Since errors are rare and roughly random, each erroneous k-mer typically appears only once. A single base error in a read corrupts up to $k$ overlapping k-mers, so the total number of error k-mers is large even at low error rates. This produces a tall, sharp peak at multiplicity 1 that dominates the left side of the spectrum. At higher error rates, this peak grows taller and its tail extends slightly further to the right.
 
@@ -433,7 +416,7 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
 ```{=html}
 
 <div id="viz-kmer-spectrum" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
-<h4 style="text-align:center; color:#333;">Interactive K-mer Spectrum Simulator</h4>
+<h4 style="text-align:center; color:#333;">Interactive K-mer Frequency Histogram Simulator</h4>
 <p style="text-align:center; color:#666; font-size:0.9em;">Adjust genome parameters to see how they affect the k-mer frequency spectrum. The simulation uses a mixture of distributions to model error, heterozygous, homozygous, and repeat k-mers.</p>
 <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
   <div style="flex:1; min-width:200px;">
@@ -527,15 +510,34 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
     var plotW = W - marginL - marginR;
     var plotH = H - marginT - marginB;
 
-    // Skip x=1..3 for Y-axis scaling so the error peak doesn't crush the genomic peaks
-    // (GenomeScope plots also typically start from multiplicity ~4)
-    var maxY = 0;
-    for (var x = 4; x <= maxX; x++) {
-      if (spectrum[x] > maxY) maxY = spectrum[x];
+    // Compute component arrays
+    var errVals = [], hetVals = [], homoVals = [], repVals = [];
+    for (var x = 0; x <= maxX; x++) {
+      errVals[x] = errKmers * Math.exp(-x * 1.5);
+      hetVals[x] = hetKmers * negBinomPMF(x, C / 2, C / 2 * 1.3);
+      homoVals[x] = homoKmers * negBinomPMF(x, C, variance);
+      repVals[x] = repKmers2 * negBinomPMF(x, 2 * C, 2 * variance) +
+                   repKmers3 * negBinomPMF(x, 3 * C, 3 * variance) +
+                   repKmers4 * negBinomPMF(x, 4 * C, 4 * variance);
     }
-    if (maxY === 0) maxY = 1;
-    maxY *= 1.15; // add 15% headroom for labels
 
+    // Log-scale Y-axis: find range from all values >= 1
+    var minLogY = Infinity, maxLogY = -Infinity;
+    for (var x = 1; x <= maxX; x++) {
+      if (spectrum[x] > 0.5) {
+        var ly = Math.log10(spectrum[x]);
+        if (ly < minLogY) minLogY = ly;
+        if (ly > maxLogY) maxLogY = ly;
+      }
+    }
+    if (minLogY === Infinity) { minLogY = 0; maxLogY = 1; }
+    // Round to nice tick boundaries
+    minLogY = Math.floor(minLogY);
+    maxLogY = Math.ceil(maxLogY + 0.3);
+    var logRange = maxLogY - minLogY;
+    if (logRange < 1) logRange = 1;
+
+    // Draw axes
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -551,13 +553,39 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
     ctx.save();
     ctx.translate(16, marginT + plotH / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Number of distinct k-mers', 0, 0);
+    ctx.fillText('Number of distinct k-mers (log scale)', 0, 0);
     ctx.restore();
     ctx.font = 'bold 13px Arial';
-    ctx.fillText('Simulated K-mer Spectrum', W / 2, 22);
+    ctx.fillText('Simulated K-mer Frequency Histogram', W / 2, 22);
 
     var xScale = plotW / maxX;
-    var yScale = plotH / maxY;
+
+    // Y mapping: log10(value) -> pixel
+    function yPx(val) {
+      if (val <= 0) return marginT + plotH + 10; // off-screen below
+      var ly = Math.log10(val);
+      var frac = (ly - minLogY) / logRange;
+      return marginT + plotH - frac * plotH;
+    }
+
+    // Draw Y-axis grid lines and tick labels
+    ctx.font = '10px Arial';
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'right';
+    for (var exp = minLogY; exp <= maxLogY; exp++) {
+      var py = marginT + plotH - ((exp - minLogY) / logRange) * plotH;
+      ctx.beginPath();
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.moveTo(marginL, py);
+      ctx.lineTo(marginL + plotW, py);
+      ctx.stroke();
+      var label = exp <= 0 ? '1' : '10';
+      if (exp > 1) label = '10^' + exp;
+      else if (exp === 1) label = '10';
+      else if (exp === 0) label = '1';
+      else label = '10^' + exp;
+      ctx.fillText(label, marginL - 6, py + 4);
+    }
 
     function drawComponent(vals, color, alpha) {
       ctx.save();
@@ -568,24 +596,16 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
       ctx.lineWidth = 1.5;
       ctx.globalAlpha = alpha;
       ctx.beginPath();
+      var started = false;
       for (var x = 1; x <= maxX; x++) {
+        if (vals[x] <= 0) continue;
         var px = marginL + x * xScale;
-        var py = marginT + plotH - vals[x] * yScale;
-        if (x === 1) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        var py = yPx(vals[x]);
+        if (!started) { ctx.moveTo(px, py); started = true; } else ctx.lineTo(px, py);
       }
       ctx.stroke();
       ctx.globalAlpha = 1.0;
       ctx.restore();
-    }
-
-    var errVals = [], hetVals = [], homoVals = [], repVals = [];
-    for (var x = 0; x <= maxX; x++) {
-      errVals[x] = errKmers * Math.exp(-x * 1.5);
-      hetVals[x] = hetKmers * negBinomPMF(x, C / 2, C / 2 * 1.3);
-      homoVals[x] = homoKmers * negBinomPMF(x, C, variance);
-      repVals[x] = repKmers2 * negBinomPMF(x, 2 * C, 2 * variance) +
-                   repKmers3 * negBinomPMF(x, 3 * C, 3 * variance) +
-                   repKmers4 * negBinomPMF(x, 4 * C, 4 * variance);
     }
 
     drawComponent(errVals, '#ff5722', 0.5);
@@ -593,6 +613,7 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
     drawComponent(homoVals, '#2196F3', 0.5);
     drawComponent(repVals, '#4CAF50', 0.5);
 
+    // Draw total spectrum
     ctx.save();
     ctx.beginPath();
     ctx.rect(marginL, marginT, plotW, plotH);
@@ -600,18 +621,23 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.beginPath();
+    var started = false;
     for (var x = 1; x <= maxX; x++) {
+      if (spectrum[x] <= 0) continue;
       var px = marginL + x * xScale;
-      var py = marginT + plotH - spectrum[x] * yScale;
-      if (x === 1) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      var py = yPx(spectrum[x]);
+      if (!started) { ctx.moveTo(px, py); started = true; } else ctx.lineTo(px, py);
     }
     ctx.stroke();
     ctx.restore();
 
+    // Labels
     function drawLabel(text, xPos, color) {
       if (xPos < 1 || xPos > maxX) return;
+      var val = spectrum[Math.round(xPos)];
+      if (val <= 0) return;
       var px = marginL + xPos * xScale;
-      var py = marginT + plotH - spectrum[Math.round(xPos)] * yScale - 12;
+      var py = yPx(val) - 12;
       if (py < marginT + 15) py = marginT + 15;
       ctx.fillStyle = color;
       ctx.font = 'bold 11px Arial';
@@ -627,11 +653,12 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
       ctx.setLineDash([]);
     }
 
-    drawLabel('Errors \u2191', 2, '#ff5722');
+    drawLabel('Errors', 2, '#ff5722');
     if (hetRate > 0.2) drawLabel('Het (~' + Math.round(C / 2) + 'x)', Math.round(C / 2), '#9c27b0');
     drawLabel('Homo (~' + C + 'x)', C, '#2196F3');
     if (repFrac > 0.02) drawLabel('2C', 2 * C, '#4CAF50');
 
+    // X-axis ticks
     ctx.font = '10px Arial';
     ctx.fillStyle = '#666';
     ctx.textAlign = 'center';
@@ -665,7 +692,7 @@ The relative sizes of these peaks encode genome properties: a large heterozygous
 
 ### GenomeScope: Genome Profiling from K-mers
 
-**GenomeScope** ([Vurture et al., *Bioinformatics* 2017](https://doi.org/10.1093/bioinformatics/btx153)) fits a mixture model to the k-mer spectrum to estimate:
+**GenomeScope** ([Vurture et al., *Bioinformatics* 2017](https://doi.org/10.1093/bioinformatics/btx153)) fits a mixture model to the k-mer frequency histogram to estimate:
 
 - **Genome size**: Total number of unique k-mers divided by the average coverage
 - **Heterozygosity**: Ratio of the heterozygous peak to the homozygous peak
@@ -692,7 +719,7 @@ where $N$ is the total number of k-mers (after error removal) and $C$ is the ave
 
 :::{.callout-important}
 ## Key Insight
-The k-mer spectrum is like a fingerprint for your sequencing data. Before running any assembly or alignment, examining the k-mer spectrum tells you fundamental properties of your genome -- size, ploidy, repeat content, error rate -- and helps you choose appropriate parameters for downstream analysis.
+The k-mer frequency histogram is like a fingerprint for your sequencing data. Before running any assembly or alignment, examining it tells you fundamental properties of your genome -- size, ploidy, repeat content, error rate -- and helps you choose appropriate parameters for downstream analysis.
 :::
 
 ---
@@ -1301,8 +1328,8 @@ This lecture traced the journey from k-mers to modern sequence alignment:
 | Concept | Key Idea | Tools |
 |---------|----------|-------|
 | **K-mers** | Sliding window of length k over a sequence; $4^k$ possible | Foundation of all methods |
-| **K-mer counting** | Hash-based (Jellyfish) or disk-based (KMC) tallying | Jellyfish, KMC 2/3 |
-| **K-mer spectrum** | Frequency histogram reveals genome properties | GenomeScope, Merqury |
+| **K-mer counting** | Hash tables and disk-based sorting to tally k-mers | Jellyfish, KMC 2/3 |
+| **K-mer frequency histogram** | Count distribution reveals genome properties | GenomeScope, Merqury |
 | **Minimizers** | Smallest k-mer in a window; reduces index by ~80% | [Roberts et al. 2004](https://doi.org/10.1093/bioinformatics/bth408) |
 | **Minimap2** | Index-seed-chain-align pipeline using minimizers | [Li 2018](https://doi.org/10.1093/bioinformatics/bty191) |
 
