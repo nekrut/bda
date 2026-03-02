@@ -942,7 +942,7 @@ window.Quarto = {
   function negBinomPMF(k, mean, variance) {
     if (mean <= 0 || variance <= mean) return poissonPMF(k, mean);
     var r = (mean * mean) / (variance - mean);
-    var p = mean / variance;
+    var p = 1 - mean / variance;
     var logP = 0;
     for (var i = 0; i < k; i++) logP += Math.log(r + i) - Math.log(i + 1);
     logP += r * Math.log(1 - p) + k * Math.log(p);
