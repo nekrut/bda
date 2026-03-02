@@ -40,8 +40,8 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 11 | Feb 17 | [Building a Website with Claude Code](lectures/lecture11.qmd) |
 | 12 | Feb 19 | [Responsible Use of Coding Agents](lectures/lecture12.qmd) |
 | 13 | Feb 24 | [Sequence Alignment](lectures/lecture13.ipynb) |
-| 14 | Feb 26 | - |
-| 15 | Mar 3 | - |
+| 14 | Feb 26 | [Finding Sequence Matches Quickly](lectures/lecture14.qmd) |
+| 15 | Mar 3 | [K-mers, Minimizers, and Minimap2](lectures/lecture15.qmd) |
 | 16 | Mar 5 | - |
 | - | - | Spring break |
 | 17 | Mar 17 | - |

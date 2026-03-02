@@ -20,8 +20,9 @@ By the end of this lecture, you will be able to:
 
 ## A bit more Claudification
 
-- [**"How Quickly Will A.I. Agents Rip Through the Economy?"** -- Jack Clark on The Ezra Klein Show (NYT, Feb 24 2026)](https://www.nytimes.com/2026/02/24/opinion/ezra-klein-podcast-jack-clark.html?unlocked_article_code=1.O1A.2xFR.5XLPsiVA2rjD&smid=url-share). Jack Clark, co-founder of Anthropic, discusses how AI agents are reshaping work. He notes that Claude is already writing "comfortably the majority" of Anthropic's own code, and that the value of senior engineers with well-calibrated intuitions is increasing while routine coding tasks are increasingly automated.
-- [**Claude Code Agent Teams documentation**](https://code.claude.com/docs/en/agent-teams). Agent teams let you coordinate multiple Claude Code instances working together -- one session acts as team lead, spawning teammates that work independently in their own context windows, communicate with each other, and share a task list. 
+- [**"How Quickly Will A.I. Agents Rip Through the Economy?"**](https://www.nytimes.com/2026/02/24/opinion/ezra-klein-podcast-jack-clark.html?unlocked_article_code=1.O1A.2xFR.5XLPsiVA2rjD&smid=url-share) -- Jack Clark on The Ezra Klein Show (NYT, Feb 24 2026). Jack Clark, co-founder of Anthropic, discusses how AI agents are reshaping work. He notes that Claude is already writing "comfortably the majority" of Anthropic's own code, and that the value of senior engineers with well-calibrated intuitions is increasing while routine coding tasks are increasingly automated.
+- [**Claude Code Agent Teams documentation**](https://code.claude.com/docs/en/agent-teams) -- Agent teams let you coordinate multiple Claude Code instances working together -- one session acts as team lead, spawning teammates that work independently in their own context windows, communicate with each other, and share a task list.
+
 ---
 
 ## 1. Introduction: The Challenge of Large Datasets

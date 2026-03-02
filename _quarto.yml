@@ -51,6 +51,8 @@ website:
             text: "13. Sequence Alignment"
           - href: lectures/lecture14.qmd
             text: "14. Finding Sequence Matches Quickly"
+          - href: lectures/lecture15.qmd
+            text: "15. K-mers, Minimizers, and Minimap2"
 
 format:
   html:
