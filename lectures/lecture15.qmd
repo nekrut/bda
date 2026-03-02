@@ -1061,7 +1061,10 @@ Minimap2 demonstrates how minimizers transform sequence alignment. By replacing 
   <button id="mm-s4" style="padding:8px 14px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer;">4. Align</button>
   <button id="mm-reset" style="padding:8px 14px; background:#f44336; color:white; border:none; border-radius:4px; cursor:pointer;">Reset</button>
 </div>
-<canvas id="mm-canvas" width="860" height="380" style="width:100%; border:1px solid #eee; border-radius:4px; background:#fafafa;"></canvas>
+<div style="position:relative;">
+<canvas id="mm-canvas" width="860" height="380" style="width:100%; border:1px solid #eee; border-radius:4px; background:#fafafa; cursor:crosshair;"></canvas>
+<div id="mm-tooltip" style="display:none; position:absolute; padding:6px 10px; background:rgba(0,0,0,0.85); color:#fff; font-size:0.8em; font-family:monospace; border-radius:4px; pointer-events:none; white-space:nowrap; z-index:10;"></div>
+</div>
 <div id="mm-log" style="padding:10px; background:#fff3e0; border-radius:4px; font-size:0.9em; margin-top:10px; min-height:40px;"></div>
 </div>
 
@@ -1313,6 +1316,75 @@ Minimap2 demonstrates how minimizers transform sequence alignment. By replacing 
   $('mm-s3').addEventListener('click', function() { runStage(3); });
   $('mm-s4').addEventListener('click', function() { runStage(4); });
   $('mm-reset').addEventListener('click', resetAll);
+
+  // Tooltip on hover over anchors/chain points
+  $('mm-canvas').addEventListener('mousemove', function(e) {
+    var canvas = $('mm-canvas');
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var mx = (e.clientX - rect.left) * scaleX;
+    var my = (e.clientY - rect.top) * scaleY;
+
+    var ref = $('mm-ref').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var query = $('mm-query').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('mm-k').value);
+    var marginL = 80, marginR = 30, marginT = 50, marginB = 80;
+    var plotW = canvas.width - marginL - marginR;
+    var plotH = canvas.height - marginT - marginB;
+    var refScale = plotW / Math.max(ref.length, 1);
+    var queryScale = plotH / Math.max(query.length, 1);
+
+    var tooltip = $('mm-tooltip');
+    var hit = null;
+    var hitDist = 12; // pixel threshold
+
+    // Check anchors (stage 2+) and chain points (stage 3+)
+    var pts = stage >= 3 ? chains : (stage >= 2 ? anchors : []);
+    for (var i = 0; i < pts.length; i++) {
+      var px = marginL + pts[i].rx * refScale + refScale / 2;
+      var py = marginT + plotH - pts[i].qy * queryScale - queryScale / 2;
+      var d = Math.sqrt((mx - px) * (mx - px) + (my - py) * (my - py));
+      if (d < hitDist) {
+        hit = pts[i];
+        hitDist = d;
+      }
+    }
+    // Also check non-chain anchors if in stage 3+
+    if (stage >= 3) {
+      for (var i = 0; i < anchors.length; i++) {
+        var px = marginL + anchors[i].rx * refScale + refScale / 2;
+        var py = marginT + plotH - anchors[i].qy * queryScale - queryScale / 2;
+        var d = Math.sqrt((mx - px) * (mx - px) + (my - py) * (my - py));
+        if (d < hitDist) {
+          hit = anchors[i];
+          hitDist = d;
+        }
+      }
+    }
+
+    if (hit) {
+      var inChain = false;
+      if (stage >= 3) {
+        for (var i = 0; i < chains.length; i++) {
+          if (chains[i].rx === hit.rx && chains[i].qy === hit.qy) { inChain = true; break; }
+        }
+      }
+      var label = 'k-mer: ' + hit.kmer + '  ref: ' + hit.rx + '  query: ' + hit.qy;
+      if (stage >= 3) label += inChain ? '  [chained]' : '  [unchained]';
+      tooltip.textContent = label;
+      tooltip.style.display = 'block';
+      // Position relative to container, accounting for canvas scaling
+      tooltip.style.left = (e.clientX - rect.left + 12) + 'px';
+      tooltip.style.top = (e.clientY - rect.top - 28) + 'px';
+    } else {
+      tooltip.style.display = 'none';
+    }
+  });
+
+  $('mm-canvas').addEventListener('mouseleave', function() {
+    $('mm-tooltip').style.display = 'none';
+  });
 
   resetAll();
 })();
