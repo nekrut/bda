@@ -287,7 +287,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
   <li><a href="#why-minimizers-work" id="toc-why-minimizers-work" class="nav-link" data-scroll-target="#why-minimizers-work">Why Minimizers Work</a></li>
-  <li><a href="#connection-to-winnowing" id="toc-connection-to-winnowing" class="nav-link" data-scroll-target="#connection-to-winnowing">Connection to Winnowing</a></li>
   </ul></li>
   <li><a href="#minimap2-a-deep-dive" id="toc-minimap2-a-deep-dive" class="nav-link" data-scroll-target="#minimap2-a-deep-dive">6. Minimap2: A Deep Dive</a>
   <ul class="collapse">
@@ -297,7 +296,23 @@ window.Quarto = {
   <li><a href="#stage-4-base-level-alignment" id="toc-stage-4-base-level-alignment" class="nav-link" data-scroll-target="#stage-4-base-level-alignment">Stage 4: Base-Level Alignment</a></li>
   <li><a href="#minimap2-versatility" id="toc-minimap2-versatility" class="nav-link" data-scroll-target="#minimap2-versatility">Minimap2 Versatility</a></li>
   </ul></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">7. Summary</a>
+  <li><a href="#mash-fast-genome-distance-estimation" id="toc-mash-fast-genome-distance-estimation" class="nav-link" data-scroll-target="#mash-fast-genome-distance-estimation">7. Mash: Fast Genome Distance Estimation</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-comparing-thousands-of-genomes" id="toc-the-problem-comparing-thousands-of-genomes" class="nav-link" data-scroll-target="#the-problem-comparing-thousands-of-genomes">The Problem: Comparing Thousands of Genomes</a></li>
+  <li><a href="#genomes-as-k-mer-sets" id="toc-genomes-as-k-mer-sets" class="nav-link" data-scroll-target="#genomes-as-k-mer-sets">Genomes as K-mer Sets</a></li>
+  <li><a href="#jaccard-index-measuring-set-similarity" id="toc-jaccard-index-measuring-set-similarity" class="nav-link" data-scroll-target="#jaccard-index-measuring-set-similarity">Jaccard Index: Measuring Set Similarity</a></li>
+  <li><a href="#k-mer-sketches" id="toc-k-mer-sketches" class="nav-link" data-scroll-target="#k-mer-sketches">K-mer Sketches</a></li>
+  <li><a href="#minhash-sketching" id="toc-minhash-sketching" class="nav-link" data-scroll-target="#minhash-sketching">MinHash Sketching</a></li>
+  <li><a href="#connection-to-minimizers" id="toc-connection-to-minimizers" class="nav-link" data-scroll-target="#connection-to-minimizers">Connection to Minimizers</a></li>
+  <li><a href="#what-you-can-estimate-from-a-sketch" id="toc-what-you-can-estimate-from-a-sketch" class="nav-link" data-scroll-target="#what-you-can-estimate-from-a-sketch">What You Can Estimate From a Sketch</a></li>
+  <li><a href="#tools-built-on-sketching" id="toc-tools-built-on-sketching" class="nav-link" data-scroll-target="#tools-built-on-sketching">Tools Built on Sketching</a></li>
+  <li><a href="#from-jaccard-to-mash-distance" id="toc-from-jaccard-to-mash-distance" class="nav-link" data-scroll-target="#from-jaccard-to-mash-distance">From Jaccard to Mash Distance</a></li>
+  <li><a href="#the-mash-pipeline" id="toc-the-mash-pipeline" class="nav-link" data-scroll-target="#the-mash-pipeline">The Mash Pipeline</a></li>
+  <li><a href="#interactive-mash-demo" id="toc-interactive-mash-demo" class="nav-link" data-scroll-target="#interactive-mash-demo">Interactive Mash Demo</a></li>
+  <li><a href="#sourmash-and-scaled-minhash" id="toc-sourmash-and-scaled-minhash" class="nav-link" data-scroll-target="#sourmash-and-scaled-minhash">Sourmash and Scaled MinHash</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">8. Summary</a>
   <ul class="collapse">
   <li><a href="#looking-ahead" id="toc-looking-ahead" class="nav-link" data-scroll-target="#looking-ahead">Looking Ahead</a></li>
   </ul></li>
@@ -328,7 +343,7 @@ window.Quarto = {
 
 <section id="learning-objectives" class="level2">
 <h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
-<p>By the end of this lecture, you will be able to: - Define k-mers and explain how they are extracted from sequences using a sliding window - Calculate the number of possible k-mers for a given k and explain canonical k-mers - Explain how k-mer counting tools handle billions of k-mers - Interpret a k-mer frequency histogram to estimate genome size, heterozygosity, and repeat content - Explain why full k-mer indexing does not scale and how minimizers solve this problem - Define minimizers and compute them for a given sequence, window size, and k - Describe the four stages of the minimap2 alignment pipeline - Explain the role of two-piece affine gap scoring and the Z-drop heuristic in minimap2</p>
+<p>By the end of this lecture, you will be able to: - Define k-mers and explain how they are extracted from sequences using a sliding window - Calculate the number of possible k-mers for a given k and explain canonical k-mers - Explain how k-mer counting tools handle billions of k-mers - Interpret a k-mer frequency histogram to estimate genome size, heterozygosity, and repeat content - Explain why full k-mer indexing does not scale and how minimizers solve this problem - Define minimizers and compute them for a given sequence, window size, and k - Describe the four stages of the minimap2 alignment pipeline - Explain the role of two-piece affine gap scoring and the Z-drop heuristic in minimap2 - Explain how Mash uses MinHash sketches to rapidly estimate genome similarity</p>
 <hr>
 </section>
 <section id="what-is-a-k-mer" class="level2">
@@ -1262,10 +1277,19 @@ window.Quarto = {
 </tbody>
 </table>
 <p>The <strong>density</strong> of minimizers – the fraction of k-mers selected – approaches <span class="math inline">\(2/(w+1)\)</span> in random sequences. With <span class="math inline">\(w = 10\)</span>, this means only about 18% of k-mers are kept, an <strong>82% reduction</strong> in index size with no loss of matching sensitivity.</p>
-</section>
-<section id="connection-to-winnowing" class="level3">
-<h3 class="anchored" data-anchor-id="connection-to-winnowing">Connection to Winnowing</h3>
-<p>The minimizer concept was independently invented in document fingerprinting as <strong>winnowing</strong> (<a href="https://doi.org/10.1145/872757.872770">Schleimer et al., <em>SIGMOD</em> 2003</a>), where it was used for plagiarism detection. The winnowing algorithm guarantees that any match of length at least <span class="math inline">\(w + k - 1\)</span> characters will be detected, providing a <strong>density guarantee</strong>: at least one fingerprint is selected in every window of <span class="math inline">\(w\)</span> consecutive k-mers.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Quick Intuition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Think of minimizers as street addresses for sequence regions. Rather than describing every nucleotide, you pick a few landmark k-mers that let you rapidly find where two sequences might align — then do the expensive exact comparison only there.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1941,9 +1965,543 @@ window.Quarto = {
 <hr>
 </section>
 </section>
+<section id="mash-fast-genome-distance-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="mash-fast-genome-distance-estimation">7. Mash: Fast Genome Distance Estimation</h2>
+<section id="the-problem-comparing-thousands-of-genomes" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-comparing-thousands-of-genomes">The Problem: Comparing Thousands of Genomes</h3>
+<p>Imagine you have 54,118 genomes from NCBI RefSeq and want to know which are closely related. Pairwise whole-genome alignment would require over <strong>1.4 billion</strong> comparisons, each taking minutes to hours. Even with fast aligners, this is computationally prohibitive.</p>
+<p>What if we could estimate genome similarity in <strong>microseconds</strong> per pair – without performing any alignment at all?</p>
+</section>
+<section id="genomes-as-k-mer-sets" class="level3">
+<h3 class="anchored" data-anchor-id="genomes-as-k-mer-sets">Genomes as K-mer Sets</h3>
+<p>We already know how to decompose a sequence into k-mers. A key insight is that we can treat an entire genome as a <strong>set</strong> of its constituent k-mers:</p>
+<ul>
+<li>Two identical genomes share <strong>all</strong> k-mers</li>
+<li>A single mutation destroys <span class="math inline">\(k\)</span> overlapping k-mers</li>
+<li>Unrelated genomes share almost <strong>no</strong> k-mers (for sufficiently large <span class="math inline">\(k\)</span>)</li>
+</ul>
+<p>This transforms a sequence comparison problem into a <strong>set comparison</strong> problem. And set comparison has well-studied, efficient solutions.</p>
+</section>
+<section id="jaccard-index-measuring-set-similarity" class="level3">
+<h3 class="anchored" data-anchor-id="jaccard-index-measuring-set-similarity">Jaccard Index: Measuring Set Similarity</h3>
+<p>The <strong>Jaccard index</strong> measures the overlap between two sets:</p>
+<p><span class="math display">\[J(A, B) = \frac{|A \cap B|}{|A \cup B|}\]</span></p>
+<p>Where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are the k-mer sets of two genomes:</p>
+<ul>
+<li><strong>Numerator</strong> <span class="math inline">\(|A \cap B|\)</span> (intersection): the number of k-mers that appear in <strong>both</strong> genomes – the shared k-mers.</li>
+<li><strong>Denominator</strong> <span class="math inline">\(|A \cup B|\)</span> (union): the number of <strong>distinct</strong> k-mers that appear in <strong>either</strong> genome (or both), counting each unique k-mer only once.</li>
+</ul>
+<p>For example, if genome A has k-mers {<code>ACG</code>, <code>CGT</code>, <code>GTA</code>, <code>TAC</code>} and genome B has {<code>ACG</code>, <code>CGT</code>, <code>GTG</code>, <code>TGA</code>}:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>K-mers</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(A \cap B\)</span> (shared)</td>
+<td><code>ACG</code>, <code>CGT</code></td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(A \cup B\)</span> (all unique)</td>
+<td><code>ACG</code>, <code>CGT</code>, <code>GTA</code>, <code>TAC</code>, <code>GTG</code>, <code>TGA</code></td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[J = \frac{2}{6} = 0.333\]</span></p>
+<p>Dividing by the union rather than the size of one set ensures the measure is symmetric (<span class="math inline">\(J(A,B) = J(B,A)\)</span>) and bounded between 0 and 1:</p>
+<ul>
+<li><span class="math inline">\(J = 1\)</span>: the sets are identical</li>
+<li><span class="math inline">\(J = 0\)</span>: the sets share no elements</li>
+<li><span class="math inline">\(J \approx 0.5\)</span>: about half the elements are shared</li>
+</ul>
+<p>For two genomes represented as k-mer sets, the Jaccard index captures their overall similarity. If two genomes are 95% identical, their k-mer sets overlap a lot, giving a high Jaccard. If they are distantly related, the Jaccard drops near zero. The problem? A single bacterial genome produces <strong>millions</strong> of k-mers. Comparing every k-mer between two whole genomes is prohibitively expensive.</p>
+</section>
+<section id="k-mer-sketches" class="level3">
+<h3 class="anchored" data-anchor-id="k-mer-sketches">K-mer Sketches</h3>
+<p>A <strong>sketch</strong> is a small, fixed-size summary of a sequence’s k-mer content that lets you estimate similarity without comparing full k-mer sets. Instead of storing hundreds of millions of k-mers, a sketch compresses them down to, say, 1000 representative values – and you compare those instead.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Quick Intuition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Think of a sketch like a fingerprint. You don’t need to compare every ridge of two fingerprints to know they match – a small set of distinctive features is enough. Sketches do the same for genomes: they capture just enough of the k-mer landscape to reliably estimate how similar two sequences are, at a tiny fraction of the cost.</p>
+</div>
+</div>
+</section>
+<section id="minhash-sketching" class="level3">
+<h3 class="anchored" data-anchor-id="minhash-sketching">MinHash Sketching</h3>
+<p>The most common sketching approach is <strong>MinHash</strong> (Broder, 1997). The idea:</p>
+<ol type="1">
+<li><strong>Hash</strong> every k-mer in the sequence to a number</li>
+<li><strong>Keep</strong> only the <span class="math inline">\(s\)</span> smallest hash values (the “bottom-<span class="math inline">\(s\)</span> sketch”)</li>
+<li><strong>Compare</strong> sketches instead of full sets</li>
+</ol>
+<pre><code>All k-mers:   hash → [0.72, 0.11, 0.95, 0.03, 0.44, 0.67, 0.28, ...]
+                                          ↓
+Keep bottom s=3:      [0.03, 0.11, 0.28]   ← this is your sketch</code></pre>
+<p>To estimate the Jaccard index between two sequences, count how many of the smallest hashes they share:</p>
+<pre><code>Sketch A: [0.03, 0.11, 0.28]
+Sketch B: [0.03, 0.14, 0.28]
+
+Shared: 0.03 and 0.28  →  J ≈ 2/4 = 0.5</code></pre>
+<p>The fraction of shared elements between two sketches <strong>approximates</strong> the Jaccard index:</p>
+<p><span class="math display">\[J(A, B) \approx \frac{|\text{sketch}(A) \cap \text{sketch}(B)|}{|\text{sketch}(A) \cup \text{sketch}(B)|}\]</span></p>
+<p>Why does this work? A random hash function maps set elements uniformly across the hash space. The probability that the minimum hash value comes from the intersection <span class="math inline">\(A \cap B\)</span> equals <span class="math inline">\(\frac{|A \cap B|}{|A \cup B|}\)</span> – exactly the Jaccard index. Keeping the bottom-<span class="math inline">\(s\)</span> values rather than just the minimum gives us <span class="math inline">\(s\)</span> independent estimates, improving accuracy.</p>
+<p>With a sketch size of <span class="math inline">\(s = 1000\)</span>, each genome is reduced to a fingerprint of just <strong>a few kilobytes</strong> – regardless of whether the genome is 5 million or 3 billion bases long.</p>
+</section>
+<section id="connection-to-minimizers" class="level3">
+<h3 class="anchored" data-anchor-id="connection-to-minimizers">Connection to Minimizers</h3>
+<p>A minimizer is essentially MinHash applied to a <strong>local window</strong>. The key differences:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>MinHash Sketch</th>
+<th>Minimizers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Scope</strong></td>
+<td>Whole sequence</td>
+<td>Local window</td>
+</tr>
+<tr class="even">
+<td><strong>Purpose</strong></td>
+<td>Global similarity</td>
+<td>Local alignment anchors</td>
+</tr>
+<tr class="odd">
+<td><strong>Output</strong></td>
+<td>A set of <span class="math inline">\(s\)</span> hash values</td>
+<td>A representative k-mer per window</td>
+</tr>
+</tbody>
+</table>
+<p>Both techniques rely on the same core insight – select a small number of representative k-mers using hash values – but they serve different goals. Minimizers find local anchors for alignment; MinHash sketches estimate global similarity.</p>
+</section>
+<section id="what-you-can-estimate-from-a-sketch" class="level3">
+<h3 class="anchored" data-anchor-id="what-you-can-estimate-from-a-sketch">What You Can Estimate From a Sketch</h3>
+<p>Sketches enable several types of queries:</p>
+<ul>
+<li><strong>Jaccard similarity</strong> – are these sequences similar?</li>
+<li><strong>Containment</strong> – is genome A contained within genome B? (useful for metagenomics)</li>
+<li><strong>Genome distance</strong> – Mash converts Jaccard to an evolutionary distance (see next section)</li>
+</ul>
+</section>
+<section id="tools-built-on-sketching" class="level3">
+<h3 class="anchored" data-anchor-id="tools-built-on-sketching">Tools Built on Sketching</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Sketch Type</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Mash</strong></td>
+<td>MinHash (bottom-<span class="math inline">\(s\)</span>)</td>
+<td>Genome distance, contamination detection</td>
+</tr>
+<tr class="even">
+<td><strong>Sourmash</strong></td>
+<td>FracMinHash (scaled)</td>
+<td>Metagenome classification, containment</td>
+</tr>
+<tr class="odd">
+<td><strong>Dashing</strong></td>
+<td>HyperLogLog</td>
+<td>Ultra-fast cardinality and similarity</td>
+</tr>
+<tr class="even">
+<td><strong>HULK</strong></td>
+<td>Histogram sketching</td>
+<td>Streaming metagenomics</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="from-jaccard-to-mash-distance" class="level3">
+<h3 class="anchored" data-anchor-id="from-jaccard-to-mash-distance">From Jaccard to Mash Distance</h3>
+<p>The Jaccard index measures k-mer set overlap, but biologists think in terms of mutation rates. Mash (Ondov et al., 2016) converts the Jaccard index to a <strong>Mash distance</strong> <span class="math inline">\(D\)</span> that approximates the average nucleotide identity (ANI):</p>
+<p><span class="math display">\[D = \frac{-1}{k} \ln \frac{2J}{1+J}\]</span></p>
+<p>The intuition: a single nucleotide mutation destroys <span class="math inline">\(k\)</span> overlapping k-mers, so the relationship between mutation rate and k-mer similarity depends on <span class="math inline">\(k\)</span>. The formula accounts for this by scaling by <span class="math inline">\(\frac{1}{k}\)</span>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Mash Distance <span class="math inline">\(D\)</span></th>
+<th>Approximate ANI</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.0</td>
+<td>100%</td>
+<td>Identical genomes</td>
+</tr>
+<tr class="even">
+<td>0.005</td>
+<td>99.5%</td>
+<td>Same species (strains)</td>
+</tr>
+<tr class="odd">
+<td>0.05</td>
+<td>~95%</td>
+<td>Species boundary</td>
+</tr>
+<tr class="even">
+<td>0.3+</td>
+<td>&lt;70%</td>
+<td>Different genera/families</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>ANI and the Species Boundary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An ANI of ~95% is widely used as a species delineation threshold for prokaryotes. Mash distances below ~0.05 reliably identify members of the same species, making Mash a practical tool for taxonomic classification.</p>
+</div>
+</div>
+</section>
+<section id="the-mash-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="the-mash-pipeline">The Mash Pipeline</h3>
+<p>The complete Mash pipeline has just three steps:</p>
+<ol type="1">
+<li><strong>K-merize</strong> each genome (default <span class="math inline">\(k = 21\)</span>)</li>
+<li><strong>Hash and sketch</strong>: apply a hash function, keep the bottom-<span class="math inline">\(s\)</span> values (default <span class="math inline">\(s = 1000\)</span>)</li>
+<li><strong>Compare sketches</strong>: count shared hashes between any two sketches in <span class="math inline">\(O(s)\)</span> time</li>
+</ol>
+<p>The critical insight: <strong>sketch size is independent of genome size</strong>. Comparing two sketches of size 1000 takes the same time whether the genomes are 5 Mb bacteria or 3 Gb mammals. This makes all-vs-all comparison feasible: 54,118 genomes were clustered in just <strong>33 CPU-hours</strong> by Ondov et al.&nbsp;(2016).</p>
+</section>
+<section id="interactive-mash-demo" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-mash-demo">Interactive Mash Demo</h3>
+<div id="viz-mash" style="max-width:900px; margin:2em auto; font-family:Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Interactive MinHash Sketch &amp; Mash Distance Demo</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Enter two DNA sequences to see how MinHash sketches approximate the Jaccard index and compute Mash distance.</p>
+
+<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px;">
+  <div style="flex:1; min-width:250px;">
+    <label style="font-size:0.85em; font-weight:bold;">Sequence A:</label>
+    <input id="mash-seqA" type="text" value="ACGTACGTAGCTAGCTAGCATGCATGCA" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+  <div style="flex:1; min-width:250px;">
+    <label style="font-size:0.85em; font-weight:bold;">Sequence B:</label>
+    <input id="mash-seqB" type="text" value="ACGTACGTAGCTAGCTTTTCATGCATGCA" style="width:100%; padding:6px; font-family:monospace; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  </div>
+</div>
+<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px; align-items:flex-end;">
+  <div>
+    <label style="font-size:0.85em; font-weight:bold;">k: <span id="mash-k-val">5</span></label>
+    <input id="mash-k" type="range" min="3" max="9" value="5" style="width:100px;">
+  </div>
+  <div>
+    <label style="font-size:0.85em; font-weight:bold;">Sketch size (s): <span id="mash-s-val">6</span></label>
+    <input id="mash-s" type="range" min="2" max="20" value="6" style="width:120px;">
+  </div>
+  <button id="mash-run" style="padding:8px 16px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; height:36px;">Compute</button>
+</div>
+
+<div id="mash-output" style="margin-top:10px;"></div>
+</div>
+
+<script>
+(function() {
+  function $(id) { return document.getElementById(id); }
+
+  function simpleHash(str) {
+    // Simple but deterministic hash for demo purposes
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+    }
+    return hash >>> 0; // Convert to unsigned 32-bit
+  }
+
+  function getKmers(seq, k) {
+    var kmers = [];
+    seq = seq.toUpperCase().replace(/[^ACGT]/g, '');
+    for (var i = 0; i <= seq.length - k; i++) {
+      kmers.push(seq.substring(i, i + k));
+    }
+    return kmers;
+  }
+
+  function uniqueArray(arr) {
+    var seen = {};
+    return arr.filter(function(item) {
+      if (seen[item]) return false;
+      seen[item] = true;
+      return true;
+    });
+  }
+
+  function computeMash() {
+    var seqA = $('mash-seqA').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var seqB = $('mash-seqB').value.toUpperCase().replace(/[^ACGT]/g, '');
+    var k = parseInt($('mash-k').value);
+    var s = parseInt($('mash-s').value);
+    $('mash-k-val').textContent = k;
+    $('mash-s-val').textContent = s;
+
+    if (seqA.length < k || seqB.length < k) {
+      $('mash-output').innerHTML = '<p style="color:#c00;">Sequences must be at least k=' + k + ' characters long.</p>';
+      return;
+    }
+
+    // Step 1: Extract k-mers
+    var kmersA = uniqueArray(getKmers(seqA, k));
+    var kmersB = uniqueArray(getKmers(seqB, k));
+
+    // Step 2: Hash all k-mers
+    var hashesA = kmersA.map(function(km) { return { kmer: km, hash: simpleHash(km) }; });
+    var hashesB = kmersB.map(function(km) { return { kmer: km, hash: simpleHash(km) }; });
+
+    // Sort by hash value
+    hashesA.sort(function(a, b) { return a.hash - b.hash; });
+    hashesB.sort(function(a, b) { return a.hash - b.hash; });
+
+    // Step 3: Select bottom-s sketch
+    var sketchA = hashesA.slice(0, s);
+    var sketchB = hashesB.slice(0, s);
+
+    // Step 4: Compute exact Jaccard
+    var setA = {};
+    var setB = {};
+    kmersA.forEach(function(km) { setA[km] = true; });
+    kmersB.forEach(function(km) { setB[km] = true; });
+    var intersection = 0;
+    var union = {};
+    kmersA.forEach(function(km) { union[km] = true; });
+    kmersB.forEach(function(km) { union[km] = true; });
+    kmersA.forEach(function(km) { if (setB[km]) intersection++; });
+    var exactJ = intersection / Object.keys(union).length;
+
+    // Step 5: Compute sketch-based Jaccard
+    var sketchHashSetA = {};
+    var sketchHashSetB = {};
+    sketchA.forEach(function(h) { sketchHashSetA[h.hash] = h.kmer; });
+    sketchB.forEach(function(h) { sketchHashSetB[h.hash] = h.kmer; });
+    // Merge sketches, take bottom-s of combined, count shared
+    var combined = {};
+    sketchA.forEach(function(h) { combined[h.hash] = { a: true, kmer: h.kmer }; });
+    sketchB.forEach(function(h) {
+      if (combined[h.hash]) { combined[h.hash].b = true; }
+      else { combined[h.hash] = { b: true, kmer: h.kmer }; }
+    });
+    var allHashes = Object.keys(combined).map(Number).sort(function(a, b) { return a - b; });
+    var bottomS = allHashes.slice(0, s);
+    var shared = 0;
+    bottomS.forEach(function(h) {
+      if (combined[h].a && combined[h].b) shared++;
+    });
+    var sketchJ = shared / bottomS.length;
+
+    // Step 6: Mash distance
+    function mashDist(j) {
+      if (j === 0) return Infinity;
+      var inner = (2 * j) / (1 + j);
+      if (inner <= 0) return Infinity;
+      return (-1 / k) * Math.log(inner);
+    }
+    var exactD = mashDist(exactJ);
+    var sketchD = mashDist(sketchJ);
+
+    // Build display
+    var html = '';
+
+    // K-mer extraction summary
+    html += '<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px;">';
+    html += '<div style="flex:1; min-width:200px; background:#f0f7ff; padding:10px; border-radius:6px; border:1px solid #c0d8f0;">';
+    html += '<strong>Sequence A:</strong> ' + kmersA.length + ' distinct k-mers</div>';
+    html += '<div style="flex:1; min-width:200px; background:#f0fff0; padding:10px; border-radius:6px; border:1px solid #c0e0c0;">';
+    html += '<strong>Sequence B:</strong> ' + kmersB.length + ' distinct k-mers</div>';
+    html += '</div>';
+
+    // --- Panel 1: Exact Jaccard (all k-mers) ---
+    html += '<div style="background:#faf0ff; padding:14px; border-radius:6px; border:1px solid #d0b8e0; margin-bottom:12px;">';
+    html += '<h5 style="margin:0 0 8px 0; color:#6A1B9A;">Exact Jaccard (all k-mers, no sketching)</h5>';
+    html += '<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:10px;">';
+
+    // All k-mers column A
+    html += '<div style="flex:1; min-width:150px;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:4px; color:#1565C0;">A\'s k-mers (' + kmersA.length + ')</div>';
+    html += '<div style="max-height:180px; overflow-y:auto; border:1px solid #ddd; border-radius:4px;">';
+    html += '<table style="width:100%; font-size:0.82em; border-collapse:collapse;">';
+    kmersA.forEach(function(km) {
+      var isShared = setB[km];
+      var bg = isShared ? '#e1bee7' : '#fff';
+      html += '<tr style="background:' + bg + ';"><td style="padding:2px 6px; font-family:monospace;">' + km + '</td>';
+      html += '<td style="padding:2px 6px; text-align:center; font-size:0.9em;">' + (isShared ? 'shared' : '') + '</td></tr>';
+    });
+    html += '</table></div></div>';
+
+    // All k-mers column B
+    html += '<div style="flex:1; min-width:150px;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:4px; color:#2E7D32;">B\'s k-mers (' + kmersB.length + ')</div>';
+    html += '<div style="max-height:180px; overflow-y:auto; border:1px solid #ddd; border-radius:4px;">';
+    html += '<table style="width:100%; font-size:0.82em; border-collapse:collapse;">';
+    kmersB.forEach(function(km) {
+      var isShared = setA[km];
+      var bg = isShared ? '#e1bee7' : '#fff';
+      html += '<tr style="background:' + bg + ';"><td style="padding:2px 6px; font-family:monospace;">' + km + '</td>';
+      html += '<td style="padding:2px 6px; text-align:center; font-size:0.9em;">' + (isShared ? 'shared' : '') + '</td></tr>';
+    });
+    html += '</table></div></div>';
+
+    // Exact results
+    html += '<div style="flex:1; min-width:160px; background:#f3e5f5; padding:10px; border-radius:6px; align-self:flex-start;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:6px;">Exact Result</div>';
+    html += '<div>|A &cap; B|: <strong>' + intersection + '</strong></div>';
+    html += '<div>|A &cup; B|: <strong>' + Object.keys(union).length + '</strong></div>';
+    html += '<div style="margin-top:6px; font-size:1.1em;">J = ' + intersection + '/' + Object.keys(union).length + ' = <strong>' + exactJ.toFixed(4) + '</strong></div>';
+    html += '<div style="margin-top:4px;">Mash D = <strong>' + (isFinite(exactD) ? exactD.toFixed(4) : 'undef (J=0)') + '</strong></div>';
+    html += '</div>';
+    html += '</div></div>';
+
+    // --- Panel 2: Sketch-based estimate ---
+    html += '<div style="background:#f0f7ff; padding:14px; border-radius:6px; border:1px solid #b0cfe0; margin-bottom:12px;">';
+    html += '<h5 style="margin:0 0 8px 0; color:#1565C0;">Sketch Estimate (MinHash, s=' + s + ')</h5>';
+    html += '<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:10px;">';
+
+    // Sketch column A
+    html += '<div style="flex:1; min-width:200px;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:4px; color:#1565C0;">Sketch A (bottom-' + Math.min(s, hashesA.length) + ' hashes)</div>';
+    html += '<div style="max-height:220px; overflow-y:auto; border:1px solid #ddd; border-radius:4px;">';
+    html += '<table style="width:100%; font-size:0.82em; border-collapse:collapse;">';
+    html += '<tr style="background:#e3f2fd;"><th style="padding:3px 6px; text-align:left;">K-mer</th><th style="padding:3px 6px; text-align:right;">Hash</th><th style="padding:3px 6px;">In sketch?</th></tr>';
+    hashesA.forEach(function(h, i) {
+      var inSketch = i < s;
+      var isShared = inSketch && sketchHashSetB[h.hash] !== undefined;
+      var bg = isShared ? '#fff9c4' : (inSketch ? '#e8f5e9' : '#fff');
+      html += '<tr style="background:' + bg + ';">';
+      html += '<td style="padding:2px 6px; font-family:monospace;">' + h.kmer + '</td>';
+      html += '<td style="padding:2px 6px; text-align:right; font-family:monospace;">' + h.hash + '</td>';
+      html += '<td style="padding:2px 6px; text-align:center;">' + (inSketch ? (isShared ? '&#x2713; shared' : '&#x2713;') : '') + '</td>';
+      html += '</tr>';
+    });
+    html += '</table></div></div>';
+
+    // Sketch column B
+    html += '<div style="flex:1; min-width:200px;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:4px; color:#2E7D32;">Sketch B (bottom-' + Math.min(s, hashesB.length) + ' hashes)</div>';
+    html += '<div style="max-height:220px; overflow-y:auto; border:1px solid #ddd; border-radius:4px;">';
+    html += '<table style="width:100%; font-size:0.82em; border-collapse:collapse;">';
+    html += '<tr style="background:#e8f5e9;"><th style="padding:3px 6px; text-align:left;">K-mer</th><th style="padding:3px 6px; text-align:right;">Hash</th><th style="padding:3px 6px;">In sketch?</th></tr>';
+    hashesB.forEach(function(h, i) {
+      var inSketch = i < s;
+      var isShared = inSketch && sketchHashSetA[h.hash] !== undefined;
+      var bg = isShared ? '#fff9c4' : (inSketch ? '#e8f5e9' : '#fff');
+      html += '<tr style="background:' + bg + ';">';
+      html += '<td style="padding:2px 6px; font-family:monospace;">' + h.kmer + '</td>';
+      html += '<td style="padding:2px 6px; text-align:right; font-family:monospace;">' + h.hash + '</td>';
+      html += '<td style="padding:2px 6px; text-align:center;">' + (inSketch ? (isShared ? '&#x2713; shared' : '&#x2713;') : '') + '</td>';
+      html += '</tr>';
+    });
+    html += '</table></div></div>';
+    html += '</div>';
+
+    // Sketch results
+    html += '<div style="background:#e3f2fd; padding:10px; border-radius:6px;">';
+    html += '<div style="display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start;">';
+    html += '<div style="flex:1; min-width:160px;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:4px;">Sketch Result</div>';
+    html += '<div>Shared in bottom-' + bottomS.length + ': <strong>' + shared + '</strong></div>';
+    html += '<div style="font-size:1.1em;">Sketch J = <strong>' + sketchJ.toFixed(4) + '</strong></div>';
+    html += '<div>Sketch Mash D = <strong>' + (isFinite(sketchD) ? sketchD.toFixed(4) : 'undef (J=0)') + '</strong></div>';
+    html += '</div>';
+    html += '<div style="flex:1; min-width:160px; background:#fff3e0; padding:8px; border-radius:6px; border:1px solid #ffe0b2;">';
+    html += '<div style="font-size:0.85em; font-weight:bold; margin-bottom:4px;">Sketch vs Exact</div>';
+    html += '<div>Jaccard error: <strong>' + Math.abs(exactJ - sketchJ).toFixed(4) + '</strong></div>';
+    html += '<div>Mash D error: <strong>' + (isFinite(exactD) && isFinite(sketchD) ? Math.abs(exactD - sketchD).toFixed(4) : 'N/A') + '</strong></div>';
+    html += '<div style="margin-top:4px; font-size:0.82em; color:#666;">Increase s to reduce error</div>';
+    html += '</div>';
+    html += '</div></div>';
+    html += '</div>';
+
+    $('mash-output').innerHTML = html;
+  }
+
+  $('mash-run').addEventListener('click', computeMash);
+  $('mash-k').addEventListener('input', function() { $('mash-k-val').textContent = this.value; });
+  $('mash-s').addEventListener('input', function() { $('mash-s-val').textContent = this.value; });
+
+  // Run on load
+  computeMash();
+})();
+</script>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Try It
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Start with the default sequences that differ in the middle. Compare the exact Jaccard (purple panel) with the sketch estimate (blue panel) – notice the error in “Sketch vs Exact.”</li>
+<li>Make Sequence B identical to Sequence A – both Jaccard values should become 1.0 and the error should drop to 0.</li>
+<li>Increase <span class="math inline">\(k\)</span> – what happens to the Jaccard index when sequences differ?</li>
+<li>Increase sketch size <span class="math inline">\(s\)</span> – the sketch estimate becomes more accurate (error shrinks toward zero).</li>
+<li>Try completely different sequences – the Jaccard drops near 0 and Mash distance becomes large.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="sourmash-and-scaled-minhash" class="level3">
+<h3 class="anchored" data-anchor-id="sourmash-and-scaled-minhash">Sourmash and Scaled MinHash</h3>
+<p>The standard MinHash sketch keeps exactly <span class="math inline">\(s\)</span> hashes. An alternative approach, <strong>FracMinHash</strong> (also called “scaled MinHash”), keeps all hash values below a threshold <span class="math inline">\(\frac{H}{f}\)</span> where <span class="math inline">\(H\)</span> is the maximum hash value and <span class="math inline">\(f\)</span> is a scaling factor (Brown and Irber, 2016). This means sketch size scales proportionally with genome size, which enables <strong>containment</strong> queries: “what fraction of genome A’s k-mers appear in genome B?” This is particularly valuable for metagenomics, where you want to detect the presence of a small genome within a large mixed sample. The tool <a href="https://sourmash.readthedocs.io/">sourmash</a> implements FracMinHash and has become widely used for metagenomic analysis.</p>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ul>
+<li>Ondov BD, Treangen TJ, Melsted P, et al.&nbsp;“Mash: fast genome and metagenome distance estimation using MinHash.” <em>Genome Biology</em> 17:132, 2016. <a href="https://doi.org/10.1186/s13059-016-0997-x">DOI: 10.1186/s13059-016-0997-x</a></li>
+<li>Broder AZ. “On the resemblance and containment of documents.” <em>Proceedings of the Compression and Complexity of Sequences</em>, 21-29, 1997.</li>
+<li>Brown CT, Irber L. “sourmash: a library for MinHash sketching of DNA.” <em>JOSS</em> 1(5):27, 2016.</li>
+</ul>
+<hr>
+</section>
+</section>
 <section id="summary" class="level2">
-<h2 class="anchored" data-anchor-id="summary">7. Summary</h2>
-<p>This lecture traced the journey from k-mers to modern sequence alignment:</p>
+<h2 class="anchored" data-anchor-id="summary">8. Summary</h2>
+<p>This lecture traced the journey from k-mers to modern sequence analysis:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1978,6 +2536,11 @@ window.Quarto = {
 <td>Index-seed-chain-align pipeline using minimizers</td>
 <td><a href="https://doi.org/10.1093/bioinformatics/bty191">Li 2018</a></td>
 </tr>
+<tr class="even">
+<td><strong>Mash</strong></td>
+<td>MinHash sketches for fast genome distance estimation</td>
+<td><a href="https://doi.org/10.1186/s13059-016-0997-x">Ondov et al.&nbsp;2016</a></td>
+</tr>
 </tbody>
 </table>
 <p>The thread connecting everything: <strong>k-mers are the atomic unit of sequence analysis</strong>. We count them to profile genomes. We subsample them with minimizers to build efficient indexes. We chain minimizer hits to find alignments. And we use k-mer set operations to evaluate assemblies.</p>
@@ -2000,7 +2563,7 @@ window.Quarto = {
 <ul>
 <li><strong>Genome assembly</strong>: De Bruijn graphs are built from k-mers (SPAdes, hifiasm). Efficient construction of compacted de Bruijn graphs has been advanced by algorithms like <strong>TwoPaCo</strong> (<a href="https://doi.org/10.1093/bioinformatics/btw609">Minkin et al., <em>Bioinformatics</em> 2017</a>) and <strong>BCALM 2</strong> (<a href="https://doi.org/10.1093/bioinformatics/btw279">Chikhi, Limasset, and Medvedev, <em>Bioinformatics</em> 2016</a>), which use minimizer-based partitioning for scalable graph construction.</li>
 <li><strong>Metagenomic classification</strong>: <a href="https://doi.org/10.1186/s13059-019-1891-0">Kraken 2</a> maps minimizers to taxonomic labels (building on the original <a href="https://doi.org/10.1186/gb-2014-15-3-r46">Kraken</a> by <a href="https://doi.org/10.1186/gb-2014-15-3-r46">Wood and Salzberg, <em>Genome Biology</em> 2014</a>)</li>
-<li><strong>Sequence comparison</strong>: <a href="https://doi.org/10.1186/s13059-016-0997-x">Mash</a> and sourmash use k-mer sketches (MinHash) for fast distance estimation</li>
+<li><strong>Sequence comparison</strong>: Mash and sourmash (covered in Section 7) extend to metagenomics, environmental sampling, and outbreak tracking</li>
 <li><strong>Error correction</strong>: Tools like BFC correct reads based on k-mer frequencies</li>
 <li><strong>K-mer set representations</strong>: <a href="https://doi.org/10.1007/978-3-030-45257-5_10">Rahman and Medvedev (<em>RECOMB</em> 2020)</a> introduced <strong>spectrum-preserving string sets (SPSS)</strong>, a compact way to represent a set of k-mers as a collection of strings that preserves all k-mer membership and abundance information. Their UST algorithm finds a near-optimal SPSS by computing a path cover of the compacted de Bruijn graph.</li>
 <li><strong>K-mer data structure surveys</strong>: A comprehensive review by <a href="https://doi.org/10.1101/gr.260604.119">Marchet, Boucher, Puglisi, Medvedev, Salson, and Chikhi (<em>Genome Research</em> 2021)</a> surveys the landscape of data structures for representing and querying k-mer sets across large collections of sequencing datasets, classifying approaches by their supported operations and space-time trade-offs.</li>
