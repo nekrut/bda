@@ -44,7 +44,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 15 | Mar 3 | [K-mers, Minimizers, and Minimap2](lectures/lecture15.qmd) |
 | 16 | Mar 5 | - |
 | - | - | Spring break |
-| 17 | Mar 17 | - |
+| 17 | Mar 17 | [DNA Sequencing Technologies](lectures/lecture17.qmd) |
 | 18 | Mar 19 | - |
 | 19 | Mar 24 | - |
 | 20 | Mar 26 | - |
