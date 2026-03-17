@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>About – BMMB554</title>
+<title>hp1_plan – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">About</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -236,34 +236,99 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#take-home-project-1." id="toc-take-home-project-1." class="nav-link active" data-scroll-target="#take-home-project-1.">Take-home project 1.</a>
+  <ul class="collapse">
+  <li><a href="#goal" id="toc-goal" class="nav-link" data-scroll-target="#goal">Goal</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a>
+  <ul class="collapse">
+  <li><a href="#formatting-the-data" id="toc-formatting-the-data" class="nav-link" data-scroll-target="#formatting-the-data">Formatting the data</a></li>
+  <li><a href="#creating-notebook" id="toc-creating-notebook" class="nav-link" data-scroll-target="#creating-notebook">Creating Notebook</a></li>
+  <li><a href="#saving-notebook" id="toc-saving-notebook" class="nav-link" data-scroll-target="#saving-notebook">Saving notebook</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/hp1_plan.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">About</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
+<section id="take-home-project-1." class="level1">
+<h1>Take-home project 1.</h1>
+<section id="goal" class="level2">
+<h2 class="anchored" data-anchor-id="goal">Goal</h2>
+<p>You will create a Jupyter Notebook describing the steps listed in the implementation section. This notebook will contain initial data and instructions for students to complete Take-Home Project 1.</p>
+</section>
+<section id="implementation" class="level2">
+<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
+<section id="formatting-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="formatting-the-data">Formatting the data</h3>
+<ul>
+<li>Download the following dataset: https://usegalaxy.eu/api/datasets/4838ba20a6d86765fd8e284ee2695b49/display?to_ext=tabular</li>
+<li>The dataset contains 16 columns. Some columns begin with the following string: ‘ANN[*].’ . This string should be removed from the heading of these columns.</li>
+<li>Put the dataset in the GitHub data repository of this course so it can be pulled from GitHub into Collab notebooks.</li>
+</ul>
+</section>
+<section id="creating-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="creating-notebook">Creating Notebook</h3>
+<ul>
+<li>Notebook should have a title “Take-home project 1”</li>
+<li>It should contain the cell pulling in the dataset you formatted above into a pandas DataFrame.</li>
+<li>Write an instruction markdown cell with the following text (the text within triple quotes) :</li>
+</ul>
+<p>““” Our goal is to understand whether the malaria parasite (<a href="https://brc-analytics.dev.clevercanary.com/data/organisms/5833"><em>Plasmodium falciparum</em></a>) infecting these individuals is resistant to <a href="https://en.wikipedia.org/wiki/Pyrimethamine">Pyrimethamine</a>—an antimalarial drug. Resistance to Pyrimethamine is conferred by a mutation in <code>PF3D7_0417200</code> (<em>dhfr</em>) gene ({% cite Cowman1988 %}). Given sequencing data from four individuals we will determine which one of them is infected with a <em>Plasmodium falciparum</em> carrying mutations in this gene.</p>
+<p>Variant calls in the provided Pandas data frame represent analysis of four samples: two from Ivory Coast and two from Colombia:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Accession</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR636434">ERR636434</a></td>
+<td>Ivory coast</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR636028">ERR636028</a></td>
+<td>Ivory coast</td>
+</tr>
+<tr class="odd">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR042232">ERR042232</a></td>
+<td>Colombia</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR042228">ERR042228</a></td>
+<td>Colombia</td>
+</tr>
+</tbody>
+</table>
+<p>These accessions correspond to datasets stored in the <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive</a> at NCBI.</p>
+<p>(data from <a href="https://www.malariagen.net/data_package/open-dataset-plasmodium-falciparum-v70/">MalariaGen</a> )</p>
+<p>What you need to do:</p>
+<ul>
+<li>Filter variants falling within the <em>dhfr</em> gene</li>
+<li>Restrict variants to missense variants only using the effect column.</li>
+<li>Create a graph that shows samples vs variant coordinates, in which graph marks are proportional to alternative allele frequencies (<strong>AF</strong> column)</li>
+<li>Create a graph showing a world map in which allele frequencies of these two samples are represented as pie charts within the map of Colombia and within the map of Ivory Coast. ““”</li>
+</ul>
+</section>
+<section id="saving-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="saving-notebook">Saving notebook</h3>
+<p>Create a directory called “Projects,” save this notebook to this directory, and call it “Project 1.”</p>
 
 
-</header>
-
-
-<p>About this site</p>
-
-
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -704,4 +769,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/about.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/hp1_plan.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
