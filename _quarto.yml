@@ -53,6 +53,8 @@ website:
             text: "14. Finding Sequence Matches Quickly"
           - href: lectures/lecture15.qmd
             text: "15. K-mers, Minimizers, and Minimap2"
+          - href: lectures/lecture17.qmd
+            text: "17. DNA Sequencing Technologies"
 
 format:
   html:

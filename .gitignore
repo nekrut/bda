@@ -35,6 +35,10 @@ images/*
 !images/lecture12_header.png
 !images/lecture13_*.png
 !images/aglobin_*.png
+!images/arslan2024_*.png
+!images/pacbio_*.png
+!images/ont_*.png
+!images/element_*.png
 
 # Test files (keep answers private)
 lectures/test2*.qmd
