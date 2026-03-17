@@ -1,0 +1,2843 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 17: DNA Sequencing Technologies – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture17.html">17. DNA Sequencing Technologies</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. Finding Sequence Matches Quickly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. K-mers, Minimizers, and Minimap2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture17.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">17. DNA Sequencing Technologies</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#introduction-the-sequencing-revolution" id="toc-introduction-the-sequencing-revolution" class="nav-link" data-scroll-target="#introduction-the-sequencing-revolution">1. Introduction: The Sequencing Revolution</a>
+  <ul class="collapse">
+  <li><a href="#generations-of-sequencing" id="toc-generations-of-sequencing" class="nav-link" data-scroll-target="#generations-of-sequencing">Generations of Sequencing</a></li>
+  </ul></li>
+  <li><a href="#historical-technologies" id="toc-historical-technologies" class="nav-link" data-scroll-target="#historical-technologies">2. Historical Technologies</a>
+  <ul class="collapse">
+  <li><a href="#pyrosequencing" id="toc-pyrosequencing" class="nav-link" data-scroll-target="#pyrosequencing">2.1 454 Pyrosequencing</a></li>
+  <li><a href="#solid-sequencing-by-oligonucleotide-ligation-and-detection" id="toc-solid-sequencing-by-oligonucleotide-ligation-and-detection" class="nav-link" data-scroll-target="#solid-sequencing-by-oligonucleotide-ligation-and-detection">2.2 SOLiD (Sequencing by Oligonucleotide Ligation and Detection)</a></li>
+  <li><a href="#ion-torrent" id="toc-ion-torrent" class="nav-link" data-scroll-target="#ion-torrent">2.3 Ion Torrent</a></li>
+  <li><a href="#comparison-of-historical-platforms" id="toc-comparison-of-historical-platforms" class="nav-link" data-scroll-target="#comparison-of-historical-platforms">Comparison of Historical Platforms</a></li>
+  </ul></li>
+  <li><a href="#illumina" id="toc-illumina" class="nav-link" data-scroll-target="#illumina">3. Illumina</a>
+  <ul class="collapse">
+  <li><a href="#core-principle-bridge-amplification-reversible-terminators" id="toc-core-principle-bridge-amplification-reversible-terminators" class="nav-link" data-scroll-target="#core-principle-bridge-amplification-reversible-terminators">Core Principle: Bridge Amplification + Reversible Terminators</a></li>
+  <li><a href="#four-channel-chemistry-4-dye" id="toc-four-channel-chemistry-4-dye" class="nav-link" data-scroll-target="#four-channel-chemistry-4-dye">3.1 Four-Channel Chemistry (4-dye)</a></li>
+  <li><a href="#two-channel-chemistry-2-dye" id="toc-two-channel-chemistry-2-dye" class="nav-link" data-scroll-target="#two-channel-chemistry-2-dye">3.2 Two-Channel Chemistry (2-dye)</a></li>
+  <li><a href="#one-channel-chemistry-1-dye" id="toc-one-channel-chemistry-1-dye" class="nav-link" data-scroll-target="#one-channel-chemistry-1-dye">3.3 One-Channel Chemistry (1-dye)</a></li>
+  <li><a href="#xleap-sbs-chemistry" id="toc-xleap-sbs-chemistry" class="nav-link" data-scroll-target="#xleap-sbs-chemistry">3.4 XLEAP-SBS Chemistry</a></li>
+  <li><a href="#current-illumina-platforms" id="toc-current-illumina-platforms" class="nav-link" data-scroll-target="#current-illumina-platforms">Current Illumina Platforms</a></li>
+  </ul></li>
+  <li><a href="#element-biosciences" id="toc-element-biosciences" class="nav-link" data-scroll-target="#element-biosciences">4. Element Biosciences</a>
+  <ul class="collapse">
+  <li><a href="#sequencing-by-binding-sbb-avidite-chemistry" id="toc-sequencing-by-binding-sbb-avidite-chemistry" class="nav-link" data-scroll-target="#sequencing-by-binding-sbb-avidite-chemistry">Sequencing by Binding (SBB) / Avidite Chemistry</a></li>
+  <li><a href="#additional-innovations" id="toc-additional-innovations" class="nav-link" data-scroll-target="#additional-innovations">Additional Innovations</a></li>
+  <li><a href="#aviti-specifications" id="toc-aviti-specifications" class="nav-link" data-scroll-target="#aviti-specifications">AVITI Specifications</a></li>
+  </ul></li>
+  <li><a href="#pacbio" id="toc-pacbio" class="nav-link" data-scroll-target="#pacbio">5. PacBio</a>
+  <ul class="collapse">
+  <li><a href="#zero-mode-waveguides-zmws" id="toc-zero-mode-waveguides-zmws" class="nav-link" data-scroll-target="#zero-mode-waveguides-zmws">Zero-Mode Waveguides (ZMWs)</a></li>
+  <li><a href="#circular-consensus-sequencing-ccs-and-hifi-reads" id="toc-circular-consensus-sequencing-ccs-and-hifi-reads" class="nav-link" data-scroll-target="#circular-consensus-sequencing-ccs-and-hifi-reads">Circular Consensus Sequencing (CCS) and HiFi Reads</a></li>
+  <li><a href="#kinetics-detecting-base-modifications" id="toc-kinetics-detecting-base-modifications" class="nav-link" data-scroll-target="#kinetics-detecting-base-modifications">Kinetics: Detecting Base Modifications</a></li>
+  <li><a href="#current-pacbio-platforms" id="toc-current-pacbio-platforms" class="nav-link" data-scroll-target="#current-pacbio-platforms">Current PacBio Platforms</a></li>
+  </ul></li>
+  <li><a href="#oxford-nanopore-technologies-ont" id="toc-oxford-nanopore-technologies-ont" class="nav-link" data-scroll-target="#oxford-nanopore-technologies-ont">6. Oxford Nanopore Technologies (ONT)</a>
+  <ul class="collapse">
+  <li><a href="#principle-ionic-current-through-a-protein-pore" id="toc-principle-ionic-current-through-a-protein-pore" class="nav-link" data-scroll-target="#principle-ionic-current-through-a-protein-pore">Principle: Ionic Current Through a Protein Pore</a></li>
+  <li><a href="#direct-rna-sequencing" id="toc-direct-rna-sequencing" class="nav-link" data-scroll-target="#direct-rna-sequencing">Direct RNA Sequencing</a></li>
+  <li><a href="#adaptive-sampling-readuntil" id="toc-adaptive-sampling-readuntil" class="nav-link" data-scroll-target="#adaptive-sampling-readuntil">Adaptive Sampling (ReadUntil)</a></li>
+  <li><a href="#duplex-sequencing" id="toc-duplex-sequencing" class="nav-link" data-scroll-target="#duplex-sequencing">Duplex Sequencing</a></li>
+  <li><a href="#current-ont-devices" id="toc-current-ont-devices" class="nav-link" data-scroll-target="#current-ont-devices">Current ONT Devices</a></li>
+  <li><a href="#data-formats" id="toc-data-formats" class="nav-link" data-scroll-target="#data-formats">Data Formats</a></li>
+  </ul></li>
+  <li><a href="#technology-comparison" id="toc-technology-comparison" class="nav-link" data-scroll-target="#technology-comparison">7. Technology Comparison</a></li>
+  <li><a href="#practicalities-data-formats-and-exploration" id="toc-practicalities-data-formats-and-exploration" class="nav-link" data-scroll-target="#practicalities-data-formats-and-exploration">8. Practicalities: Data Formats and Exploration</a>
+  <ul class="collapse">
+  <li><a href="#fastq-illumina-element-ont-after-basecalling" id="toc-fastq-illumina-element-ont-after-basecalling" class="nav-link" data-scroll-target="#fastq-illumina-element-ont-after-basecalling">FASTQ (Illumina, Element, ONT after basecalling)</a></li>
+  <li><a href="#bam-pacbio-hifi-also-general-alignment-format" id="toc-bam-pacbio-hifi-also-general-alignment-format" class="nav-link" data-scroll-target="#bam-pacbio-hifi-also-general-alignment-format">BAM (PacBio HiFi, also general alignment format)</a></li>
+  <li><a href="#pod5-ont-raw-signal" id="toc-pod5-ont-raw-signal" class="nav-link" data-scroll-target="#pod5-ont-raw-signal">POD5 (ONT raw signal)</a></li>
+  <li><a href="#format-summary" id="toc-format-summary" class="nav-link" data-scroll-target="#format-summary">Format Summary</a></li>
+  <li><a href="#choosing-a-platform" id="toc-choosing-a-platform" class="nav-link" data-scroll-target="#choosing-a-platform">Choosing a Platform</a></li>
+  </ul></li>
+  <li><a href="#on-the-horizon-roche-sequencing-by-expansion-sbx" id="toc-on-the-horizon-roche-sequencing-by-expansion-sbx" class="nav-link" data-scroll-target="#on-the-horizon-roche-sequencing-by-expansion-sbx">9. On the Horizon: Roche Sequencing by Expansion (SBX)</a>
+  <ul class="collapse">
+  <li><a href="#the-xpandomer-concept" id="toc-the-xpandomer-concept" class="nav-link" data-scroll-target="#the-xpandomer-concept">The Xpandomer Concept</a></li>
+  <li><a href="#hardware-cmos-nanopore-arrays" id="toc-hardware-cmos-nanopore-arrays" class="nav-link" data-scroll-target="#hardware-cmos-nanopore-arrays">Hardware: CMOS Nanopore Arrays</a></li>
+  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">Performance</a></li>
+  <li><a href="#platform-axelios-1" id="toc-platform-axelios-1" class="nav-link" data-scroll-target="#platform-axelios-1">Platform: AXELIOS 1</a></li>
+  </ul></li>
+  <li><a href="#key-references" id="toc-key-references" class="nav-link" data-scroll-target="#key-references">Key References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture17.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture17.html">17. DNA Sequencing Technologies</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 17: DNA Sequencing Technologies</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to:</p>
+<ul>
+<li>Explain the principle of sequencing-by-synthesis and how it differs from sequencing-by-ligation</li>
+<li>Compare historical sequencing platforms (454, SOLiD, Ion Torrent) and explain why they were displaced</li>
+<li>Describe Illumina’s dye chemistry evolution from 4-channel to 2-channel to 1-channel imaging</li>
+<li>Explain Element Biosciences’ avidite chemistry and why decoupling detection from incorporation matters</li>
+<li>Describe PacBio’s zero-mode waveguides and how circular consensus sequencing produces HiFi reads</li>
+<li>Explain nanopore sequencing, direct RNA sequencing, and adaptive sampling</li>
+<li>Choose an appropriate sequencing platform given a specific experimental goal</li>
+</ul>
+<hr>
+</section>
+<section id="introduction-the-sequencing-revolution" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-the-sequencing-revolution">1. Introduction: The Sequencing Revolution</h2>
+<p>DNA sequencing has undergone extraordinary transformations since Frederick Sanger’s chain-termination method in 1977. That original approach – using dideoxynucleotides to terminate growing DNA chains at random positions – dominated for nearly three decades and was the workhorse behind the Human Genome Project (completed 2003). The human genome cost approximately $2.7 billion to sequence using Sanger technology.</p>
+<p>The transition from Sanger to <strong>next-generation sequencing (NGS)</strong> began in 2005 and triggered a cost reduction that outpaced <a href="https://en.wikipedia.org/wiki/Moore%27s_law">Moore’s Law</a> by orders of magnitude. We now routinely sequence a human genome for under $200 in a matter of hours.</p>
+<section id="generations-of-sequencing" class="level3">
+<h3 class="anchored" data-anchor-id="generations-of-sequencing">Generations of Sequencing</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 12%">
+<col style="width: 33%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Generation</th>
+<th>Era</th>
+<th>Key Feature</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1st</td>
+<td>1977-2004</td>
+<td>Chain termination</td>
+<td>Sanger (ABI 3730)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2nd</td>
+<td>2005-present</td>
+<td>Massively parallel short reads</td>
+<td>454, Illumina, SOLiD, Ion Torrent, Element</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3rd</td>
+<td>2011-present</td>
+<td>Single-molecule, long reads</td>
+<td>PacBio, Oxford Nanopore</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The Common Thread
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nearly all modern sequencing platforms share the <strong>sequencing-by-synthesis</strong> (SBS) principle: watch a DNA polymerase incorporate nucleotides one at a time and detect which base was added at each step. The platforms differ in <em>how</em> they detect incorporation – light, pH change, electrical current, or fluorescence duration. (SOLiD is a notable exception, using oligonucleotide <strong>ligation</strong> rather than polymerase activity.)</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="historical-technologies" class="level2">
+<h2 class="anchored" data-anchor-id="historical-technologies">2. Historical Technologies</h2>
+<p>Three platforms dominated the early NGS era. All have been largely superseded, but understanding them illuminates the design trade-offs that shaped current technology.</p>
+<section id="pyrosequencing" class="level3">
+<h3 class="anchored" data-anchor-id="pyrosequencing">2.1 454 Pyrosequencing</h3>
+<p>454 Life Sciences launched the first commercial NGS platform in 2005 (<a href="https://doi.org/10.1038/nature03959">Margulies et al.&nbsp;2005, <em>Nature</em> 437:376-380</a>). Roche acquired the company in 2007 and discontinued the platform in 2013.</p>
+<p><strong>How it worked:</strong></p>
+<ol type="1">
+<li>Fragment DNA and ligate adapters</li>
+<li>Capture single fragments on beads via emulsion PCR – each bead carries ~10 million copies of one fragment</li>
+<li>Deposit beads into <strong>picotiter plate wells</strong> (one bead per well)</li>
+<li>Flow nucleotides sequentially (T, then A, then G, then C, repeat)</li>
+<li>When a nucleotide is incorporated, <strong>pyrophosphate (PPi)</strong> is released</li>
+<li>PPi is converted to ATP by sulfurylase; ATP drives <strong>luciferase</strong> to produce a flash of light</li>
+<li>A CCD camera captures the light; signal intensity is proportional to the number of bases incorporated</li>
+</ol>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li>Read length: up to ~1000 bp (longest of any NGS platform at the time)</li>
+<li>Throughput: ~700 Mb per run</li>
+<li>Main error type: <strong>homopolymer insertion/deletions</strong> – runs of identical bases (e.g., AAAA) produce a single light pulse whose intensity must be quantified, and intensity estimation degrades for runs &gt;6 bp</li>
+<li>Run time: ~10 hours</li>
+</ul>
+
+<div id="viz-pyro" style="max-width:800px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">454 Pyrosequencing Animation</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Watch nucleotides flow over a well. When the correct nucleotide is incorporated, pyrophosphate triggers a light flash.</p>
+<div style="text-align:center; margin-bottom:10px;">
+  <label style="font-size:0.85em; font-weight:bold;">Template strand: </label>
+  <input id="pyro-template" type="text" value="TACGGATC" maxlength="12" style="padding:4px 8px; font-family:monospace; width:140px; text-transform:uppercase; border:1px solid #ccc; border-radius:4px;">
+  <button id="pyro-start" style="padding:6px 16px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:8px;">Start</button>
+  <button id="pyro-reset" style="padding:6px 16px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;">Reset</button>
+</div>
+<canvas id="pyro-canvas" width="760" height="400" style="width:100%; border:1px solid #eee; border-radius:8px; background:#1a1a2e;"></canvas>
+<div id="pyro-flowgram" style="margin-top:10px; padding:10px; background:#f5f5f5; border-radius:4px; font-family:monospace; font-size:0.85em; min-height:24px;"></div>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('pyro-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var flowOrder = ['T','A','G','C'];
+  var compMap = {A:'T', T:'A', G:'C', C:'G'};
+  var baseColors = {T:'#e74c3c', A:'#2ecc71', G:'#f39c12', C:'#3498db'};
+  var template, synthStrand, flowIdx, baseIdx, animState, animFrame, flashAlpha, signals;
+  var particleY, particleAlpha, showParticle;
+
+  function reset() {
+    template = document.getElementById('pyro-template').value.toUpperCase().replace(/[^ACGT]/g,'');
+    if(template.length===0) template='TACGGATC';
+    synthStrand = '';
+    flowIdx = 0; baseIdx = 0;
+    animState = 'idle';
+    flashAlpha = 0;
+    signals = [];
+    showParticle = false;
+    particleY = 0; particleAlpha = 0;
+    draw();
+    document.getElementById('pyro-flowgram').innerHTML = '<b>Flowgram:</b> (press Start)';
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    // Well
+    ctx.fillStyle = '#16213e';
+    ctx.fillRect(0,0,W,H);
+    // Draw well structure
+    var wellX = 120, wellW = 200, wellTop = 80, wellBot = 300;
+    ctx.fillStyle = '#0f3460';
+    ctx.beginPath();
+    ctx.moveTo(wellX, wellTop);
+    ctx.lineTo(wellX, wellBot);
+    ctx.lineTo(wellX+wellW, wellBot);
+    ctx.lineTo(wellX+wellW, wellTop);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#e94560';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Bead at bottom
+    ctx.beginPath();
+    ctx.arc(wellX+wellW/2, wellBot-30, 25, 0, Math.PI*2);
+    ctx.fillStyle = '#533483';
+    ctx.fill();
+    ctx.strokeStyle = '#9b59b6';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('bead', wellX+wellW/2, wellBot-27);
+
+    // Template on bead
+    ctx.font = '12px monospace';
+    ctx.fillStyle = '#ccc';
+    ctx.textAlign = 'left';
+    ctx.fillText("3'-" + template + "-5'", wellX+20, wellBot-5);
+
+    // Synthesized strand
+    if(synthStrand.length > 0) {
+      ctx.fillStyle = '#2ecc71';
+      ctx.fillText("5'-" + synthStrand, wellX+20, wellBot-55);
+    }
+
+    // Current flowing nucleotide label
+    if(flowIdx < flowOrder.length * Math.ceil(template.length)) {
+      var curNuc = flowOrder[flowIdx % 4];
+      ctx.font = 'bold 16px Arial';
+      ctx.fillStyle = baseColors[curNuc];
+      ctx.textAlign = 'center';
+      ctx.fillText('Flowing: ' + curNuc, wellX+wellW/2, wellTop-10);
+
+      // Particle falling
+      if(showParticle) {
+        ctx.globalAlpha = particleAlpha;
+        ctx.beginPath();
+        ctx.arc(wellX+wellW/2, wellTop + particleY, 8, 0, Math.PI*2);
+        ctx.fillStyle = baseColors[curNuc];
+        ctx.fill();
+        ctx.font = 'bold 11px monospace';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(curNuc, wellX+wellW/2, wellTop + particleY + 4);
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // Flash effect
+    if(flashAlpha > 0) {
+      ctx.globalAlpha = flashAlpha;
+      ctx.fillStyle = '#ffeb3b';
+      ctx.beginPath();
+      ctx.arc(wellX+wellW/2, wellBot-80, 40 + flashAlpha*20, 0, Math.PI*2);
+      ctx.fill();
+      ctx.font = 'bold 14px Arial';
+      ctx.fillStyle = '#000';
+      ctx.textAlign = 'center';
+      ctx.fillText('LIGHT!', wellX+wellW/2, wellBot-76);
+      ctx.globalAlpha = 1;
+    }
+
+    // Flowgram chart on right
+    var chartX = 400, chartY = 40, chartW = 340, chartH = 300;
+    ctx.fillStyle = '#0d1b2a';
+    ctx.fillRect(chartX, chartY, chartW, chartH);
+    ctx.strokeStyle = '#1b2838';
+    ctx.strokeRect(chartX, chartY, chartW, chartH);
+    ctx.fillStyle = '#aaa';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Flowgram (Signal Intensity)', chartX+chartW/2, chartY-5);
+
+    // Axes
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(chartX+30, chartY+chartH-25);
+    ctx.lineTo(chartX+chartW-10, chartY+chartH-25);
+    ctx.moveTo(chartX+30, chartY+chartH-25);
+    ctx.lineTo(chartX+30, chartY+10);
+    ctx.stroke();
+    ctx.fillStyle = '#888';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Flow cycle', chartX+chartW/2, chartY+chartH-5);
+    ctx.save();
+    ctx.translate(chartX+12, chartY+chartH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('Intensity', 0, 0);
+    ctx.restore();
+
+    // Draw bars
+    if(signals.length > 0) {
+      var maxSig = 4;
+      var barW = Math.min(20, (chartW-50)/signals.length - 2);
+      var plotH = chartH - 45;
+      for(var i=0; i<signals.length; i++) {
+        var sig = signals[i];
+        var bh = (sig.val/maxSig)*plotH;
+        var bx = chartX + 35 + i*(barW+2);
+        ctx.fillStyle = baseColors[sig.nuc];
+        ctx.fillRect(bx, chartY+chartH-25-bh, barW, bh);
+        ctx.fillStyle = '#aaa';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(sig.nuc, bx+barW/2, chartY+chartH-14);
+        if(sig.val > 0) {
+          ctx.fillText(sig.val, bx+barW/2, chartY+chartH-28-bh);
+        }
+      }
+    }
+
+    // Legend
+    ctx.font = '11px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ccc';
+    ctx.fillText('Enzymes: sulfurylase + luciferase', 10, H-10);
+  }
+
+  function stepFlow() {
+    if(baseIdx >= template.length) {
+      animState = 'done';
+      document.getElementById('pyro-flowgram').innerHTML = '<b>Flowgram:</b> Sequencing complete! Read: ' + synthStrand;
+      draw();
+      return;
+    }
+    var curNuc = flowOrder[flowIdx % 4];
+    var expectedBase = compMap[template[baseIdx]];
+    // Count how many consecutive bases match
+    var incCount = 0;
+    var tmpIdx = baseIdx;
+    while(tmpIdx < template.length && compMap[template[tmpIdx]] === curNuc) {
+      incCount++;
+      tmpIdx++;
+    }
+
+    showParticle = true;
+    particleY = 0;
+    particleAlpha = 1;
+    var targetY = 180;
+    var dropFrames = 30;
+    var frame = 0;
+
+    function animateDrop() {
+      frame++;
+      particleY = (frame/dropFrames)*targetY;
+      if(frame >= dropFrames) {
+        showParticle = false;
+        if(incCount > 0) {
+          for(var i=0; i<incCount; i++) synthStrand += curNuc;
+          baseIdx += incCount;
+          flashAlpha = 1;
+          signals.push({nuc:curNuc, val:incCount});
+          animateFlash();
+        } else {
+          signals.push({nuc:curNuc, val:0});
+          flowIdx++;
+          draw();
+          updateFlowgram();
+          setTimeout(stepFlow, 600);
+        }
+        return;
+      }
+      draw();
+      requestAnimationFrame(animateDrop);
+    }
+
+    function animateFlash() {
+      flashAlpha -= 0.03;
+      if(flashAlpha <= 0) {
+        flashAlpha = 0;
+        flowIdx++;
+        draw();
+        updateFlowgram();
+        setTimeout(stepFlow, 600);
+        return;
+      }
+      draw();
+      requestAnimationFrame(animateFlash);
+    }
+    animateDrop();
+  }
+
+  function updateFlowgram() {
+    var html = '<b>Flowgram:</b> ';
+    signals.forEach(function(s) {
+      var c = s.val > 0 ? baseColors[s.nuc] : '#999';
+      html += '<span style="color:'+c+';font-weight:'+(s.val>0?'bold':'normal')+';">'+s.nuc+'='+s.val+' </span>';
+    });
+    html += ' | <b>Read so far:</b> ' + synthStrand;
+    document.getElementById('pyro-flowgram').innerHTML = html;
+  }
+
+  document.getElementById('pyro-start').addEventListener('click', function() {
+    reset();
+    animState = 'running';
+    setTimeout(stepFlow, 500);
+  });
+  document.getElementById('pyro-reset').addEventListener('click', reset);
+  reset();
+})();
+</script>
+</section>
+<section id="solid-sequencing-by-oligonucleotide-ligation-and-detection" class="level3">
+<h3 class="anchored" data-anchor-id="solid-sequencing-by-oligonucleotide-ligation-and-detection">2.2 SOLiD (Sequencing by Oligonucleotide Ligation and Detection)</h3>
+<p>Applied Biosystems launched SOLiD in 2007, building on work by <a href="https://doi.org/10.1126/science.1117389">Shendure et al.&nbsp;2005, <em>Science</em> 309:1728-1732</a>.</p>
+<p><strong>How it worked:</strong></p>
+<ol type="1">
+<li>DNA fragments amplified on beads via emulsion PCR (similar to 454)</li>
+<li>Beads deposited on a glass slide</li>
+<li>Sequencing proceeds by <strong>ligation</strong>, not polymerase synthesis</li>
+<li>Short fluorescently-labeled <strong>di-base probes</strong> (8-mers) hybridize to the template adjacent to a primer</li>
+<li>DNA ligase joins probe to the primer</li>
+<li>Fluorophore is imaged, then cleaved</li>
+<li>Process repeats with offset primers – each base is interrogated <strong>twice</strong> from different ligation rounds</li>
+</ol>
+<p><strong>Two-base encoding (color space):</strong></p>
+<p>Each fluorescent label encodes a <em>dinucleotide</em>, not a single base. The read is recorded as a series of colors (0, 1, 2, 3) rather than bases. Decoding requires knowing the first base, and a single error propagates through the entire read. However, true SNPs change only one color, while sequencing errors change two consecutive colors – enabling powerful error correction.</p>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li>Read length: ~75 bp (short)</li>
+<li>Accuracy: very high (~99.94%) after color-space error correction</li>
+<li>Throughput: up to 30 Gb per run</li>
+<li>Main limitation: short reads, complex analysis pipeline, slow adoption</li>
+</ul>
+</section>
+<section id="ion-torrent" class="level3">
+<h3 class="anchored" data-anchor-id="ion-torrent">2.3 Ion Torrent</h3>
+<p>Life Technologies (now Thermo Fisher) launched Ion Torrent in 2010 (<a href="https://doi.org/10.1038/nature10242">Rothberg et al.&nbsp;2011, <em>Nature</em> 475:348-352</a>). This was the first <strong>post-light</strong> sequencing technology.</p>
+<p><strong>How it worked:</strong></p>
+<ol type="1">
+<li>DNA fragments on beads via emulsion PCR, loaded into microwells on a semiconductor chip</li>
+<li>Nucleotides flowed sequentially (like 454)</li>
+<li>When a nucleotide is incorporated, a <strong>hydrogen ion (H+)</strong> is released, lowering the pH</li>
+<li>An <strong>ISFET</strong> (ion-sensitive field-effect transistor) sensor beneath each well detects the pH change</li>
+<li>No optics, no cameras – purely <strong>electronic detection</strong> on a standard CMOS chip</li>
+</ol>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li>Read length: up to 400 bp (Ion S5)</li>
+<li>Run time: 2-4 hours (fastest of early NGS)</li>
+<li>Main error: <strong>homopolymer indels</strong> (same problem as 454 – voltage proportional to number of incorporations)</li>
+<li>Still used in <strong>clinical settings</strong> (Ion GeneStudio S5) for targeted panels</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Why Homopolymers Are Hard
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Both 454 and Ion Torrent measure the <em>magnitude</em> of a signal (light intensity or voltage) to determine how many identical bases were incorporated in a single flow. Distinguishing 5 incorporations from 6 is inherently imprecise because signal scales sub-linearly and noise increases. Illumina avoids this entirely by incorporating <strong>one base at a time</strong> using reversible terminators.</p>
+</div>
+</div>
+</section>
+<section id="comparison-of-historical-platforms" class="level3">
+<h3 class="anchored" data-anchor-id="comparison-of-historical-platforms">Comparison of Historical Platforms</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>454</th>
+<th>SOLiD</th>
+<th>Ion Torrent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Year launched</td>
+<td>2005</td>
+<td>2007</td>
+<td>2010</td>
+</tr>
+<tr class="even">
+<td>Detection method</td>
+<td>Light (pyrosequencing)</td>
+<td>Fluorescence (ligation)</td>
+<td>pH (semiconductor)</td>
+</tr>
+<tr class="odd">
+<td>Read length</td>
+<td>~1000 bp</td>
+<td>~75 bp</td>
+<td>~400 bp</td>
+</tr>
+<tr class="even">
+<td>Max throughput/run</td>
+<td>~700 Mb</td>
+<td>~30 Gb</td>
+<td>~50 Gb</td>
+</tr>
+<tr class="odd">
+<td>Primary error type</td>
+<td>Homopolymer indels</td>
+<td>Substitutions</td>
+<td>Homopolymer indels</td>
+</tr>
+<tr class="even">
+<td>Status</td>
+<td>Discontinued 2013</td>
+<td>Discontinued ~2015</td>
+<td>Still sold (clinical)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="illumina" class="level2">
+<h2 class="anchored" data-anchor-id="illumina">3. Illumina</h2>
+<p>Illumina has dominated sequencing since approximately 2010, commanding &gt;80% of the global sequencing market at its peak. The company’s technology traces back to Solexa (founded 1998, acquired by Illumina 2007) and the foundational paper by <a href="https://doi.org/10.1038/nature07517">Bentley et al.&nbsp;2008, <em>Nature</em> 456:53-59</a>.</p>
+<section id="core-principle-bridge-amplification-reversible-terminators" class="level3">
+<h3 class="anchored" data-anchor-id="core-principle-bridge-amplification-reversible-terminators">Core Principle: Bridge Amplification + Reversible Terminators</h3>
+<p><strong>Library preparation and cluster generation:</strong></p>
+<ol type="1">
+<li>Fragment DNA and ligate adapters containing P5 and P7 sequences</li>
+<li>Denature and load single-stranded fragments onto a <strong>flow cell</strong> coated with complementary oligos</li>
+<li>Each fragment hybridizes to a surface oligo and is copied by a polymerase</li>
+<li>The original template is washed away; the copied strand bends over and hybridizes to an adjacent oligo – forming a <strong>bridge</strong></li>
+<li>Bridge amplification repeats ~35 cycles, creating a <strong>clonal cluster</strong> of ~1,000 identical copies</li>
+<li>Forward strands are cleaved (or reverse strands, depending on read); single-stranded clusters remain</li>
+</ol>
+<p><strong>Sequencing by synthesis:</strong></p>
+<ol type="1">
+<li>A sequencing primer hybridizes to the adapter</li>
+<li>All four nucleotides are added simultaneously – each carries:
+<ul>
+<li>A <strong>fluorescent dye</strong> (color identifies the base)</li>
+<li>A <strong>3’-O-azidomethyl blocking group</strong> (prevents further incorporation)</li>
+</ul></li>
+<li>After one nucleotide incorporates, excess is washed away</li>
+<li>The flow cell is <strong>imaged</strong> to capture fluorescence from every cluster</li>
+<li>Both the dye and the 3’-block are <strong>chemically cleaved</strong></li>
+<li>The cycle repeats</li>
+</ol>
+<p>This ensures <strong>exactly one base per cycle</strong> – no homopolymer ambiguity.</p>
+</section>
+<section id="four-channel-chemistry-4-dye" class="level3">
+<h3 class="anchored" data-anchor-id="four-channel-chemistry-4-dye">3.1 Four-Channel Chemistry (4-dye)</h3>
+<p>The original Illumina chemistry used on HiSeq, MiSeq, and GA platforms.</p>
+<ul>
+<li>4 distinct fluorescent dyes, one per base</li>
+<li>4 images per cycle (one filter per dye)</li>
+<li>Each base has a unique emission wavelength</li>
+</ul>
+</section>
+<section id="two-channel-chemistry-2-dye" class="level3">
+<h3 class="anchored" data-anchor-id="two-channel-chemistry-2-dye">3.2 Two-Channel Chemistry (2-dye)</h3>
+<p>Introduced on NextSeq and NovaSeq 6000 to reduce imaging time.</p>
+<ul>
+<li>Only <strong>2 dyes</strong> are used</li>
+<li>A = Red + Green (both channels bright)</li>
+<li>C = Red only</li>
+<li>T = Green only</li>
+<li>G = No dye (“dark” – unlabeled)</li>
+<li>2 images per cycle instead of 4</li>
+</ul>
+
+<div id="viz-illumina" style="max-width:900px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Illumina Dye Chemistry Comparison</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">Compare how the same cluster appears under 4-channel, 2-channel, and 1-channel imaging. Click a base to see its signature.</p>
+<div style="text-align:center; margin-bottom:15px;">
+  <button class="ilm-base-btn" data-base="A" style="padding:8px 20px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; margin:2px; font-weight:bold; font-size:1em;">A</button>
+  <button class="ilm-base-btn" data-base="C" style="padding:8px 20px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; margin:2px; font-weight:bold; font-size:1em;">C</button>
+  <button class="ilm-base-btn" data-base="G" style="padding:8px 20px; background:#FF9800; color:white; border:none; border-radius:4px; cursor:pointer; margin:2px; font-weight:bold; font-size:1em;">G</button>
+  <button class="ilm-base-btn" data-base="T" style="padding:8px 20px; background:#e74c3c; color:white; border:none; border-radius:4px; cursor:pointer; margin:2px; font-weight:bold; font-size:1em;">T</button>
+</div>
+<canvas id="ilm-canvas" width="860" height="420" style="width:100%; border:1px solid #ddd; border-radius:8px; background:#fff;"></canvas>
+<div id="ilm-info" style="margin-top:10px; padding:10px; background:#f0f4ff; border-radius:4px; font-size:0.9em;"></div>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('ilm-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var selectedBase = 'A';
+
+  // Chemistry definitions
+  // 4-channel: each base = unique channel
+  // 2-channel: A=red+green, C=red, T=green, G=dark
+  // 1-channel: 2 chemistry steps. T=bright+bright, A=bright+dark, C=dark+bright, G=dark+dark
+  var schemes = {
+    '4-channel': {
+      label: '4-Channel (HiSeq, MiSeq)',
+      images: ['Filter 1 (Blue)','Filter 2 (Green)','Filter 3 (Yellow)','Filter 4 (Red)'],
+      colors: ['#2196F3','#4CAF50','#FFC107','#e74c3c'],
+      pattern: {
+        A: [0,1,0,0],
+        C: [1,0,0,0],
+        G: [0,0,1,0],
+        T: [0,0,0,1]
+      }
+    },
+    '2-channel': {
+      label: '2-Channel (NextSeq, NovaSeq 6000)',
+      images: ['Red Channel','Green Channel'],
+      colors: ['#e74c3c','#4CAF50'],
+      pattern: {
+        A: [1,1],
+        C: [1,0],
+        T: [0,1],
+        G: [0,0]
+      }
+    },
+    '1-channel': {
+      label: '1-Channel (iSeq 100)',
+      images: ['Step 1 Image','Step 2 Image'],
+      colors: ['#7E57C2','#7E57C2'],
+      pattern: {
+        A: [1,0],
+        C: [0,1],
+        T: [1,1],
+        G: [0,0]
+      }
+    }
+  };
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    var schemeKeys = ['4-channel','2-channel','1-channel'];
+    var colW = W / 3;
+
+    schemeKeys.forEach(function(key, si) {
+      var s = schemes[key];
+      var x0 = si * colW;
+      // Header
+      ctx.fillStyle = '#333';
+      ctx.font = 'bold 13px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.label, x0 + colW/2, 22);
+
+      var pat = s.pattern[selectedBase];
+      var nimages = s.images.length;
+      var imgSize = 70;
+      var gap = 12;
+      var totalW = nimages * imgSize + (nimages-1) * gap;
+      var startX = x0 + (colW - totalW) / 2;
+      var startY = 50;
+
+      for(var i = 0; i < nimages; i++) {
+        var ix = startX + i * (imgSize + gap);
+        // Image label
+        ctx.fillStyle = '#666';
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(s.images[i], ix + imgSize/2, startY - 4);
+
+        // Image background
+        ctx.fillStyle = '#111';
+        ctx.fillRect(ix, startY, imgSize, imgSize);
+
+        // Draw cluster dots (4x4 grid of "clusters")
+        for(var row = 0; row < 4; row++) {
+          for(var col = 0; col < 4; col++) {
+            var cx = ix + 12 + col * 16;
+            var cy = startY + 12 + row * 16;
+            if(pat[i] > 0) {
+              // Bright cluster
+              ctx.beginPath();
+              ctx.arc(cx, cy, 5, 0, Math.PI*2);
+              var grd = ctx.createRadialGradient(cx, cy, 1, cx, cy, 6);
+              grd.addColorStop(0, '#fff');
+              grd.addColorStop(0.5, s.colors[i]);
+              grd.addColorStop(1, 'rgba(0,0,0,0)');
+              ctx.fillStyle = grd;
+              ctx.fill();
+            } else {
+              // Dark cluster
+              ctx.beginPath();
+              ctx.arc(cx, cy, 3, 0, Math.PI*2);
+              ctx.fillStyle = '#333';
+              ctx.fill();
+            }
+          }
+        }
+        ctx.strokeStyle = '#444';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(ix, startY, imgSize, imgSize);
+      }
+
+      // Signal readout below
+      var readoutY = startY + imgSize + 20;
+      ctx.fillStyle = '#333';
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      var sigStr = 'Signal: [' + pat.join(', ') + ']';
+      ctx.fillText(sigStr, x0 + colW/2, readoutY);
+
+      // Decode table
+      var tableY = readoutY + 25;
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'left';
+      var bases = ['A','C','G','T'];
+      var bcolors = {A:'#4CAF50', C:'#2196F3', G:'#FF9800', T:'#e74c3c'};
+      var tx = x0 + 20;
+      ctx.fillStyle = '#555';
+      ctx.fillText('Encoding:', tx, tableY);
+      bases.forEach(function(b, bi) {
+        var ty = tableY + 18 + bi*18;
+        var isSelected = (b === selectedBase);
+        if(isSelected) {
+          ctx.fillStyle = '#ffffcc';
+          ctx.fillRect(tx-4, ty-12, colW-40, 16);
+        }
+        ctx.fillStyle = bcolors[b];
+        ctx.font = (isSelected ? 'bold ' : '') + '11px monospace';
+        ctx.fillText(b + ' = [' + s.pattern[b].join(',') + ']', tx, ty);
+      });
+
+      // Separator
+      if(si < 2) {
+        ctx.strokeStyle = '#ddd';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x0+colW, 10);
+        ctx.lineTo(x0+colW, H-10);
+        ctx.stroke();
+      }
+    });
+
+    // Bottom info
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Selected base: ' + selectedBase, W/2, H-20);
+  }
+
+  var info = document.getElementById('ilm-info');
+  var infoText = {
+    A: '<b>Adenine (A):</b> 4-ch: unique green filter. 2-ch: lights up both red and green channels. 1-ch: bright in step 1, dark in step 2.',
+    C: '<b>Cytosine (C):</b> 4-ch: unique blue filter. 2-ch: red channel only. 1-ch: dark in step 1, bright in step 2.',
+    G: '<b>Guanine (G):</b> 4-ch: unique yellow filter. 2-ch: no signal (dark) — identified by exclusion. 1-ch: dark in both steps.',
+    T: '<b>Thymine (T):</b> 4-ch: unique red filter. 2-ch: green channel only. 1-ch: bright in both steps.'
+  };
+
+  document.querySelectorAll('.ilm-base-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      selectedBase = this.getAttribute('data-base');
+      info.innerHTML = infoText[selectedBase];
+      draw();
+    });
+  });
+
+  info.innerHTML = infoText['A'];
+  draw();
+})();
+</script>
+</section>
+<section id="one-channel-chemistry-1-dye" class="level3">
+<h3 class="anchored" data-anchor-id="one-channel-chemistry-1-dye">3.3 One-Channel Chemistry (1-dye)</h3>
+<p>Used on the iSeq 100 with an integrated CMOS sensor:</p>
+<ul>
+<li>Only <strong>1 dye</strong>, but <strong>2 chemistry steps</strong> per cycle</li>
+<li><strong>Step 1:</strong> A and T are labeled; image taken</li>
+<li><strong>Step 2:</strong> Chemically modify so only C and T are labeled; image taken</li>
+<li>T = bright in both images; A = bright in step 1 only; C = bright in step 2 only; G = dark in both</li>
+<li>Extremely compact instrument (benchtop, ~$20k list price)</li>
+</ul>
+</section>
+<section id="xleap-sbs-chemistry" class="level3">
+<h3 class="anchored" data-anchor-id="xleap-sbs-chemistry">3.4 XLEAP-SBS Chemistry</h3>
+<p>Illumina’s latest chemistry, deployed on NovaSeq X/X Plus and NextSeq 1000/2000:</p>
+<ul>
+<li>Redesigned polymerase and dye-linker system</li>
+<li>2x faster incorporation kinetics</li>
+<li>~50% lower error rate than previous chemistry</li>
+<li>Reduced phasing/pre-phasing artifacts</li>
+<li>2-channel imaging, but with <strong>different base-color assignments</strong> than standard 2-channel: C is now the dual-color base (both channels), A is single-channel (blue only), T = green only, G = dark. This change affects index color-balancing requirements</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What Is Phasing?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Over many cycles, some DNA strands in a cluster fall behind (incomplete extension = <strong>phasing</strong>) or jump ahead (incorporation without blocking = <strong>pre-phasing</strong>). This makes clusters progressively out of sync, degrading quality scores toward the end of the read. XLEAP’s improved blocking chemistry reduces both effects.</p>
+</div>
+</div>
+</section>
+<section id="current-illumina-platforms" class="level3">
+<h3 class="anchored" data-anchor-id="current-illumina-platforms">Current Illumina Platforms</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 17%">
+<col style="width: 19%">
+<col style="width: 26%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Chemistry</th>
+<th>Max Output</th>
+<th>Max Read Length</th>
+<th>Key Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MiSeq</td>
+<td>4-channel</td>
+<td>15 Gb</td>
+<td>2 x 300 bp</td>
+<td>Amplicons, small genomes</td>
+</tr>
+<tr class="even">
+<td>NextSeq 2000</td>
+<td>2-channel (XLEAP)</td>
+<td>360 Gb (P3, 2x150)</td>
+<td>2 x 300 bp (P1/P2, up to 240 Gb)</td>
+<td>Mid-throughput, flexible</td>
+</tr>
+<tr class="odd">
+<td>NovaSeq X Plus</td>
+<td>2-channel (XLEAP)</td>
+<td>16 Tb</td>
+<td>2 x 150 bp</td>
+<td>Production-scale WGS</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="element-biosciences" class="level2">
+<h2 class="anchored" data-anchor-id="element-biosciences">4. Element Biosciences</h2>
+<p>Element Biosciences (founded 2017, San Diego) introduced a fundamentally different approach to short-read sequencing with the AVITI system (launched 2022). The key innovation is described in <a href="https://doi.org/10.1038/s41587-023-01750-7">Arslan et al.&nbsp;2024, <em>Nature Biotechnology</em> 42:132-138</a>.</p>
+<section id="sequencing-by-binding-sbb-avidite-chemistry" class="level3">
+<h3 class="anchored" data-anchor-id="sequencing-by-binding-sbb-avidite-chemistry">Sequencing by Binding (SBB) / Avidite Chemistry</h3>
+<p>The central insight: <strong>decouple detection from incorporation</strong>.</p>
+<p>In Illumina’s approach, the fluorescent dye is covalently attached to the nucleotide that gets incorporated. Even after cleaving the dye, a molecular “scar” remains on the growing strand. These scars accumulate over cycles and can interfere with polymerase activity and base calling.</p>
+<p>Element’s approach uses a two-step process:</p>
+<ol type="1">
+<li><strong>Detection step:</strong> A multivalent construct called an <strong>avidite</strong> – consisting of a fluorescently-labeled <strong>streptavidin</strong> core connected via flexible linkers to multiple identical nucleotides – binds cooperatively (by avidity) to polymerase-template complexes across the polony. The avidite identifies the next correct base through polymerase selectivity. The cluster is imaged.</li>
+<li><strong>Incorporation step:</strong> The avidite is washed away (it was never covalently incorporated). Then, an <strong>unlabeled 3’-blocked nucleotide</strong> is added and incorporated by the polymerase. The block is removed for the next cycle.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/arslan2024_fig1_avidite.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption><strong>Avidite sequencing cycle.</strong> (<strong>a</strong>) Six-step cycle: avidites bind to polonies, unbound avidites are washed away, base identity is detected by fluorescence imaging, avidites are removed, a reversibly terminated nucleotide is incorporated, and the 3’ block is removed. (<strong>b</strong>) A single avidite interacts with multiple polymerase-template copies within one polony via multivalent binding (avidity). (<strong>c</strong>) Many avidites specifically bind to polonies across the flow cell surface. From <a href="https://doi.org/10.1038/s41587-023-01750-7">Arslan et al.&nbsp;2024</a>, Fig. 1.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Why This Matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Because the incorporated nucleotide never carried a dye, there is <strong>no scarring</strong>. The DNA strand being synthesized contains only natural nucleotides with a removable 3’ block. This contributes to Element’s very high quality scores – most bases achieve Q40+ (99.99% accuracy).</p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/element_snr_fig3.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption><strong>Element quality scores.</strong> Q-Q plots of predicted vs recalibrated quality scores for R1 (<strong>a</strong>) and R2 (<strong>b</strong>) reads on the AVITI. The majority of bases cluster at Q40+, demonstrating the accuracy advantage of avidite chemistry. From <a href="https://doi.org/10.1038/s41587-023-01750-7">Arslan et al.&nbsp;2024</a>, Fig. 3.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/element_homopolymer_fig5.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption><strong>Homopolymer accuracy.</strong> Element’s avidite chemistry maintains high accuracy across homopolymer runs of varying length, outperforming traditional SBS approaches where dye scarring accumulates. From <a href="https://doi.org/10.1038/s41587-023-01750-7">Arslan et al.&nbsp;2024</a>, Fig. 5.</figcaption>
+</figure>
+</div>
+</section>
+<section id="additional-innovations" class="level3">
+<h3 class="anchored" data-anchor-id="additional-innovations">Additional Innovations</h3>
+<ul>
+<li><strong>Rolling Circle Amplification (RCA)</strong> instead of bridge PCR: Generates polony clusters from circular DNA templates. This eliminates PCR-induced errors, optical duplicates, and index hopping.</li>
+<li><strong>Two independent flow cells</strong> per AVITI run, each producing ~1 billion read pairs</li>
+<li><strong>No index hopping:</strong> Because RCA does not involve free adapter-ligated fragments in solution, cross-contamination between indexed samples is essentially zero</li>
+</ul>
+</section>
+<section id="aviti-specifications" class="level3">
+<h3 class="anchored" data-anchor-id="aviti-specifications">AVITI Specifications</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>AVITI 24x24</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Read pairs per flow cell</td>
+<td>~1 billion</td>
+</tr>
+<tr class="even">
+<td>Max output per flow cell</td>
+<td>300 Gb</td>
+</tr>
+<tr class="odd">
+<td>Read length</td>
+<td>2 x 150 bp (2 x 300 bp available)</td>
+</tr>
+<tr class="even">
+<td>Quality</td>
+<td>&gt;90% bases Q30; Q40+ with Cloudbreak UltraQ chemistry</td>
+</tr>
+<tr class="odd">
+<td>Run time</td>
+<td>~24-48 hr</td>
+</tr>
+<tr class="even">
+<td>List price</td>
+<td>~$289,000</td>
+</tr>
+</tbody>
+</table>
+<p>In late 2024, Element launched the <strong>AVITI24</strong>, an upgraded platform delivering up to 1.5 billion reads per flow cell, multiomics capability (co-detection of RNA, protein, and morphology alongside sequencing), and Cloudbreak UltraQ kits achieving &gt;70% of bases at Q50. List price: $424,000 ($150,000 as an upgrade from the original AVITI).</p>
+<hr>
+</section>
+</section>
+<section id="pacbio" class="level2">
+<h2 class="anchored" data-anchor-id="pacbio">5. PacBio</h2>
+<p>Pacific Biosciences (founded 2004) pioneered <strong>single-molecule real-time (SMRT) sequencing</strong>, first described in <a href="https://doi.org/10.1126/science.1162986">Eid et al.&nbsp;2009, <em>Science</em> 323:133-138</a>. The enabling technology – the zero-mode waveguide – was developed by <a href="https://doi.org/10.1126/science.1079700">Levene et al.&nbsp;2003, <em>Science</em> 299:682-686</a>.</p>
+<section id="zero-mode-waveguides-zmws" class="level3">
+<h3 class="anchored" data-anchor-id="zero-mode-waveguides-zmws">Zero-Mode Waveguides (ZMWs)</h3>
+<p>A ZMW is a cylindrical hole approximately <strong>70 nm in diameter</strong> drilled through a ~100 nm metal film (aluminum) deposited on a glass substrate. The diameter is smaller than the wavelength of the excitation light (~500-600 nm), creating a condition where light cannot propagate through the hole. Instead, an <strong>evanescent field</strong> illuminates only the bottom ~30 nm of the well.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pacbio_zmw_levene2003.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption><strong>Zero-mode waveguide apparatus.</strong> A metal film on fused silica contains nanometer-scale holes. Illumination from below creates an evanescent field that excites only fluorescent molecules at the very bottom of the well, where a single enzyme (polymerase) is attached. From <a href="https://doi.org/10.1126/science.1079700">Levene et al.&nbsp;2003</a>, Fig. 1.</figcaption>
+</figure>
+</div>
+<p><strong>How sequencing works:</strong></p>
+<ol type="1">
+<li>A single DNA polymerase molecule is attached to the bottom of each ZMW</li>
+<li>The template DNA (with SMRTbell adapters) is loaded and binds to the polymerase</li>
+<li>Fluorescently labeled dNTPs (each base has a different color dye attached to the <strong>phosphate chain</strong>, not the base) diffuse freely in solution</li>
+<li>When a dNTP enters the ZMW and is <strong>incorporated</strong>, the polymerase holds it in the detection zone for <strong>milliseconds</strong> – long enough to capture the fluorescent signal</li>
+<li>Incorporation cleaves the phosphodiester bond, releasing the dye-labeled pyrophosphate</li>
+<li>The polymerase advances to the next position</li>
+<li>All of this is captured as a continuous <strong>movie</strong> of fluorescence pulses</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pacbio_realtime_eid2009.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption><strong>Real-time single-molecule sequencing.</strong> Fluorescence pulses recorded as a polymerase incorporates labeled nucleotides in a ZMW. Each color corresponds to a different base (A, C, G, T). Pulse duration and inter-pulse intervals encode kinetic information. From <a href="https://doi.org/10.1126/science.1162986">Eid et al.&nbsp;2009</a>, Fig. 1.</figcaption>
+</figure>
+</div>
+
+<div id="viz-zmw" style="max-width:800px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Zero-Mode Waveguide (ZMW) Sequencing</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">A single polymerase at the bottom of the ZMW incorporates fluorescent nucleotides. The dye is on the phosphate group — released after incorporation.</p>
+<div style="text-align:center; margin-bottom:10px;">
+  <button id="zmw-start" style="padding:8px 18px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Start Sequencing</button>
+  <button id="zmw-reset" style="padding:8px 18px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;">Reset</button>
+</div>
+<canvas id="zmw-canvas" width="780" height="450" style="width:100%; border:1px solid #eee; border-radius:8px; background:#0a0a1a;"></canvas>
+<div id="zmw-read" style="margin-top:8px; padding:8px; background:#f5f5f5; border-radius:4px; font-family:monospace; font-size:0.9em;">Sequence: (press Start)</div>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('zmw-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var baseColors = {A:'#2ecc71', C:'#3498db', G:'#f39c12', T:'#e74c3c'};
+  var template = 'GATTACACGATCGGTA';
+  var compMap = {A:'T', T:'A', G:'C', C:'G'};
+  var readSeq = '';
+  var currentBase = 0;
+  var animRunning = false;
+  var pulses = []; // for trace
+  var particles = []; // free-floating dNTPs
+  var incNuc = null; // currently incorporating nucleotide
+  var incFrame = 0;
+  var phaseTime = 0;
+
+  function reset() {
+    readSeq = '';
+    currentBase = 0;
+    pulses = [];
+    particles = [];
+    incNuc = null;
+    incFrame = 0;
+    animRunning = false;
+    phaseTime = 0;
+    // Generate random floating particles
+    for(var i=0;i<20;i++){
+      particles.push({
+        x: 100+Math.random()*200,
+        y: Math.random()*200,
+        base: ['A','C','G','T'][Math.floor(Math.random()*4)],
+        vx: (Math.random()-0.5)*1.5,
+        vy: (Math.random()-0.5)*1.5,
+        r: 4+Math.random()*3
+      });
+    }
+    drawStatic();
+    document.getElementById('zmw-read').innerHTML = 'Sequence: (press Start)';
+  }
+
+  function drawStatic() {
+    ctx.clearRect(0,0,W,H);
+    // ZMW cross-section
+    var zmwX = 50, zmwW = 300, zmwTop = 30, zmwBot = 340;
+    var zmwCenterX = zmwX + zmwW/2;
+
+    // Metal film
+    ctx.fillStyle = '#555';
+    ctx.fillRect(zmwX, 120, zmwW, 30);
+    // Hole in metal (the waveguide)
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(zmwCenterX-35, 120, 70, 30);
+    // Glass substrate
+    ctx.fillStyle = 'rgba(100,149,237,0.15)';
+    ctx.fillRect(zmwX, 150, zmwW, 190);
+    // Well walls extending down
+    ctx.fillStyle = '#555';
+    ctx.fillRect(zmwCenterX-40, 120, 5, 180);
+    ctx.fillRect(zmwCenterX+35, 120, 5, 180);
+
+    // Evanescent field glow
+    var grd = ctx.createRadialGradient(zmwCenterX, 290, 5, zmwCenterX, 290, 50);
+    grd.addColorStop(0, 'rgba(0,200,100,0.3)');
+    grd.addColorStop(1, 'rgba(0,200,100,0)');
+    ctx.fillStyle = grd;
+    ctx.fillRect(zmwCenterX-45, 250, 90, 50);
+
+    // Excitation light arrow from below
+    ctx.strokeStyle = 'rgba(0,255,100,0.4)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    ctx.moveTo(zmwCenterX, zmwBot+10);
+    ctx.lineTo(zmwCenterX, 280);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(0,255,100,0.5)';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('excitation light', zmwCenterX, zmwBot+25);
+
+    // Polymerase
+    ctx.beginPath();
+    ctx.arc(zmwCenterX, 285, 12, 0, Math.PI*2);
+    ctx.fillStyle = '#9b59b6';
+    ctx.fill();
+    ctx.strokeStyle = '#c39bd3';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = '8px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('pol', zmwCenterX, 288);
+
+    // Labels
+    ctx.fillStyle = '#aaa';
+    ctx.font = '11px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('Metal film (~100nm Al)', zmwX+zmwW+10, 140);
+    ctx.fillText('ZMW (~70nm diameter)', zmwX+zmwW+10, 165);
+    ctx.fillText('Glass substrate', zmwX+zmwW+10, 210);
+    ctx.fillText('Detection zone (~30nm)', zmwX+zmwW+10, 290);
+    ctx.fillText('DNA polymerase', zmwX+zmwW+10, 310);
+
+    // Dimensions
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 1;
+    // 70nm label
+    ctx.beginPath();
+    ctx.moveTo(zmwCenterX-35, 115);
+    ctx.lineTo(zmwCenterX+35, 115);
+    ctx.stroke();
+    ctx.fillStyle = '#ccc';
+    ctx.font = '9px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('~70 nm', zmwCenterX, 112);
+
+    // Draw floating dNTPs above the well
+    particles.forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = baseColors[p.base];
+      ctx.globalAlpha = 0.6;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#fff';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.base, p.x, p.y+3);
+    });
+
+    // Incorporating nucleotide glow
+    if(incNuc) {
+      var glow = Math.sin(incFrame*0.2)*0.3+0.7;
+      ctx.globalAlpha = glow;
+      ctx.beginPath();
+      ctx.arc(zmwCenterX, 273, 8, 0, Math.PI*2);
+      var ig = ctx.createRadialGradient(zmwCenterX,273,2,zmwCenterX,273,12);
+      ig.addColorStop(0,'#fff');
+      ig.addColorStop(0.5,baseColors[incNuc]);
+      ig.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = ig;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // Trace on right side
+    var trX = 420, trY = 30, trW = 340, trH = 300;
+    ctx.fillStyle = '#111';
+    ctx.fillRect(trX, trY, trW, trH);
+    ctx.strokeStyle = '#333';
+    ctx.strokeRect(trX, trY, trW, trH);
+    ctx.fillStyle = '#ccc';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Real-time Fluorescence Trace', trX+trW/2, trY-5);
+
+    // Axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Time →', trX+trW/2, trY+trH+15);
+    ctx.save();
+    ctx.translate(trX-8, trY+trH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('Intensity', 0, 0);
+    ctx.restore();
+
+    // Channel labels
+    var chY = trY+trH+30;
+    ['A','C','G','T'].forEach(function(b,i) {
+      ctx.fillStyle = baseColors[b];
+      ctx.font = 'bold 11px monospace';
+      ctx.fillText(b, trX+40+i*80, chY);
+    });
+
+    // Draw pulses
+    if(pulses.length > 0) {
+      var pxPerPulse = Math.min(30, (trW-20)/pulses.length);
+      pulses.forEach(function(p,i) {
+        var px = trX + 10 + i*pxPerPulse;
+        var peakH = 60 + Math.random()*5; // slight variation
+        // Draw pulse shape (gaussian-ish)
+        ctx.strokeStyle = baseColors[p.base];
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for(var t=0; t<pxPerPulse; t++) {
+          var frac = t/pxPerPulse;
+          var amp = Math.exp(-Math.pow((frac-0.5)*4, 2)) * peakH;
+          var py = trY + trH - 20 - amp;
+          if(t===0) ctx.moveTo(px+t, py);
+          else ctx.lineTo(px+t, py);
+        }
+        ctx.stroke();
+        // Base label
+        ctx.fillStyle = baseColors[p.base];
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(p.base, px+pxPerPulse/2, trY+trH-5);
+      });
+    }
+
+    // Template info
+    ctx.fillStyle = '#888';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText("Template: 3'-" + template + "-5'", 420, H-40);
+    ctx.fillStyle = '#2ecc71';
+    ctx.fillText("Read:     5'-" + readSeq + (currentBase<template.length?'_':'') + "-3'", 420, H-20);
+  }
+
+  function animate() {
+    if(!animRunning) return;
+    // Move particles
+    particles.forEach(function(p) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if(p.x < 60 || p.x > 340) p.vx *= -1;
+      if(p.y < 10 || p.y > 110) p.vy *= -1;
+    });
+
+    phaseTime++;
+
+    if(!incNuc && currentBase < template.length) {
+      if(phaseTime > 40) {
+        // Start incorporation
+        incNuc = compMap[template[currentBase]];
+        incFrame = 0;
+        phaseTime = 0;
+      }
+    }
+
+    if(incNuc) {
+      incFrame++;
+      if(incFrame > 50) {
+        // Done incorporating
+        pulses.push({base: incNuc});
+        readSeq += incNuc;
+        currentBase++;
+        incNuc = null;
+        phaseTime = 0;
+        document.getElementById('zmw-read').innerHTML = 'Sequence: <b>' + readSeq + '</b>' + (currentBase >= template.length ? ' (complete)' : '');
+        if(currentBase >= template.length) {
+          animRunning = false;
+          drawStatic();
+          return;
+        }
+      }
+    }
+
+    drawStatic();
+    requestAnimationFrame(animate);
+  }
+
+  document.getElementById('zmw-start').addEventListener('click', function() {
+    if(animRunning) return;
+    reset();
+    animRunning = true;
+    requestAnimationFrame(animate);
+  });
+  document.getElementById('zmw-reset').addEventListener('click', reset);
+  reset();
+})();
+</script>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Dye on the Phosphate, Not the Base
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Unlike Illumina (where the dye is attached to the base and must be cleaved), PacBio attaches the dye to the <strong>terminal phosphate</strong> of the dNTP. During incorporation, the natural phosphodiester bond formation releases the dye-labeled pyrophosphate. The incorporated nucleotide is completely natural – no cleavage step needed.</p>
+</div>
+</div>
+</section>
+<section id="circular-consensus-sequencing-ccs-and-hifi-reads" class="level3">
+<h3 class="anchored" data-anchor-id="circular-consensus-sequencing-ccs-and-hifi-reads">Circular Consensus Sequencing (CCS) and HiFi Reads</h3>
+<p>PacBio’s raw single-pass accuracy is approximately 85-90% (Q10-Q13), dominated by insertion and deletion errors. The breakthrough that made PacBio competitive for accuracy-sensitive applications is <strong>circular consensus sequencing (CCS)</strong>, now marketed as <strong>HiFi reads</strong>.</p>
+<p><strong>How CCS works:</strong></p>
+<ol type="1">
+<li><strong>SMRTbell library:</strong> Hairpin adapters are ligated to both ends of a double-stranded DNA fragment, creating a circular (topologically closed) molecule</li>
+<li>The polymerase begins at one adapter and reads through the insert, across the other adapter, back through the insert on the complementary strand, and so on</li>
+<li>Each complete traverse of the insert is called a <strong>subread</strong></li>
+<li>With a 15 kb insert and a polymerase that reads ~100 kb before dissociation, you get ~6-7 passes</li>
+<li>A consensus algorithm aligns the subreads and calls a consensus base at each position</li>
+<li>Because insertion and deletion errors are essentially random, they cancel out across passes</li>
+</ol>
+<p><strong>Accuracy scaling:</strong></p>
+<p><span class="math display">\[Q_{\text{CCS}} \approx Q_{\text{subread}} + 10 \cdot \log_{10}(n)\]</span></p>
+<p>where <span class="math inline">\(n\)</span> is the number of passes. With ~10 passes and Q10 subreads:</p>
+<p><span class="math display">\[Q_{\text{CCS}} \approx 10 + 10 \cdot \log_{10}(10) = 20 \text{ (per pass; actual consensus methods achieve Q30+)}\]</span></p>
+<p>In practice, modern HiFi reads routinely achieve <strong>Q30-Q40</strong> (99.9-99.99% accuracy) with median read lengths of <strong>15-20 kb</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pacbio_ccs_wenger2019.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption><strong>Circular consensus sequencing (CCS).</strong> SMRTbell adapters (hairpins) create a circular template. The polymerase reads around the circle multiple times, generating subreads that are combined into a single high-accuracy HiFi read. From <a href="https://doi.org/10.1038/s41587-019-0217-9">Wenger et al.&nbsp;2019</a>, Fig. 1a.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pacbio_accuracy_wenger2019.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption><strong>Accuracy improves with passes.</strong> As the number of polymerase passes increases, the consensus quality rises sharply. With ~10 passes, accuracy reaches Q30+; with more passes, Q40+ is achievable. From <a href="https://doi.org/10.1038/s41587-019-0217-9">Wenger et al.&nbsp;2019</a>, Fig. 2b.</figcaption>
+</figure>
+</div>
+</section>
+<section id="kinetics-detecting-base-modifications" class="level3">
+<h3 class="anchored" data-anchor-id="kinetics-detecting-base-modifications">Kinetics: Detecting Base Modifications</h3>
+<p>Because PacBio records the entire movie of incorporation, it captures two kinetic parameters:</p>
+<ul>
+<li><strong>IPD (inter-pulse duration):</strong> Time between consecutive incorporation events</li>
+<li><strong>PW (pulse width):</strong> Duration of each incorporation event</li>
+</ul>
+<p>Modified bases (e.g., <strong>5mC</strong>, <strong>6mA</strong>, <strong>4mC</strong>) alter the polymerase kinetics, changing IPD and PW in characteristic patterns. This enables <strong>direct detection of DNA methylation</strong> without bisulfite conversion.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pacbio_modifications_flusberg2010.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption><strong>Detecting modified bases via kinetics.</strong> Modified bases (top) cause the polymerase to pause differently compared to unmodified bases, altering the inter-pulse duration (IPD). These kinetic signatures allow direct detection of methylation without chemical conversion. From <a href="https://doi.org/10.1038/nmeth.1459">Flusberg et al.&nbsp;2010</a>, Fig. 1.</figcaption>
+</figure>
+</div>
+</section>
+<section id="current-pacbio-platforms" class="level3">
+<h3 class="anchored" data-anchor-id="current-pacbio-platforms">Current PacBio Platforms</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 24%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>ZMWs per Cell</th>
+<th>HiFi Output</th>
+<th>Read Length</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Revio</td>
+<td>25 million</td>
+<td>~90 Gb/cell (4 cells/run)</td>
+<td>10-25 kb</td>
+<td>~$779,000</td>
+</tr>
+<tr class="even">
+<td>Vega</td>
+<td>1 SMRT Cell</td>
+<td>up to ~60 Gb</td>
+<td>10-25 kb</td>
+<td>~$169,000</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="oxford-nanopore-technologies-ont" class="level2">
+<h2 class="anchored" data-anchor-id="oxford-nanopore-technologies-ont">6. Oxford Nanopore Technologies (ONT)</h2>
+<p>Oxford Nanopore Technologies (founded 2005) launched the MinION in 2014, introducing a radically different sequencing paradigm. Key references include <a href="https://doi.org/10.1038/nmeth.3290">Jain et al.&nbsp;2015, <em>Nature Methods</em> 12:351-356</a> and <a href="https://doi.org/10.1038/nbt.3423">Deamer et al.&nbsp;2016, <em>Nature Biotechnology</em> 34:518-524</a>.</p>
+<section id="principle-ionic-current-through-a-protein-pore" class="level3">
+<h3 class="anchored" data-anchor-id="principle-ionic-current-through-a-protein-pore">Principle: Ionic Current Through a Protein Pore</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/ont_nanopore_principle.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption><strong>Nanopore sequencing principle.</strong> A protein pore is embedded in a membrane. As molecules interact with the pore, they modulate ionic current flow in characteristic ways – from open pore (left) to partial blockade to full blockade (right). The current trace below each panel shows the corresponding signal.</figcaption>
+</figure>
+</div>
+<ol type="1">
+<li>A <strong>protein nanopore</strong> (derived from CsgG, an <em>E. coli</em> curli secretion channel) is embedded in a synthetic polymer membrane</li>
+<li>A voltage is applied across the membrane, driving an <strong>ionic current</strong> through each pore</li>
+<li>A <strong>motor protein</strong> (helicase) is ligated to the DNA via sequencing adapters</li>
+<li>The motor protein ratchets single-stranded DNA through the pore one base at a time</li>
+<li>As each <strong>k-mer</strong> passes through the constriction(s) of the pore, it partially blocks the ionic current. The original R9 pore read ~5 bases at a time; the current R10 pore with dual constrictions reads ~9 bases simultaneously</li>
+<li>Each k-mer produces a characteristic current level – with <span class="math inline">\(4^9 = 262{,}144\)</span> possible levels for R10</li>
+<li>The raw current signal (“squiggle”) is basecalled by a neural network (<strong>Dorado</strong>)</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Pore Versions: R9 to R10
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The original R9 pore (CsgG mutant) had a single constriction point and ~90-97% raw simplex accuracy (depending on basecaller version). The current <strong>R10</strong> pore features a longer barrel with <strong>dual constriction points</strong>, dramatically improving homopolymer resolution and pushing simplex accuracy above 99%. All current ONT flow cells ship with R10.4.1 chemistry.</p>
+</div>
+</div>
+
+<div id="viz-nanopore" style="max-width:800px; margin:2em auto; font-family: Arial, sans-serif;">
+<h4 style="text-align:center; color:#333;" class="anchored">Nanopore Sequencing Visualization</h4>
+<p style="text-align:center; color:#666; font-size:0.9em;">DNA is threaded through a protein pore. Each ~5-mer modulates the ionic current differently, producing a characteristic "squiggle" signal.</p>
+<div style="text-align:center; margin-bottom:10px;">
+  <button id="nano-start" style="padding:8px 18px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Thread DNA</button>
+  <button id="nano-reset" style="padding:8px 18px; background:#9E9E9E; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;">Reset</button>
+</div>
+<canvas id="nano-canvas" width="780" height="460" style="width:100%; border:1px solid #eee; border-radius:8px; background:#0d1117;"></canvas>
+<div id="nano-info" style="margin-top:8px; padding:8px; background:#f5f5f5; border-radius:4px; font-family:monospace; font-size:0.85em;">Ready. Press "Thread DNA" to begin.</div>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('nano-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var baseColors = {A:'#2ecc71', C:'#3498db', G:'#f39c12', T:'#e74c3c'};
+  var dnaSeq = 'ACGTTAGCGATCAACGTACG';
+  var baseLevels = {A:0.75, C:0.55, G:0.35, T:0.90}; // relative current blockade
+  var currentPos = -1;
+  var animRunning = false;
+  var squiggleData = [];
+  var squiggleTick = 0;
+  var frameCount = 0;
+  var dnaOffset = 0; // vertical offset for DNA threading
+
+  function kmerLevel(pos) {
+    // Average level for 5-mer centered at pos
+    var sum = 0, count = 0;
+    for(var i = Math.max(0,pos-2); i <= Math.min(dnaSeq.length-1, pos+2); i++) {
+      sum += baseLevels[dnaSeq[i]];
+      count++;
+    }
+    return sum/count;
+  }
+
+  function drawFrame() {
+    ctx.clearRect(0,0,W,H);
+
+    // Membrane
+    var memY = 200;
+    var memH = 12;
+    var poreX = 180, poreW = 40;
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillRect(20, memY, poreX-30, memH);
+    ctx.fillRect(poreX+poreW+10, memY, W/2-poreX-poreW-20, memH);
+
+    // Pore protein
+    ctx.fillStyle = '#8e44ad';
+    // Left wall
+    ctx.fillRect(poreX-10, memY-25, 12, memH+50);
+    // Right wall
+    ctx.fillRect(poreX+poreW-2, memY-25, 12, memH+50);
+    // Constriction
+    ctx.fillStyle = '#6c3483';
+    ctx.fillRect(poreX-4, memY-5, 8, 22);
+    ctx.fillRect(poreX+poreW-4, memY-5, 8, 22);
+
+    // Labels
+    ctx.fillStyle = '#7f8c8d';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('cis (above)', poreX+poreW/2, memY-40);
+    ctx.fillText('trans (below)', poreX+poreW/2, memY+memH+50);
+    ctx.fillText('membrane', 70, memY+memH+5);
+
+    // Motor protein on top
+    ctx.beginPath();
+    ctx.arc(poreX+poreW/2, memY-30, 10, 0, Math.PI*2);
+    ctx.fillStyle = '#e67e22';
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '7px Arial';
+    ctx.fillText('motor', poreX+poreW/2, memY-28);
+
+    // Ionic current arrows
+    ctx.strokeStyle = 'rgba(52,152,219,0.4)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    for(var a=0;a<3;a++){
+      var ax = poreX+10+a*10;
+      ctx.beginPath();
+      ctx.moveTo(ax, memY-50);
+      ctx.lineTo(ax, memY+memH+40);
+      ctx.stroke();
+      // Arrow head
+      ctx.beginPath();
+      ctx.moveTo(ax, memY+memH+40);
+      ctx.lineTo(ax-3, memY+memH+34);
+      ctx.moveTo(ax, memY+memH+40);
+      ctx.lineTo(ax+3, memY+memH+34);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(52,152,219,0.5)';
+    ctx.font = '9px Arial';
+    ctx.fillText('ionic current', poreX+poreW+35, memY+5);
+
+    // DNA strand threading through pore
+    var dnaStartY = -40 + dnaOffset;
+    var baseSpacing = 16;
+    ctx.lineWidth = 2;
+    for(var i=0; i<dnaSeq.length; i++) {
+      var by = dnaStartY + i*baseSpacing;
+      var bx = poreX + poreW/2;
+      // Only draw if visible
+      if(by < -20 || by > H) continue;
+      // Highlight current 5-mer in pore
+      var inPore = (by > memY-20 && by < memY+memH+20);
+      var alpha = inPore ? 1 : 0.5;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(bx, by, 7, 0, Math.PI*2);
+      ctx.fillStyle = baseColors[dnaSeq[i]];
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(dnaSeq[i], bx, by+3);
+      // Backbone
+      if(i > 0 && dnaStartY + (i-1)*baseSpacing > -20) {
+        ctx.strokeStyle = '#95a5a6';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(bx, by-7);
+        ctx.lineTo(bx, by-baseSpacing+7);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // Squiggle trace on right
+    var trX = 400, trY = 20, trW = 360, trH = 380;
+    ctx.fillStyle = '#0a0f18';
+    ctx.fillRect(trX, trY, trW, trH);
+    ctx.strokeStyle = '#1a2530';
+    ctx.strokeRect(trX, trY, trW, trH);
+
+    ctx.fillStyle = '#ccc';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Raw Current Signal (Squiggle)', trX+trW/2, trY-5);
+
+    // Y-axis
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(trX+30, trY+10);
+    ctx.lineTo(trX+30, trY+trH-20);
+    ctx.lineTo(trX+trW-10, trY+trH-20);
+    ctx.stroke();
+    ctx.fillStyle = '#666';
+    ctx.font = '9px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Time →', trX+trW/2, trY+trH-5);
+    ctx.save();
+    ctx.translate(trX+12, trY+trH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('Current (pA)', 0, 0);
+    ctx.restore();
+
+    // Draw squiggle
+    if(squiggleData.length > 1) {
+      var plotW = trW - 50;
+      var plotH = trH - 50;
+      var ptsVisible = Math.min(squiggleData.length, 300);
+      var startIdx = Math.max(0, squiggleData.length - ptsVisible);
+      ctx.strokeStyle = '#3498db';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for(var i = startIdx; i < squiggleData.length; i++) {
+        var px = trX + 35 + ((i-startIdx)/ptsVisible)*plotW;
+        var py = trY + 20 + (1-squiggleData[i])*plotH;
+        if(i === startIdx) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Base labels at level changes
+      var lastBase = -1;
+      for(var i = startIdx; i < squiggleData.length; i++) {
+        if(squiggleData[i] !== undefined && squiggleData[i]._base !== undefined && squiggleData[i]._base !== lastBase) {
+          // We mark transitions in the info div instead
+        }
+      }
+    }
+
+    // Voltage label
+    ctx.fillStyle = '#e74c3c';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('+ voltage', 20, H-15);
+    ctx.fillStyle = '#3498db';
+    ctx.fillText('- voltage', 20, memY-55);
+
+    // Called bases so far
+    if(currentPos >= 0) {
+      var called = dnaSeq.substring(0, currentPos+1);
+      ctx.fillStyle = '#2ecc71';
+      ctx.font = '12px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('Called: ' + called, trX+10, trY+trH+15);
+    }
+  }
+
+  function animate() {
+    if(!animRunning) return;
+    frameCount++;
+
+    // Thread DNA through: increase offset
+    if(frameCount % 3 === 0 && currentPos < dnaSeq.length - 1) {
+      dnaOffset += 0.8;
+      // Check if we've advanced to next base
+      var newPos = Math.floor(dnaOffset / 16);
+      if(newPos > currentPos && newPos < dnaSeq.length) {
+        currentPos = newPos;
+        document.getElementById('nano-info').innerHTML =
+          'Position: ' + currentPos + ' | Base in pore: <b style="color:'+baseColors[dnaSeq[currentPos]]+'">' +
+          dnaSeq[currentPos] + '</b> | 5-mer context: ' +
+          dnaSeq.substring(Math.max(0,currentPos-2), Math.min(dnaSeq.length,currentPos+3));
+      }
+    }
+
+    // Generate squiggle data
+    if(currentPos >= 0 && currentPos < dnaSeq.length) {
+      var level = kmerLevel(currentPos);
+      var noise = (Math.random()-0.5)*0.06;
+      squiggleData.push(level + noise);
+    }
+
+    drawFrame();
+
+    if(currentPos >= dnaSeq.length - 1 && dnaOffset > dnaSeq.length*16) {
+      animRunning = false;
+      document.getElementById('nano-info').innerHTML = 'Sequencing complete! Read: <b>' + dnaSeq + '</b> (' + dnaSeq.length + ' bases)';
+      return;
+    }
+    requestAnimationFrame(animate);
+  }
+
+  document.getElementById('nano-start').addEventListener('click', function() {
+    if(animRunning) return;
+    reset();
+    animRunning = true;
+    requestAnimationFrame(animate);
+  });
+  document.getElementById('nano-reset').addEventListener('click', function() {
+    animRunning = false;
+    reset();
+  });
+
+  function reset() {
+    currentPos = -1;
+    dnaOffset = 0;
+    squiggleData = [];
+    frameCount = 0;
+    animRunning = false;
+    drawFrame();
+    document.getElementById('nano-info').innerHTML = 'Ready. Press "Thread DNA" to begin.';
+  }
+  reset();
+})();
+</script>
+</section>
+<section id="direct-rna-sequencing" class="level3">
+<h3 class="anchored" data-anchor-id="direct-rna-sequencing">Direct RNA Sequencing</h3>
+<p>One of ONT’s most distinctive capabilities is <strong>direct RNA sequencing</strong> – reading native RNA molecules without reverse transcription or PCR amplification.</p>
+<p><strong>How it works:</strong></p>
+<ol type="1">
+<li>A sequencing adapter with a motor protein is ligated directly to the poly(A) tail of mRNA (or to any RNA with an adapter)</li>
+<li>The motor protein feeds the RNA strand through the pore 3’ to 5’</li>
+<li>The current signal reflects the RNA bases (A, C, G, U) passing through the pore</li>
+<li>Dorado basecalls the RNA signal using RNA-specific models</li>
+</ol>
+<p><strong>RNA modifications detected:</strong></p>
+<p>Direct RNA sequencing preserves all chemical modifications on the RNA molecule. Current modification detection models can identify:</p>
+<ul>
+<li><strong>m6A</strong> (N6-methyladenosine) – the most abundant mRNA modification</li>
+<li><strong>m5C</strong> (5-methylcytidine)</li>
+<li><strong>pseudouridine</strong> (<span class="math inline">\(\Psi\)</span>)</li>
+<li><strong>inosine</strong> (from A-to-I editing)</li>
+</ul>
+<p>The latest <strong>RNA004</strong> chemistry (2025) provides significantly improved accuracy and throughput for direct RNA applications.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Why Direct RNA Seq Matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every other RNA sequencing method requires reverse transcription to cDNA, which introduces biases (template switching, length bias, loss of modifications). Direct RNA sequencing reads the native molecule, preserving the full modification landscape and enabling study of the <strong>epitranscriptome</strong> at single-molecule resolution.</p>
+</div>
+</div>
+</section>
+<section id="adaptive-sampling-readuntil" class="level3">
+<h3 class="anchored" data-anchor-id="adaptive-sampling-readuntil">Adaptive Sampling (ReadUntil)</h3>
+<p>ONT’s software can make real-time decisions about individual molecules:</p>
+<ol type="1">
+<li>As a read begins, the first few hundred bases are basecalled in real time</li>
+<li>The software maps this fragment against a reference or target list</li>
+<li>If the molecule is <strong>on-target</strong>, sequencing continues normally</li>
+<li>If the molecule is <strong>off-target</strong>, the voltage is briefly reversed, <strong>ejecting</strong> the strand from the pore</li>
+<li>The pore is immediately available for a new molecule</li>
+</ol>
+<p>This enables <strong>targeted sequencing without physical enrichment</strong> – no PCR, no capture probes. In practice, adaptive sampling can achieve 5-10x enrichment of target regions.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/ont_adaptive_sampling.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption><strong>Adaptive sampling (ReadUntil).</strong> Software maps the first portion of each read in real time. On-target reads continue sequencing; off-target reads are ejected by reversing voltage, freeing the pore for the next molecule.</figcaption>
+</figure>
+</div>
+</section>
+<section id="duplex-sequencing" class="level3">
+<h3 class="anchored" data-anchor-id="duplex-sequencing">Duplex Sequencing</h3>
+<p>When both strands of a double-stranded DNA molecule are sequenced consecutively through the same pore (the complement strand follows the template strand), the two reads can be combined into a <strong>duplex read</strong> with accuracy exceeding <strong>Q30</strong> (&gt;99.9%). This is analogous to PacBio’s CCS concept but achieved differently.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/ont_duplex_simplex.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption><strong>Duplex vs simplex sequencing.</strong> In simplex mode, only one strand is read. In duplex mode, both template and complement strands pass through the same pore consecutively, enabling consensus calling that dramatically improves accuracy.</figcaption>
+</figure>
+</div>
+</section>
+<section id="current-ont-devices" class="level3">
+<h3 class="anchored" data-anchor-id="current-ont-devices">Current ONT Devices</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 31%">
+<col style="width: 20%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Device</th>
+<th>Flow Cells</th>
+<th>Channels per Cell</th>
+<th>Max Output</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MinION</td>
+<td>1</td>
+<td>512 (2,048 pores)</td>
+<td>~50 Gb</td>
+<td>Portable, field work, teaching</td>
+</tr>
+<tr class="even">
+<td>P2 Solo</td>
+<td>2</td>
+<td>2,675</td>
+<td>~290 Gb/cell</td>
+<td>Benchtop production</td>
+</tr>
+<tr class="odd">
+<td>PromethION 48</td>
+<td>48</td>
+<td>2,675</td>
+<td>~14 Tb</td>
+<td>Large-scale production</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-formats" class="level3">
+<h3 class="anchored" data-anchor-id="data-formats">Data Formats</h3>
+<ul>
+<li><strong>POD5:</strong> Current raw signal format (Apache Arrow-based), replacing the legacy FAST5 format (which was HDF5-based)</li>
+<li><strong>Dorado:</strong> ONT’s basecaller, uses neural networks to convert raw signal to sequence</li>
+<li>Output: BAM (with move table for signal-to-base mapping) or FASTQ</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="technology-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="technology-comparison">7. Technology Comparison</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 26%">
+<col style="width: 20%">
+<col style="width: 19%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Illumina (NovaSeq X)</th>
+<th>Element (AVITI)</th>
+<th>PacBio (Revio)</th>
+<th>ONT (PromethION)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Read length</td>
+<td>2 x 150 bp</td>
+<td>2 x 150 bp</td>
+<td>10-25 kb (HiFi)</td>
+<td>Ultra-long possible (&gt;100 kb)</td>
+</tr>
+<tr class="even">
+<td>Single-read accuracy</td>
+<td>~99.9% (Q30)</td>
+<td>~99.99% (Q40)</td>
+<td>~99.9% (Q30 HiFi)</td>
+<td>~99% (Q20 simplex); Q30+ duplex</td>
+</tr>
+<tr class="odd">
+<td>Max output/run</td>
+<td>16 Tb</td>
+<td>600 Gb</td>
+<td>360 Gb/day (4 cells)</td>
+<td>~14 Tb</td>
+</tr>
+<tr class="even">
+<td>Cost per Gb</td>
+<td>~$2</td>
+<td>~$2-5</td>
+<td>~$8</td>
+<td>~$8-15</td>
+</tr>
+<tr class="odd">
+<td>Time to first results</td>
+<td>~24-48 hr</td>
+<td>~24-48 hr</td>
+<td>~24 hr</td>
+<td>Minutes (real-time)</td>
+</tr>
+<tr class="even">
+<td>Primary error type</td>
+<td>Substitutions</td>
+<td>Substitutions</td>
+<td>Indels (raw); balanced (HiFi)</td>
+<td>Indels in homopolymers (improved with R10)</td>
+</tr>
+<tr class="odd">
+<td>Detect base modifications</td>
+<td>No (need bisulfite/EM-seq)</td>
+<td>No</td>
+<td>Yes (kinetics)</td>
+<td>Yes (current signal)</td>
+</tr>
+<tr class="even">
+<td>Direct RNA</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Adaptive sampling</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Portability</td>
+<td>Lab only</td>
+<td>Lab only</td>
+<td>Lab only</td>
+<td>Field-deployable (MinION)</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>No Single “Best” Platform
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Platform choice depends on the experiment. Illumina and Element dominate for high-throughput short-read applications (WGS, RNA-seq, ATAC-seq). PacBio excels at genome assembly, structural variant detection, and methylation. ONT uniquely enables real-time, portable, and direct RNA sequencing. Many projects now combine short and long reads for optimal results.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="practicalities-data-formats-and-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="practicalities-data-formats-and-exploration">8. Practicalities: Data Formats and Exploration</h2>
+<p>Hands-on data exploration will be covered in companion Jupyter notebooks. Here we briefly introduce the key data formats you will encounter.</p>
+<section id="fastq-illumina-element-ont-after-basecalling" class="level3">
+<h3 class="anchored" data-anchor-id="fastq-illumina-element-ont-after-basecalling">FASTQ (Illumina, Element, ONT after basecalling)</h3>
+<p>The universal short-read format. Four lines per read:</p>
+<pre><code>@read_id optional_description
+ACGTACGTACGTACGT...
++
+FFFFFFFFFFFFFFFF...</code></pre>
+<ul>
+<li>Line 1: Header (starts with <code>@</code>)</li>
+<li>Line 2: DNA sequence</li>
+<li>Line 3: Separator (<code>+</code>)</li>
+<li>Line 4: Quality scores (ASCII-encoded Phred scores; <code>F</code> = Q37)</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Peek at a FASTQ file</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gzip</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> gzip.<span class="bu">open</span>(<span class="st">"sample.fastq.gz"</span>, <span class="st">"rt"</span>) <span class="im">as</span> f:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, line <span class="kw">in</span> <span class="bu">enumerate</span>(f):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(line.strip())</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">&gt;=</span> <span class="dv">7</span>:  <span class="co"># show 2 reads</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="bam-pacbio-hifi-also-general-alignment-format" class="level3">
+<h3 class="anchored" data-anchor-id="bam-pacbio-hifi-also-general-alignment-format">BAM (PacBio HiFi, also general alignment format)</h3>
+<p>Binary Alignment/Map format. For PacBio, unaligned BAM files store HiFi reads along with per-base kinetics (IPD and pulse width) in auxiliary tags.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Peek at a PacBio HiFi BAM</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-h</span> sample.hifi.bam <span class="kw">|</span> <span class="fu">head</span> <span class="at">-20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Key PacBio BAM tags:</p>
+<ul>
+<li><code>rq</code>: Read quality (float, 0-1)</li>
+<li><code>np</code>: Number of full passes</li>
+<li><code>fi</code> / <code>ri</code>: Forward/reverse IPD values</li>
+<li><code>fp</code> / <code>rp</code>: Forward/reverse pulse width values</li>
+</ul>
+</section>
+<section id="pod5-ont-raw-signal" class="level3">
+<h3 class="anchored" data-anchor-id="pod5-ont-raw-signal">POD5 (ONT raw signal)</h3>
+<p>HDF5-based format storing the raw electrical signal from each nanopore read. This is the native ONT format, replacing the legacy FAST5 format.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Peek at a POD5 file</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pod5</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pod5.Reader(<span class="st">"sample.pod5"</span>) <span class="im">as</span> reader:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> read <span class="kw">in</span> reader.reads():</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Read ID: </span><span class="sc">{</span>read<span class="sc">.</span>read_id<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Signal length: </span><span class="sc">{</span><span class="bu">len</span>(read.signal)<span class="sc">}</span><span class="ss"> samples"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Sample rate: </span><span class="sc">{</span>read<span class="sc">.</span>run_info<span class="sc">.</span>sample_rate<span class="sc">}</span><span class="ss"> Hz"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Signal to Sequence
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ONT raw data is not DNA sequence – it is a time series of electrical current measurements (picoamps) sampled at ~4-5 kHz. Basecalling with Dorado converts this signal into nucleotide sequence. You can re-basecall the same POD5 file with updated models to improve accuracy without re-sequencing.</p>
+</div>
+</div>
+</section>
+<section id="format-summary" class="level3">
+<h3 class="anchored" data-anchor-id="format-summary">Format Summary</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Format</th>
+<th>Type</th>
+<th>Platform</th>
+<th>Contains</th>
+<th>Typical Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FASTQ(.gz)</td>
+<td>Text (compressed)</td>
+<td>All</td>
+<td>Sequence + quality</td>
+<td>Varies widely (1 GB to hundreds of GB)</td>
+</tr>
+<tr class="even">
+<td>BAM</td>
+<td>Binary</td>
+<td>PacBio, alignments</td>
+<td>Sequence + quality + kinetics</td>
+<td>~10-50 GB per cell</td>
+</tr>
+<tr class="odd">
+<td>POD5</td>
+<td>Apache Arrow</td>
+<td>ONT</td>
+<td>Raw electrical signal</td>
+<td>~50-200 GB per flow cell</td>
+</tr>
+<tr class="even">
+<td>FAST5</td>
+<td>HDF5 (legacy)</td>
+<td>ONT</td>
+<td>Raw signal (single/multi)</td>
+<td>Deprecated; convert to POD5</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="choosing-a-platform" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-a-platform">Choosing a Platform</h3>
+<ul>
+<li><strong>Population-scale WGS or RNA-seq</strong> → Illumina NovaSeq X or Element AVITI</li>
+<li><strong>De novo genome assembly</strong> → PacBio HiFi (Revio)</li>
+<li><strong>Structural variant detection</strong> → PacBio HiFi or ONT long reads</li>
+<li><strong>Field diagnostics or rapid surveillance</strong> → ONT MinION</li>
+<li><strong>Epitranscriptomics / RNA modifications</strong> → ONT direct RNA sequencing</li>
+<li><strong>Targeted panels or amplicons</strong> → Illumina MiSeq or ONT adaptive sampling</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="on-the-horizon-roche-sequencing-by-expansion-sbx" class="level2">
+<h2 class="anchored" data-anchor-id="on-the-horizon-roche-sequencing-by-expansion-sbx">9. On the Horizon: Roche Sequencing by Expansion (SBX)</h2>
+<p>Roche – which exited sequencing in 2013 after discontinuing 454 – re-entered the field in February 2025 with a radically different approach: <strong>Sequencing by Expansion (SBX)</strong> (<a href="https://doi.org/10.1101/2025.02.19.639056">Fuller et al.&nbsp;2025, <em>bioRxiv</em></a>).</p>
+<section id="the-xpandomer-concept" class="level3">
+<h3 class="anchored" data-anchor-id="the-xpandomer-concept">The Xpandomer Concept</h3>
+<p>SBX overcomes a fundamental limitation of nanopore sequencing: the difficulty of resolving individual bases as they pass through a pore. Instead of reading native DNA directly, SBX first converts each DNA template into a <strong>surrogate polymer called an Xpandomer</strong> that is <strong>~50x longer</strong> than the original.</p>
+<p><strong>How it works:</strong></p>
+<ol type="1">
+<li>DNA polymerase copies the template using <strong>expandable nucleotide triphosphates (X-NTPs)</strong> – synthetic building blocks that each encode one base but contain a long, expandable linker and a high-signal reporter code</li>
+<li>After synthesis, the Xpandomer is chemically expanded, stretching the reporter codes apart</li>
+<li>Each reporter includes a <strong>translocation control element</strong> that pauses the Xpandomer in the nanopore – one reporter at a time</li>
+<li>The reporter blocks ionic current in one of <strong>four distinct levels</strong>, each uniquely identifying A, C, G, or T</li>
+<li>Voltage pulses advance the Xpandomer through the pore one step at a time</li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Why Expansion Matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In conventional nanopore sequencing (ONT), ~5-9 bases simultaneously occupy the pore constriction, creating a complex signal that requires neural network deconvolution and struggles with homopolymers. SBX eliminates this problem entirely: each base is read individually through a single, unambiguous current level. This is a fundamentally different approach to the signal-to-noise problem.</p>
+</div>
+</div>
+</section>
+<section id="hardware-cmos-nanopore-arrays" class="level3">
+<h3 class="anchored" data-anchor-id="hardware-cmos-nanopore-arrays">Hardware: CMOS Nanopore Arrays</h3>
+<p>The SBX platform uses a <strong>CMOS-based sensor chip</strong> containing ~8 million microwells, each housing a single nanopore. Each microwell integrates the electrode, detection circuit, and analog-to-digital converter on-chip – similar in concept to Ion Torrent’s semiconductor approach but reading current blockade rather than pH.</p>
+</section>
+<section id="performance" class="level3">
+<h3 class="anchored" data-anchor-id="performance">Performance</h3>
+<ul>
+<li><strong>Accuracy:</strong> Demonstrated F1 scores &gt;99.80% (SNV) and &gt;99.7% (InDel) for whole-genome sequencing</li>
+<li><strong>Speed:</strong> In collaboration with Broad Clinical Labs and Boston Children’s Hospital, SBX achieved a Guinness World Record for fastest DNA sequencing – a complete genome in under 4 hours</li>
+<li><strong>Applications demonstrated:</strong> Whole-genome sequencing, bulk RNA-seq, methylation mapping, and spatial multiomics</li>
+</ul>
+</section>
+<section id="platform-axelios-1" class="level3">
+<h3 class="anchored" data-anchor-id="platform-axelios-1">Platform: AXELIOS 1</h3>
+<p>The first commercial instrument, <strong>AXELIOS 1</strong>, is planned for Research Use Only (RUO) launch in <strong>2026</strong>. Roche aims to eventually bring SBX into clinical diagnostics, leveraging its existing global diagnostics infrastructure.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Full Circle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Roche’s return to sequencing is notable: the company that pioneered commercial NGS with 454 pyrosequencing (2005-2013) has now developed a technology that combines biochemical innovation (Xpandomers) with nanopore readout and semiconductor manufacturing – drawing on ideas from all three generations of sequencing.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="key-references" class="level2">
+<h2 class="anchored" data-anchor-id="key-references">Key References</h2>
+<ol type="1">
+<li>Sanger F, Nicklen S, Coulson AR. DNA sequencing with chain-terminating inhibitors. <em>PNAS</em>. 1977;74(12):5463-5467.</li>
+<li>Margulies M, et al.&nbsp;Genome sequencing in microfabricated high-density picolitre reactors. <em>Nature</em>. 2005;437:376-380. <a href="https://doi.org/10.1038/nature03959">doi:10.1038/nature03959</a></li>
+<li>Shendure J, et al.&nbsp;Accurate multiplex polony sequencing of an evolved bacterial genome. <em>Science</em>. 2005;309:1728-1732. <a href="https://doi.org/10.1126/science.1117389">doi:10.1126/science.1117389</a></li>
+<li>Rothberg JM, et al.&nbsp;An integrated semiconductor device enabling non-optical genome sequencing. <em>Nature</em>. 2011;475:348-352. <a href="https://doi.org/10.1038/nature10242">doi:10.1038/nature10242</a></li>
+<li>Bentley DR, et al.&nbsp;Accurate whole human genome sequencing using reversible terminator chemistry. <em>Nature</em>. 2008;456:53-59. <a href="https://doi.org/10.1038/nature07517">doi:10.1038/nature07517</a></li>
+<li>Arslan S, et al.&nbsp;Sequencing by avidity enables high accuracy with low reagent consumption. <em>Nature Biotechnology</em>. 2024;42:132-138. <a href="https://doi.org/10.1038/s41587-023-01750-7">doi:10.1038/s41587-023-01750-7</a></li>
+<li>Eid J, et al.&nbsp;Real-time DNA sequencing from single polymerase molecules. <em>Science</em>. 2009;323:133-138. <a href="https://doi.org/10.1126/science.1162986">doi:10.1126/science.1162986</a></li>
+<li>Levene MJ, et al.&nbsp;Zero-mode waveguides for single-molecule analysis at high concentrations. <em>Science</em>. 2003;299:682-686. <a href="https://doi.org/10.1126/science.1079700">doi:10.1126/science.1079700</a></li>
+<li>Jain M, et al.&nbsp;Improved data analysis for the MinION nanopore sequencer. <em>Nature Methods</em>. 2015;12:351-356. <a href="https://doi.org/10.1038/nmeth.3290">doi:10.1038/nmeth.3290</a></li>
+<li>Deamer D, Akeson M, Branton D. Three decades of nanopore sequencing. <em>Nature Biotechnology</em>. 2016;34:518-524. <a href="https://doi.org/10.1038/nbt.3423">doi:10.1038/nbt.3423</a></li>
+<li>Fuller CW, et al.&nbsp;Sequencing by Expansion (SBX) – a novel, high-throughput single-molecule sequencing technology. <em>bioRxiv</em>. 2025. <a href="https://doi.org/10.1101/2025.02.19.639056">doi:10.1101/2025.02.19.639056</a></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture17.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
