@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 19: Variant Calling in Haploid Systems – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture19.html">19. Variant Calling in Haploid Systems</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. Finding Sequence Matches Quickly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. K-mers, Minimizers, and Minimap2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17. DNA Sequencing Technologies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture19.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">19. Variant Calling in Haploid Systems</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#introduction-why-haploid-variant-calling-is-different" id="toc-introduction-why-haploid-variant-calling-is-different" class="nav-link" data-scroll-target="#introduction-why-haploid-variant-calling-is-different">1. Introduction: Why Haploid Variant Calling Is Different</a>
+  <ul class="collapse">
+  <li><a href="#the-diploid-assumption" id="toc-the-diploid-assumption" class="nav-link" data-scroll-target="#the-diploid-assumption">The diploid assumption</a></li>
+  <li><a href="#the-haploid-reality" id="toc-the-haploid-reality" class="nav-link" data-scroll-target="#the-haploid-reality">The haploid reality</a></li>
+  <li><a href="#where-does-variation-come-from" id="toc-where-does-variation-come-from" class="nav-link" data-scroll-target="#where-does-variation-come-from">Where does variation come from?</a></li>
+  </ul></li>
+  <li><a href="#the-signal-vs-noise-problem" id="toc-the-signal-vs-noise-problem" class="nav-link" data-scroll-target="#the-signal-vs-noise-problem">2. The Signal-vs-Noise Problem</a>
+  <ul class="collapse">
+  <li><a href="#microbial-populations-as-mixtures-of-haplotypes" id="toc-microbial-populations-as-mixtures-of-haplotypes" class="nav-link" data-scroll-target="#microbial-populations-as-mixtures-of-haplotypes">Microbial populations as mixtures of haplotypes</a></li>
+  <li><a href="#the-detection-threshold-problem" id="toc-the-detection-threshold-problem" class="nav-link" data-scroll-target="#the-detection-threshold-problem">The detection threshold problem</a></li>
+  <li><a href="#biases-that-create-false-calls" id="toc-biases-that-create-false-calls" class="nav-link" data-scroll-target="#biases-that-create-false-calls">Biases that create false calls</a></li>
+  </ul></li>
+  <li><a href="#how-lofreq-works" id="toc-how-lofreq-works" class="nav-link" data-scroll-target="#how-lofreq-works">3. How LoFreq Works</a></li>
+  <li><a href="#tool-landscape" id="toc-tool-landscape" class="nav-link" data-scroll-target="#tool-landscape">4. Tool Landscape</a>
+  <ul class="collapse">
+  <li><a href="#tools-designed-for-haploidmicrobial-systems" id="toc-tools-designed-for-haploidmicrobial-systems" class="nav-link" data-scroll-target="#tools-designed-for-haploidmicrobial-systems">4.1 Tools designed for haploid/microbial systems</a></li>
+  <li><a href="#general-purpose-tools-adapted-for-haploid-use" id="toc-general-purpose-tools-adapted-for-haploid-use" class="nav-link" data-scroll-target="#general-purpose-tools-adapted-for-haploid-use">4.2 General-purpose tools adapted for haploid use</a></li>
+  <li><a href="#deep-learning-variant-callers-for-long-read-data" id="toc-deep-learning-variant-callers-for-long-read-data" class="nav-link" data-scroll-target="#deep-learning-variant-callers-for-long-read-data">4.3 Deep learning variant callers for long-read data</a></li>
+  <li><a href="#specialized-pipelines" id="toc-specialized-pipelines" class="nav-link" data-scroll-target="#specialized-pipelines">4.4 Specialized pipelines</a></li>
+  </ul></li>
+  <li><a href="#tool-comparison-summary" id="toc-tool-comparison-summary" class="nav-link" data-scroll-target="#tool-comparison-summary">5. Tool Comparison Summary</a></li>
+  <li><a href="#benchmarking-which-tools-perform-best" id="toc-benchmarking-which-tools-perform-best" class="nav-link" data-scroll-target="#benchmarking-which-tools-perform-best">6. Benchmarking: Which Tools Perform Best?</a>
+  <ul class="collapse">
+  <li><a href="#the-duplex-sequencing-gold-standard" id="toc-the-duplex-sequencing-gold-standard" class="nav-link" data-scroll-target="#the-duplex-sequencing-gold-standard">6.1 The duplex sequencing gold standard</a></li>
+  <li><a href="#benchmarking-lofreq-mutect2-and-freebayes-on-duplex-sequencing-data" id="toc-benchmarking-lofreq-mutect2-and-freebayes-on-duplex-sequencing-data" class="nav-link" data-scroll-target="#benchmarking-lofreq-mutect2-and-freebayes-on-duplex-sequencing-data">6.2 Benchmarking LoFreq, Mutect2, and FreeBayes on duplex sequencing data</a></li>
+  <li><a href="#bacterial-whole-genome-sequencing-benchmarks" id="toc-bacterial-whole-genome-sequencing-benchmarks" class="nav-link" data-scroll-target="#bacterial-whole-genome-sequencing-benchmarks">6.3 Bacterial whole-genome sequencing benchmarks</a></li>
+  <li><a href="#deep-learning-callers-on-bacterial-ont-data" id="toc-deep-learning-callers-on-bacterial-ont-data" class="nav-link" data-scroll-target="#deep-learning-callers-on-bacterial-ont-data">6.4 Deep learning callers on bacterial ONT data</a></li>
+  </ul></li>
+  <li><a href="#best-practices-by-scenario" id="toc-best-practices-by-scenario" class="nav-link" data-scroll-target="#best-practices-by-scenario">7. Best Practices by Scenario</a>
+  <ul class="collapse">
+  <li><a href="#scenario-1-bacterial-resequencing-fixed-variants" id="toc-scenario-1-bacterial-resequencing-fixed-variants" class="nav-link" data-scroll-target="#scenario-1-bacterial-resequencing-fixed-variants">Scenario 1: Bacterial resequencing (fixed variants)</a></li>
+  <li><a href="#scenario-2-bacterial-population-diversity-experimental-evolution" id="toc-scenario-2-bacterial-population-diversity-experimental-evolution" class="nav-link" data-scroll-target="#scenario-2-bacterial-population-diversity-experimental-evolution">Scenario 2: Bacterial population diversity / experimental evolution</a></li>
+  <li><a href="#scenario-3-viral-amplicon-sequencing-e.g.-sars-cov-2" id="toc-scenario-3-viral-amplicon-sequencing-e.g.-sars-cov-2" class="nav-link" data-scroll-target="#scenario-3-viral-amplicon-sequencing-e.g.-sars-cov-2">Scenario 3: Viral amplicon sequencing (e.g., SARS-CoV-2)</a></li>
+  <li><a href="#scenario-4-viral-quasispecies-reconstruction" id="toc-scenario-4-viral-quasispecies-reconstruction" class="nav-link" data-scroll-target="#scenario-4-viral-quasispecies-reconstruction">Scenario 4: Viral quasispecies reconstruction</a></li>
+  <li><a href="#scenario-5-outbreak-investigation-phylogenomics" id="toc-scenario-5-outbreak-investigation-phylogenomics" class="nav-link" data-scroll-target="#scenario-5-outbreak-investigation-phylogenomics">Scenario 5: Outbreak investigation / phylogenomics</a></li>
+  </ul></li>
+  <li><a href="#technical-details" id="toc-technical-details" class="nav-link" data-scroll-target="#technical-details">8. Technical Details</a>
+  <ul class="collapse">
+  <li><a href="#sec-duplex" id="toc-sec-duplex" class="nav-link" data-scroll-target="#sec-duplex">8.1 Duplex Sequencing</a></li>
+  <li><a href="#sec-strand-bias-formulas" id="toc-sec-strand-bias-formulas" class="nav-link" data-scroll-target="#sec-strand-bias-formulas">8.2 Strand Bias Formulas</a></li>
+  <li><a href="#sec-quality-merging" id="toc-sec-quality-merging" class="nav-link" data-scroll-target="#sec-quality-merging">8.3 LoFreq Quality Merging</a></li>
+  <li><a href="#sec-poisson-binomial" id="toc-sec-poisson-binomial" class="nav-link" data-scroll-target="#sec-poisson-binomial">8.4 Poisson-Binomial Test</a></li>
+  <li><a href="#sec-multiple-testing" id="toc-sec-multiple-testing" class="nav-link" data-scroll-target="#sec-multiple-testing">8.5 Multiple Testing Correction</a></li>
+  <li><a href="#sec-lofreq-pipeline" id="toc-sec-lofreq-pipeline" class="nav-link" data-scroll-target="#sec-lofreq-pipeline">8.6 The <code>lofreq call</code> Pipeline</a></li>
+  <li><a href="#sec-lofreq-vcf" id="toc-sec-lofreq-vcf" class="nav-link" data-scroll-target="#sec-lofreq-vcf">8.7 LoFreq VCF Output Reference</a></li>
+  <li><a href="#sec-lofreq-cli" id="toc-sec-lofreq-cli" class="nav-link" data-scroll-target="#sec-lofreq-cli">8.8 LoFreq Command-Line Reference</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">9. Summary</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture19.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture19.html">19. Variant Calling in Haploid Systems</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 19: Variant Calling in Haploid Systems</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to:</p>
+<ul>
+<li>Explain why variant calling in haploid systems (bacteria, viruses, haploid eukaryotes) differs fundamentally from diploid variant calling</li>
+<li>Describe microbial populations as mixtures of haploid genomes with continuous allele frequencies</li>
+<li>Identify and explain key biases that affect variant calls: strand bias, cycle bias, placement bias</li>
+<li>Explain the indel left-alignment problem and why unified variant representation matters</li>
+<li>Compare the algorithmic approaches of major variant callers: LoFreq, FreeBayes, Mutect2, Snippy, breseq, iVar, bcftools, Clair3, and DeepVariant</li>
+<li>Interpret benchmarking results and select appropriate tools for bacterial resequencing, viral quasispecies analysis, and experimental evolution studies</li>
+<li>Explain how duplex sequencing provides ground truth for variant caller evaluation</li>
+</ul>
+<hr>
+</section>
+<section id="introduction-why-haploid-variant-calling-is-different" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-why-haploid-variant-calling-is-different">1. Introduction: Why Haploid Variant Calling Is Different</h2>
+<section id="the-diploid-assumption" class="level3">
+<h3 class="anchored" data-anchor-id="the-diploid-assumption">The diploid assumption</h3>
+<p>Most widely used variant callers – GATK HaplotypeCaller, DeepVariant, and others – were designed with <strong>diploid organisms</strong> in mind. In a diploid system, genotypes at any locus fall into three discrete categories:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Genotype</th>
+<th>Expected allele frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Homozygous reference (0/0)</td>
+<td>0% alternative allele</td>
+</tr>
+<tr class="even">
+<td>Heterozygous (0/1)</td>
+<td>~50% alternative allele</td>
+</tr>
+<tr class="odd">
+<td>Homozygous alternative (1/1)</td>
+<td>~100% alternative allele</td>
+</tr>
+</tbody>
+</table>
+<p>The caller’s job reduces to distinguishing among these three states. Priors, likelihoods, and filters are all tuned for these discrete frequencies.</p>
+</section>
+<section id="the-haploid-reality" class="level3">
+<h3 class="anchored" data-anchor-id="the-haploid-reality">The haploid reality</h3>
+<p>A bacterial colony, a viral isolate, or a yeast culture is <strong>not a single genome</strong>. It is a <strong>population</strong> of haploid genomes. When you extract DNA and sequence it, you are sampling from this population. The resulting data looks nothing like a diploid sample:</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Microbial and viral samples are <strong>mixtures of multiple haploid genomes</strong> where the frequencies of individual variants are <strong>continuous</strong> – they can be 0.1%, 3%, 17%, 50%, or any value. This is fundamentally different from the discrete allele frequencies (0%, 50%, 100%) expected in diploid systems. A caller tuned for diploid genotypes will either miss low-frequency variants entirely or miscall them.</p>
+</div>
+</div>
+</section>
+<section id="where-does-variation-come-from" class="level3">
+<h3 class="anchored" data-anchor-id="where-does-variation-come-from">Where does variation come from?</h3>
+<p>Even a “clonal” bacterial culture accumulates mutations during growth. The classic chemostat experiments of <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC281569/">Dykhuizen &amp; Hartl (1983)</a> demonstrated that adaptive mutations arise and compete within bacterial populations on short timescales. In viral populations, mutation rates are even higher (<span class="math inline">\(10^{-5}\)</span> to <span class="math inline">\(10^{-3}\)</span> per base per replication cycle for RNA viruses), producing highly diverse <strong>quasispecies</strong> within a single infected host.</p>
+<p>The consequence: <strong>any sequencing experiment on a microbial or viral sample is implicitly a population genomics experiment</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture19_dykhuizen_hartl.png" class="img-fluid figure-img"></p>
+<figcaption>Dykhuizen &amp; Hartl (1983) demonstrated adaptive mutations arising and competing within bacterial populations on short timescales.</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+<section id="the-signal-vs-noise-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-signal-vs-noise-problem">2. The Signal-vs-Noise Problem</h2>
+<section id="microbial-populations-as-mixtures-of-haplotypes" class="level3">
+<h3 class="anchored" data-anchor-id="microbial-populations-as-mixtures-of-haplotypes">Microbial populations as mixtures of haplotypes</h3>
+<p>Consider a bacterial culture growing in a turbidostat (continuous culture at constant density). At any time point, the population contains:</p>
+<ul>
+<li>A <strong>majority haplotype</strong> (the “wild type” or founding clone)</li>
+<li>Multiple <strong>minority haplotypes</strong> carrying one or more mutations</li>
+<li>Allele frequencies that <strong>change over time</strong> as selection and drift act</li>
+</ul>
+<p>When we sequence this population with deep coverage (e.g., 1000x), each position in the genome is represented by ~1000 reads. A variant present in 1% of the population should appear in ~10 reads. The question becomes: <strong>is that signal real, or is it sequencing error?</strong></p>
+</section>
+<section id="the-detection-threshold-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-detection-threshold-problem">The detection threshold problem</h3>
+<p>Illumina sequencing has a per-base error rate of approximately <span class="math inline">\(10^{-2}\)</span> to <span class="math inline">\(10^{-3}\)</span> (corresponding to Phred quality scores Q20–Q30). This means:</p>
+<p><span class="math display">\[P(\text{error at a single base}) \approx 10^{-Q/10}\]</span></p>
+<p>At Q30, <span class="math inline">\(P(\text{error}) = 0.001\)</span>. At 1000x coverage, we expect ~1 erroneous read per position by chance. So a variant at 0.1% frequency (1 supporting read in 1000) is <strong>indistinguishable from noise</strong> without sophisticated statistical modeling.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The Central Challenge
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Variant calling in haploid systems is fundamentally a <strong>signal-versus-noise</strong> problem: distinguishing true low-frequency variants from sequencing errors. The tools described in this lecture differ primarily in how they model and separate these two sources of non-reference bases.</p>
+</div>
+</div>
+</section>
+<section id="biases-that-create-false-calls" class="level3">
+<h3 class="anchored" data-anchor-id="biases-that-create-false-calls">Biases that create false calls</h3>
+<p>Beyond random sequencing errors, several systematic biases generate false variant calls. We must understand and filter these to avoid spurious results.</p>
+<section id="indel-left-alignment-and-representation" class="level4">
+<h4 class="anchored" data-anchor-id="indel-left-alignment-and-representation">Indel left-alignment and representation</h4>
+<p>Insertions and deletions (indels) in repetitive regions are <strong>positionally ambiguous</strong>. Consider a reference sequence <code>GGGCACACACAGGG</code> and a read with a 2-bp deletion in the CA-repeat region. The same deletion can be aligned in multiple valid ways:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Alignment</th>
+<th>REF allele</th>
+<th>ALT allele</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>GGGCAC--ACAGGG</code></td>
+<td><code>CAC</code></td>
+<td><code>C</code></td>
+</tr>
+<tr class="even">
+<td><code>GGGCA--CACAGGG</code></td>
+<td><code>ACA</code></td>
+<td><code>A</code></td>
+</tr>
+<tr class="odd">
+<td><code>GGG--CACACAGGG</code></td>
+<td><code>GCA</code></td>
+<td><code>G</code></td>
+</tr>
+</tbody>
+</table>
+<p>All three represent the <strong>same biological event</strong>, but they produce different VCF records. If two callers (or two reads) represent the same indel differently, they will appear as distinct variants, leading to false negatives in comparisons and inflated variant counts.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Indel Normalization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://doi.org/10.1093/bioinformatics/btv112">Tan et al.&nbsp;(2015)</a> formalized the concept of <strong>variant normalization</strong>: left-aligning and trimming all indels to produce a unique, canonical representation. Their tool <code>vt normalize</code> enforces this consistently. GATK’s <code>leftAlignAndTrimVariants</code> achieves the same result for ~96.6% of variants but fails on many multi-allelic indels. <strong>Always normalize your VCF files before comparing variant calls across tools or samples.</strong></p>
+</div>
+</div>
+</section>
+<section id="strand-bias" class="level4">
+<h4 class="anchored" data-anchor-id="strand-bias">Strand bias</h4>
+<p><strong>Strand bias</strong> occurs when a variant is supported predominantly by reads mapped to one strand (forward or reverse) but not the other. True variants appear on both strands in roughly equal proportions; artifacts tend to be one-sided. We use a <strong>2×2 contingency table</strong> to test this statistically:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Forward</th>
+<th>Reverse</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(b\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Alternative</strong></td>
+<td><span class="math inline">\(c\)</span></td>
+<td><span class="math inline">\(d\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-13-666">Guo et al.&nbsp;(2012)</a> showed that strand bias occurs randomly across genomic positions but is consistent between aligners (BWA and Bowtie produce similar bias patterns), suggesting it originates in the sequencing chemistry rather than the alignment step. For the mathematical formulation—Fisher’s exact test and the Strand Odds Ratio—see <a href="#sec-strand-bias-formulas">Section 8.2</a>.</p>
+</section>
+<section id="cycle-bias-and-placement-bias" class="level4">
+<h4 class="anchored" data-anchor-id="cycle-bias-and-placement-bias">Cycle bias and placement bias</h4>
+<p>Beyond strand bias, two additional biases affect variant quality:</p>
+<ul>
+<li><p><strong>Cycle bias</strong>: The variant appears preferentially at certain positions within the sequencing-by-synthesis cycle. Early and late cycles have different error profiles. A real variant should be distributed uniformly across cycles.</p></li>
+<li><p><strong>Placement bias (read position bias)</strong>: The variant appears only near the ends (or only in the middle) of reads. Misalignment artifacts often cluster at read boundaries, especially near indels.</p></li>
+</ul>
+<p>An ideal variant call shows balanced representation across all four dimensions: forward/reverse strand, early/late cycle, beginning/end of read, and reference/alternative allele frequency.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture19_sequencing_biases.png" class="img-fluid figure-img"></p>
+<figcaption>Illustration of sequencing biases affecting variant calls (from <a href="https://github.com/ekg">Erik Garrison</a>). The green star indicates an ideal case where the variant is evenly represented across read positions (placement bias), sequencing cycles (cycle bias), and both strands (strand bias).</figcaption>
+</figure>
+</div>
+</section>
+<section id="multi-allelic-sites" class="level4">
+<h4 class="anchored" data-anchor-id="multi-allelic-sites">Multi-allelic sites</h4>
+<p>In a polymorphic microbial population, a single genomic position may have <strong>three or four</strong> different bases represented. Some callers (notably Mutect2) handle multi-allelic sites poorly, reporting only the highest-frequency alternative allele and discarding evidence for others. This is a critical limitation for population-level analyses.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="how-lofreq-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-lofreq-works">3. How LoFreq Works</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://academic.oup.com/nar/article/40/22/11189/1152727">Wilm et al.&nbsp;(2012)</a> Nucleic Acids Res 40(22):11189-201</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Ultra-sensitive detection of low-frequency variants in mixed populations</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Poisson-binomial model using per-base quality scores</td>
+</tr>
+<tr class="even">
+<td><strong>Key strength</strong></td>
+<td>Near-perfect specificity; can detect variants below the average sequencing error rate</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/CSB5/lofreq">CSB5/lofreq</a></td>
+</tr>
+</tbody>
+</table>
+<p>Each base in a sequencing read carries a quality score—the probability that the base call is wrong. LoFreq exploits this information directly: for every position in the genome, it asks <em>given all the per-base error probabilities at this position, how likely is it we’d see this many non-reference bases by chance alone?</em> If that probability is astronomically small, we call a variant.</p>
+<p>LoFreq goes beyond simple base quality by merging four independent quality sources into a single per-base error probability: base quality (sequencer confidence), mapping quality (alignment confidence), base-alignment quality (correct column placement), and source quality (systematic error from a control sample). For the formal quality-merging formula and detailed explanations, see <a href="#sec-quality-merging">Section 8.3</a>. For the formal Poisson-binomial model and worked examples, see <a href="#sec-quality-merging">Sections 8.3</a>–<a href="#sec-poisson-binomial">8.4</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Why LoFreq excels at microbial data
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Unlike callers that assume a fixed error rate, LoFreq uses the <strong>actual quality score of every individual base</strong>. This means it can detect a variant even when the variant frequency is <em>below</em> the average error rate – as long as the supporting reads happen to have high quality scores. It also incorporates mapping quality, indel quality, and alignment quality into a merged error probability, making it robust to multiple error sources.</p>
+</div>
+</div>
+<p><strong>Worked example:</strong> Suppose we observe 5 non-reference bases out of 100 reads at a position. The 5 supporting reads have Q30 quality (error probability 0.001) while the other 95 have Q20 quality (error probability 0.01). The expected number of errors is 5 × 0.001 + 95 × 0.01 = 0.955. Observing 5 non-reference bases when fewer than 1 is expected by chance is highly significant – LoFreq would call this as a real variant. A naive caller using an average error rate might reach the same conclusion here, but the per-base model matters most when a few high-quality reads support a variant against a background of lower-quality reads.</p>
+<p>LoFreq applies multiple testing correction across all genomic positions tested to control false positive rates (see <a href="#sec-multiple-testing">Section 8.5</a> for details on Bonferroni, Holm, and FDR methods).</p>
+<p><strong>Basic usage:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> call <span class="at">-f</span> reference.fa <span class="at">-o</span> variants.vcf aligned.bam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="tool-landscape" class="level2">
+<h2 class="anchored" data-anchor-id="tool-landscape">4. Tool Landscape</h2>
+<section id="tools-designed-for-haploidmicrobial-systems" class="level3">
+<h3 class="anchored" data-anchor-id="tools-designed-for-haploidmicrobial-systems">4.1 Tools designed for haploid/microbial systems</h3>
+<section id="breseq" class="level4">
+<h4 class="anchored" data-anchor-id="breseq">breseq</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://link.springer.com/protocol/10.1007/978-1-4939-0554-6_12">Deatherage &amp; Barrick (2014)</a> Methods Mol Biol 1151:165-188</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Laboratory evolution experiments with haploid microbes</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Read-evidence-based pipeline with junction detection for structural variants</td>
+</tr>
+<tr class="even">
+<td><strong>Key strength</strong></td>
+<td>Detects SNPs, indels, large deletions, and mobile element insertions; HTML output</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/barricklab/breseq">barricklab/breseq</a> (last commit: 2025-11-17)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How breseq works:</strong></p>
+<p>breseq is a comprehensive pipeline rather than a single algorithm. It:</p>
+<ol type="1">
+<li>Maps reads to a reference with Bowtie2</li>
+<li>Identifies <strong>read-alignment evidence</strong> (RA) for point mutations using a Bayesian model that weighs base qualities against a prior on mutation rates</li>
+<li>Detects <strong>new junction evidence</strong> (JC) from split reads – reads that align partially to two different locations, indicating structural rearrangements, IS element insertions, or large deletions</li>
+<li>Detects <strong>missing coverage evidence</strong> (MC) for deletions</li>
+<li>Produces annotated HTML reports with mutation tables</li>
+</ol>
+<p>breseq has a <strong>polymorphism mode</strong> (<code>-p</code>) that reports variants at sub-100% frequency. In this mode, breseq uses a <strong>likelihood ratio test</strong> comparing a single-allele model (all reads come from one base) against a two-allele mixture model (reads come from a mixture at some frequency). The test statistic is evaluated with a chi-squared significance test, providing a rigorous statistical framework for calling sub-clonal variants. For fixed-variant detection in clonal samples, breseq is highly reliable and widely used in experimental evolution studies.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>When to use breseq
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>breseq is ideal for the “compare evolved clone to ancestor” workflow common in laboratory evolution. It emphasizes <strong>sensitivity</strong> (detecting every real mutation, including structural variants) over <strong>speed</strong>. It is not designed for population-level frequency estimation or viral quasispecies analysis.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="snippy" class="level4">
+<h4 class="anchored" data-anchor-id="snippy">Snippy</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://github.com/tseemann/snippy">Seemann T. Snippy: rapid haploid variant calling</a></td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Fast SNP/indel calling in haploid bacterial genomes</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>BWA-MEM + FreeBayes (ploidy 1) + snpEff annotation pipeline</td>
+</tr>
+<tr class="even">
+<td><strong>Key strength</strong></td>
+<td>Speed, simplicity, core genome SNP alignment for phylogenetics</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/tseemann/snippy">tseemann/snippy</a> (last commit: 2025-12-12)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How Snippy works:</strong></p>
+<p>Snippy wraps a standard variant calling pipeline into a single command:</p>
+<ol type="1">
+<li>Maps reads to a reference with <strong>BWA-MEM</strong></li>
+<li>Calls variants with <strong>FreeBayes</strong> using <code>--ploidy 1</code></li>
+<li>Annotates variants with <strong>snpEff</strong></li>
+<li>Produces VCF, tab-delimited tables, and consensus FASTA</li>
+</ol>
+<p>For multi-sample analyses, <code>snippy-core</code> generates a <strong>core SNP alignment</strong> (positions where all samples have unambiguous calls), suitable for phylogenetic tree construction. This makes Snippy the go-to tool for bacterial outbreak investigations and phylogenomic studies.</p>
+<hr>
+</section>
+<section id="ivar" class="level4">
+<h4 class="anchored" data-anchor-id="ivar">iVar</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-1618-7">Grubaugh et al.&nbsp;(2019)</a> Genome Biol 20:8</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Viral amplicon-based sequencing (intrahost variant analysis)</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Pileup-based with primer trimming, quality filtering, and frequency thresholds</td>
+</tr>
+<tr class="even">
+<td><strong>Key strength</strong></td>
+<td>Handles amplicon artifacts (primer sequences, uneven coverage)</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/andersen-lab/ivar">andersen-lab/ivar</a> (last commit: 2025-08-02)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How iVar works:</strong></p>
+<p>iVar was developed specifically for the <strong>PrimalSeq</strong> amplicon sequencing protocol used in Zika, West Nile, and SARS-CoV-2 genomics. It addresses a key problem: amplicon sequencing introduces primer-derived sequences into reads, which can create false variant calls at primer-binding sites.</p>
+<p>iVar provides four core functions:</p>
+<ol type="1">
+<li><strong>Primer trimming</strong>: Removes primer sequences from aligned reads using a BED file of primer coordinates</li>
+<li><strong>Variant calling</strong>: Uses <code>samtools mpileup</code> output, applies a minimum frequency threshold (default 3%) and minimum quality filter</li>
+<li><strong>Consensus calling</strong>: Generates consensus sequences with ambiguity codes at mixed positions</li>
+<li><strong>Primer mismatch detection</strong>: Flags reads with mismatches in primer regions</li>
+</ol>
+<p><strong>Basic usage:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trim primers from aligned reads</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ivar</span> trim <span class="at">-b</span> primers.bed <span class="at">-p</span> trimmed <span class="at">-i</span> aligned.bam</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Call variants (pipe samtools mpileup into ivar)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> mpileup <span class="at">-A</span> <span class="at">-d</span> 0 <span class="at">-B</span> <span class="at">-Q</span> 0 aligned.bam <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">ivar</span> variants <span class="at">-p</span> output <span class="at">-q</span> 20 <span class="at">-t</span> 0.03 <span class="at">-r</span> reference.fa</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="general-purpose-tools-adapted-for-haploid-use" class="level3">
+<h3 class="anchored" data-anchor-id="general-purpose-tools-adapted-for-haploid-use">4.2 General-purpose tools adapted for haploid use</h3>
+<section id="freebayes" class="level4">
+<h4 class="anchored" data-anchor-id="freebayes">FreeBayes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://arxiv.org/abs/1207.3907">Garrison &amp; Marth (2012)</a> arXiv:1207.3907</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Haplotype-based variant detection (any ploidy)</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Bayesian haplotype-based genotyping</td>
+</tr>
+<tr class="even">
+<td><strong>Key for haploid use</strong></td>
+<td><code>--pooled-continuous</code> mode for continuous allele frequencies</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/freebayes/freebayes">freebayes/freebayes</a> (last commit: 2026-02-08)</td>
+</tr>
+</tbody>
+</table>
+<p>FreeBayes is a Bayesian variant caller that constructs candidate haplotypes from observed reads and evaluates the posterior probability of each. For haploid/microbial use, two critical flags exist:</p>
+<ul>
+<li><code>--ploidy 1</code>: Tells FreeBayes to expect haploid genotypes (all sites homozygous REF or homozygous ALT)</li>
+<li><code>--pooled-continuous</code>: Treats the sample as a <strong>pool of unknown ploidy</strong> with continuous allele frequencies – this is the correct model for microbial populations</li>
+</ul>
+<p>Additional recommended settings for microbial work:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">freebayes</span> <span class="at">--ploidy</span> 1 <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">--pooled-continuous</span> <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">--min-alternate-fraction</span> 0.001 <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">--min-alternate-count</span> 1 <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">--haplotype-length</span> 0 <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">-f</span> reference.fa aligned.bam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Setting <code>--haplotype-length 0</code> disables haplotype calling (which assumes linkage between nearby variants – not appropriate for mixed populations). The <code>--min-alternate-fraction 0.001</code> lowers the reporting threshold to 0.1%.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>FreeBayes trade-off
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>FreeBayes in <code>--pooled-continuous</code> mode is very <strong>sensitive</strong> (it detects many true variants) but has <strong>poor specificity</strong> (high false positive rate). In benchmarks, it reports correct variants but also many artifacts. Post-filtering is essential.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="gatk-mutect2" class="level4">
+<h4 class="anchored" data-anchor-id="gatk-mutect2">GATK Mutect2</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://www.biorxiv.org/content/10.1101/861054v1">Benjamin et al.&nbsp;(2019)</a> bioRxiv 861054</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Somatic variant calling in cancer; adapted for non-diploid contexts</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Local assembly + Bayesian somatic genotyping model</td>
+</tr>
+<tr class="even">
+<td><strong>Key for haploid use</strong></td>
+<td><code>--mitochondria-mode</code> for non-diploid calling</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/broadinstitute/gatk">broadinstitute/gatk</a> (last commit: 2026-02-04)</td>
+</tr>
+</tbody>
+</table>
+<p>Mutect2 was designed for somatic mutation detection in cancer (tumor vs.&nbsp;normal), where variant frequencies are also non-discrete. Its <strong>mitochondrial mode</strong> (<code>--mitochondria-mode true</code>) adjusts parameters for high-depth, non-diploid calling:</p>
+<ul>
+<li>Sets <code>--initial-tumor-lod</code> to 0 (more sensitive initial detection)</li>
+<li>Sets <code>--tumor-lod-to-emit</code> to 0 (reports all candidate variants)</li>
+<li>Adjusts <code>--pruning-lod-threshold</code> to <span class="math inline">\(-4 \ln(10) \approx -9.21\)</span> (retains more haplotypes during assembly)</li>
+</ul>
+<p>For microbial data, an important additional parameter is <code>--f1r2-max-depth</code>, which controls the maximum depth used for learning the orientation bias model. Setting this to a very high value (e.g., 1000000) prevents downsampling at high-coverage microbial loci.</p>
+<p><strong>Limitation</strong>: Mutect2 struggles with <strong>multi-allelic sites</strong>. It outputs allele counts only for the highest-frequency alternative allele, discarding information about other variants at the same position. This is a significant drawback for polymorphic microbial populations.</p>
+<hr>
+</section>
+<section id="gatk-haplotypecaller" class="level4">
+<h4 class="anchored" data-anchor-id="gatk-haplotypecaller">GATK HaplotypeCaller</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://doi.org/10.1101/201178">Poplin et al.&nbsp;(2018)</a> bioRxiv 201178</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>Germline variant calling (any ploidy)</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Local de novo assembly + pair-HMM likelihood calculation</td>
+</tr>
+<tr class="even">
+<td><strong>Key for haploid use</strong></td>
+<td><code>-ploidy 1</code></td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/broadinstitute/gatk">broadinstitute/gatk</a> (last commit: 2026-02-04)</td>
+</tr>
+</tbody>
+</table>
+<p>HaplotypeCaller supports non-diploid calling through its <code>-ploidy</code> flag. Setting <code>-ploidy 1</code> constrains the genotyper to call only homozygous genotypes (0 or 1 copies of each allele), which is appropriate for calling <strong>fixed variants</strong> in a clonal bacterial sample. However, it <strong>cannot detect low-frequency variants</strong> in a mixed population, because the haploid model has no concept of intermediate allele frequencies.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>When HaplotypeCaller is appropriate
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use <code>-ploidy 1</code> for calling fixed (consensus-level) SNPs and indels in bacterial genomes – for example, comparing a clinical isolate to a reference. Do <strong>not</strong> use it for detecting within-population variation.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="bcftools-mpileup-call" class="level4">
+<h4 class="anchored" data-anchor-id="bcftools-mpileup-call">bcftools (mpileup + call)</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://doi.org/10.1093/gigascience/giab008">Danecek et al.&nbsp;(2021)</a> GigaScience 10(2)</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>General-purpose variant calling</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Genotype likelihood calculation (mpileup) + multiallelic or consensus caller</td>
+</tr>
+<tr class="even">
+<td><strong>Key for haploid use</strong></td>
+<td><code>--ploidy</code> option or <code>--samples-file</code> with ploidy specification</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/samtools/bcftools">samtools/bcftools</a> (last commit: 2026-03-20)</td>
+</tr>
+</tbody>
+</table>
+<p>The bcftools pipeline is a lightweight, fast alternative:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> mpileup <span class="at">-Ou</span> <span class="at">-f</span> reference.fa aligned.bam <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> call <span class="at">-mv</span> <span class="at">--ploidy</span> 1 <span class="at">-Ob</span> <span class="at">-o</span> calls.bcf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>-m</code> flag invokes the multiallelic caller (recommended over the legacy consensus caller <code>-c</code>). The <code>--ploidy 1</code> flag constrains calls to haploid genotypes. Like HaplotypeCaller, this approach detects <strong>fixed variants only</strong> and is not suitable for low-frequency variant detection.</p>
+<hr>
+</section>
+</section>
+<section id="deep-learning-variant-callers-for-long-read-data" class="level3">
+<h3 class="anchored" data-anchor-id="deep-learning-variant-callers-for-long-read-data">4.3 Deep learning variant callers for long-read data</h3>
+<section id="clair3-and-deepvariant" class="level4">
+<h4 class="anchored" data-anchor-id="clair3-and-deepvariant">Clair3 and DeepVariant</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Clair3</th>
+<th>DeepVariant</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://doi.org/10.1038/s43588-022-00387-x">Zheng et al.&nbsp;(2022)</a></td>
+<td><a href="https://doi.org/10.1038/nbt.4235">Poplin et al.&nbsp;(2018)</a></td>
+</tr>
+<tr class="even">
+<td><strong>Platform</strong></td>
+<td>Oxford Nanopore</td>
+<td>Illumina, PacBio, ONT</td>
+</tr>
+<tr class="odd">
+<td><strong>Algorithm</strong></td>
+<td>Pileup + full-alignment neural networks</td>
+<td>CNN on pileup images</td>
+</tr>
+<tr class="even">
+<td><strong>Bacterial performance</strong></td>
+<td>SNP F1: 99.99%, Indel F1: 99.53%</td>
+<td>SNP F1: 99.99%, Indel F1: 99.61%</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/HKU-BAL/Clair3">HKU-BAL/Clair3</a> (last commit: 2026-03-20)</td>
+<td><a href="https://github.com/google/deepvariant">google/deepvariant</a> (last commit: 2026-03-19)</td>
+</tr>
+</tbody>
+</table>
+<p>A 2024 benchmarking study (<a href="https://elifesciences.org/articles/98300">Bogaerts et al.&nbsp;2024, eLife</a>) evaluated deep learning variant callers on 14 bacterial species using ONT data. Key findings:</p>
+<ul>
+<li>Clair3 and DeepVariant <strong>outperformed traditional callers</strong> (Medaka, NanoCaller) on both SNPs and indels</li>
+<li>With super-accuracy (sup) basecalling, these tools achieved <strong>F1 scores exceeding Illumina-based calling</strong></li>
+<li>As few as <strong>10x ONT coverage</strong> with Clair3 or DeepVariant matched full-depth Illumina accuracy</li>
+<li>These tools call <strong>consensus (fixed) variants</strong> only – they do not detect low-frequency variants in mixed populations</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="specialized-pipelines" class="level3">
+<h3 class="anchored" data-anchor-id="specialized-pipelines">4.4 Specialized pipelines</h3>
+<section id="v-pipe" class="level4">
+<h4 class="anchored" data-anchor-id="v-pipe">V-pipe</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td><a href="https://academic.oup.com/bioinformatics/article/37/12/1673/6104816">Posada-Céspedes et al.&nbsp;(2021)</a> Bioinformatics 37(12):1673-1680</td>
+</tr>
+<tr class="even">
+<td><strong>Designed for</strong></td>
+<td>End-to-end viral diversity analysis from raw reads</td>
+</tr>
+<tr class="odd">
+<td><strong>Components</strong></td>
+<td>QC + alignment (BWA/Bowtie2/ngshmmalign) + variant calling (LoFreq/ShoRAH) + haplotype reconstruction</td>
+</tr>
+<tr class="even">
+<td><strong>GitHub</strong></td>
+<td><a href="https://github.com/cbg-ethz/V-pipe">cbg-ethz/V-pipe</a> (last commit: 2025-09-25)</td>
+</tr>
+</tbody>
+</table>
+<p>V-pipe is a modular Snakemake pipeline that orchestrates the full workflow from raw FASTQ files to haplotype-resolved viral population descriptions. It incorporates ShoRAH for quasispecies reconstruction and LoFreq for SNV calling.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="tool-comparison-summary" class="level2">
+<h2 class="anchored" data-anchor-id="tool-comparison-summary">5. Tool Comparison Summary</h2>
+<p>Each of these tools has different statistical models, ploidy assumptions, and sensitivity/specificity trade-offs. The following table summarizes the key differences.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 16%">
+<col style="width: 29%">
+<col style="width: 23%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Algorithm</th>
+<th style="text-align: center;">Min detectable AF</th>
+<th>Best use case</th>
+<th style="text-align: center;">Ploidy model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>LoFreq</strong></td>
+<td>Poisson-binomial</td>
+<td style="text-align: center;">&lt; 0.05%</td>
+<td>Microbial/viral population diversity</td>
+<td style="text-align: center;">Continuous</td>
+</tr>
+<tr class="even">
+<td><strong>breseq</strong></td>
+<td>Bayesian + junction detection</td>
+<td style="text-align: center;">~5% (polymorphism mode)</td>
+<td>Lab evolution (clone vs.&nbsp;ancestor)</td>
+<td style="text-align: center;">Haploid</td>
+</tr>
+<tr class="odd">
+<td><strong>Snippy</strong></td>
+<td>FreeBayes (ploidy 1)</td>
+<td style="text-align: center;">~100% (fixed only)</td>
+<td>Bacterial phylogenomics, outbreak SNPs</td>
+<td style="text-align: center;">Haploid</td>
+</tr>
+<tr class="even">
+<td><strong>iVar</strong></td>
+<td>Pileup + frequency threshold</td>
+<td style="text-align: center;">~3% (default <code>-t 0.03</code>)</td>
+<td>Viral amplicon sequencing</td>
+<td style="text-align: center;">Continuous</td>
+</tr>
+<tr class="odd">
+<td><strong>FreeBayes</strong></td>
+<td>Bayesian haplotype</td>
+<td style="text-align: center;">~0.1% (pooled-continuous)</td>
+<td>Flexible; needs post-filtering</td>
+<td style="text-align: center;">Any</td>
+</tr>
+<tr class="even">
+<td><strong>Mutect2</strong></td>
+<td>Bayesian somatic</td>
+<td style="text-align: center;">~0.5% (mitochondria mode)</td>
+<td>Adapted from cancer somatic calling</td>
+<td style="text-align: center;">Somatic/mito</td>
+</tr>
+<tr class="odd">
+<td><strong>HaplotypeCaller</strong></td>
+<td>Assembly + pair-HMM</td>
+<td style="text-align: center;">~100% (fixed only)</td>
+<td>Fixed variants in clonal isolates</td>
+<td style="text-align: center;">Haploid (ploidy 1)</td>
+</tr>
+<tr class="even">
+<td><strong>bcftools</strong></td>
+<td>Genotype likelihood</td>
+<td style="text-align: center;">~100% (fixed only)</td>
+<td>Fast fixed-variant calling</td>
+<td style="text-align: center;">Haploid (ploidy 1)</td>
+</tr>
+<tr class="odd">
+<td><strong>Clair3/DeepVariant</strong></td>
+<td>Deep learning (CNN)</td>
+<td style="text-align: center;">~100% (fixed only)</td>
+<td>ONT long-read consensus calling</td>
+<td style="text-align: center;">Haploid</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="benchmarking-which-tools-perform-best" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarking-which-tools-perform-best">6. Benchmarking: Which Tools Perform Best?</h2>
+<section id="the-duplex-sequencing-gold-standard" class="level3">
+<h3 class="anchored" data-anchor-id="the-duplex-sequencing-gold-standard">6.1 The duplex sequencing gold standard</h3>
+<p>The most rigorous benchmark for microbial variant callers uses <strong>duplex sequencing</strong> (<a href="https://doi.org/10.1073/pnas.1208715109">Schmitt et al.&nbsp;2012</a>) to establish ground truth. Duplex sequencing tags individual DNA molecules with unique molecular identifiers (UMIs) on both ends, then uses consensus-building across read families to achieve error rates below <span class="math inline">\(10^{-7}\)</span>—over <strong>10,000-fold more accurate</strong> than standard Illumina sequencing (<a href="http://dx.doi.org/10.1038/nrg.2017.117">Salk et al.&nbsp;2018</a>). For a detailed explanation of the duplex sequencing method, see <a href="#sec-duplex">Section 8.1</a>.</p>
+</section>
+<section id="benchmarking-lofreq-mutect2-and-freebayes-on-duplex-sequencing-data" class="level3">
+<h3 class="anchored" data-anchor-id="benchmarking-lofreq-mutect2-and-freebayes-on-duplex-sequencing-data">6.2 Benchmarking LoFreq, Mutect2, and FreeBayes on duplex sequencing data</h3>
+<p><a href="https://academic.oup.com/gbe/article/11/10/3022/5572121">Mei et al.&nbsp;(2019)</a> used duplex sequencing to study adaptive evolution on plasmid pBR322 in <em>E. coli</em> grown in a turbidostat. Using their data, we benchmarked variant callers against duplex consensus sequences as ground truth (course reference material).</p>
+<p><strong>Test system:</strong></p>
+<ul>
+<li><em>E. coli</em> DH5α transformed with pBR322 plasmid, grown in turbidostat</li>
+<li>Sample <strong>s0</strong> (beginning): nearly clonal, 38 variable sites among 4,361 bp</li>
+<li>Sample <strong>s5</strong> (late): 78 variable sites with frequencies ~1%, 27 shared with s0</li>
+<li>Target detection threshold: ~1% allele frequency</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture19_pBR322_variants.png" class="img-fluid figure-img"></p>
+<figcaption>Counts of alternative bases at eight variable locations within pBR322.</figcaption>
+</figure>
+</div>
+<p><strong>Configurations tested:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 53%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Key parameters</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LoFreq</td>
+<td><code>--no-default-filter</code></td>
+<td>nf</td>
+</tr>
+<tr class="even">
+<td>LoFreq</td>
+<td>default settings</td>
+<td>def</td>
+</tr>
+<tr class="odd">
+<td>Mutect2</td>
+<td><code>--mitochondria-mode true</code></td>
+<td>m</td>
+</tr>
+<tr class="even">
+<td>Mutect2</td>
+<td><code>--mitochondria-mode true --f1r2-max-depth 1000000</code></td>
+<td>m_md_inf</td>
+</tr>
+<tr class="odd">
+<td>FreeBayes</td>
+<td><code>--pooled-continuous --ploidy 1 --min-alternate-fraction 0.001 --haplotype-length 0</code></td>
+<td>hl-0_maf-001_pc</td>
+</tr>
+<tr class="even">
+<td>FreeBayes</td>
+<td><code>--pooled-continuous --ploidy 1 --min-alternate-fraction 0.001</code></td>
+<td>maf-001_pc</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Results:</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture19_caller_comparison.png" class="img-fluid figure-img"></p>
+<figcaption>Calls made by <code>mutect2</code>, <code>freebayes</code>, and <code>lofreq</code> across positively selected sites in pBR322.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Ranking: LoFreq &gt; Mutect2 &gt; FreeBayes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>LoFreq</strong> (default settings): Best overall performance. Accurately detected variants at known positive selection sites (positions 3,029–3,035 and 3,118 in the plasmid replication control region). The <code>--no-default-filter</code> option increased sensitivity slightly but at the cost of some specificity.</li>
+<li><strong>Mutect2</strong>: Intermediate performance. Struggled with <strong>multi-allelic sites</strong> where multiple alternative bases co-exist; it reports counts for only the highest-frequency variant and discards information about others.</li>
+<li><strong>FreeBayes</strong>: Poorest performance. High sensitivity but very high false-positive rate (poor positive predictive value). Required aggressive post-filtering to be usable.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="bacterial-whole-genome-sequencing-benchmarks" class="level3">
+<h3 class="anchored" data-anchor-id="bacterial-whole-genome-sequencing-benchmarks">6.3 Bacterial whole-genome sequencing benchmarks</h3>
+<p><a href="https://journals.asm.org/doi/10.1128/jcm.01842-22">Bush et al.&nbsp;(2023)</a> performed <em>in silico</em> evaluation of variant calling methods for bacterial WGS assays, testing multiple combinations of read mappers and variant callers on simulated and real bacterial datasets. Key findings:</p>
+<ul>
+<li>For <strong>fixed variant calling</strong> (consensus-level), Snippy and bcftools <code>mpileup | call</code> performed well across diverse bacterial species</li>
+<li>Setting the correct <strong>ploidy</strong> is critical – using diploid defaults on haploid data leads to systematic errors</li>
+<li>Read quality filtering and adapter removal significantly impact downstream variant calls</li>
+</ul>
+</section>
+<section id="deep-learning-callers-on-bacterial-ont-data" class="level3">
+<h3 class="anchored" data-anchor-id="deep-learning-callers-on-bacterial-ont-data">6.4 Deep learning callers on bacterial ONT data</h3>
+<p><a href="https://elifesciences.org/articles/98300">Bogaerts et al.&nbsp;(2024)</a> benchmarked deep learning callers across 14 bacterial species:</p>
+<ul>
+<li><strong>Clair3</strong> and <strong>DeepVariant</strong> on sup-basecalled ONT data: median SNP F1 = 99.99%, indel F1 &gt; 99%</li>
+<li>Traditional ONT caller <strong>Medaka</strong>: significantly lower accuracy</li>
+<li><strong>10x ONT coverage</strong> with Clair3/DeepVariant matched or exceeded full-depth Illumina accuracy</li>
+<li>These results suggest ONT sequencing with deep learning callers is now viable for routine bacterial variant calling</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="best-practices-by-scenario" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices-by-scenario">7. Best Practices by Scenario</h2>
+<section id="scenario-1-bacterial-resequencing-fixed-variants" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-1-bacterial-resequencing-fixed-variants">Scenario 1: Bacterial resequencing (fixed variants)</h3>
+<p><strong>Goal</strong>: Identify SNPs and indels between a clinical/environmental isolate and a reference genome.</p>
+<p><strong>Recommended pipeline:</strong></p>
+<ol type="1">
+<li>Quality control: fastp or Trimmomatic</li>
+<li>Mapping: BWA-MEM</li>
+<li>Variant calling: <strong>Snippy</strong> (all-in-one) or <strong>bcftools mpileup + call</strong> with <code>--ploidy 1</code></li>
+<li>Normalization: <code>bcftools norm -f reference.fa</code></li>
+<li>Annotation: snpEff or Prokka</li>
+</ol>
+<p>For ONT data: <strong>Clair3</strong> or <strong>DeepVariant</strong> with haploid model.</p>
+</section>
+<section id="scenario-2-bacterial-population-diversity-experimental-evolution" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-2-bacterial-population-diversity-experimental-evolution">Scenario 2: Bacterial population diversity / experimental evolution</h3>
+<p><strong>Goal</strong>: Detect low-frequency variants (&lt; 5%) in a mixed bacterial population.</p>
+<p><strong>Recommended pipeline:</strong></p>
+<ol type="1">
+<li>Quality control: fastp</li>
+<li>Mapping: BWA-MEM with stringent settings</li>
+<li>Variant calling: <strong>LoFreq</strong> (primary) or <strong>Mutect2</strong> in mitochondria mode (secondary)</li>
+<li>Normalization: <code>vt normalize</code> or <code>bcftools norm</code></li>
+<li>Filtering: Strand bias (FS &lt; 60), minimum depth, minimum alternate count</li>
+</ol>
+<p>For experimental evolution with clonal samples: <strong>breseq</strong> provides the most complete picture including structural variants.</p>
+</section>
+<section id="scenario-3-viral-amplicon-sequencing-e.g.-sars-cov-2" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-3-viral-amplicon-sequencing-e.g.-sars-cov-2">Scenario 3: Viral amplicon sequencing (e.g., SARS-CoV-2)</h3>
+<p><strong>Goal</strong>: Call intrahost variants from tiled amplicon data.</p>
+<p><strong>Recommended pipeline:</strong></p>
+<ol type="1">
+<li>Quality control and primer trimming: <strong>iVar trim</strong></li>
+<li>Mapping: BWA-MEM or minimap2</li>
+<li>Variant calling: <strong>iVar variants</strong> (primary) or <strong>LoFreq</strong> (higher sensitivity)</li>
+<li>Consensus: <strong>iVar consensus</strong></li>
+</ol>
+</section>
+<section id="scenario-4-viral-quasispecies-reconstruction" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-4-viral-quasispecies-reconstruction">Scenario 4: Viral quasispecies reconstruction</h3>
+<p><strong>Goal</strong>: Reconstruct full haplotypes from a mixed viral population.</p>
+<p><strong>Recommended pipeline:</strong></p>
+<ol type="1">
+<li>Use <strong>V-pipe</strong> as the orchestrating pipeline</li>
+<li>Variant calling: <strong>LoFreq</strong> or <strong>ShoRAH</strong></li>
+<li>Haplotype reconstruction: <strong>ShoRAH</strong> (reference-based) or <strong>SAVAGE</strong> (de novo)</li>
+<li>For complex variants: consider dedicated tools as they become available</li>
+</ol>
+</section>
+<section id="scenario-5-outbreak-investigation-phylogenomics" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-5-outbreak-investigation-phylogenomics">Scenario 5: Outbreak investigation / phylogenomics</h3>
+<p><strong>Goal</strong>: Build a SNP-based phylogeny from multiple bacterial isolates.</p>
+<p><strong>Recommended pipeline:</strong></p>
+<ol type="1">
+<li>Call variants per isolate: <strong>Snippy</strong> against a common reference</li>
+<li>Generate core SNP alignment: <code>snippy-core</code></li>
+<li>Build phylogeny: IQ-TREE, RAxML, or FastTree on the core alignment</li>
+<li>Alternative: FDA’s CSP2 pipeline for foodborne pathogens</li>
+</ol>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical Details Appendix
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The following sections provide in-depth mathematical and procedural details for concepts introduced above. We separate these from the narrative to keep the main lecture accessible while preserving rigor for interested readers.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="technical-details" class="level2">
+<h2 class="anchored" data-anchor-id="technical-details">8. Technical Details</h2>
+<section id="sec-duplex" class="level3">
+<h3 class="anchored" data-anchor-id="sec-duplex">8.1 Duplex Sequencing</h3>
+<p>Duplex sequencing (<a href="https://doi.org/10.1073/pnas.1208715109">Schmitt et al.&nbsp;2012</a>) achieves ultra-high accuracy by exploiting the double-stranded nature of DNA. The method works as follows:</p>
+<ol type="1">
+<li><p><strong>UMI tagging</strong>: We ligate adapters containing <strong>unique molecular identifiers (UMIs)</strong>—random oligonucleotide sequences—to both ends of each double-stranded DNA fragment. Each original molecule receives a unique pair of tags (α and β). The two complementary strands of the same molecule share the same UMI pair but in opposite orientation: strand 1 carries α-β, strand 2 carries β-α.</p></li>
+<li><p><strong>PCR amplification and sequencing</strong>: The tagged library undergoes standard PCR amplification and sequencing. Each original strand generates a family of PCR-descendant reads, all sharing the same UMI tag.</p></li>
+<li><p><strong>Family grouping by UMI</strong>: After sequencing, we group reads by their UMI tags. All reads descended from the same original single strand form a <strong>read family</strong>.</p></li>
+<li><p><strong>Single-strand consensus sequences (SSCS)</strong>: Within each read family, we build a consensus sequence by majority vote at each position. Random PCR errors and sequencing errors—which affect only a subset of family members—are eliminated. SSCS error rates reach approximately <span class="math inline">\(10^{-4}\)</span>.</p></li>
+<li><p><strong>Duplex consensus sequences (DCS)</strong>: We identify complementary read families (α-β and β-α from the same original molecule) and combine their SSCS. A base in the DCS is called only if both complementary SSCS agree. Since the two strands are chemically independent, an error would have to occur at the same position on both strands independently—an event with probability on the order of <span class="math inline">\(10^{-4} \times 10^{-4} = 10^{-8}\)</span>. In practice, duplex sequencing achieves error rates below <span class="math inline">\(10^{-7}\)</span>.</p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture19_duplex_sequencing.jpeg" class="img-fluid figure-img"></p>
+<figcaption>Duplex sequencing workflow (from <a href="https://doi.org/10.1073/pnas.1208715109">Schmitt et al.&nbsp;2012</a>): UMI-tagged double-stranded DNA is amplified, sequenced, grouped by UMI families, collapsed into single-strand consensus sequences (SSCS), and combined into duplex consensus sequences (DCS).</figcaption>
+</figure>
+</div>
+<p><strong>Why duplex sequencing serves as ground truth for variant caller benchmarking.</strong> With error rates 10,000-fold lower than standard Illumina sequencing, duplex consensus sequences can reliably distinguish true biological variants at frequencies as low as 0.1% from sequencing artifacts. When we benchmark a variant caller, we compare its calls against duplex-derived variant lists—any variant consistently present in DCS data is almost certainly real, and any variant absent from DCS data is almost certainly a false positive.</p>
+<hr>
+</section>
+<section id="sec-strand-bias-formulas" class="level3">
+<h3 class="anchored" data-anchor-id="sec-strand-bias-formulas">8.2 Strand Bias Formulas</h3>
+<p>Given the 2×2 contingency table of strand counts (ref-forward <span class="math inline">\(a\)</span>, ref-reverse <span class="math inline">\(b\)</span>, alt-forward <span class="math inline">\(c\)</span>, alt-reverse <span class="math inline">\(d\)</span>):</p>
+<p><strong>Fisher’s exact test (FS annotation in GATK):</strong></p>
+<p>The probability of one specific configuration of the 2×2 table (given fixed marginals) is:</p>
+<p><span class="math display">\[P_{\text{table}} = \frac{\binom{a+b}{a}\binom{c+d}{c}}{\binom{n}{a+c}}\]</span></p>
+<p>where <span class="math inline">\(n = a + b + c + d\)</span>. The test p-value sums this probability over all tables equally or more extreme than the observed one. GATK’s FS annotation reports <span class="math inline">\(\text{FS} = -10 \log_{10}(p\text{-value})\)</span>, so higher FS values indicate stronger strand bias.</p>
+<p><strong>Strand Odds Ratio (SOR):</strong></p>
+<p><span class="math display">\[\text{SOR} = \ln(R + 1/R) + \ln(\text{refRatio}) - \ln(\text{altRatio})\]</span></p>
+<p>where <span class="math inline">\(R = \frac{(a+1)(d+1)}{(b+1)(c+1)}\)</span>, <span class="math inline">\(\text{refRatio} = \frac{\min(a,b)+1}{\max(a,b)+1}\)</span>, and <span class="math inline">\(\text{altRatio} = \frac{\min(c,d)+1}{\max(c,d)+1}\)</span> (pseudocounts of 1 are added to avoid division by zero). The <span class="math inline">\(\ln(R + 1/R)\)</span> term is the symmetrized log odds ratio, while the refRatio and altRatio terms penalize imbalanced strand distributions in both reference and alternative alleles.</p>
+<hr>
+</section>
+<section id="sec-quality-merging" class="level3">
+<h3 class="anchored" data-anchor-id="sec-quality-merging">8.3 LoFreq Quality Merging</h3>
+<p>Most variant callers use only one quality signal per base: the base call quality (BQ) from the sequencer. LoFreq recognizes that a base can be wrong for multiple independent reasons, and it merges four quality sources into a single per-base error probability.</p>
+<p><strong>The four quality sources:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Quality</th>
+<th>Symbol</th>
+<th>Source</th>
+<th>What it captures</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Base quality (BQ)</td>
+<td><span class="math inline">\(P_B\)</span></td>
+<td>Sequencer (stored in QUAL string)</td>
+<td>Probability the base call itself is wrong</td>
+</tr>
+<tr class="even">
+<td>Mapping quality (MQ)</td>
+<td><span class="math inline">\(P_M\)</span></td>
+<td>Aligner (stored in MAPQ field)</td>
+<td>Probability the read is mapped to the wrong location</td>
+</tr>
+<tr class="odd">
+<td>Base-alignment quality (BAQ)</td>
+<td><span class="math inline">\(P_A\)</span></td>
+<td>Computed by LoFreq (Li 2011 HMM)</td>
+<td>Probability the base is aligned to the wrong reference column</td>
+</tr>
+<tr class="even">
+<td>Source quality (SQ)</td>
+<td><span class="math inline">\(P_S\)</span></td>
+<td>Optional, computed by LoFreq</td>
+<td>Probability of a systematic error at this position (based on a control/normal sample)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The joint error probability formula.</strong> LoFreq treats these as independent error sources and combines them using a sequential “any of these could cause a wrong base” model. From the source code (<code>snpcaller.c</code>), the merged probability is:</p>
+<p><span class="math display">\[P_J = P_M + (1 - P_M) \cdot P_S + (1 - P_M)(1 - P_S) \cdot P_A + (1 - P_M)(1 - P_S)(1 - P_A) \cdot P_B\]</span></p>
+<p>where each <span class="math inline">\(P_X = 10^{-Q_X/10}\)</span> is the error probability derived from the corresponding Phred-scaled quality score <span class="math inline">\(Q_X\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Interpreting the joint error formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Read this formula left to right as a cascade of failure modes. First the read might be mismapped (<span class="math inline">\(P_M\)</span>). If not (probability <span class="math inline">\(1 - P_M\)</span>), there might be a systematic source error (<span class="math inline">\(P_S\)</span>). If not, the base might be misaligned within the read (<span class="math inline">\(P_A\)</span>). If none of those, the base call itself might be wrong (<span class="math inline">\(P_B\)</span>). The joint probability is the probability that <em>at least one</em> of these errors occurs. When source quality is not used, <span class="math inline">\(P_S = 0\)</span> and the formula simplifies to three terms.</p>
+</div>
+</div>
+<p><strong>Base-alignment quality (BAQ).</strong> BAQ addresses a subtle but critical problem: near indels, bases can be <em>correctly called</em> by the sequencer and the read <em>correctly mapped</em> to the right region, yet aligned to the wrong column of the reference. BAQ is computed using a profile Hidden Markov Model (HMM) with match, insertion, and deletion states (<a href="https://pubmed.ncbi.nlm.nih.gov/21320865/">Li, 2011</a>). The HMM computes the posterior probability that each base in the read is aligned to the correct reference position. LoFreq uses a modified version of samtools’ <code>kprobaln</code> code with parameters tuned for Illumina data (gap open probability <span class="math inline">\(= 10^{-5}\)</span>, gap extension probability <span class="math inline">\(= 0.4\)</span>). BAQ is enabled by default and can be disabled with <code>--no-baq</code>.</p>
+<p><strong>Source quality (SQ).</strong> An optional quality layer that captures position-specific systematic errors. When a matched normal or control BAM is available, LoFreq can learn which positions have recurrent non-reference bases even in the control, and penalize those positions accordingly. This is primarily used in <code>lofreq somatic</code>.</p>
+<hr>
+</section>
+<section id="sec-poisson-binomial" class="level3">
+<h3 class="anchored" data-anchor-id="sec-poisson-binomial">8.4 Poisson-Binomial Test</h3>
+<p>LoFreq models the count of non-reference bases at a position as a <strong>Poisson-binomial</strong> random variable. For read <span class="math inline">\(i\)</span> at a given position, the probability of observing a non-reference base due to error is:</p>
+<p><span class="math display">\[p_i = P_{J,i}\]</span></p>
+<p>where <span class="math inline">\(P_{J,i}\)</span> is the merged error probability from <a href="#sec-quality-merging">Section 8.3</a>. The total number of error-induced non-reference bases across <span class="math inline">\(d\)</span> reads follows a Poisson-binomial distribution—the sum of <span class="math inline">\(d\)</span> independent but <em>non-identically distributed</em> Bernoulli trials:</p>
+<p><span class="math display">\[X = \sum_{i=1}^{d} X_i, \quad X_i \sim \text{Bernoulli}(p_i)\]</span></p>
+<p>The test is <strong>one-sided</strong> (right-tail): <span class="math inline">\(H_0\)</span> says all non-reference bases are errors; <span class="math inline">\(H_1\)</span> says there is a true variant. The probability of observing <span class="math inline">\(k\)</span> or more non-reference bases by chance alone is:</p>
+<p><span class="math display">\[P(X \geq k) = 1 - \sum_{j=0}^{k-1} P(X = j)\]</span></p>
+<p>If this p-value falls below a significance threshold (after multiple testing correction), the position is called as a variant.</p>
+<p><strong>Computation: recursive convolution.</strong> The exact Poisson-binomial PMF is computed via dynamic programming (recursive convolution) in log-space. Let <span class="math inline">\(\mathbf{v}^{(n)}\)</span> be the probability vector after incorporating <span class="math inline">\(n\)</span> reads. The recurrence is:</p>
+<p><span class="math display">\[\log P^{(n)}(X = j) = \text{logsum}\!\Big(\log P^{(n-1)}(X = j) + \log(1 - p_n),\;\; \log P^{(n-1)}(X = j-1) + \log(p_n)\Big)\]</span></p>
+<p>where <span class="math inline">\(\text{logsum}(a, b) = \max(a,b) + \log(1 + e^{-|a-b|})\)</span> is the numerically stable log-space addition. This runs in <span class="math inline">\(O(d \cdot k)\)</span> time rather than the full <span class="math inline">\(O(d^2)\)</span> since LoFreq only needs probabilities up to <span class="math inline">\(k\)</span> (the observed count, where <span class="math inline">\(k \ll d\)</span> in practice).</p>
+<p><strong>Worked example.</strong> Suppose <span class="math inline">\(d = 4\)</span> reads at a position with merged error probabilities <span class="math inline">\(p_1 = 0.01\)</span>, <span class="math inline">\(p_2 = 0.02\)</span>, <span class="math inline">\(p_3 = 0.01\)</span>, <span class="math inline">\(p_4 = 0.05\)</span>, and we observe <span class="math inline">\(k = 2\)</span> non-reference bases. We build the probability table row by row (shown in normal probability space for clarity; LoFreq does this in log-space):</p>
+<p><em>Initialization</em> (<span class="math inline">\(n = 0\)</span>): <span class="math inline">\(P^{(0)}(X=0) = 1\)</span></p>
+<p><em>After read 1</em> (<span class="math inline">\(p_1 = 0.01\)</span>):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(j\)</span></th>
+<th><span class="math inline">\(P^{(1)}(X=j)\)</span></th>
+<th>Calculation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.99</td>
+<td><span class="math inline">\(1 \times (1 - 0.01)\)</span></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.01</td>
+<td><span class="math inline">\(1 \times 0.01\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>After read 2</em> (<span class="math inline">\(p_2 = 0.02\)</span>):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(j\)</span></th>
+<th><span class="math inline">\(P^{(2)}(X=j)\)</span></th>
+<th>Calculation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.9702</td>
+<td><span class="math inline">\(0.99 \times 0.98\)</span></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.0296</td>
+<td><span class="math inline">\(0.01 \times 0.98 + 0.99 \times 0.02\)</span></td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.0002</td>
+<td><span class="math inline">\(0.01 \times 0.02\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>After read 3</em> (<span class="math inline">\(p_3 = 0.01\)</span>):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(j\)</span></th>
+<th><span class="math inline">\(P^{(3)}(X=j)\)</span></th>
+<th>Calculation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.960498</td>
+<td><span class="math inline">\(0.9702 \times 0.99\)</span></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.039006</td>
+<td><span class="math inline">\(0.0296 \times 0.99 + 0.9702 \times 0.01\)</span></td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.000494</td>
+<td><span class="math inline">\(0.0002 \times 0.99 + 0.0296 \times 0.01\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>After read 4</em> (<span class="math inline">\(p_4 = 0.05\)</span>):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(j\)</span></th>
+<th><span class="math inline">\(P^{(4)}(X=j)\)</span></th>
+<th>Calculation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.912473</td>
+<td><span class="math inline">\(0.960498 \times 0.95\)</span></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.085081</td>
+<td><span class="math inline">\(0.039006 \times 0.95 + 0.960498 \times 0.05\)</span></td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.002420</td>
+<td><span class="math inline">\(0.000494 \times 0.95 + 0.039006 \times 0.05\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The p-value is <span class="math inline">\(P(X \geq 2) = 1 - P(X=0) - P(X=1) = 1 - 0.912473 - 0.085081 = 0.002446\)</span>. Converted to Phred: <span class="math inline">\(\text{QUAL} = -10 \log_{10}(0.002446) \approx 26\)</span>. With default significance <span class="math inline">\(\alpha = 0.01\)</span>, this would be called as a variant (p-value <span class="math inline">\(&lt; \alpha\)</span>), though a marginal one.</p>
+<p>Note how each row only depends on the previous row—this is the DP. Also note we only compute columns <span class="math inline">\(j = 0 \ldots k\)</span>, not all the way to <span class="math inline">\(j = d\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Pruning optimization
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>LoFreq prunes computation early: if at any point the partial tail probability already exceeds <span class="math inline">\(\alpha / B\)</span> (where <span class="math inline">\(\alpha\)</span> is the significance level and <span class="math inline">\(B\)</span> is the Bonferroni factor), the position cannot be significant and computation stops. This makes LoFreq fast in practice – most positions in a genome are <em>not</em> variants and are rejected quickly.</p>
+</div>
+</div>
+<p><strong>Poisson approximation for very deep coverage.</strong> When coverage exceeds a configurable threshold (the <code>--approx-threshold</code> parameter, disabled by default), LoFreq falls back to a Poisson approximation:</p>
+<p><span class="math display">\[P(X \geq k) \approx 1 - F_{\text{Poisson}}(k-1;\; \mu), \quad \mu = \sum_{i=1}^{d} p_i\]</span></p>
+<p>This uses the fact that the Poisson-binomial converges to a Poisson distribution when each <span class="math inline">\(p_i\)</span> is small and <span class="math inline">\(d\)</span> is large. The approximation is computed via the GSL library’s Poisson CDF function.</p>
+<hr>
+</section>
+<section id="sec-multiple-testing" class="level3">
+<h3 class="anchored" data-anchor-id="sec-multiple-testing">8.5 Multiple Testing Correction</h3>
+<p>When testing millions of genomic positions, we must correct for the fact that some will appear significant by chance. LoFreq supports three correction methods via <code>--bonf</code>:</p>
+<p><strong><a href="https://en.wikipedia.org/wiki/Bonferroni_correction">Bonferroni correction</a></strong> (default). The simplest approach: multiply each p-value by <span class="math inline">\(B\)</span> (the number of tests) and reject if still below <span class="math inline">\(\alpha\)</span>. Equivalently, a variant is called if:</p>
+<p><span class="math display">\[\text{p-value} \times B &lt; \alpha\]</span></p>
+<p>By default, LoFreq uses <strong>dynamic Bonferroni</strong> – <span class="math inline">\(B\)</span> equals the number of tests actually performed (positions <span class="math inline">\(\times\)</span> non-reference bases observed), not the full genome size. This is already more powerful than a fixed factor.</p>
+<p><em>Advantage:</em> Controls the <strong>family-wise error rate (FWER)</strong> – the probability of <em>any</em> false positive across all tests. Strong guarantee. <em>Disadvantage:</em> Very conservative. If you test 10 million positions, even moderately significant variants are rejected. Power decreases linearly with the number of tests. In practice, real low-frequency variants near the noise floor can be missed.</p>
+<p><strong><a href="https://en.wikipedia.org/wiki/Holm%E2%80%93Bonferroni_method">Holm-Bonferroni method</a></strong> (<code>--bonf holm</code>). A step-down procedure: sort all p-values smallest to largest, then compare the <span class="math inline">\(i\)</span>-th smallest p-value against <span class="math inline">\(\alpha / (B - i + 1)\)</span> instead of <span class="math inline">\(\alpha / B\)</span>. Reject all tests up to the first non-rejection.</p>
+<p><em>Advantage:</em> Also controls FWER, but is <strong>uniformly more powerful</strong> than Bonferroni – it can never reject fewer variants. The improvement is modest when most tests are non-significant (as in variant calling), but it’s free: same guarantee, strictly more power. <em>Disadvantage:</em> Still conservative for very large test counts. The gain over Bonferroni is most noticeable when many true variants cluster near the threshold.</p>
+<p><strong><a href="https://en.wikipedia.org/wiki/False_discovery_rate#Benjamini%E2%80%93Hochberg_procedure">Benjamini-Hochberg FDR</a></strong> (<code>--bonf fdr</code>). Controls the <strong>false discovery rate</strong> – the expected <em>proportion</em> of false positives among called variants, rather than the probability of any false positive at all. Sort p-values and compare the <span class="math inline">\(i\)</span>-th smallest against <span class="math inline">\(i \cdot \alpha / B\)</span>.</p>
+<p><em>Advantage:</em> <strong>Much more powerful</strong> than Bonferroni/Holm. If 1% of positions are true variants, FDR can detect far more of them because it tolerates a controlled fraction of false calls rather than demanding zero. This matters most when calling low-frequency variants in diverse populations. <em>Disadvantage:</em> Weaker guarantee – it controls the <em>rate</em> of false discoveries, not the probability of <em>any</em> false discovery. With FDR at <span class="math inline">\(\alpha = 0.01\)</span>, you expect ~1% of your called variants to be false. For applications where even a single false positive is costly (e.g., clinical diagnostics), Bonferroni/Holm is safer.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Which correction to use?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For most microbial resequencing, <strong>dynamic Bonferroni</strong> (the default) is a good balance – it’s conservative but LoFreq’s Poisson-binomial test is powerful enough that true variants typically have extremely small p-values. Switch to <strong>FDR</strong> when hunting for very low-frequency variants (<span class="math inline">\(&lt; 1\%\)</span>) in deep sequencing data where you expect many true positives and can tolerate a small false discovery rate. <strong>Holm</strong> is a safe middle ground – strictly better than Bonferroni with no downside.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-lofreq-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="sec-lofreq-pipeline">8.6 The <code>lofreq call</code> Pipeline</h3>
+<p>When you run <code>lofreq call -f ref.fa -o out.vcf aln.bam</code>, the following steps execute:</p>
+<pre class="text"><code>                  ┌─────────────────┐
+                  │  Input BAM      │
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+              1.  │  BAQ computation │  (profile HMM, on-the-fly)
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+              2.  │  Pileup generation│  (samtools mpileup internally)
+                  │  + quality merge  │  (BQ + MQ + BAQ + SQ → P_J)
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+              3.  │  Per-position     │  (Poisson-binomial test for
+                  │  statistical test │   each of 3 alt bases)
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+              4.  │  Bonferroni       │  (dynamic: correction factor =
+                  │  correction       │   number of tests performed)
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+              5.  │  Default filters  │  (lofreq filter internally)
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+                  │  Output VCF      │
+                  └─────────────────┘</code></pre>
+<p><strong>Step 1: BAQ computation.</strong> LoFreq runs the profile HMM on each read to compute base-alignment qualities. This is done on-the-fly during pileup traversal. BAQ values are computed on-the-fly and used in memory without modifying the input BAM. However, <code>lofreq alnqual</code> can pre-compute and store BAQ as the <code>lb</code> tag in the BAM.</p>
+<p><strong>Step 2: Pileup + quality merging.</strong> For each genomic position, LoFreq generates a pileup of all covering reads and merges BQ, MQ, BAQ, and (optionally) SQ into a per-base error probability <span class="math inline">\(P_J\)</span> using the formula from <a href="#sec-quality-merging">Section 8.3</a>. Bases below minimum quality thresholds are excluded (defaults: <span class="math inline">\(\text{min\_bq} = 6\)</span>, <span class="math inline">\(\text{min\_mq} = 0\)</span>).</p>
+<p><strong>Step 3: Statistical testing.</strong> For each position with at least <code>--min-cov</code> reads (default: 1), LoFreq runs the Poisson-binomial test separately for each of the three possible non-reference bases. This produces up to three p-values per position.</p>
+<p><strong>Step 4: Multiple testing correction.</strong> LoFreq applies the selected correction method (see <a href="#sec-multiple-testing">Section 8.5</a>).</p>
+<p><strong>Step 5: Default filters.</strong> After calling, LoFreq internally runs <code>lofreq filter</code> with these defaults:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Filter</th>
+<th>Default</th>
+<th>FILTER tag in VCF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Minimum coverage</td>
+<td>10</td>
+<td><code>min_dp_10</code></td>
+</tr>
+<tr class="even">
+<td>Strand bias (FDR)</td>
+<td><span class="math inline">\(\alpha = 0.001\)</span></td>
+<td><code>sb_fdr</code></td>
+</tr>
+<tr class="odd">
+<td>Strand bias compound</td>
+<td><span class="math inline">\(\geq 85\%\)</span> of alt bases on one strand</td>
+<td>(applied jointly with <code>sb_fdr</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The strand bias test uses Fisher’s exact test on the 2×2 table of (ref-forward, ref-reverse, alt-forward, alt-reverse) counts. P-values are corrected across all called variants using FDR (Benjamini-Hochberg). The compound filter requires <em>both</em> a significant FDR-corrected strand bias p-value <em>and</em> that at least 85% of alternative bases fall on a single strand – this prevents filtering variants with statistically significant but biologically negligible strand imbalance.</p>
+<p><strong>What <code>--no-default-filter</code> disables.</strong> This flag skips step 5 entirely. All variants passing the significance threshold after Bonferroni correction are reported, regardless of coverage or strand bias. Use this when you want to apply your own filtering downstream:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> call <span class="at">--no-default-filter</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> raw.vcf aln.bam</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> filter <span class="at">-i</span> raw.vcf <span class="at">-o</span> filtered.vcf <span class="at">--cov-min</span> 20 <span class="at">--sb-thresh</span> 60</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Indel calling pipeline.</strong> Indel calling requires indel qualities in the BAM file. The recommended preprocessing is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Add indel qualities (Dindel method)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> indelqual <span class="at">--dindel</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> with_iq.bam input.bam</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Call indels alongside SNVs</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> call <span class="at">--call-indels</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> variants.vcf with_iq.bam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>lofreq indelqual --dindel</code> command inserts indel quality tags (<code>BI</code> for insertion quality, <code>BD</code> for deletion quality) into the BAM, using a lookup table indexed by homopolymer run length at each position (<a href="https://pubmed.ncbi.nlm.nih.gov/20980555/">Albers et al., 2011, PMID 20980555</a>). Longer homopolymers receive lower indel quality (higher error probability) because Illumina’s sequencing-by-synthesis chemistry is prone to miscounting bases in homopolymer runs.</p>
+<hr>
+</section>
+<section id="sec-lofreq-vcf" class="level3">
+<h3 class="anchored" data-anchor-id="sec-lofreq-vcf">8.7 LoFreq VCF Output Reference</h3>
+<p>LoFreq produces VCF 4.0 output with no FORMAT or sample columns – it reports population-level variant calls, not genotypes. Here is the complete field reference:</p>
+<p><strong>QUAL field:</strong> <span class="math display">\[\text{QUAL} = -10 \cdot \log_{10}(\text{p-value})\]</span> where the p-value is from the Poisson-binomial test. QUAL=1500 means <span class="math inline">\(\text{p-value} = 10^{-150}\)</span>. This is <em>not</em> a genotype quality – it measures the statistical evidence that the observed non-reference count exceeds what sequencing errors alone could produce.</p>
+<p><strong>INFO fields:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 23%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>DP</code></td>
+<td>Integer</td>
+<td>Raw read depth at the position (total pileup coverage)</td>
+</tr>
+<tr class="even">
+<td><code>AF</code></td>
+<td>Float</td>
+<td>Allele frequency of the alternative allele (<span class="math inline">\(= \text{alt count} / \text{total depth}\)</span>)</td>
+</tr>
+<tr class="odd">
+<td><code>SB</code></td>
+<td>Integer</td>
+<td>Phred-scaled strand bias p-value from Fisher’s exact test: <span class="math inline">\(\text{SB} = -10 \cdot \log_{10}(p_{\text{Fisher}})\)</span>. Higher = more strand bias.</td>
+</tr>
+<tr class="even">
+<td><code>DP4</code></td>
+<td>4 integers</td>
+<td>Comma-separated counts: ref-forward, ref-reverse, alt-forward, alt-reverse</td>
+</tr>
+<tr class="odd">
+<td><code>HQA</code></td>
+<td>Integer</td>
+<td>Count of high-quality alternative bases supporting the SNV call (SNVs only)</td>
+</tr>
+<tr class="even">
+<td><code>HRUN</code></td>
+<td>Integer</td>
+<td>Length of homopolymer run to the right of the indel position (indels only)</td>
+</tr>
+<tr class="odd">
+<td><code>INDEL</code></td>
+<td>Flag</td>
+<td>Present if the variant is an insertion or deletion</td>
+</tr>
+<tr class="even">
+<td><code>CONSVAR</code></td>
+<td>Flag</td>
+<td>Defined in VCF header for consensus variants, but effectively unused in current LoFreq builds</td>
+</tr>
+</tbody>
+</table>
+<p><strong>FILTER field values:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>FILTER</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>PASS</code></td>
+<td>Variant passed all default filters</td>
+</tr>
+<tr class="even">
+<td><code>min_dp_10</code></td>
+<td>Failed minimum depth filter (DP &lt; 10)</td>
+</tr>
+<tr class="odd">
+<td><code>sb_fdr</code></td>
+<td>Failed strand bias filter (FDR-corrected Fisher’s exact test)</td>
+</tr>
+<tr class="even">
+<td><code>min_snvqual_&lt;N&gt;</code></td>
+<td>Failed minimum SNV quality filter (if user-specified)</td>
+</tr>
+<tr class="odd">
+<td><code>min_indelqual_&lt;N&gt;</code></td>
+<td>Failed minimum indel quality filter (if user-specified)</td>
+</tr>
+<tr class="even">
+<td><code>min_af_&lt;X&gt;</code></td>
+<td>Failed minimum allele frequency filter (if user-specified)</td>
+</tr>
+<tr class="odd">
+<td><code>max_af_&lt;X&gt;</code></td>
+<td>Failed maximum allele frequency filter (if user-specified)</td>
+</tr>
+<tr class="even">
+<td><code>max_dp_&lt;N&gt;</code></td>
+<td>Failed maximum depth filter (if user-specified)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Worked example: reading a LoFreq VCF record</strong></p>
+<p>Consider this realistic VCF line from a bacterial resequencing experiment at ~500x coverage:</p>
+<pre class="text"><code>##fileformat=VCFv4.0
+##source=lofreq call -f ref.fa -o vars.vcf aln.bam
+##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Raw Depth"&gt;
+##INFO=&lt;ID=AF,Number=1,Type=Float,Description="Allele Frequency"&gt;
+##INFO=&lt;ID=SB,Number=1,Type=Integer,Description="Phred-scaled strand bias at this position"&gt;
+##INFO=&lt;ID=DP4,Number=4,Type=Integer,Description="Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases"&gt;
+##INFO=&lt;ID=HQA,Number=1,Type=Integer,Description="Count of high quality alt bases supporting SNP call"&gt;
+##INFO=&lt;ID=CONSVAR,Number=0,Type=Flag,Description="Indicates that the variant is a consensus variant"&gt;
+##FILTER=&lt;ID=min_dp_10,Description="Minimum coverage 10"&gt;
+##FILTER=&lt;ID=sb_fdr,Description="Strand-bias filter (FDR corrected)"&gt;
+#CHROM  POS ID  REF ALT QUAL    FILTER  INFO
+pBR322  3029    .   T   C   1847    PASS    DP=487;AF=0.049281;SB=1;DP4=230,233,12,12;HQA=24</code></pre>
+<p><strong>Field-by-field walkthrough:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 53%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Value</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CHROM</td>
+<td><code>pBR322</code></td>
+<td>Plasmid pBR322 reference sequence</td>
+</tr>
+<tr class="even">
+<td>POS</td>
+<td><code>3029</code></td>
+<td>Position 3029 – within the RNAI/RNAII replication control region, a known hotspot for adaptive mutations in pBR322</td>
+</tr>
+<tr class="odd">
+<td>REF/ALT</td>
+<td><code>T</code> / <code>C</code></td>
+<td>T-to-C substitution</td>
+</tr>
+<tr class="even">
+<td>QUAL</td>
+<td><code>1847</code></td>
+<td><span class="math inline">\(\text{p-value} = 10^{-184.7} \approx 2 \times 10^{-185}\)</span>. Overwhelmingly significant – not explainable by sequencing error.</td>
+</tr>
+<tr class="odd">
+<td>FILTER</td>
+<td><code>PASS</code></td>
+<td>Passed all default filters (coverage <span class="math inline">\(\geq 10\)</span>, no significant strand bias)</td>
+</tr>
+<tr class="even">
+<td>DP</td>
+<td><code>487</code></td>
+<td>487 reads cover this position</td>
+</tr>
+<tr class="odd">
+<td>AF</td>
+<td><code>0.049281</code></td>
+<td>~4.9% of reads carry the C allele. This is a low-frequency variant in the population.</td>
+</tr>
+<tr class="even">
+<td>SB</td>
+<td><code>1</code></td>
+<td>Strand bias Phred score = 1 <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(p_{\text{Fisher}} = 10^{-0.1} \approx 0.79\)</span>. No strand bias (p-value near 1 means the 2x2 table is well-balanced).</td>
+</tr>
+<tr class="odd">
+<td>DP4</td>
+<td><code>230,233,12,12</code></td>
+<td>230 ref-forward + 233 ref-reverse = 463 reference reads; 12 alt-forward + 12 alt-reverse = 24 variant reads. Near-perfect strand balance for both ref and alt.</td>
+</tr>
+<tr class="even">
+<td>HQA</td>
+<td><code>24</code></td>
+<td>All 24 alternative bases were high quality.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Sanity checks on LoFreq VCF output
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Always verify internal consistency: <code>AF</code> <span class="math inline">\(\approx\)</span> (DP4[2] + DP4[3]) / DP. Here: <span class="math inline">\((12 + 12)/487 = 0.04928\)</span>, matching <code>AF=0.049281</code>. Also check that <code>DP</code> <span class="math inline">\(\approx\)</span> sum of DP4: <span class="math inline">\(230 + 233 + 12 + 12 = 487\)</span>. Discrepancies can indicate that some reads were filtered during pileup (e.g., below min_bq).</p>
+</div>
+</div>
+<p><strong>How QUAL=1847 was computed.</strong> At 487x coverage with 24 variant-supporting reads, LoFreq used the per-base merged error probabilities of all 487 reads. If the variant-supporting reads had Q30 base quality, Q60 mapping quality, and high BAQ, their merged error probabilities might be around <span class="math inline">\(p_i \approx 0.001\)</span>. The expected error count under <span class="math inline">\(H_0\)</span> is approximately <span class="math inline">\(\sum p_i \approx 1\)</span>–<span class="math inline">\(2\)</span> errors across all reads. Observing 24 non-reference bases when <span class="math inline">\(\sim 1\)</span>–<span class="math inline">\(2\)</span> are expected yields an astronomically small p-value, converted to QUAL <span class="math inline">\(= -10 \log_{10}(p) = 1847\)</span>.</p>
+<hr>
+</section>
+<section id="sec-lofreq-cli" class="level3">
+<h3 class="anchored" data-anchor-id="sec-lofreq-cli">8.8 LoFreq Command-Line Reference</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 30%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--call-indels</code></td>
+<td>off</td>
+<td>Enable indel calling (requires indel qualities in BAM)</td>
+</tr>
+<tr class="even">
+<td><code>--min-cov</code></td>
+<td>1</td>
+<td>Minimum read depth to test a position</td>
+</tr>
+<tr class="odd">
+<td><code>--min-bq</code></td>
+<td>6</td>
+<td>Minimum base quality; bases below this are ignored</td>
+</tr>
+<tr class="even">
+<td><code>--min-alt-bq</code></td>
+<td>6</td>
+<td>Minimum base quality for alternative (non-reference) bases</td>
+</tr>
+<tr class="odd">
+<td><code>--min-mq</code></td>
+<td>0</td>
+<td>Minimum mapping quality; reads below this are ignored</td>
+</tr>
+<tr class="even">
+<td><code>--max-mq</code></td>
+<td>255</td>
+<td>Cap mapping quality at this value</td>
+</tr>
+<tr class="odd">
+<td><code>--sig</code></td>
+<td>0.01</td>
+<td>Significance level (<span class="math inline">\(\alpha\)</span>) for the Poisson-binomial test</td>
+</tr>
+<tr class="even">
+<td><code>--bonf</code></td>
+<td>dynamic</td>
+<td>Bonferroni factor. <code>dynamic</code> = number of tests performed; or specify an integer, or <code>holm</code>/<code>fdr</code></td>
+</tr>
+<tr class="odd">
+<td><code>--no-default-filter</code></td>
+<td>off</td>
+<td>Skip all post-call filtering (min_dp, strand bias)</td>
+</tr>
+<tr class="even">
+<td><code>--no-baq</code></td>
+<td>off</td>
+<td>Disable BAQ computation (faster but less accurate near indels)</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>lofreq indelqual --dindel</code></strong> must be run before <code>--call-indels</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> indelqual <span class="at">--dindel</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> prepared.bam input.bam</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> call <span class="at">--call-indels</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> variants.vcf prepared.bam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>--dindel</code> option assigns indel error probabilities based on local sequence context (homopolymer length), using a lookup table from the Dindel method (<a href="https://pubmed.ncbi.nlm.nih.gov/20980555/">Albers et al., 2011</a>). Positions within long homopolymers get higher indel error probabilities (lower quality), reflecting the known tendency of Illumina chemistry to slip in such regions. The alternative <code>--uniform &lt;INT&gt;</code> assigns a constant indel quality everywhere – use this for non-Illumina platforms.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The full LoFreq pipeline for SNVs + indels
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The complete recommended pipeline chains three preprocessing steps with variant calling:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Probabilistic realignment (Viterbi)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> viterbi <span class="at">-f</span> ref.fa <span class="at">-o</span> realigned.bam input.bam</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Add indel qualities</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> indelqual <span class="at">--dindel</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> iq.bam realigned.bam</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Sort and index</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> sort iq.bam <span class="at">-o</span> sorted.bam <span class="kw">&amp;&amp;</span> <span class="ex">samtools</span> index sorted.bam</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Call variants (SNVs + indels)</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ex">lofreq</span> call <span class="at">--call-indels</span> <span class="at">-f</span> ref.fa <span class="at">-o</span> variants.vcf sorted.bam</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>lofreq viterbi</code> performs probabilistic realignment using a Viterbi algorithm, correcting suboptimal alignments (especially around indels) by re-evaluating alignment paths using base qualities. This is analogous to GATK’s local realignment but operates per-read rather than in a region-based assembly.</p>
+<p>For whole genomes, use <code>lofreq call-parallel --pp-threads &lt;N&gt;</code> instead of <code>lofreq call</code> to distribute calling across multiple threads – the interface is identical but processing is parallelized by genomic region.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">9. Summary</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Take-home messages
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Microbial/viral samples are populations</strong>, not individuals. Variant frequencies are continuous, not discrete.</li>
+<li><strong>LoFreq</strong> is the best-performing tool for detecting low-frequency variants in microbial data, thanks to its Poisson-binomial error model that uses per-base quality scores.</li>
+<li>For <strong>fixed variant calling</strong> in bacterial genomes, Snippy, bcftools, and GATK HaplotypeCaller (ploidy 1) all work well. For ONT data, Clair3 and DeepVariant are superior.</li>
+<li><strong>Always normalize</strong> your VCF files (left-align and trim indels) before comparing results across tools or samples.</li>
+<li><strong>Strand bias</strong>, cycle bias, and placement bias are the main sources of false positive variant calls. Use Fisher’s exact test or the strand odds ratio to filter them.</li>
+<li><strong>Duplex sequencing</strong> provides ground-truth variant calls for benchmarking, with error rates &lt; <span class="math inline">\(10^{-7}\)</span>.</li>
+<li><strong>No single tool is best for all scenarios</strong> – match the tool to your biological question and data type.</li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li>Bogaerts B et al.&nbsp;(2024) Benchmarking reveals superiority of deep learning variant callers on bacterial nanopore sequence data. <em>eLife</em> 13:e98300. <a href="https://elifesciences.org/articles/98300">Link</a></li>
+<li>Bush SJ et al.&nbsp;(2023) In silico evaluation of variant calling methods for bacterial whole-genome sequencing assays. <em>J Clin Microbiol</em> 61(8):e01842-22. <a href="https://journals.asm.org/doi/10.1128/jcm.01842-22">Link</a></li>
+<li>Danecek P et al.&nbsp;(2021) Twelve years of SAMtools and BCFtools. <em>GigaScience</em> 10(2):giab008. <a href="https://doi.org/10.1093/gigascience/giab008">Link</a></li>
+<li>Deatherage DE &amp; Barrick JE (2014) Identification of mutations in laboratory-evolved microbes from next-generation sequencing data using breseq. <em>Methods Mol Biol</em> 1151:165-188. <a href="https://link.springer.com/protocol/10.1007/978-1-4939-0554-6_12">Link</a></li>
+<li>Dykhuizen DE &amp; Hartl DL (1983) Selection in chemostats. <em>Microbiol Rev</em> 47(2):150-168. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC281569/">Link</a></li>
+<li>Garrison E &amp; Marth G (2012) Haplotype-based variant detection from short-read sequencing. <em>arXiv</em> 1207.3907. <a href="https://arxiv.org/abs/1207.3907">Link</a></li>
+<li>Grubaugh ND et al.&nbsp;(2019) An amplicon-based sequencing framework for accurately measuring intrahost virus diversity using PrimalSeq and iVar. <em>Genome Biol</em> 20:8. <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-1618-7">Link</a></li>
+<li>Guo Y et al.&nbsp;(2012) The effect of strand bias in Illumina short-read sequencing data. <em>BMC Genomics</em> 13:666. <a href="https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-13-666">Link</a></li>
+<li>Mei H et al.&nbsp;(2019) A high-resolution view of adaptive event dynamics in a plasmid. <em>Genome Biol Evol</em> 11(10):3022-3034. <a href="https://academic.oup.com/gbe/article/11/10/3022/5572121">Link</a></li>
+<li>Posada-Céspedes S et al.&nbsp;(2021) V-pipe: a computational pipeline for assessing viral genetic diversity from high-throughput data. <em>Bioinformatics</em> 37(12):1673-1680. <a href="https://academic.oup.com/bioinformatics/article/37/12/1673/6104816">Link</a></li>
+<li>Salk JJ et al.&nbsp;(2018) Enhancing the accuracy of next-generation sequencing for detecting rare and subclonal mutations. <em>Nat Rev Genet</em> 19:269-285. <a href="http://dx.doi.org/10.1038/nrg.2017.117">Link</a></li>
+<li>Schmitt MW et al.&nbsp;(2012) Detection of ultra-rare mutations by next-generation sequencing. <em>Proc Natl Acad Sci USA</em> 109(36):14508-14513. <a href="https://doi.org/10.1073/pnas.1208715109">Link</a></li>
+<li>Tan A et al.&nbsp;(2015) Unified representation of genetic variants. <em>Bioinformatics</em> 31(13):2202-2204. <a href="https://doi.org/10.1093/bioinformatics/btv112">Link</a></li>
+<li>Wilm A et al.&nbsp;(2012) LoFreq: a sequence-quality aware, ultra-sensitive variant caller for uncovering cell-population heterogeneity from high-throughput sequencing datasets. <em>Nucleic Acids Res</em> 40(22):11189-11201. <a href="https://academic.oup.com/nar/article/40/22/11189/1152727">Link</a></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture19.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
