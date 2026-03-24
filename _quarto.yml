@@ -55,6 +55,8 @@ website:
             text: "15. K-mers, Minimizers, and Minimap2"
           - href: lectures/lecture17.qmd
             text: "17. DNA Sequencing Technologies"
+          - href: lectures/lecture19.qmd
+            text: "19. Variant Calling in Haploid Systems"
 
 format:
   html:
