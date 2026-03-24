@@ -46,7 +46,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | - | - | Spring break |
 | 17 | Mar 17 | - |
 | 18 | Mar 19 | - |
-| 19 | Mar 24 | - |
+| 19 | Mar 24 | [Variant Calling in Haploid Systems](lectures/lecture19.qmd) |
 | 20 | Mar 26 | - |
 | 21 | Mar 31 | - |
 | 22 | Apr 2 | - |

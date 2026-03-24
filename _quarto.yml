@@ -51,6 +51,8 @@ website:
             text: "13. Sequence Alignment"
           - href: lectures/lecture14.qmd
             text: "14. Finding Sequence Matches Quickly"
+          - href: lectures/lecture19.qmd
+            text: "19. Variant Calling in Haploid Systems"
 
 format:
   html:
