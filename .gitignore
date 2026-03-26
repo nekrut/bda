@@ -39,6 +39,23 @@ images/*
 !images/pacbio_*.png
 !images/ont_*.png
 !images/element_*.png
+!images/bam_structure.png
+!images/cigar.png
+!images/fastq_qs.png
+!images/illumina_qs.png
+!images/multiqc.png
+!images/multiqc_f.png
+!images/paste.png
+!images/pcr-duplicates.png
+!images/pe_mp.png
+!images/rg.png
+!images/rg_example.png
+!images/sam_fields.png
+!images/sam_flag.png
+!images/sampling-bias.png
+!images/upload_button.png
+!images/tiaas_registration.png
+!images/mrsa_usa300_genome.png
 
 # Test files (keep answers private)
 lectures/test2*.qmd

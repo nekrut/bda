@@ -57,6 +57,8 @@ website:
             text: "17. DNA Sequencing Technologies"
           - href: lectures/lecture19.qmd
             text: "19. Variant Calling in Haploid Systems"
+          - href: lectures/lecture20.qmd
+            text: "20. NGS Data Logistics"
 
 format:
   html:
@@ -65,6 +67,7 @@ format:
       - brand
     css: styles.css
     toc: true
+    code-copy: hover
     include-after-body: _commit-info.html
 
 
