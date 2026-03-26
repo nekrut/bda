@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 20: NGS Data Logistics – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture20.html">20. NGS Data Logistics</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. Finding Sequence Matches Quickly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. K-mers, Minimizers, and Minimap2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17. DNA Sequencing Technologies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19. Variant Calling in Haploid Systems</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture20.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">20. NGS Data Logistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#the-story" id="toc-the-story" class="nav-link" data-scroll-target="#the-story">1. The Story</a></li>
+  <li><a href="#from-reads-to-variants" id="toc-from-reads-to-variants" class="nav-link" data-scroll-target="#from-reads-to-variants">2. From Reads to Variants</a>
+  <ul class="collapse">
+  <li><a href="#upload-data-into-galaxy" id="toc-upload-data-into-galaxy" class="nav-link" data-scroll-target="#upload-data-into-galaxy">2.1 Upload data into Galaxy</a></li>
+  </ul></li>
+  <li><a href="#fastq-format" id="toc-fastq-format" class="nav-link" data-scroll-target="#fastq-format">3. FASTQ Format</a>
+  <ul class="collapse">
+  <li><a href="#paired-end-data" id="toc-paired-end-data" class="nav-link" data-scroll-target="#paired-end-data">3.1 Paired-end data</a></li>
+  <li><a href="#quality-scores" id="toc-quality-scores" class="nav-link" data-scroll-target="#quality-scores">3.2 Quality scores</a></li>
+  <li><a href="#assessing-quality-with-fastqc" id="toc-assessing-quality-with-fastqc" class="nav-link" data-scroll-target="#assessing-quality-with-fastqc">3.3 Assessing quality with FastQC</a></li>
+  </ul></li>
+  <li><a href="#bundle-data-into-a-collection" id="toc-bundle-data-into-a-collection" class="nav-link" data-scroll-target="#bundle-data-into-a-collection">4. Bundle Data into a Collection</a></li>
+  <li><a href="#quality-control-with-fastp-and-multiqc" id="toc-quality-control-with-fastp-and-multiqc" class="nav-link" data-scroll-target="#quality-control-with-fastp-and-multiqc">5. Quality Control with <code>fastp</code> and <code>MultiQC</code></a></li>
+  <li><a href="#mapping-reads" id="toc-mapping-reads" class="nav-link" data-scroll-target="#mapping-reads">6. Mapping Reads</a>
+  <ul class="collapse">
+  <li><a href="#upload-reference-genome" id="toc-upload-reference-genome" class="nav-link" data-scroll-target="#upload-reference-genome">6.1 Upload reference genome</a></li>
+  <li><a href="#map-the-reads" id="toc-map-the-reads" class="nav-link" data-scroll-target="#map-the-reads">6.2 Map the reads</a></li>
+  <li><a href="#sambam-format" id="toc-sambam-format" class="nav-link" data-scroll-target="#sambam-format">6.3 SAM/BAM format</a></li>
+  </ul></li>
+  <li><a href="#remove-duplicates" id="toc-remove-duplicates" class="nav-link" data-scroll-target="#remove-duplicates">7. Remove Duplicates</a>
+  <ul class="collapse">
+  <li><a href="#what-are-read-duplicates" id="toc-what-are-read-duplicates" class="nav-link" data-scroll-target="#what-are-read-duplicates">7.1 What are read duplicates?</a></li>
+  <li><a href="#run-markduplicates" id="toc-run-markduplicates" class="nav-link" data-scroll-target="#run-markduplicates">7.2 Run MarkDuplicates</a></li>
+  </ul></li>
+  <li><a href="#calling-variants" id="toc-calling-variants" class="nav-link" data-scroll-target="#calling-variants">8. Calling Variants</a>
+  <ul class="collapse">
+  <li><a href="#realign-reads-around-indels" id="toc-realign-reads-around-indels" class="nav-link" data-scroll-target="#realign-reads-around-indels">8.1 Realign reads around indels</a></li>
+  <li><a href="#call-variants" id="toc-call-variants" class="nav-link" data-scroll-target="#call-variants">8.2 Call variants</a></li>
+  </ul></li>
+  <li><a href="#annotating-variants" id="toc-annotating-variants" class="nav-link" data-scroll-target="#annotating-variants">9. Annotating Variants</a>
+  <ul class="collapse">
+  <li><a href="#build-a-snpeff-database" id="toc-build-a-snpeff-database" class="nav-link" data-scroll-target="#build-a-snpeff-database">9.1 Build a SnpEff database</a></li>
+  <li><a href="#annotate-variant-effects" id="toc-annotate-variant-effects" class="nav-link" data-scroll-target="#annotate-variant-effects">9.2 Annotate variant effects</a></li>
+  <li><a href="#extract-variant-fields-with-snpsift" id="toc-extract-variant-fields-with-snpsift" class="nav-link" data-scroll-target="#extract-variant-fields-with-snpsift">9.3 Extract variant fields with SnpSift</a></li>
+  <li><a href="#collapse-collection-into-a-single-dataset" id="toc-collapse-collection-into-a-single-dataset" class="nav-link" data-scroll-target="#collapse-collection-into-a-single-dataset">9.4 Collapse collection into a single dataset</a></li>
+  </ul></li>
+  <li><a href="#anything-interesting" id="toc-anything-interesting" class="nav-link" data-scroll-target="#anything-interesting">10. Anything Interesting?</a>
+  <ul class="collapse">
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#why-mrsa" id="toc-why-mrsa" class="nav-link" data-scroll-target="#why-mrsa">11. Why MRSA?</a>
+  <ul class="collapse">
+  <li><a href="#s.-aureus-as-commensal-and-pathogen" id="toc-s.-aureus-as-commensal-and-pathogen" class="nav-link" data-scroll-target="#s.-aureus-as-commensal-and-pathogen"><em>S. aureus</em> as commensal and pathogen</a></li>
+  <li><a href="#methicillin-resistance" id="toc-methicillin-resistance" class="nav-link" data-scroll-target="#methicillin-resistance">Methicillin resistance</a></li>
+  <li><a href="#genome-structure" id="toc-genome-structure" class="nav-link" data-scroll-target="#genome-structure">Genome structure</a></li>
+  <li><a href="#clonal-complexes-and-global-epidemiology" id="toc-clonal-complexes-and-global-epidemiology" class="nav-link" data-scroll-target="#clonal-complexes-and-global-epidemiology">Clonal complexes and global epidemiology</a></li>
+  <li><a href="#why-whole-genome-sequencing-matters" id="toc-why-whole-genome-sequencing-matters" class="nav-link" data-scroll-target="#why-whole-genome-sequencing-matters">Why whole genome sequencing matters</a></li>
+  </ul></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s Next</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture20.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture20.html">20. NGS Data Logistics</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 20: NGS Data Logistics</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to:</p>
+<ul>
+<li>Understand the most common NGS-related data types (FASTQ, SAM/BAM, VCF)</li>
+<li>Upload and organize sequencing data in Galaxy using collections</li>
+<li>Assess read quality with <code>fastp</code> and <code>MultiQC</code></li>
+<li>Map reads to a reference genome with <code>BWA-MEM2</code></li>
+<li>Remove PCR duplicates and realign reads around indels</li>
+<li>Call variants in haploid systems using <code>LoFreq</code></li>
+<li>Annotate variants with <code>SnpEff</code> and extract results with <code>SnpSift</code></li>
+<li>Interpret variant tables to answer biological questions</li>
+</ul>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This step is essential for a successful workshop. Please do this first and ask questions if anything does not work!</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you ALREADY have an account at <a href="https://usegalaxy.org" class="uri">https://usegalaxy.org</a> skip to step 3.</p>
+</div>
+</div>
+<ol type="1">
+<li>Create an account at <a href="https://usegalaxy.org" class="uri">https://usegalaxy.org</a></li>
+<li>Validate your account using a link that was emailed to you</li>
+<li>Log in</li>
+<li>Click on <a href="https://usegalaxy.org/join-training/bmmb554-26/" class="uri">https://usegalaxy.org/join-training/bmmb554-26/</a></li>
+</ol>
+<p>You should see the following screen:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/tiaas_registration.png" class="img-fluid figure-img"></p>
+<figcaption>TIaaS registration confirmation</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="the-story" class="level2">
+<h2 class="anchored" data-anchor-id="the-story">1. The Story</h2>
+<p>To make this tutorial realistic we use an example from the real world. We start with four sequencing datasets (FASTQ files) representing four individuals positive for malaria—a life-threatening disease caused by <em>Plasmodium</em> parasites transmitted to humans through the bites of infected female <em>Anopheles</em> mosquitoes.</p>
+<p>Our goal: determine whether the malaria parasite (<em>Plasmodium falciparum</em>) infecting these individuals is resistant to <a href="https://en.wikipedia.org/wiki/Pyrimethamine">Pyrimethamine</a>—an antimalarial drug. Resistance is conferred by a mutation in the <code>PF3D7_0417200</code> (<em>dhfr</em>) gene [1]. Given sequencing data from four individuals we will determine which ones carry mutations in this gene.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Analysis Outline
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The analysis begins with FASTQ files representing four individuals sequenced using a paired-end protocol (each sample = two files: forward and reverse reads). We combine files into a <strong>Collection</strong>, map against the <em>P. falciparum</em> reference genome, call variants, annotate them, and produce a final table answering our question.</p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/collection_lifecycle.svg" class="img-fluid figure-img"></p>
+<figcaption>Analysis outline: from FASTQ to variant table</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="from-reads-to-variants" class="level2">
+<h2 class="anchored" data-anchor-id="from-reads-to-variants">2. From Reads to Variants</h2>
+<p>We use data from four infected individuals sequenced within the <a href="https://www.malariagen.net/data_package/open-dataset-plasmodium-falciparum-v70/">MalariaGen</a> effort:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Accession</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR636434">ERR636434</a></td>
+<td>Ivory Coast</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR636028">ERR636028</a></td>
+<td>Ivory Coast</td>
+</tr>
+<tr class="odd">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR042232">ERR042232</a></td>
+<td>Colombia</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR042228">ERR042228</a></td>
+<td>Colombia</td>
+</tr>
+</tbody>
+</table>
+<p>These accessions correspond to datasets stored in the <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive</a> (SRA) at NCBI.</p>
+<section id="upload-data-into-galaxy" class="level3">
+<h3 class="anchored" data-anchor-id="upload-data-into-galaxy">2.1 Upload data into Galaxy</h3>
+<p>For this tutorial the data has been down-sampled to ensure quick processing. The FASTQ datasets are deposited in a <a href="https://zenodo.org/records/15354240">Zenodo library</a>.</p>
+<hr>
+<section id="upload-accessions-into-galaxy" class="level4">
+<h4 class="anchored" data-anchor-id="upload-accessions-into-galaxy">Upload accessions into Galaxy</h4>
+<ol type="1">
+<li>Go to your Galaxy instance (e.g., <a href="https://usegalaxy.org">usegalaxy.org</a>)</li>
+<li>Click the <strong>Upload Data</strong> button: <img src="../images/upload_button.png" class="img-fluid" alt="Data upload button"></li>
+<li>In the dialog box click <strong>Paste/Fetch</strong>: <img src="../images/paste.png" class="img-fluid" alt="Paste/Fetch button"></li>
+<li>Paste the following URLs into the box:</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR042228_F.fq.gz</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR042228_R.fq.gz</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR042232_F.fq.gz</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR042232_R.fq.gz</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR636028_F.fq.gz</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR636028_R.fq.gz</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR636434_F.fq.gz</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/ERR636434_R.fq.gz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="5" type="1">
+<li>Change datatype to <code>fastqsanger.gz</code> <img src="../images/upload_name_datatype.svg" class="img-fluid" alt="Set name and datatype"></li>
+<li>Click <strong>Start</strong>, then <strong>Close</strong></li>
+</ol>
+<hr>
+<p>This creates eight datasets—each sample has forward and reverse read files (4 x 2 = 8):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/f_and_r.svg" class="img-fluid figure-img"></p>
+<figcaption>Four samples and eight files</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+</section>
+<section id="fastq-format" class="level2">
+<h2 class="anchored" data-anchor-id="fastq-format">3. FASTQ Format</h2>
+<p>We covered FASTQ structure and quality score encoding in detail in <a href="../lectures/lecture6.html">Lecture 6</a>. As a brief recap, <a href="https://en.wikipedia.org/wiki/FASTQ_format">FASTQ</a> stores sequencing reads as four lines per record—header (<code>@</code>), sequence, <code>+</code>, and ASCII-encoded quality scores. The <strong>FASTQ Sanger</strong> version [2] is the accepted standard; Galaxy uses it exclusively.</p>
+<section id="paired-end-data" class="level3">
+<h3 class="anchored" data-anchor-id="paired-end-data">3.1 Paired-end data</h3>
+<p>In paired-end sequencing, both ends of short DNA molecules (&lt; 1 kb) are sequenced, producing two reads per fragment. Mate-pair sequencing is similar but targets the ends of long molecules joined by an internal adapter.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pe_mp.png" class="img-fluid figure-img"></p>
+<figcaption>Paired-end and mate-pair reads</figcaption>
+</figure>
+</div>
+<p>Paired-end data can be stored as:</p>
+<ul>
+<li><strong>Two separate files</strong> — one for forward reads, one for reverse reads (read IDs must match in order)</li>
+<li><strong>A single interleaved file</strong> — forward and reverse reads alternate</li>
+</ul>
+<p><strong>Two separate files:</strong></p>
+<p>File 1 (forward):</p>
+<pre><code>@M02286:19:000000000-AA549:1:1101:12677:1273 1:N:0:23
+CCTACGGGTGGCAGCAGTGAGGAATATTGGTCAATGGACGGAAGTCT
++
+ABC8C,:@F:CE8,B-,C,-6-9-C,CE9-CC--C-&lt;-C++,,+;CE</code></pre>
+<p>File 2 (reverse):</p>
+<pre><code>@M02286:19:000000000-AA549:1:1101:12677:1273 2:N:0:23
+CACTACCCGTGTATCTAATCCTGTTTGATACCCGCACCTTCGAGCTTA
++
+--8A,CCE+,,;,&lt;CC,,&lt;CE@,CFD,,C,CFF+@+@CCEF,,,B+C,</code></pre>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Read order matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Read IDs must be <strong>identical</strong> in both files and listed in <strong>the same order</strong>. Some files append <code>/1</code> and <code>/2</code> tags to distinguish forward and reverse reads.</p>
+</div>
+</div>
+<p><strong>Interleaved file:</strong></p>
+<pre><code>@1/1
+AGGGATGTGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTAGGGTTA
++
+EGGEGGGDFGEEEAEECGDEGGFEEGEFGBEEDDECFEFDD@CDD&lt;ED
+@1/2
+CCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAAC
++
+GHHHDFDFGFGEGFBGEGGEGEGGGHGFGHFHFHHHHHHHEF?EFEFF</code></pre>
+<p>In this tutorial, paired-end data is provided as two separate files per sample.</p>
+</section>
+<section id="quality-scores" class="level3">
+<h3 class="anchored" data-anchor-id="quality-scores">3.2 Quality scores</h3>
+<p>Recall from <a href="../lectures/lecture6.html">Lecture 6</a> that each base carries a Phred quality score <span class="math inline">\(Q = -10 \cdot \log_{10}(p)\)</span>, where <span class="math inline">\(p\)</span> is the error probability (Q20 = 99% accuracy, Q30 = 99.9%). These scores are encoded as ASCII characters, but different Illumina versions have used different encodings and offsets:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/illumina_qs.png" class="img-fluid figure-img"></p>
+<figcaption>Illumina quality score encodings</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/fastq_qs.png" class="img-fluid figure-img"></p>
+<figcaption>FASTQ quality score ASCII ranges</figcaption>
+</figure>
+</div>
+<p>Starting with Illumina format 1.8, scores use the standard Sanger/Phred format.</p>
+</section>
+<section id="assessing-quality-with-fastqc" class="level3">
+<h3 class="anchored" data-anchor-id="assessing-quality-with-fastqc">3.3 Assessing quality with FastQC</h3>
+<p>One of the first steps in NGS analysis is assessing data quality. Several tools exist for this purpose:</p>
+<ul>
+<li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a> – the legacy standard, widely recognized but slow</li>
+<li><a href="https://github.com/smithlabcode/falco">Falco</a> – a fast, drop-in replacement for FastQC producing identical output</li>
+<li><a href="https://github.com/OpenGene/fastp">fastp</a> – combines QC reporting with adapter removal and quality filtering in a single pass; commonly used in the Galaxy ecosystem</li>
+</ul>
+<p>In this lecture we use <code>fastp</code> downstream because it handles both QC and cleanup simultaneously but the plots below show <code>FastQC</code> output as an illustration.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/qc_plot.svg" class="img-fluid figure-img"></p>
+<figcaption>FastQC quality reports for two datasets</figcaption>
+</figure>
+</div>
+<p>Dataset <strong>A</strong> has long reads (250 bp) with excellent quality (no scores below 30). Dataset <strong>B</strong> has lower quality with read ends dipping below 20—these reads may need trimming.</p>
+<hr>
+</section>
+</section>
+<section id="bundle-data-into-a-collection" class="level2">
+<h2 class="anchored" data-anchor-id="bundle-data-into-a-collection">4. Bundle Data into a Collection</h2>
+<p>We want to perform the same analysis on all four samples. Rather than repeating operations eight times, we bundle datasets into a <strong>Collection</strong>. Collections in Galaxy are logical groupings that reflect semantic relationships between datasets.</p>
+<p>We create a <strong>paired collection</strong> with two levels: the first level contains samples, the second contains forward and reverse reads for each sample.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/paired_collection.svg" class="img-fluid figure-img"></p>
+<figcaption>Paired collection structure</figcaption>
+</figure>
+</div>
+<hr>
+<section id="create-a-paired-collection" class="level4">
+<h4 class="anchored" data-anchor-id="create-a-paired-collection">Create a paired collection</h4>
+<p>Follow the steps shown in <a href="https://www.youtube.com/watch?v=OW4n61BIHAc">this video</a> (2 minutes). After creating the collection, click its name in the history panel to explore the contents.</p>
+<hr>
+</section>
+</section>
+<section id="quality-control-with-fastp-and-multiqc" class="level2">
+<h2 class="anchored" data-anchor-id="quality-control-with-fastp-and-multiqc">5. Quality Control with <code>fastp</code> and <code>MultiQC</code></h2>
+<p>Raw FASTQ data often contains adapter fragments from library preparation and low-quality reads. <code>fastp</code> automatically detects and removes common sequencing adapters and prunes low-quality segments.</p>
+<hr>
+<section id="run-fastp" class="level4">
+<h4 class="anchored" data-anchor-id="run-fastp">Run <code>fastp</code></h4>
+<p>Run <strong>fastp</strong> with the following parameters:</p>
+<ul>
+<li><strong>Single-end or paired reads</strong>: <code>Paired collection</code></li>
+<li><strong>Select paired collection(s)</strong>: the collection created in the previous step</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/fastp.svg" class="img-fluid figure-img"></p>
+<figcaption>fastp interface</figcaption>
+</figure>
+</div>
+<p><code>fastp</code> generates cleaned data plus HTML and JSON reports as three collections:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/fastp_history.svg" class="img-fluid figure-img"></p>
+<figcaption>fastp history items</figcaption>
+</figure>
+</div>
+<hr>
+<p>You can click individual HTML reports to inspect quality, but for many samples this becomes impractical. Instead, feed the JSON output from <code>fastp</code> into <code>MultiQC</code> to visualize QC data for <strong>all</strong> samples at once.</p>
+<hr>
+</section>
+<section id="run-multiqc-on-fastp-json-data" class="level4">
+<h4 class="anchored" data-anchor-id="run-multiqc-on-fastp-json-data">Run <code>MultiQC</code> on <code>fastp</code> JSON data</h4>
+<p>Run <strong>MultiQC</strong> with:</p>
+<ul>
+<li><strong>Which tool was used to generate logs?</strong>: <code>fastp</code></li>
+<li><strong>Output of fastp</strong>: JSON output from the previous step</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/multiqc.svg" class="img-fluid figure-img"></p>
+<figcaption>MultiQC interface</figcaption>
+</figure>
+</div>
+<p>Click the eye icon on the “Webpage” output to see the QC report:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/multiqc_history.svg" class="img-fluid figure-img"></p>
+<figcaption>MultiQC history item</figcaption>
+</figure>
+</div>
+<hr>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/multiqc_f.png" class="img-fluid figure-img"></p>
+<figcaption>Quality score distribution after filtering</figcaption>
+</figure>
+</div>
+<p>Two samples have very high quality values and 100 bp reads. The other two have somewhat lower (but acceptable) quality and shorter 80 bp reads.</p>
+<hr>
+</section>
+</section>
+<section id="mapping-reads" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-reads">6. Mapping Reads</h2>
+<p>Galaxy provides several mappers including <code>bowtie</code>, <code>bwa-mem</code>, and <code>bwa-mem2</code>. We use <code>bwa-mem2</code>—the latest version of this popular aligner.</p>
+<section id="upload-reference-genome" class="level3">
+<h3 class="anchored" data-anchor-id="upload-reference-genome">6.1 Upload reference genome</h3>
+<p>When the genome index is not pre-installed on Galaxy, you need to upload the reference yourself. We use the 3D7 strain <em>P. falciparum</em> reference genome.</p>
+<hr>
+<section id="upload-the-p.-falciparum-genome" class="level4">
+<h4 class="anchored" data-anchor-id="upload-the-p.-falciparum-genome">Upload the <em>P. falciparum</em> genome</h4>
+<p>Paste the following URL into the Upload tool and set datatype to <code>fasta.gz</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/GCF_000002765.6.fa.gz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/upload_genome.svg" class="img-fluid figure-img"></p>
+<figcaption>Genome upload</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+<section id="map-the-reads" class="level3">
+<h3 class="anchored" data-anchor-id="map-the-reads">6.2 Map the reads</h3>
+<hr>
+<section id="map-reads-with-bwa-mem2" class="level4">
+<h4 class="anchored" data-anchor-id="map-reads-with-bwa-mem2">Map reads with <code>BWA-MEM2</code></h4>
+<p>Run <strong>BWA-MEM2</strong> with:</p>
+<ul>
+<li><strong>Will you select a reference genome from your history or use a built-in index?</strong>: <code>Use a reference genome from history and build index if necessary</code></li>
+<li><strong>Use the following dataset as the reference</strong>: the uploaded reference genome</li>
+<li><strong>Single or Paired-end reads</strong>: <code>Paired collection</code></li>
+<li><strong>Select a paired collection</strong>: the cleaned FASTQ collection from <code>fastp</code></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/bwamem2.svg" class="img-fluid figure-img"></p>
+<figcaption>BWA-MEM2 interface</figcaption>
+</figure>
+</div>
+<hr>
+<p><code>BWA-MEM2</code> produces four BAM outputs—one per sample.</p>
+</section>
+</section>
+<section id="sambam-format" class="level3">
+<h3 class="anchored" data-anchor-id="sambam-format">6.3 SAM/BAM format</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What are BAM files?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <a href="https://samtools.github.io/hts-specs/SAMv1.pdf">SAM/BAM</a> format is the accepted standard for storing aligned reads. SAM is human-readable and tab-delimited; BAM is its binary, indexed form optimized for fast random access. In Galaxy, BAM datasets are always indexed and sorted by coordinate.</p>
+</div>
+</div>
+<p>SAM files contain a short header section and a long alignment section where each row represents one read alignment:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/bam_structure.png" class="img-fluid figure-img"></p>
+<figcaption>BAM structure</figcaption>
+</figure>
+</div>
+<p>Each line in the header starts with <code>@</code>. For example, <code>@SQ</code> lines list reference sequence names (<code>SN</code>) and lengths (<code>LN</code>):</p>
+<pre><code>@SQ SN:chr1 LN:1000
+@SQ SN:chr2 LN:1000
+@SQ SN:chr3 LN:1000</code></pre>
+<p>Each alignment has 11 mandatory fields:</p>
+<pre><code>&lt;QNAME&gt; &lt;FLAG&gt; &lt;RNAME&gt; &lt;POS&gt; &lt;MAPQ&gt; &lt;CIGAR&gt; &lt;RNEXT&gt; &lt;PNEXT&gt; &lt;TLEN&gt; &lt;SEQ&gt; &lt;QUAL&gt;</code></pre>
+<p>(Older documentation may use <code>MRNM</code>, <code>MPOS</code>, <code>ISIZE</code> for the last three positional fields.)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/sam_fields.png" class="img-fluid figure-img"></p>
+<figcaption>SAM fields</figcaption>
+</figure>
+</div>
+<section id="the-flag-field" class="level4">
+<h4 class="anchored" data-anchor-id="the-flag-field">The FLAG field</h4>
+<p>The FLAG field encodes properties of a read as a sum of binary values:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/sam_flag.png" class="img-fluid figure-img"></p>
+<figcaption>SAM FLAG encoding</figcaption>
+</figure>
+</div>
+<p>Common FLAG values for single-end reads:</p>
+<ul>
+<li><strong>0</strong>: mapped to forward strand</li>
+<li><strong>4</strong>: unmapped</li>
+<li><strong>16</strong>: mapped to reverse strand</li>
+</ul>
+<p>Common FLAG values for paired-end reads:</p>
+<ul>
+<li><strong>83</strong> (1+2+16+64): paired, proper pair, first in pair, reverse strand</li>
+<li><strong>99</strong> (1+2+32+64): paired, proper pair, first in pair, mate on reverse strand</li>
+<li><strong>147</strong> (1+2+16+128): paired, proper pair, second in pair, reverse strand</li>
+<li><strong>163</strong> (1+2+32+128): paired, proper pair, second in pair, mate on reverse strand</li>
+</ul>
+</section>
+<section id="the-cigar-string" class="level4">
+<h4 class="anchored" data-anchor-id="the-cigar-string">The CIGAR string</h4>
+<p>CIGAR (<em>Concise Idiosyncratic Gapped Alignment Report</em>) describes operations needed to align a read to the reference:</p>
+<ul>
+<li><strong>M</strong> – alignment match (can be match or mismatch)</li>
+<li><strong>I</strong> – insertion in read relative to reference</li>
+<li><strong>D</strong> – deletion in read relative to reference</li>
+<li><strong>N</strong> – skipped region (e.g., intron in RNA-seq)</li>
+<li><strong>S</strong> – soft clipping (clipped bases present in read)</li>
+<li><strong>H</strong> – hard clipping (clipped bases absent from record)</li>
+<li><strong>=</strong> – sequence match (not widely used)</li>
+<li><strong>X</strong> – sequence mismatch (not widely used)</li>
+</ul>
+<p>The sum of M, I, S, =, X operations equals the read length.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/cigar.png" class="img-fluid figure-img"></p>
+<figcaption>CIGAR examples</figcaption>
+</figure>
+</div>
+</section>
+<section id="read-groups" class="level4">
+<h4 class="anchored" data-anchor-id="read-groups">Read groups</h4>
+<p>SAM/BAM format supports labeling reads with <strong>read group</strong> tags, allowing results from multiple experiments to be pooled in a single BAM file. Downstream tools like variant callers recognize read groups and output results per group.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/rg.png" class="img-fluid figure-img"></p>
+<figcaption>Read groups</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/rg_example.png" class="img-fluid figure-img"></p>
+<figcaption>Read group example</figcaption>
+</figure>
+</div>
+</section>
+<section id="sambam-processing-toolkits" class="level4">
+<h4 class="anchored" data-anchor-id="sambam-processing-toolkits">SAM/BAM processing toolkits</h4>
+<ul>
+<li><a href="https://deeptools.readthedocs.io">DeepTools</a> – visualization, QC, normalization</li>
+<li><a href="http://www.htslib.org/">SAMtools</a> – sorting, merging, indexing, pileup</li>
+<li><a href="https://bedtools.readthedocs.io/">BEDtools</a> – interval-based analysis</li>
+<li><a href="https://broadinstitute.github.io/picard/">Picard</a> – HTS data manipulation</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="remove-duplicates" class="level2">
+<h2 class="anchored" data-anchor-id="remove-duplicates">7. Remove Duplicates</h2>
+<section id="what-are-read-duplicates" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-read-duplicates">7.1 What are read duplicates?</h3>
+<p>PCR amplification during library preparation introduces biases [3]. Some fragments are amplified more than others, producing <strong>PCR duplicates</strong>—reads with identical alignment coordinates that originate from the same template molecule rather than independent sampling. On patterned flow cells (NovaSeq, NextSeq 2000), <strong>optical duplicates</strong> are a distinct artifact: clusters appear as duplicates due to physical proximity rather than PCR amplification. <code>MarkDuplicates</code> detects these using the <code>OPTICAL_DUPLICATE_PIXEL_DISTANCE</code> parameter.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/pcr-duplicates.png" class="img-fluid figure-img"></p>
+<figcaption>PCR duplicate frequency distribution</figcaption>
+</figure>
+</div>
+<p>Duplicates can be identified by outer alignment coordinates or sequence-based clustering. <code>MarkDuplicates</code> from the <a href="https://broadinstitute.github.io/picard/">Picard</a> package is the standard tool.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Caution with small genomes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When sequencing targets are small (bacterial, viral, or organellar genomes, amplicons), reads can share coordinates <strong>by chance</strong> rather than PCR duplication. Aggressive duplicate removal in these cases removes real signal. The balance depends on coverage, insert size variance, and allele frequencies [4].</p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/sampling-bias.png" class="img-fluid figure-img"></p>
+<figcaption>VAF bias determined by coverage and insert size variance</figcaption>
+</figure>
+</div>
+</section>
+<section id="run-markduplicates" class="level3">
+<h3 class="anchored" data-anchor-id="run-markduplicates">7.2 Run MarkDuplicates</h3>
+<hr>
+<section id="remove-duplicates-1" class="level4">
+<h4 class="anchored" data-anchor-id="remove-duplicates-1">Remove duplicates</h4>
+<p>Run <strong>MarkDuplicates</strong> with:</p>
+<ul>
+<li><strong>Select SAM/BAM dataset or dataset collection</strong>: BAM output from <code>BWA-MEM2</code></li>
+<li><strong>If true do not write duplicates to the output file instead of writing them with appropriate flags set</strong>: <code>Yes</code></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/markdups.svg" class="img-fluid figure-img"></p>
+<figcaption>MarkDuplicates</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+</section>
+<section id="calling-variants" class="level2">
+<h2 class="anchored" data-anchor-id="calling-variants">8. Calling Variants</h2>
+<p>We use <strong>LoFreq</strong> for variant calling. Our samples are from human blood, where <em>Plasmodium</em> parasites exist in a <strong>haploid</strong> state (only the zygote is diploid, and that stage occurs in the mosquito). LoFreq is specifically designed for calling variants in haploid and mixed-population scenarios—exactly what we covered in <a href="../lectures/lecture19.html">Lecture 19</a>.</p>
+<section id="realign-reads-around-indels" class="level3">
+<h3 class="anchored" data-anchor-id="realign-reads-around-indels">8.1 Realign reads around indels</h3>
+<p>As we discussed in <a href="../lectures/lecture19.html">Lecture 19</a>, indels in repetitive regions can be aligned in multiple valid ways, each producing a different variant call. <strong>Left-aligning</strong> indels guarantees consistency across samples and callers.</p>
+<hr>
+<section id="realign-reads-around-indels-1" class="level4">
+<h4 class="anchored" data-anchor-id="realign-reads-around-indels-1">Realign reads around indels</h4>
+<p>Run <strong>Realign reads</strong> (LoFreq Viterbi) with:</p>
+<ul>
+<li><strong>Reads to realign</strong>: output of <code>MarkDuplicates</code></li>
+<li><strong>Choose the source for the reference genome</strong>: <code>History</code></li>
+<li><strong>Reference</strong>: the uploaded <em>P. falciparum</em> genome</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/realign_lofreq.svg" class="img-fluid figure-img"></p>
+<figcaption>Realign reads</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+<section id="call-variants" class="level3">
+<h3 class="anchored" data-anchor-id="call-variants">8.2 Call variants</h3>
+<hr>
+<section id="call-variants-with-lofreq" class="level4">
+<h4 class="anchored" data-anchor-id="call-variants-with-lofreq">Call variants with LoFreq</h4>
+<p>Run <strong>Call variants</strong> (LoFreq) with:</p>
+<ul>
+<li><strong>Input reads in BAM format</strong>: output of the realignment step</li>
+<li><strong>Choose the source for the reference genome</strong>: <code>History</code></li>
+<li><strong>Reference</strong>: the uploaded reference genome</li>
+<li><strong>Types of variants to call</strong>: <code>SNVs and indels</code></li>
+<li><strong>Variant calling parameters</strong>: <code>Configure settings</code>
+<ul>
+<li><strong>Minimal coverage</strong>: <code>10</code></li>
+<li><strong>Minimum baseQ</strong>: <code>20</code></li>
+<li><strong>Minimum baseQ for alternate bases</strong>: <code>20</code></li>
+<li><strong>Minimum mapping quality</strong>: <code>20</code></li>
+</ul></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lofreq.svg" class="img-fluid figure-img"></p>
+<figcaption>LoFreq variant calling</figcaption>
+</figure>
+</div>
+<hr>
+<p>The output is a collection of <a href="https://en.wikipedia.org/wiki/Variant_Call_Format">VCF</a> files containing all variants found between reads and the reference genome.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="annotating-variants" class="level2">
+<h2 class="anchored" data-anchor-id="annotating-variants">9. Annotating Variants</h2>
+<section id="build-a-snpeff-database" class="level3">
+<h3 class="anchored" data-anchor-id="build-a-snpeff-database">9.1 Build a SnpEff database</h3>
+<p>To annotate variants with their predicted effects, we first need a <code>SnpEff</code> database built from the reference genome and gene annotations.</p>
+<hr>
+<section id="upload-gene-annotations" class="level4">
+<h4 class="anchored" data-anchor-id="upload-gene-annotations">Upload gene annotations</h4>
+<p>Paste the following URL into the Upload tool and set datatype to <code>gtf.gz</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>https://zenodo.org/records/15354240/files/GCF_000002765.6_GCA_000002765.ncbiRefSeq.gtf.gz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/upload_genome.svg" class="img-fluid figure-img"></p>
+<figcaption>GTF upload</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="build-snpeff-database" class="level4">
+<h4 class="anchored" data-anchor-id="build-snpeff-database">Build SnpEff database</h4>
+<p>Run <strong>SnpEff Build</strong> with:</p>
+<ul>
+<li><strong>Name for the database</strong>: <code>Pf</code></li>
+<li><strong>Input annotations are in</strong>: <code>GTF</code></li>
+<li><strong>GTF dataset to build database from</strong>: the uploaded GTF file</li>
+<li><strong>Choose the source for the reference genome</strong>: <code>History</code></li>
+<li><strong>Genome in FASTA format</strong>: the reference genome</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/snpeff_build.svg" class="img-fluid figure-img"></p>
+<figcaption>SnpEff Build</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+<section id="annotate-variant-effects" class="level3">
+<h3 class="anchored" data-anchor-id="annotate-variant-effects">9.2 Annotate variant effects</h3>
+<hr>
+<section id="run-snpeff-eff" class="level4">
+<h4 class="anchored" data-anchor-id="run-snpeff-eff">Run SnpEff eff</h4>
+<p>Run <strong>SnpEff eff</strong> with:</p>
+<ul>
+<li><strong>Sequence changes (SNPs, MNPs, InDels)</strong>: VCF output from LoFreq</li>
+<li><strong>Genome source</strong>: <code>Custom snpEff database in your history</code></li>
+<li><strong>SnpEff Genome Data</strong>: the database built in the previous step</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/snpeff.svg" class="img-fluid figure-img"></p>
+<figcaption>SnpEff eff</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+</section>
+<section id="extract-variant-fields-with-snpsift" class="level3">
+<h3 class="anchored" data-anchor-id="extract-variant-fields-with-snpsift">9.3 Extract variant fields with SnpSift</h3>
+<p>The annotated VCF files can be viewed in a genome browser, but converting them to tab-delimited tables is more practical for analysis.</p>
+<hr>
+<section id="extract-fields-with-snpsift" class="level4">
+<h4 class="anchored" data-anchor-id="extract-fields-with-snpsift">Extract fields with SnpSift</h4>
+<p>Run <strong>SnpSift Extract Fields</strong> with:</p>
+<ul>
+<li><strong>Variant input file in VCF format</strong>: output of SnpEff eff</li>
+<li><strong>Fields to extract</strong>:</li>
+</ul>
+<pre><code>CHROM POS REF ALT QUAL DP AF SB DP4 ANN[*].EFFECT ANN[*].IMPACT ANN[*].GENE ANN[*].AA_POS ANN[*].HGVS_C ANN[*].HGVS_P</code></pre>
+<ul>
+<li><strong>One effect per line</strong>: <code>Yes</code></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/snpsift_extract_fields.svg" class="img-fluid figure-img"></p>
+<figcaption>SnpSift Extract Fields</figcaption>
+</figure>
+</div>
+<hr>
+<p>The extracted fields:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>CHROM</code></td>
+<td>Chromosome name</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>POS</code></td>
+<td>Position on chromosome</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>REF</code></td>
+<td>Reference allele</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>ALT</code></td>
+<td>Alternative allele (observed in reads)</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><code>QUAL</code></td>
+<td>Variant quality (from LoFreq)</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><code>DP</code></td>
+<td>Read depth at this position</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><code>AF</code></td>
+<td>Alternative allele frequency</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><code>SB</code></td>
+<td>Strand bias P-value (Fisher’s exact test)</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><code>DP4</code></td>
+<td>Depths: Fwd Ref, Rev Ref, Fwd Alt, Rev Alt</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td><code>ANN[*].EFFECT</code></td>
+<td>Predicted effect on protein</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><code>ANN[*].IMPACT</code></td>
+<td>Expected phenotype impact</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td><code>ANN[*].GENE</code></td>
+<td>Gene containing the variant</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td><code>ANN[*].AA_POS</code></td>
+<td>Amino acid position affected</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td><code>ANN[*].HGVS_C</code></td>
+<td>Nucleotide change (CDS coordinates)</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td><code>ANN[*].HGVS_P</code></td>
+<td>Amino acid change (protein coordinates)</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="collapse-collection-into-a-single-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="collapse-collection-into-a-single-dataset">9.4 Collapse collection into a single dataset</h3>
+<p>The extracted fields still exist as a collection (one file per sample). To perform secondary analysis we <strong>collapse</strong> the collection into a single dataset. Collapsing concatenates all elements and prepends sample IDs so each line is traceable to its source.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/collapse.svg" class="img-fluid figure-img"></p>
+<figcaption>Collapsing a collection</figcaption>
+</figure>
+</div>
+<hr>
+<section id="collapse-the-collection" class="level4">
+<h4 class="anchored" data-anchor-id="collapse-the-collection">Collapse the collection</h4>
+<p>Run <strong>Collapse Collection</strong> with:</p>
+<ul>
+<li><strong>Collection of files to collapse</strong>: output of SnpSift Extract Fields</li>
+<li><strong>Keep one header line</strong>: <code>Yes</code></li>
+<li><strong>Prepend File name</strong>: <code>Yes</code></li>
+<li><strong>Where to add dataset name</strong>: <code>Same line and each line in dataset</code></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/collapse_ui.svg" class="img-fluid figure-img"></p>
+<figcaption>Collapse Collection UI</figcaption>
+</figure>
+</div>
+<hr>
+<p><strong>Example input</strong> (a collection with two elements, 15 columns each):</p>
+<p>Element <code>ERR042228.fq</code>:</p>
+<pre><code>NC_004318.2   676399   C    T   1344.0   45   0.977778   0   0,0,23,22   missense_variant    MODERATE PF3D7_0415200   914   c.2740G&gt;A    p.Glu914Lys
+NC_004318.2   676631   C    T   2000.0   60   0.966667   0   0,0,32,27   synonymous_variant  LOW      PF3D7_0415200   836   c.2508G&gt;A    p.Lys836Lys</code></pre>
+<p>Element <code>ERR042232.fq</code>:</p>
+<pre><code>NC_004318.2   671152   G    A   1324.0   42   0.952381   0   0,1,20,21   synonymous_variant  LOW      PF3D7_0415100   90    c.270G&gt;A   p.Gln90Gln
+NC_004318.2   671641   A    T   1300.0   43   0.906977   0   0,0,16,27   missense_variant    MODERATE PF3D7_0415100   253   c.759A&gt;T   p.Glu253Asp</code></pre>
+<p><strong>Output</strong> (single dataset, 16 columns—sample ID prepended):</p>
+<pre><code>ERR042228.fq NC_004318.2   676399   C    T   1344.0   45   0.977778   0   0,0,23,22   missense_variant    MODERATE PF3D7_0415200   914   c.2740G&gt;A    p.Glu914Lys
+ERR042228.fq NC_004318.2   676631   C    T   2000.0   60   0.966667   0   0,0,32,27   synonymous_variant  LOW      PF3D7_0415200   836   c.2508G&gt;A    p.Lys836Lys
+ERR042232.fq NC_004318.2   671152   G    A   1324.0   42   0.952381   0   0,1,20,21   synonymous_variant  LOW      PF3D7_0415100   90    c.270G&gt;A   p.Gln90Gln
+ERR042232.fq NC_004318.2   671641   A    T   1300.0   43   0.906977   0   0,0,16,27   missense_variant    MODERATE PF3D7_0415100   253   c.759A&gt;T   p.Glu253Asp</code></pre>
+<hr>
+</section>
+</section>
+</section>
+<section id="anything-interesting" class="level2">
+<h2 class="anchored" data-anchor-id="anything-interesting">10. Anything Interesting?</h2>
+<p>Cowman et al.&nbsp;[1] showed that <em>P. falciparum</em> strains with an amino acid change at <strong>residue 108</strong> of the <em>dhfr</em> gene have increased resistance to pyrimethamine. In the <em>P. falciparum</em> 3D7 reference, this gene is <a href="https://www.ncbi.nlm.nih.gov/gene/9221804">PF3D7_0417200</a>.</p>
+<hr>
+<section id="filter-for-variants-in-the-gene-of-interest" class="level4">
+<h4 class="anchored" data-anchor-id="filter-for-variants-in-the-gene-of-interest">Filter for variants in the gene of interest</h4>
+<p>Run <strong>Filter</strong> with:</p>
+<ul>
+<li><strong>Filter</strong>: output of Collapse Collection</li>
+<li><strong>With following condition</strong>: <code>c13=='PF3D7_0417200'</code></li>
+<li><strong>Number of header lines to skip</strong>: <code>1</code></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/filter_gene_name.svg" class="img-fluid figure-img"></p>
+<figcaption>Filter by gene name</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sample</th>
+<th>CHROM</th>
+<th>POS</th>
+<th>REF</th>
+<th>ALT</th>
+<th>QUAL</th>
+<th>DP</th>
+<th>AF</th>
+<th>SB</th>
+<th>DP4</th>
+<th>EFFECT</th>
+<th>IMPACT</th>
+<th>GENE</th>
+<th>AA_POS</th>
+<th>HGVS_C</th>
+<th>HGVS_P</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ERR042228.fq</strong></td>
+<td>NC_004318.2</td>
+<td>748410</td>
+<td>G</td>
+<td>A</td>
+<td>2335</td>
+<td>70</td>
+<td>0.957</td>
+<td>0</td>
+<td>0,0,30,40</td>
+<td>missense_variant</td>
+<td>MODERATE</td>
+<td>PF3D7_0417200</td>
+<td><strong>108</strong></td>
+<td>c.323G&gt;A</td>
+<td><strong>p.Ser108Asn</strong></td>
+</tr>
+<tr class="even">
+<td>ERR636028.fq</td>
+<td>NC_004318.2</td>
+<td>748239</td>
+<td>A</td>
+<td>T</td>
+<td>6941</td>
+<td>194</td>
+<td>0.985</td>
+<td>0</td>
+<td>0,0,117,77</td>
+<td>missense_variant</td>
+<td>MODERATE</td>
+<td>PF3D7_0417200</td>
+<td>51</td>
+<td>c.152A&gt;T</td>
+<td>p.Asn51Ile</td>
+</tr>
+<tr class="odd">
+<td>ERR636028.fq</td>
+<td>NC_004318.2</td>
+<td>748262</td>
+<td>T</td>
+<td>C</td>
+<td>7627</td>
+<td>211</td>
+<td>0.981</td>
+<td>0</td>
+<td>0,0,117,93</td>
+<td>missense_variant</td>
+<td>MODERATE</td>
+<td>PF3D7_0417200</td>
+<td>59</td>
+<td>c.175T&gt;C</td>
+<td>p.Cys59Arg</td>
+</tr>
+<tr class="even">
+<td><strong>ERR636028.fq</strong></td>
+<td>NC_004318.2</td>
+<td>748410</td>
+<td>G</td>
+<td>A</td>
+<td>8292</td>
+<td>233</td>
+<td>0.991</td>
+<td>0</td>
+<td>0,0,112,121</td>
+<td>missense_variant</td>
+<td>MODERATE</td>
+<td>PF3D7_0417200</td>
+<td><strong>108</strong></td>
+<td>c.323G&gt;A</td>
+<td><strong>p.Ser108Asn</strong></td>
+</tr>
+<tr class="odd">
+<td>ERR636434.fq</td>
+<td>NC_004318.2</td>
+<td>748262</td>
+<td>T</td>
+<td>C</td>
+<td>67</td>
+<td>214</td>
+<td>0.019</td>
+<td>0</td>
+<td>113,97,2,2</td>
+<td>missense_variant</td>
+<td>MODERATE</td>
+<td>PF3D7_0417200</td>
+<td>59</td>
+<td>c.175T&gt;C</td>
+<td>p.Cys59Arg</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Key Finding
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While three samples contain mutations in the <em>dhfr</em> gene (<code>PF3D7_0417200</code>), only two—<strong>ERR042228</strong> and <strong>ERR636028</strong>—have amino acid replacements at position 108 (Serine to Asparagine, <strong>p.Ser108Asn</strong>). These two individuals are likely infected with pyrimethamine-resistant <em>P. falciparum</em>.</p>
+<p>Note that ERR636434 has a variant at position 59 but at very low frequency (AF = 0.019), suggesting it may be a minor subpopulation or sequencing artifact.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Take-home Messages
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>FASTQ Sanger</strong> is the standard sequencing data format; Galaxy uses it exclusively for downstream processing</li>
+<li><strong>Paired-end data</strong> can be provided as two files or interleaved; Galaxy collections organize these logically</li>
+<li><strong><code>fastp</code></strong> handles adapter removal and quality filtering; <strong><code>MultiQC</code></strong> aggregates QC reports across samples</li>
+<li><strong><code>BWA-MEM2</code></strong> is a fast, reliable mapper; when the genome index is unavailable, upload the reference and build it on the fly</li>
+<li><strong>SAM/BAM</strong> is the standard aligned-read format; key toolkits include SAMtools, Picard, DeepTools, and BEDtools</li>
+<li><strong>Duplicate removal</strong> is critical for variant calling but must be used cautiously on small genomes</li>
+<li><strong>LoFreq</strong> is designed for variant calling in haploid and mixed-population scenarios</li>
+<li><strong>SnpEff/SnpSift</strong> annotate variants with predicted effects and extract structured tables</li>
+<li><strong>Collections</strong> enable batch processing of many samples through the same pipeline</li>
+<li>Large-scale pathogen surveillance follows exactly this workflow: sequence, map, call variants, annotate, interpret</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="why-mrsa" class="level2">
+<h2 class="anchored" data-anchor-id="why-mrsa">11. Why MRSA?</h2>
+<p>The variant-calling workflow we just completed on <em>Plasmodium</em> data is directly applicable to bacterial pathogens. In upcoming lectures we apply it to methicillin-resistant <em>Staphylococcus aureus</em> (MRSA)—one of the most clinically important drug-resistant organisms worldwide [5].</p>
+<section id="s.-aureus-as-commensal-and-pathogen" class="level3">
+<h3 class="anchored" data-anchor-id="s.-aureus-as-commensal-and-pathogen"><em>S. aureus</em> as commensal and pathogen</h3>
+<p><em>Staphylococcus aureus</em> colonizes the nares of 28–32% of the US population and is both a frequent commensal and a leading cause of bacteraemia, endocarditis, skin and soft tissue infections, and osteomyelitis. Any item in contact with skin can serve as a fomite—from white coats and ties to phones and mobile telephones—and colonization can persist for months within the home environment.</p>
+</section>
+<section id="methicillin-resistance" class="level3">
+<h3 class="anchored" data-anchor-id="methicillin-resistance">Methicillin resistance</h3>
+<p>Penicillin resistance arose in the 1940s, mediated by the beta-lactamase gene <em>blaZ</em>. The first semi-synthetic anti-staphylococcal penicillins were developed around 1960, and MRSA was observed within one year of their clinical use. Methicillin resistance is mediated by <em>mecA</em>, carried on the staphylococcal cassette chromosome <em>mec</em> (SCC<em>mec</em>). <em>mecA</em> encodes penicillin-binding protein 2a (PBP2a), which has low affinity for beta-lactams, conferring resistance to this entire class of antibiotics.</p>
+</section>
+<section id="genome-structure" class="level3">
+<h3 class="anchored" data-anchor-id="genome-structure">Genome structure</h3>
+<p>The <em>S. aureus</em> genome is approximately 2.8 Mb. The <strong>core genome</strong> (~75%) contains essential genes for metabolism and replication and is highly conserved across strains. The <strong>accessory genome</strong> (~25%) consists of mobile genetic elements (MGEs)—pathogenicity islands, bacteriophages, chromosomal cassettes, transposons, and plasmids—which are acquired through horizontal transfer. Mediators of virulence, immune evasion, and antibiotic resistance are commonly found in the accessory genome, making it more variable and often more strain-specific than the core.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/mrsa_usa300_genome.png" class="img-fluid figure-img"></p>
+<figcaption>Genomic map of MRSA USA300 strain FPR3757. The innermost track represents GC content. Moving outwards: antibiotic resistance genes (orange), virulence factors (green), tRNAs, mobile genetic elements including the chromosomal cassette (SCC<em>mec</em>), ACME island, pathogenicity islands, and prophage regions. From Turner et al.&nbsp;(2019) [5].</figcaption>
+</figure>
+</div>
+</section>
+<section id="clonal-complexes-and-global-epidemiology" class="level3">
+<h3 class="anchored" data-anchor-id="clonal-complexes-and-global-epidemiology">Clonal complexes and global epidemiology</h3>
+<p>Over 90% of known <em>S. aureus</em> genomes fall into just four predominant clonal complexes (CCs): CC5, CC8, CC398, and CC30. The molecular epidemiology of MRSA is characterized by serial emergence of regionally dominant clones:</p>
+<ul>
+<li><strong>USA300</strong> (CC8, SCC<em>mec</em> IV) — the most prominent CA-MRSA strain in North America, carrying ACME and PVL</li>
+<li><strong>EMRSA-15</strong> (ST22, CC22) and <strong>EMRSA-16</strong> (ST36, CC30) — dominant HA-MRSA strains in the United Kingdom and Europe</li>
+<li><strong>ST239</strong> (CC8) — a globally distributed HA-MRSA lineage, especially in Asia and South America</li>
+<li><strong>ST398</strong> (CC398) — livestock-associated MRSA found in Europe, Asia, and the Americas</li>
+</ul>
+<p>Healthcare-associated MRSA (HA-MRSA) and community-associated MRSA (CA-MRSA) were historically distinguished by SCC<em>mec</em> type (I–III vs IV–V), clinical setting, and resistance profiles. CA-MRSA strains tend to be more susceptible to non-beta-lactam antibiotics and sometimes produce Panton–Valentine leukocidin (PVL). However, this distinction is blurring as genotypes invade each other’s niches—CA-MRSA has replaced HA-MRSA in many hospitals.</p>
+</section>
+<section id="why-whole-genome-sequencing-matters" class="level3">
+<h3 class="anchored" data-anchor-id="why-whole-genome-sequencing-matters">Why whole genome sequencing matters</h3>
+<p>Traditional typing methods—pulsed-field gel electrophoresis (PFGE), multilocus sequence typing (MLST), <em>spa</em> typing—have limited resolution. Whole genome sequencing is “precise and highly discriminatory,” enabling reconstruction of transmission chains within healthcare systems and communities, outbreak tracking, and evolutionary analysis at single-nucleotide resolution. WGS has revealed that USA300 emerged through rapid clonal expansion rather than convergent evolution, and has provided sufficient resolution to determine household clustering and hospital introduction events.</p>
+<hr>
+</section>
+</section>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s Next</h2>
+<p><strong>Next Tuesday (Mar 31):</strong> We apply the variant-calling workflow from today to <em>S. aureus</em> MRSA data. Our dataset comes from Kaku et al.&nbsp;[6]—a nationwide surveillance of 270 MRSA bloodstream infection isolates from 45 Japanese hospitals in 2019. The study revealed that SCC<em>mec</em> type IV has replaced SCC<em>mec</em> type II in MRSA BSIs across Japan, with ST8-IV (30.7%) and ST1-IV (29.6%) as the dominant combinations. We will reanalyze a subset of these WGS data using the same Galaxy pipeline: <code>fastp</code>, <code>BWA-MEM2</code>, <code>MarkDuplicates</code>, <code>LoFreq</code>, <code>SnpEff</code>.</p>
+<p><strong>Following lectures:</strong> We transition from variant calling to <strong>genome assembly</strong>. Hisatsune et al.&nbsp;[7] extended the Kaku dataset to 580 isolates (2019–2020), integrated clinical metadata, and performed <em>de novo</em> genome assembly to characterize the evolutionary trajectory of BSI-derived <em>S. aureus</em> clones. A key finding: the emerging ST764-SCC<em>mec</em>II clone showed a 48% 30-day mortality rate—significantly higher than other clones—and was inferred to have diverged from the New York/Japan clone (ST5-SCC<em>mec</em>II) through repeated phage infections and acquisition of antimicrobial resistance genes via mobile genetic elements. We will use this study to learn genome assembly and comparative genomics.</p>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><a href="https://doi.org/10.1073/pnas.85.23.9109">Cowman, A.F. et al.&nbsp;(1988). Amino acid changes linked to pyrimethamine resistance in the dihydrofolate reductase-thymidylate synthase gene of <em>Plasmodium falciparum</em>. <em>PNAS</em>, 85(23), 9109-9113.</a></li>
+<li><a href="https://doi.org/10.1093/nar/gkp1137">Cock, P.J. et al.&nbsp;(2010). The Sanger FASTQ file format for sequences with quality scores, and the Solexa/Illumina FASTQ variants. <em>Nucleic Acids Research</em>, 38(6), 1767-1771.</a></li>
+<li><a href="https://doi.org/10.1016/S1389-1723(03)90130-7">Kanagawa, T. (2003). Bias and artifacts in multitemplate polymerase chain reactions (PCR). <em>Journal of Bioscience and Bioengineering</em>, 96(4), 317-323.</a></li>
+<li><a href="https://doi.org/10.1093/bioinformatics/btt771">Zhou, W. et al.&nbsp;(2014). Bias from removing read duplicates in ultra-deep sequencing experiments. <em>Bioinformatics</em>, 30(8), 1073-1080.</a></li>
+<li><a href="https://doi.org/10.1038/s41579-018-0147-4">Turner, N.A. et al.&nbsp;(2019). Methicillin-resistant <em>Staphylococcus aureus</em>: an overview of basic and clinical research. <em>Nature Reviews Microbiology</em>, 17, 203-218.</a></li>
+<li><a href="https://doi.org/10.1093/jac/dkac154">Kaku, N. et al.&nbsp;(2022). Changing molecular epidemiology and characteristics of MRSA isolated from bloodstream infections: nationwide surveillance in Japan in 2019. <em>Journal of Antimicrobial Chemotherapy</em>, 77(8), 2130-2141.</a></li>
+<li><a href="https://doi.org/10.1038/s41467-025-57575-2">Hisatsune, J. et al.&nbsp;(2025). <em>Staphylococcus aureus</em> ST764-SCC<em>mec</em>II high-risk clone in bloodstream infections revealed through national genomic surveillance integrating clinical data. <em>Nature Communications</em>, 16, 2698.</a></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture20.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
