@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-dea667461a5c81afc9ba75ce94cd63f3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-be3771519f21acc1c5b6733774c6dcd8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -305,6 +305,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../lectures/lecture20.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">20. NGS Data Logistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture21.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">21. Interval Operations for Genomic Coordinates</span></a>
   </div>
 </li>
       </ul>
@@ -1413,8 +1419,8 @@ ERR042232.fq NC_004318.2   671641   A    T   1300.0   43   0.906977   0   0,0,16
 </section>
 <section id="whats-next" class="level2">
 <h2 class="anchored" data-anchor-id="whats-next">What’s Next</h2>
-<p><strong>Next Tuesday (Mar 31):</strong> We apply the variant-calling workflow from today to <em>S. aureus</em> MRSA data. Our dataset comes from Kaku et al.&nbsp;[6]—a nationwide surveillance of 270 MRSA bloodstream infection isolates from 45 Japanese hospitals in 2019. The study revealed that SCC<em>mec</em> type IV has replaced SCC<em>mec</em> type II in MRSA BSIs across Japan, with ST8-IV (30.7%) and ST1-IV (29.6%) as the dominant combinations. We will reanalyze a subset of these WGS data using the same Galaxy pipeline: <code>fastp</code>, <code>BWA-MEM2</code>, <code>MarkDuplicates</code>, <code>LoFreq</code>, <code>SnpEff</code>.</p>
-<p><strong>Following lectures:</strong> We transition from variant calling to <strong>genome assembly</strong>. Hisatsune et al.&nbsp;[7] extended the Kaku dataset to 580 isolates (2019–2020), integrated clinical metadata, and performed <em>de novo</em> genome assembly to characterize the evolutionary trajectory of BSI-derived <em>S. aureus</em> clones. A key finding: the emerging ST764-SCC<em>mec</em>II clone showed a 48% 30-day mortality rate—significantly higher than other clones—and was inferred to have diverged from the New York/Japan clone (ST5-SCC<em>mec</em>II) through repeated phage infections and acquisition of antimicrobial resistance genes via mobile genetic elements. We will use this study to learn genome assembly and comparative genomics.</p>
+<p><strong>Next Tuesday (Mar 31):</strong> We step back from variant calling to learn <strong>interval operations</strong>—the fundamental algebra for manipulating genomic coordinates. Every analysis we have done so far (mapping, variant calling, annotation) produces data tied to genomic positions. BEDTools provides a systematic way to combine, compare, and filter these position-based results. We will use the <em>P. falciparum</em> variant data from today as input.</p>
+<p><strong>Following lectures:</strong> We apply the variant-calling workflow to <em>S. aureus</em> MRSA data from Kaku et al.&nbsp;[6]—a nationwide surveillance of 270 MRSA bloodstream infection isolates from 45 Japanese hospitals. We then transition to <strong>genome assembly</strong> using the extended dataset from Hisatsune et al.&nbsp;[7], who performed <em>de novo</em> assembly of 580 BSI-derived <em>S. aureus</em> isolates to characterize the evolutionary trajectory of high-risk clones.</p>
 <hr>
 </section>
 <section id="references" class="level2">

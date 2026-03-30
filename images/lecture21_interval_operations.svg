@@ -1,0 +1,289 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="white"/>
+
+  <!-- ==================== Panel 1: Intersect ==================== -->
+  <g transform="translate(15, 10)">
+    <rect width="245" height="225" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="0.5"/>
+    <text x="122" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Intersect</text>
+
+    <!-- Input label -->
+    <text x="16" y="48" font-size="9" fill="#888">Input</text>
+
+    <!-- Set A (blue) -->
+    <rect x="30" y="55" width="80" height="18" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <text x="70" y="68" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A</text>
+    <rect x="140" y="55" width="70" height="18" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <text x="175" y="68" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A</text>
+
+    <!-- Set B (orange) -->
+    <rect x="60" y="78" width="70" height="18" rx="3" fill="#E8913A" opacity="0.85"/>
+    <text x="95" y="91" text-anchor="middle" font-size="10" fill="white" font-weight="bold">B</text>
+    <rect x="160" y="78" width="60" height="18" rx="3" fill="#E8913A" opacity="0.85"/>
+    <text x="190" y="91" text-anchor="middle" font-size="10" fill="white" font-weight="bold">B</text>
+
+    <!-- Number line -->
+    <line x1="20" y1="115" x2="230" y2="115" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="112" x2="20" y2="118" stroke="#999"/>
+    <line x1="230" y1="112" x2="230" y2="118" stroke="#999"/>
+
+    <!-- Separator -->
+    <text x="16" y="140" font-size="9" fill="#888">Result</text>
+
+    <!-- Result: overlapping portions (green) -->
+    <rect x="60" y="148" width="50" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <rect x="160" y="148" width="50" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <text x="85" y="161" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A∩B</text>
+    <text x="185" y="161" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A∩B</text>
+
+    <!-- Result number line -->
+    <line x1="20" y1="185" x2="230" y2="185" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="182" x2="20" y2="188" stroke="#999"/>
+    <line x1="230" y1="182" x2="230" y2="188" stroke="#999"/>
+
+    <!-- Dashed guides -->
+    <line x1="60" y1="96" x2="60" y2="148" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+    <line x1="110" y1="73" x2="110" y2="148" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+    <line x1="160" y1="96" x2="160" y2="148" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+    <line x1="210" y1="73" x2="210" y2="148" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+  </g>
+
+  <!-- ==================== Panel 2: Subtract ==================== -->
+  <g transform="translate(277, 10)">
+    <rect width="245" height="225" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="0.5"/>
+    <text x="122" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Subtract (A − B)</text>
+
+    <text x="16" y="48" font-size="9" fill="#888">Input</text>
+
+    <!-- Set A -->
+    <rect x="30" y="55" width="80" height="18" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <text x="70" y="68" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A</text>
+    <rect x="140" y="55" width="70" height="18" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <text x="175" y="68" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A</text>
+
+    <!-- Set B -->
+    <rect x="60" y="78" width="70" height="18" rx="3" fill="#E8913A" opacity="0.85"/>
+    <text x="95" y="91" text-anchor="middle" font-size="10" fill="white" font-weight="bold">B</text>
+    <rect x="160" y="78" width="60" height="18" rx="3" fill="#E8913A" opacity="0.85"/>
+    <text x="190" y="91" text-anchor="middle" font-size="10" fill="white" font-weight="bold">B</text>
+
+    <!-- Number line -->
+    <line x1="20" y1="115" x2="230" y2="115" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="112" x2="20" y2="118" stroke="#999"/>
+    <line x1="230" y1="112" x2="230" y2="118" stroke="#999"/>
+
+    <text x="16" y="140" font-size="9" fill="#888">Result</text>
+
+    <!-- Result: A minus B = left part of first A, right part of second A (nothing left if fully covered) -->
+    <rect x="30" y="148" width="30" height="18" rx="3" fill="#4A90D9" opacity="0.9"/>
+    <text x="45" y="161" text-anchor="middle" font-size="8" fill="white" font-weight="bold">A−B</text>
+    <rect x="140" y="148" width="20" height="18" rx="3" fill="#4A90D9" opacity="0.9"/>
+    <text x="150" y="161" text-anchor="middle" font-size="7" fill="white" font-weight="bold">A−B</text>
+
+    <!-- Result number line -->
+    <line x1="20" y1="185" x2="230" y2="185" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="182" x2="20" y2="188" stroke="#999"/>
+    <line x1="230" y1="182" x2="230" y2="188" stroke="#999"/>
+
+    <!-- Dashed guides -->
+    <line x1="30" y1="73" x2="30" y2="148" stroke="#4A90D9" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+    <line x1="60" y1="96" x2="60" y2="148" stroke="#4A90D9" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+    <line x1="140" y1="96" x2="140" y2="148" stroke="#4A90D9" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+    <line x1="160" y1="96" x2="160" y2="148" stroke="#4A90D9" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.6"/>
+  </g>
+
+  <!-- ==================== Panel 3: Merge ==================== -->
+  <g transform="translate(539, 10)">
+    <rect width="245" height="225" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="0.5"/>
+    <text x="122" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Merge</text>
+
+    <text x="16" y="48" font-size="9" fill="#888">Input</text>
+
+    <!-- Overlapping intervals (all same color - single set) -->
+    <rect x="30" y="55" width="70" height="16" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <rect x="60" y="74" width="60" height="16" rx="3" fill="#4A90D9" opacity="0.7"/>
+    <rect x="80" y="93" width="50" height="16" rx="3" fill="#4A90D9" opacity="0.55"/>
+    <!-- Isolated interval -->
+    <rect x="170" y="55" width="45" height="16" rx="3" fill="#4A90D9" opacity="0.85"/>
+
+    <!-- Number line -->
+    <line x1="20" y1="125" x2="230" y2="125" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="122" x2="20" y2="128" stroke="#999"/>
+    <line x1="230" y1="122" x2="230" y2="128" stroke="#999"/>
+
+    <text x="16" y="148" font-size="9" fill="#888">Result</text>
+
+    <!-- Merged result -->
+    <rect x="30" y="155" width="100" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <text x="80" y="168" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Merged</text>
+    <rect x="170" y="155" width="45" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <text x="192" y="168" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Kept</text>
+
+    <!-- Result number line -->
+    <line x1="20" y1="192" x2="230" y2="192" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="189" x2="20" y2="195" stroke="#999"/>
+    <line x1="230" y1="189" x2="230" y2="195" stroke="#999"/>
+
+    <!-- Dashed guides -->
+    <line x1="30" y1="71" x2="30" y2="155" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+    <line x1="130" y1="109" x2="130" y2="155" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+  </g>
+
+  <!-- ==================== Panel 4: Complement ==================== -->
+  <g transform="translate(15, 260)">
+    <rect width="245" height="225" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="0.5"/>
+    <text x="122" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Complement</text>
+
+    <text x="16" y="48" font-size="9" fill="#888">Input</text>
+
+    <!-- Chromosome region bracket -->
+    <text x="20" y="62" font-size="8" fill="#AAA">chr1</text>
+    <line x1="20" y1="66" x2="230" y2="66" stroke="#CCC" stroke-width="8" stroke-linecap="round" opacity="0.3"/>
+
+    <!-- Intervals on chromosome -->
+    <rect x="35" y="62" width="40" height="16" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <rect x="110" y="62" width="35" height="16" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <rect x="185" y="62" width="35" height="16" rx="3" fill="#4A90D9" opacity="0.85"/>
+
+    <!-- Number line -->
+    <line x1="20" y1="100" x2="230" y2="100" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="97" x2="20" y2="103" stroke="#999"/>
+    <line x1="230" y1="97" x2="230" y2="103" stroke="#999"/>
+
+    <text x="16" y="125" font-size="9" fill="#888">Result</text>
+
+    <!-- Complement: the gaps -->
+    <rect x="20" y="133" width="15" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <rect x="75" y="133" width="35" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <text x="92" y="146" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Gap</text>
+    <rect x="145" y="133" width="40" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+    <text x="165" y="146" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Gap</text>
+    <rect x="220" y="133" width="10" height="18" rx="3" fill="#5CB85C" opacity="0.9"/>
+
+    <!-- Result number line -->
+    <line x1="20" y1="170" x2="230" y2="170" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="167" x2="20" y2="173" stroke="#999"/>
+    <line x1="230" y1="167" x2="230" y2="173" stroke="#999"/>
+
+    <!-- Dashed guides showing gap boundaries -->
+    <line x1="35" y1="78" x2="35" y2="133" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+    <line x1="75" y1="78" x2="75" y2="133" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+    <line x1="110" y1="78" x2="110" y2="133" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+    <line x1="145" y1="78" x2="145" y2="133" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+    <line x1="185" y1="78" x2="185" y2="133" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+    <line x1="220" y1="78" x2="220" y2="133" stroke="#5CB85C" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+  </g>
+
+  <!-- ==================== Panel 5: Closest ==================== -->
+  <g transform="translate(277, 260)">
+    <rect width="245" height="225" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="0.5"/>
+    <text x="122" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Closest</text>
+
+    <text x="16" y="48" font-size="9" fill="#888">Input</text>
+
+    <!-- Set A: single interval -->
+    <rect x="95" y="55" width="35" height="18" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <text x="112" y="68" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A</text>
+
+    <!-- Set B: two intervals at different distances -->
+    <rect x="35" y="80" width="30" height="18" rx="3" fill="#E8913A" opacity="0.85"/>
+    <text x="50" y="93" text-anchor="middle" font-size="10" fill="white" font-weight="bold">B</text>
+    <rect x="155" y="80" width="35" height="18" rx="3" fill="#E8913A" opacity="0.85"/>
+    <text x="172" y="93" text-anchor="middle" font-size="10" fill="white" font-weight="bold">B</text>
+
+    <!-- Number line -->
+    <line x1="20" y1="118" x2="230" y2="118" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="115" x2="20" y2="121" stroke="#999"/>
+    <line x1="230" y1="115" x2="230" y2="121" stroke="#999"/>
+
+    <text x="16" y="143" font-size="9" fill="#888">Result</text>
+
+    <!-- Show A again -->
+    <rect x="95" y="150" width="35" height="18" rx="3" fill="#4A90D9" opacity="0.85"/>
+    <text x="112" y="163" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A</text>
+
+    <!-- Nearest B highlighted -->
+    <rect x="155" y="150" width="35" height="18" rx="3" fill="#5CB85C" opacity="0.9" stroke="#333" stroke-width="1"/>
+    <text x="172" y="163" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Near</text>
+
+    <!-- Far B grayed out -->
+    <rect x="35" y="150" width="30" height="18" rx="3" fill="#CCC" opacity="0.5"/>
+    <text x="50" y="163" text-anchor="middle" font-size="9" fill="#999">Far</text>
+
+    <!-- Arrow from A to nearest B -->
+    <line x1="130" y1="159" x2="152" y2="159" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+    <!-- Distance labels -->
+    <text x="85" y="183" text-anchor="middle" font-size="8" fill="#999">d = 30</text>
+    <line x1="65" y1="178" x2="95" y2="178" stroke="#CCC" stroke-width="0.5"/>
+    <text x="142" y="183" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">d = 25</text>
+    <line x1="130" y1="178" x2="155" y2="178" stroke="#333" stroke-width="0.5"/>
+
+    <!-- Result number line -->
+    <line x1="20" y1="198" x2="230" y2="198" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="195" x2="20" y2="201" stroke="#999"/>
+    <line x1="230" y1="195" x2="230" y2="201" stroke="#999"/>
+  </g>
+
+  <!-- ==================== Panel 6: Coverage ==================== -->
+  <g transform="translate(539, 260)">
+    <rect width="245" height="225" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="0.5"/>
+    <text x="122" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Coverage</text>
+
+    <text x="16" y="48" font-size="9" fill="#888">Input</text>
+
+    <!-- Stacked overlapping intervals -->
+    <rect x="30" y="55" width="120" height="12" rx="2" fill="#4A90D9" opacity="0.7"/>
+    <rect x="60" y="70" width="100" height="12" rx="2" fill="#4A90D9" opacity="0.6"/>
+    <rect x="50" y="85" width="80" height="12" rx="2" fill="#4A90D9" opacity="0.5"/>
+
+    <!-- Number line -->
+    <line x1="20" y1="115" x2="230" y2="115" stroke="#999" stroke-width="1"/>
+    <line x1="20" y1="112" x2="20" y2="118" stroke="#999"/>
+    <line x1="230" y1="112" x2="230" y2="118" stroke="#999"/>
+
+    <text x="16" y="133" font-size="9" fill="#888">Result</text>
+
+    <!-- Coverage histogram -->
+    <!-- Region: 30-50 = 1x -->
+    <rect x="30" y="172" width="20" height="18" fill="#5CB85C" opacity="0.5"/>
+    <!-- Region: 50-60 = 2x -->
+    <rect x="50" y="154" width="10" height="36" fill="#5CB85C" opacity="0.65"/>
+    <!-- Region: 60-130 = 3x -->
+    <rect x="60" y="136" width="70" height="54" fill="#5CB85C" opacity="0.8"/>
+    <!-- Region: 130-150 = 2x -->
+    <rect x="130" y="154" width="20" height="36" fill="#5CB85C" opacity="0.65"/>
+    <!-- Region: 150-160 = 1x -->
+    <rect x="150" y="172" width="10" height="18" fill="#5CB85C" opacity="0.5"/>
+
+    <!-- Y axis labels -->
+    <text x="24" y="141" text-anchor="end" font-size="8" fill="#888">3x</text>
+    <text x="24" y="159" text-anchor="end" font-size="8" fill="#888">2x</text>
+    <text x="24" y="177" text-anchor="end" font-size="8" fill="#888">1x</text>
+
+    <!-- Histogram baseline -->
+    <line x1="27" y1="190" x2="230" y2="190" stroke="#999" stroke-width="1"/>
+    <line x1="27" y1="115" x2="27" y2="190" stroke="#DDD" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+    <!-- Grid lines -->
+    <line x1="27" y1="172" x2="230" y2="172" stroke="#EEE" stroke-width="0.5"/>
+    <line x1="27" y1="154" x2="230" y2="154" stroke="#EEE" stroke-width="0.5"/>
+    <line x1="27" y1="136" x2="230" y2="136" stroke="#EEE" stroke-width="0.5"/>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(280, 493)">
+    <rect x="0" y="-10" width="12" height="10" rx="2" fill="#4A90D9"/>
+    <text x="16" y="-1" font-size="9" fill="#666">Set A</text>
+    <rect x="55" y="-10" width="12" height="10" rx="2" fill="#E8913A"/>
+    <text x="71" y="-1" font-size="9" fill="#666">Set B</text>
+    <rect x="110" y="-10" width="12" height="10" rx="2" fill="#5CB85C"/>
+    <text x="126" y="-1" font-size="9" fill="#666">Result</text>
+  </g>
+</svg>

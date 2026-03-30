@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="300" viewBox="0 0 700 300">
+  <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  </style>
+
+  <!-- Title -->
+  <text x="350" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">Genomic Coordinate Systems</text>
+
+  <!-- === DNA Sequence Boxes === -->
+  <!-- 8 bases, each box 60px wide, starting at x=110 -->
+  <g id="bases">
+    <!-- Box backgrounds -->
+    <rect x="110" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="170" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="230" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="290" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="350" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="410" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="470" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+    <rect x="530" y="120" width="60" height="50" rx="3" fill="#dce9f5" stroke="#8daac4" stroke-width="1.5"/>
+
+    <!-- Base letters -->
+    <text x="140" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">A</text>
+    <text x="200" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">C</text>
+    <text x="260" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">G</text>
+    <text x="320" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">T</text>
+    <text x="380" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">A</text>
+    <text x="440" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">C</text>
+    <text x="500" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">G</text>
+    <text x="560" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">T</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 0-based half-open (ABOVE the boxes)          -->
+  <!-- Positions sit on box edges (fence posts)     -->
+  <!-- x=110,170,230,290,350,410,470,530,590        -->
+  <!-- ============================================ -->
+
+  <!-- Tick marks -->
+  <g stroke="#666" stroke-width="1">
+    <line x1="110" y1="100" x2="110" y2="110"/>
+    <line x1="170" y1="100" x2="170" y2="110"/>
+    <line x1="230" y1="100" x2="230" y2="110"/>
+    <line x1="290" y1="100" x2="290" y2="110"/>
+    <line x1="350" y1="100" x2="350" y2="110"/>
+    <line x1="410" y1="100" x2="410" y2="110"/>
+    <line x1="470" y1="100" x2="470" y2="110"/>
+    <line x1="530" y1="100" x2="530" y2="110"/>
+    <line x1="590" y1="100" x2="590" y2="110"/>
+  </g>
+
+  <!-- Number line -->
+  <line x1="110" y1="105" x2="590" y2="105" stroke="#666" stroke-width="1"/>
+
+  <!-- Position numbers (on edges: 0..8) -->
+  <text x="110" y="96" text-anchor="middle" font-size="12" fill="#555">0</text>
+  <text x="170" y="96" text-anchor="middle" font-size="12" fill="#555">1</text>
+  <text x="230" y="96" text-anchor="middle" font-size="12" fill="#555">2</text>
+  <text x="290" y="96" text-anchor="middle" font-size="12" fill="#555">3</text>
+  <text x="350" y="96" text-anchor="middle" font-size="12" fill="#555">4</text>
+  <text x="410" y="96" text-anchor="middle" font-size="12" fill="#555">5</text>
+  <text x="470" y="96" text-anchor="middle" font-size="12" fill="#555">6</text>
+  <text x="530" y="96" text-anchor="middle" font-size="12" fill="#555">7</text>
+  <text x="590" y="96" text-anchor="middle" font-size="12" fill="#555">8</text>
+
+  <!-- 0-based bracket [2,5) — from edge 2 (x=230) to edge 5 (x=410) -->
+  <!-- Highlights bases at index 2,3,4 = G,T,A -->
+  <!-- Highlight behind boxes -->
+  <rect x="230" y="120" width="180" height="50" fill="#e8572055" rx="3"/>
+
+  <!-- Bracket: square on left, open on right -->
+  <g stroke="#e85720" stroke-width="2.5" fill="none">
+    <!-- Left square bracket -->
+    <line x1="230" y1="68" x2="230" y2="78"/>
+    <line x1="230" y1="68" x2="236" y2="68"/>
+    <line x1="230" y1="78" x2="236" y2="78"/>
+    <!-- Horizontal bar -->
+    <line x1="234" y1="73" x2="406" y2="73"/>
+    <!-- Right open paren -->
+    <path d="M 404,68 Q 410,73 404,78" stroke-linecap="round"/>
+  </g>
+
+  <!-- Interval label -->
+  <text x="320" y="63" text-anchor="middle" font-size="12" font-weight="bold" fill="#e85720">[2, 5)</text>
+
+  <!-- System label -->
+  <text x="320" y="50" text-anchor="middle" font-size="11" fill="#e85720">0-based, half-open (BED, BAM)</text>
+
+  <!-- ============================================ -->
+  <!-- 1-based closed (BELOW the boxes)             -->
+  <!-- Positions centered on boxes                   -->
+  <!-- x=140,200,260,320,380,440,500,560             -->
+  <!-- ============================================ -->
+
+  <!-- Tick marks -->
+  <g stroke="#666" stroke-width="1">
+    <line x1="140" y1="180" x2="140" y2="190"/>
+    <line x1="200" y1="180" x2="200" y2="190"/>
+    <line x1="260" y1="180" x2="260" y2="190"/>
+    <line x1="320" y1="180" x2="320" y2="190"/>
+    <line x1="380" y1="180" x2="380" y2="190"/>
+    <line x1="440" y1="180" x2="440" y2="190"/>
+    <line x1="500" y1="180" x2="500" y2="190"/>
+    <line x1="560" y1="180" x2="560" y2="190"/>
+  </g>
+
+  <!-- Number line -->
+  <line x1="140" y1="185" x2="560" y2="185" stroke="#666" stroke-width="1"/>
+
+  <!-- Position numbers (centered: 1..8) -->
+  <text x="140" y="202" text-anchor="middle" font-size="12" fill="#555">1</text>
+  <text x="200" y="202" text-anchor="middle" font-size="12" fill="#555">2</text>
+  <text x="260" y="202" text-anchor="middle" font-size="12" fill="#555">3</text>
+  <text x="320" y="202" text-anchor="middle" font-size="12" fill="#555">4</text>
+  <text x="380" y="202" text-anchor="middle" font-size="12" fill="#555">5</text>
+  <text x="440" y="202" text-anchor="middle" font-size="12" fill="#555">6</text>
+  <text x="500" y="202" text-anchor="middle" font-size="12" fill="#555">7</text>
+  <text x="560" y="202" text-anchor="middle" font-size="12" fill="#555">8</text>
+
+  <!-- 1-based bracket [3,5] — positions 3,4,5 centered on bases G,T,A -->
+  <!-- Same three bases highlighted: G(x=260), T(x=320), A(x=380) -->
+  <rect x="230" y="120" width="180" height="50" fill="#2471a333" rx="3"/>
+
+  <!-- Bracket: square on both sides -->
+  <g stroke="#2471a3" stroke-width="2.5" fill="none">
+    <!-- Left square bracket -->
+    <line x1="260" y1="214" x2="260" y2="224"/>
+    <line x1="260" y1="214" x2="266" y2="214"/>
+    <line x1="260" y1="224" x2="266" y2="224"/>
+    <!-- Horizontal bar -->
+    <line x1="264" y1="219" x2="376" y2="219"/>
+    <!-- Right square bracket -->
+    <line x1="380" y1="214" x2="380" y2="224"/>
+    <line x1="374" y1="214" x2="380" y2="214"/>
+    <line x1="374" y1="224" x2="380" y2="224"/>
+  </g>
+
+  <!-- Interval label -->
+  <text x="320" y="240" text-anchor="middle" font-size="12" font-weight="bold" fill="#2471a3">[3, 5]</text>
+
+  <!-- System label -->
+  <text x="320" y="256" text-anchor="middle" font-size="11" fill="#2471a3">1-based, closed (GFF, VCF, SAM)</text>
+
+  <!-- Annotation: "Same 3 bases" -->
+  <text x="350" y="283" text-anchor="middle" font-size="11" font-style="italic" fill="#888">Both intervals select the same three bases: G, T, A</text>
+
+</svg>
