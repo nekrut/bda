@@ -48,7 +48,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 18 | Mar 19 | - |
 | 19 | Mar 24 | [Variant Calling in Haploid Systems](lectures/lecture19.qmd) |
 | 20 | Mar 26 | [NGS Data Logistics](lectures/lecture20.qmd) |
-| 21 | Mar 31 | - |
+| 21 | Mar 31 | [Interval Operations for Genomic Coordinates](lectures/lecture21.qmd) |
 | 22 | Apr 2 | - |
 | 23 | Apr 7 | - |
 | 24 | Apr 9 | - |

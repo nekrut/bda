@@ -59,6 +59,8 @@ website:
             text: "19. Variant Calling in Haploid Systems"
           - href: lectures/lecture20.qmd
             text: "20. NGS Data Logistics"
+          - href: lectures/lecture21.qmd
+            text: "21. Interval Operations for Genomic Coordinates"
 
 format:
   html:

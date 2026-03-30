@@ -1,0 +1,382 @@
+---
+title: "Lecture 21: Interval Operations for Genomic Coordinates"
+---
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+
+- Distinguish 0-based half-open from 1-based closed coordinate systems
+- Read and write BED and GFF/GTF format files
+- Perform core interval operations: intersect, subtract, merge, complement, closest, and coverage
+- Use BEDTools in Galaxy to manipulate genomic intervals
+- Apply interval operations to filter and combine genomic annotations
+
+---
+
+## 1. What Is a Genomic Interval?
+
+Every genomic feature---a gene, an exon, a variant, a ChIP-seq peak, an aligned read---can be represented as an **interval**: a contiguous stretch of a chromosome defined by three values:
+
+```
+(chromosome, start, end)
+```
+
+Interval arithmetic lets us ask relational questions about these features: Which variants fall inside genes? Which peaks overlap promoters? What fraction of the genome is covered by repeats? The answers come from a small set of set-theoretic operations on intervals.
+
+:::{.callout-note}
+In [Lecture 20](lecture20.qmd) we produced VCF files containing variant positions, used GTF gene annotations, and mentioned BEDTools as a key toolkit. This lecture formalizes the interval algebra behind those operations.
+:::
+
+---
+
+## 2. Coordinate Systems
+
+Genomics uses two coordinate conventions. Confusing them causes off-by-one errors---the single most common bug in bioinformatics pipelines.
+
+![0-based half-open vs 1-based closed coordinate systems](../images/lecture21_coordinate_systems.svg)
+
+### 2.1 0-Based, Half-Open
+
+Used by **BED** and **BAM** formats.
+
+- The first base of a chromosome is position **0**
+- The interval is `[start, end)`---start is included, end is excluded
+- Length = `end - start`
+
+Example: the three bases `GTA` starting at the third position of `ACGTACGT` are represented as `(2, 5)`.
+
+### 2.2 1-Based, Closed
+
+Used by **GFF/GTF**, **VCF**, and **SAM** formats.
+
+- The first base of a chromosome is position **1**
+- The interval is `[start, end]`---both start and end are included
+- Length = `end - start + 1`
+
+The same three bases `GTA` are represented as `(3, 5)`.
+
+### 2.3 Format-to-Coordinate Mapping
+
+| Format | System | First base | End included? |
+|--------|--------|-----------|---------------|
+| BED | 0-based, half-open | 0 | No |
+| BAM | 0-based, half-open | 0 | No |
+| GFF/GTF | 1-based, closed | 1 | Yes |
+| VCF | 1-based | 1 | N/A (single position) |
+| SAM | 1-based, closed | 1 | Yes |
+
+### 2.4 Converting Between Systems
+
+To convert the same feature:
+
+- BED → GFF: `GFF_start = BED_start + 1`, `GFF_end = BED_end`
+- GFF → BED: `BED_start = GFF_start - 1`, `BED_end = GFF_end`
+
+:::{.callout-warning}
+## The Off-by-One Trap
+Mixing coordinate systems silently shifts every interval by one base. Downstream analyses will appear to work but produce subtly wrong results---variants assigned to wrong genes, peaks missing promoters by one base. Always check which system your files use before combining them.
+:::
+
+---
+
+## 3. Interval File Formats
+
+### 3.1 BED Format
+
+BED (Browser Extensible Data) is the simplest and most widely used interval format. It is tab-delimited and 0-based half-open.
+
+**BED3** --- the minimal form:
+
+```
+NC_004318.2	322	1056
+NC_004318.2	4528	6356
+NC_004318.2	9843	12402
+```
+
+Three columns: `chrom`, `chromStart`, `chromEnd`.
+
+**BED6** adds name, score, and strand:
+
+```
+NC_004318.2	322	1056	PF3D7_0400100	0	+
+NC_004318.2	4528	6356	PF3D7_0400200	0	-
+NC_004318.2	9843	12402	PF3D7_0400300	0	+
+```
+
+**BED12** extends to 12 columns, adding fields for thick display regions and block (exon) structure---used for multi-exon gene models in genome browsers.
+
+:::{.callout-note}
+BED files must be **tab-delimited** (not space-delimited) and should **not** have a header line. Many tools silently produce wrong results if these conventions are violated.
+:::
+
+### 3.2 GFF/GTF Format
+
+GFF3 (General Feature Format) and GTF (Gene Transfer Format, essentially GFF version 2) use nine tab-delimited columns and 1-based closed coordinates:
+
+```
+NC_004318.2	RefSeq	gene	323	1056	.	+	.	ID=PF3D7_0400100;Name=RNF5
+NC_004318.2	RefSeq	gene	4529	6356	.	-	.	ID=PF3D7_0400200;Name=PF3D7_0400200
+```
+
+Columns: `seqid`, `source`, `type`, `start`, `end`, `score`, `strand`, `phase`, `attributes`.
+
+Notice the same gene `PF3D7_0400100` has start=322 in BED and start=323 in GFF---a direct consequence of the coordinate system difference.
+
+### 3.3 VCF Positions
+
+VCF uses 1-based coordinates for the `POS` field. Students encountered this in [Lecture 19](lecture19.qmd) and [Lecture 20](lecture20.qmd). A VCF record with `POS=1024` refers to the 1024th base on the chromosome.
+
+To convert a single-nucleotide variant to BED: `BED_start = VCF_POS - 1`, `BED_end = VCF_POS`.
+
+---
+
+## 4. Core Interval Operations
+
+Six operations form the foundation of interval arithmetic in genomics. Nearly every analysis question can be decomposed into a sequence of these operations.
+
+![The six core interval operations](../images/lecture21_interval_operations.svg)
+
+### 4.1 Intersect
+
+**What it does:** finds the overlapping portions between two interval sets A and B.
+
+**Biological use case:** "Which of my called variants fall within annotated genes?" We answered this in Lecture 20 using SnpEff---but the underlying operation is an intersection of variant positions with gene intervals.
+
+```bash
+bedtools intersect -a variants.bed -b genes.bed
+```
+
+Key flags:
+
+- `-wa` / `-wb`: report the original A/B entry (not just the overlap)
+- `-v`: report entries in A with **no** overlap in B (the anti-join)
+- `-f 0.50`: require at least 50% of A to be overlapped
+- `-r`: apply the overlap fraction reciprocally to both A and B
+
+### 4.2 Subtract
+
+**What it does:** removes portions of A that overlap with B.
+
+**Biological use case:** "Remove all variants in repetitive or low-complexity regions before downstream analysis."
+
+```bash
+bedtools subtract -a variants.bed -b repeats.bed
+```
+
+### 4.3 Merge
+
+**What it does:** collapses overlapping or adjacent intervals within a single set into non-overlapping intervals.
+
+**Biological use case:** "Collapse overlapping exon annotations into non-redundant gene bodies."
+
+```bash
+bedtools sort -i exons.bed | bedtools merge -i -
+```
+
+:::{.callout-note}
+`bedtools merge` requires **sorted** input. Always pipe through `bedtools sort` first.
+:::
+
+### 4.4 Complement
+
+**What it does:** returns the regions of the genome **not** covered by any interval in the input set.
+
+**Biological use case:** "What fraction of chromosome 4 is intergenic (not covered by any gene annotation)?"
+
+```bash
+bedtools complement -i genes.bed -g genome.txt
+```
+
+The `-g` flag requires a **genome file**---a two-column tab-delimited file listing each chromosome and its length:
+
+```
+NC_004318.2	1200490
+```
+
+### 4.5 Closest
+
+**What it does:** for each interval in A, finds the nearest interval in B.
+
+**Biological use case:** "For each intergenic variant, what is the nearest gene?"
+
+```bash
+bedtools closest -a intergenic_variants.bed -b genes.bed
+```
+
+### 4.6 Coverage
+
+**What it does:** counts how many intervals in B overlap each interval in A.
+
+**Biological use case:** "How many variants fall within each gene? Which genes have the highest variant density?"
+
+```bash
+bedtools coverage -a genes.bed -b variants.bed
+```
+
+Output appends columns for: count of overlaps, number of bases covered, interval length, and fraction covered.
+
+---
+
+## 5. BEDTools
+
+### 5.1 History
+
+BEDTools was created by Aaron Quinlan and Ira Hall in 2010 [1]. It provides over 30 subcommands for interval manipulation and has become the de facto standard for genomic interval arithmetic. The toolkit is available both on the command line and within Galaxy.
+
+### 5.2 Architecture
+
+BEDTools uses **interval trees**---a balanced binary search tree data structure where each node stores an interval. This enables overlap queries in O(log n + k) time, where n is the number of intervals in the database and k is the number of overlaps found. For a genome with ~25,000 genes, finding all genes overlapping a query region requires roughly 15 comparisons instead of 25,000.
+
+### 5.3 Command Pattern
+
+Every BEDTools command follows the same pattern:
+
+```bash
+bedtools <subcommand> [options] -a <fileA> -b <fileB>
+```
+
+Common subcommands:
+
+| Subcommand | Operation |
+|-----------|-----------|
+| `intersect` | Intersect two interval sets |
+| `subtract` | Subtract B from A |
+| `merge` | Merge overlapping intervals |
+| `complement` | Genome regions not in input |
+| `closest` | Nearest feature in B for each in A |
+| `coverage` | Count overlaps and compute coverage |
+| `sort` | Sort intervals by position |
+| `getfasta` | Extract FASTA sequences for intervals |
+| `slop` | Expand intervals by a fixed number of bases |
+| `flank` | Create intervals from the flanks of features |
+
+---
+
+## 6. Hands-On: BEDTools in Galaxy
+
+We use the *P. falciparum* data from [Lecture 20](lecture20.qmd). Students who completed L20 already have variant calls and gene annotations in their Galaxy history.
+
+:::{.callout-warning}
+## Setup
+Make sure you are logged in to [usegalaxy.org](https://usegalaxy.org) and have your Lecture 20 history active. If you do not have the L20 data, import the pre-made datasets from the Zenodo link below.
+:::
+
+### 6.1 Data
+
+We need three files for the exercises:
+
+- **Variant calls** (VCF): the LoFreq output from Lecture 20
+- **Gene annotations** (GTF): the *P. falciparum* 3D7 gene annotation from Lecture 20
+- **Genome file**: chromosome name and length for `bedtools complement`
+
+:::{.callout-tip}
+## If You Don't Have L20 Data
+Import the following prepared files by pasting these URLs into Galaxy's Upload tool:
+
+- Gene annotations (BED): `https://zenodo.org/records/15354240/files/pf3d7_genes.bed`
+- Variant calls (BED): `https://zenodo.org/records/15354240/files/pf3d7_variants.bed`
+- Genome file: `https://zenodo.org/records/15354240/files/pf3d7_genome.txt`
+:::
+
+### 6.2 Exercise 1: Convert VCF to BED
+
+Our variant calls are in VCF format (1-based). To use them with BEDTools, we convert to BED (0-based half-open).
+
+1. In Galaxy, search for the tool **"VCF to BED"** in the tool panel
+2. Select your LoFreq VCF output as input
+3. Run the tool
+
+:::{.callout-important}
+Examine the output. Notice that the `POS` values have shifted: VCF position 1024 becomes BED interval (1023, 1024). This is the coordinate conversion in action.
+:::
+
+### 6.3 Exercise 2: Intersect Variants with Genes
+
+**Question:** Which variants fall within annotated genes?
+
+1. Search for **"bedtools intersect"** (or "Intersect intervals") in Galaxy
+2. Set file A = your variant BED file
+3. Set file B = gene annotation BED file
+4. Under options, enable **"Write the original A entry"** (`-wa`) and **"Write the original B entry"** (`-wb`)
+5. Run the tool
+
+The output shows each variant paired with the gene it falls within. Compare this with the SnpEff annotation from Lecture 20---the genes should match.
+
+**Follow-up:** Now run the same tool with the **"-v"** option enabled (report entries in A with NO overlap in B). These are intergenic variants---variants falling outside any annotated gene.
+
+### 6.4 Exercise 3: Subtract Repetitive Regions
+
+In real analyses, variants in repetitive regions are often unreliable. We remove them:
+
+1. Search for **"bedtools subtract"** (or "Subtract intervals")
+2. Set file A = variant BED
+3. Set file B = repetitive regions BED
+4. Run the tool
+
+The output contains only variants outside repetitive regions---a cleaner set for downstream analysis.
+
+### 6.5 Exercise 4: Merge Overlapping Annotations
+
+Gene annotations often contain overlapping features (e.g., overlapping isoforms). Merging collapses them:
+
+1. Search for **"bedtools merge"** (or "Merge intervals")
+2. Select the gene annotation BED as input
+3. Run the tool
+
+Compare the number of intervals before and after merging. The merged file has fewer intervals---overlapping genes have been collapsed into single regions.
+
+### 6.6 Exercise 5: Per-Gene Variant Density
+
+**Question:** Which genes have the most variants?
+
+1. Search for **"bedtools coverage"** (or "Coverage intervals")
+2. Set file A = gene annotation BED
+3. Set file B = variant BED
+4. Run the tool
+
+The output adds columns showing the number of variants overlapping each gene, the number of bases covered, the gene length, and the fraction covered. Sort by the count column to find the most variable genes.
+
+### 6.7 Exercise 6: Find Intergenic Regions
+
+**Question:** What fraction of the genome lacks gene annotation?
+
+1. Search for **"bedtools complement"** (or "Complement intervals")
+2. Select the gene annotation BED as input
+3. Provide the genome file (chromosome lengths)
+4. Run the tool
+
+The output is a BED file of all intergenic regions. The sum of these interval lengths divided by the total chromosome length gives the intergenic fraction.
+
+---
+
+## 7. Beyond BEDTools
+
+BEDTools is the most widely used interval toolkit, but alternatives exist for specific workflows:
+
+- **`bedops`** [2]---optimized for speed on very large datasets; uses a streaming architecture that avoids loading entire files into memory
+- **`pybedtools`** [3]---a Python wrapper around BEDTools that integrates interval operations with pandas DataFrames
+- **`GenomicRanges`**---the R/Bioconductor equivalent; dominant in the R ecosystem for genomic data analysis
+- **`bioframe`**---a pure Python library built on pandas; no BEDTools dependency required
+
+The choice depends on your analysis environment: BEDTools for command-line pipelines, `pybedtools` or `bioframe` for Python scripts, `GenomicRanges` for R workflows. The underlying operations are identical.
+
+---
+
+:::{.callout-important}
+## Summary
+
+- Every genomic feature is an **interval** defined by (chromosome, start, end)
+- **Coordinate systems matter**: BED/BAM use 0-based half-open; GFF/VCF/SAM use 1-based closed. Mixing them causes off-by-one errors.
+- Six core operations---**intersect, subtract, merge, complement, closest, coverage**---form the algebra of genomic interval analysis
+- **BEDTools** is the standard toolkit, available on the command line and in Galaxy
+- Most genomic analysis questions can be decomposed into sequences of interval operations
+:::
+
+---
+
+## References
+
+1. [Quinlan, A.R. & Hall, I.M. (2010). BEDTools: a flexible suite of utilities for comparing genomic features. *Bioinformatics*, 26(6), 841--842.](https://doi.org/10.1093/bioinformatics/btq033)
+2. [Neph, S. et al. (2012). BEDOPS: high-performance genomic feature operations. *Bioinformatics*, 28(14), 1919--1920.](https://doi.org/10.1093/bioinformatics/bts277)
+3. [Dale, D. et al. (2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. *Bioinformatics*, 27(24), 3423--3424.](https://doi.org/10.1093/bioinformatics/btr539)

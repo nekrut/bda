@@ -677,9 +677,9 @@ Traditional typing methods---pulsed-field gel electrophoresis (PFGE), multilocus
 
 ## What's Next
 
-**Next Tuesday (Mar 31):** We apply the variant-calling workflow from today to *S. aureus* MRSA data. Our dataset comes from Kaku et al. [6]---a nationwide surveillance of 270 MRSA bloodstream infection isolates from 45 Japanese hospitals in 2019. The study revealed that SCC*mec* type IV has replaced SCC*mec* type II in MRSA BSIs across Japan, with ST8-IV (30.7%) and ST1-IV (29.6%) as the dominant combinations. We will reanalyze a subset of these WGS data using the same Galaxy pipeline: `fastp`, `BWA-MEM2`, `MarkDuplicates`, `LoFreq`, `SnpEff`.
+**Next Tuesday (Mar 31):** We step back from variant calling to learn **interval operations**---the fundamental algebra for manipulating genomic coordinates. Every analysis we have done so far (mapping, variant calling, annotation) produces data tied to genomic positions. BEDTools provides a systematic way to combine, compare, and filter these position-based results. We will use the *P. falciparum* variant data from today as input.
 
-**Following lectures:** We transition from variant calling to **genome assembly**. Hisatsune et al. [7] extended the Kaku dataset to 580 isolates (2019--2020), integrated clinical metadata, and performed *de novo* genome assembly to characterize the evolutionary trajectory of BSI-derived *S. aureus* clones. A key finding: the emerging ST764-SCC*mec*II clone showed a 48% 30-day mortality rate---significantly higher than other clones---and was inferred to have diverged from the New York/Japan clone (ST5-SCC*mec*II) through repeated phage infections and acquisition of antimicrobial resistance genes via mobile genetic elements. We will use this study to learn genome assembly and comparative genomics.
+**Following lectures:** We apply the variant-calling workflow to *S. aureus* MRSA data from Kaku et al. [6]---a nationwide surveillance of 270 MRSA bloodstream infection isolates from 45 Japanese hospitals. We then transition to **genome assembly** using the extended dataset from Hisatsune et al. [7], who performed *de novo* assembly of 580 BSI-derived *S. aureus* isolates to characterize the evolutionary trajectory of high-risk clones.
 
 ---
 
