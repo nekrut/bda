@@ -69,6 +69,8 @@ In [Lecture 20](lecture20.qmd) we produced VCF files containing variant position
 
 Genomics uses two coordinate conventions. Confusing them causes off-by-one errors---the single most common bug in bioinformatics pipelines.
 
+The choice is not arbitrary. In 1982, Edsger Dijkstra argued in his note [*"Why numbering should start at zero"*](https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html) [6] that 0-based half-open intervals are the most natural convention for computing. Two properties make them superior: the length of an interval `[a, b)` is simply `b - a`, and two adjacent intervals `[a, b)` and `[b, c)` share a boundary with no gaps and no overlaps. The BED format adopts exactly this convention. GFF and VCF predate this reasoning or follow biological tradition where "the first base" is base 1.
+
 ![0-based half-open vs 1-based closed coordinate systems](../images/lecture21_coordinate_systems.svg)
 
 ### 3.1 0-Based, Half-Open
@@ -381,3 +383,4 @@ The choice depends on your analysis environment: BEDTools for command-line pipel
 3. [Dale, R.K. et al. (2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. *Bioinformatics*, 27(24), 3423--3424.](https://doi.org/10.1093/bioinformatics/btr539)
 4. [Kent, W.J. et al. (2002). The Human Genome Browser at UCSC. *Genome Research*, 12(6), 996--1006.](https://doi.org/10.1101/gr.229102)
 5. [Kaku, N. et al. (2022). Changing molecular epidemiology and characteristics of MRSA isolated from bloodstream infections: nationwide surveillance in Japan in 2019. *Journal of Antimicrobial Chemotherapy*, 77(8), 2130--2141.](https://doi.org/10.1093/jac/dkac154)
+6. [Dijkstra, E.W. (1982). Why numbering should start at zero. EWD 831.](https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html)
