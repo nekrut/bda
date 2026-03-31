@@ -11,10 +11,45 @@ By the end of this lecture, you will be able to:
 - Perform core interval operations: intersect, subtract, merge, complement, closest, and coverage
 - Use BEDTools in Galaxy to manipulate genomic intervals
 - Apply interval operations to filter and combine genomic annotations
+- Navigate the UCSC Genome Browser and recognize tracks as interval datasets
 
 ---
 
-## 1. What Is a Genomic Interval?
+## 1. The Genome Browser: Intervals Everywhere
+
+The [UCSC Genome Browser](https://genome.ucsc.edu) is the most widely used tool for visualizing genomic data [4]. It displays a region of a reference genome as a horizontal coordinate axis, with datasets stacked vertically as **tracks**. Here we look at the human *TP53* tumor suppressor gene on chromosome 17:
+
+![UCSC Genome Browser showing the TP53 locus on human chromosome 17 (hg38). Each horizontal band is a track---a dataset mapped to genomic coordinates.](../images/lecture21_ucsc_overview.png)
+
+The horizontal axis spans ~19 kb of chromosome 17. Every colored block, bar, or line in the image represents a **genomic interval**---a feature with a start and end position on the chromosome.
+
+### 1.1 What Is a Track?
+
+A track is a dataset projected onto genomic coordinates. Each feature within a track is an interval. The browser view above contains over a dozen tracks, each representing a different type of genomic annotation:
+
+- **GENCODE / RefSeq gene models** --- exons (thick blocks) and introns (thin lines with arrows) defining transcript structure
+- **OMIM Alleles** --- positions of disease-associated variants (single-base intervals)
+- **Common dbSNP** --- known polymorphisms from dbSNP release 155
+- **GTEx expression** --- tissue-specific expression levels (bar chart mapped to gene intervals)
+- **ENCODE cCREs** --- candidate cis-regulatory elements (enhancers, promoters, insulators)
+- **H3K27Ac** --- histone acetylation peaks marking active regulatory regions
+- **Conservation (PhyloP)** --- per-base conservation scores across 100 vertebrates
+- **Multiz alignments** --- cross-species sequence alignments (Rhesus, Mouse, Dog, Elephant, Chicken, Zebrafish)
+- **RepeatMasker** --- repetitive elements (SINEs, LINEs, DNA transposons)
+
+Zooming in reveals the individual interval features more clearly:
+
+![Zoomed view of the TP53 locus (~1.8 kb). Individual exons are visible as distinct blocks; introns as connecting lines. Each block is an interval with a precise start and end coordinate.](../images/lecture21_ucsc_tracks.png)
+
+### 1.2 The Key Insight
+
+:::{.callout-important}
+Every track in the genome browser is a collection of genomic intervals. Genes, repeats, regulatory elements, variants, aligned reads---all intervals. The browser is visualizing interval arithmetic. This lecture teaches you to perform that arithmetic yourself.
+:::
+
+---
+
+## 2. What Is a Genomic Interval?
 
 Every genomic feature---a gene, an exon, a variant, a ChIP-seq peak, an aligned read---can be represented as an **interval**: a contiguous stretch of a chromosome defined by three values:
 
@@ -30,15 +65,15 @@ In [Lecture 20](lecture20.qmd) we produced VCF files containing variant position
 
 ---
 
-## 2. Coordinate Systems
+## 3. Coordinate Systems
 
 Genomics uses two coordinate conventions. Confusing them causes off-by-one errors---the single most common bug in bioinformatics pipelines.
 
 ![0-based half-open vs 1-based closed coordinate systems](../images/lecture21_coordinate_systems.svg)
 
-### 2.1 0-Based, Half-Open
+### 3.1 0-Based, Half-Open
 
-Used by **BED** and **BAM** formats.
+Used by **BED** format.
 
 - The first base of a chromosome is position **0**
 - The interval is `[start, end)`---start is included, end is excluded
@@ -46,9 +81,9 @@ Used by **BED** and **BAM** formats.
 
 Example: the three bases `GTA` starting at the third position of `ACGTACGT` are represented as `(2, 5)`.
 
-### 2.2 1-Based, Closed
+### 3.2 1-Based, Closed
 
-Used by **GFF/GTF**, **VCF**, and **SAM** formats.
+Used by **GFF/GTF**, **SAM/BAM**, and **VCF** formats.
 
 - The first base of a chromosome is position **1**
 - The interval is `[start, end]`---both start and end are included
@@ -56,17 +91,20 @@ Used by **GFF/GTF**, **VCF**, and **SAM** formats.
 
 The same three bases `GTA` are represented as `(3, 5)`.
 
-### 2.3 Format-to-Coordinate Mapping
+### 3.3 Format-to-Coordinate Mapping
 
 | Format | System | First base | End included? |
 |--------|--------|-----------|---------------|
-| BED | 0-based, half-open | 0 | No |
-| BAM | 0-based, half-open | 0 | No |
-| GFF/GTF | 1-based, closed | 1 | Yes |
-| VCF | 1-based | 1 | N/A (single position) |
-| SAM | 1-based, closed | 1 | Yes |
+| [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) | 0-based, half-open | 0 | No |
+| [GFF/GTF](https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md) | 1-based, closed | 1 | Yes |
+| [SAM/BAM](https://samtools.github.io/hts-specs/SAMv1.pdf) | 1-based, closed | 1 | Yes |
+| [VCF](https://samtools.github.io/hts-specs/VCFv4.3.pdf) | 1-based | 1 | N/A (single position) |
 
-### 2.4 Converting Between Systems
+:::{.callout-note}
+BAM is the binary-compressed form of SAM. Internally BAM stores positions as 0-based, but this is a serialization detail---every tool that reads BAM (`samtools`, `pysam`, IGV) presents coordinates as 1-based, identical to SAM. You never need to handle this conversion yourself.
+:::
+
+### 3.4 Converting Between Systems
 
 To convert the same feature:
 
@@ -80,9 +118,9 @@ Mixing coordinate systems silently shifts every interval by one base. Downstream
 
 ---
 
-## 3. Interval File Formats
+## 4. Interval File Formats
 
-### 3.1 BED Format
+### 4.1 [BED Format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)
 
 BED (Browser Extensible Data) is the simplest and most widely used interval format. It is tab-delimited and 0-based half-open.
 
@@ -110,7 +148,7 @@ NC_004318.2	9843	12402	PF3D7_0400300	0	+
 BED files must be **tab-delimited** (not space-delimited) and should **not** have a header line. Many tools silently produce wrong results if these conventions are violated.
 :::
 
-### 3.2 GFF/GTF Format
+### 4.2 [GFF3](https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md)/[GTF](https://genome.ucsc.edu/FAQ/FAQformat.html#format4) Format
 
 GFF3 (General Feature Format) and GTF (Gene Transfer Format, essentially GFF version 2) use nine tab-delimited columns and 1-based closed coordinates:
 
@@ -123,7 +161,7 @@ Columns: `seqid`, `source`, `type`, `start`, `end`, `score`, `strand`, `phase`, 
 
 Notice the same gene `PF3D7_0400100` has start=322 in BED and start=323 in GFF---a direct consequence of the coordinate system difference.
 
-### 3.3 VCF Positions
+### 4.3 [VCF](https://samtools.github.io/hts-specs/VCFv4.3.pdf) Positions
 
 VCF uses 1-based coordinates for the `POS` field. Students encountered this in [Lecture 19](lecture19.qmd) and [Lecture 20](lecture20.qmd). A VCF record with `POS=1024` refers to the 1024th base on the chromosome.
 
@@ -131,13 +169,13 @@ To convert a single-nucleotide variant to BED: `BED_start = VCF_POS - 1`, `BED_e
 
 ---
 
-## 4. Core Interval Operations
+## 5. Core Interval Operations
 
 Six operations form the foundation of interval arithmetic in genomics. Nearly every analysis question can be decomposed into a sequence of these operations.
 
 ![The six core interval operations](../images/lecture21_interval_operations.svg)
 
-### 4.1 Intersect
+### 5.1 Intersect
 
 **What it does:** finds the overlapping portions between two interval sets A and B.
 
@@ -154,7 +192,7 @@ Key flags:
 - `-f 0.50`: require at least 50% of A to be overlapped
 - `-r`: apply the overlap fraction reciprocally to both A and B
 
-### 4.2 Subtract
+### 5.2 Subtract
 
 **What it does:** removes portions of A that overlap with B.
 
@@ -164,7 +202,7 @@ Key flags:
 bedtools subtract -a variants.bed -b repeats.bed
 ```
 
-### 4.3 Merge
+### 5.3 Merge
 
 **What it does:** collapses overlapping or adjacent intervals within a single set into non-overlapping intervals.
 
@@ -178,7 +216,7 @@ bedtools sort -i exons.bed | bedtools merge -i -
 `bedtools merge` requires **sorted** input. Always pipe through `bedtools sort` first.
 :::
 
-### 4.4 Complement
+### 5.4 Complement
 
 **What it does:** returns the regions of the genome **not** covered by any interval in the input set.
 
@@ -194,7 +232,7 @@ The `-g` flag requires a **genome file**---a two-column tab-delimited file listi
 NC_004318.2	1200490
 ```
 
-### 4.5 Closest
+### 5.5 Closest
 
 **What it does:** for each interval in A, finds the nearest interval in B.
 
@@ -204,7 +242,7 @@ NC_004318.2	1200490
 bedtools closest -a intergenic_variants.bed -b genes.bed
 ```
 
-### 4.6 Coverage
+### 5.6 Coverage
 
 **What it does:** counts how many intervals in B overlap each interval in A.
 
@@ -218,17 +256,17 @@ Output appends columns for: count of overlaps, number of bases covered, interval
 
 ---
 
-## 5. BEDTools
+## 6. BEDTools
 
-### 5.1 History
+### 6.1 History
 
 BEDTools was created by Aaron Quinlan and Ira Hall in 2010 [1]. It provides over 30 subcommands for interval manipulation and has become the de facto standard for genomic interval arithmetic. The toolkit is available both on the command line and within Galaxy.
 
-### 5.2 Architecture
+### 6.2 Architecture
 
-BEDTools uses **interval trees**---a balanced binary search tree data structure where each node stores an interval. This enables overlap queries in O(log n + k) time, where n is the number of intervals in the database and k is the number of overlaps found. For a genome with ~25,000 genes, finding all genes overlapping a query region requires roughly 15 comparisons instead of 25,000.
+Early versions of BEDTools used **interval trees**---a balanced binary search tree where each node stores an interval, enabling overlap queries in O(log n + k) time (n = database intervals, k = overlaps found). For ~25,000 genes, finding overlaps requires roughly 15 comparisons instead of 25,000. Modern BEDTools (v2.18+) defaults to a **sweep-line algorithm** ("chromsweep") for sorted input, which scans both files in coordinate order and achieves even better performance in practice. The interval tree approach is retained as a fallback for unsorted data.
 
-### 5.3 Command Pattern
+### 6.3 Command Pattern
 
 Every BEDTools command follows the same pattern:
 
@@ -253,109 +291,69 @@ Common subcommands:
 
 ---
 
-## 6. Hands-On: BEDTools in Galaxy
+## 7. Hands-On: Variants in *S. aureus*
 
-We use the *P. falciparum* data from [Lecture 20](lecture20.qmd). Students who completed L20 already have variant calls and gene annotations in their Galaxy history.
+### 7.1 The Story
+
+Kaku et al. [5] conducted a nationwide surveillance of methicillin-resistant *Staphylococcus aureus* (MRSA) bloodstream infections across 51 Japanese hospitals in 2019. They collected 270 MRSA isolates from blood cultures and performed whole-genome sequencing to characterize the molecular epidemiology of these infections. The key finding: SCC*mec* type IV has replaced SCC*mec* type II as the dominant MRSA lineage in Japanese bloodstream infections, with ST8-IV (30.7%) and ST1-IV (29.6%) as the most prevalent combinations. The study revealed distinct geographic patterns---ST1-IV dominated in eastern Japan while ST8-IV was more common in the west---and demonstrated that the newer type IV strains show greater susceptibility to clindamycin and minocycline compared to the older type II strains.
+
+We use a subset of these data---already processed through a variant-calling pipeline---to practice interval operations. Our goal: determine whether specific genes of interest carry mutations in these MRSA isolates.
+
+### 7.2 The Variant-Calling Workflow
+
+The data in the shared history were generated using the [Paired-End Variant Calling in Haploid System](https://iwc.galaxyproject.org/workflow/haploid-variant-calling-wgs-pe-main/) workflow from the Intergalactic Workflow Commission (IWC). This standardized Galaxy workflow takes three inputs---paired-end reads, a reference genome, and gene annotations---and produces an annotated variant table.
+
+![Paired-End Variant Calling in Haploid System workflow. Yellow = inputs, blue = processing steps, orange = output, green = QC report. Solid lines = data flow, dashed lines = QC metrics.](../images/lecture21_haploid_vc_workflow.svg)
+
+The pipeline proceeds in four phases:
+
+1. **Quality control**: `fastp` trims adapters and low-quality bases from paired-end reads
+2. **Alignment**: `BWA-MEM` maps trimmed reads to the reference genome, followed by `Samtools view` (filtering to properly paired reads) and `MarkDuplicates` (removing PCR duplicates)
+3. **Variant calling**: `LoFreq Viterbi` realigns reads around indels, then `LoFreq Call` identifies variants in haploid mode
+4. **Annotation**: `SnpEff` annotates variants with functional effects (missense, synonymous, etc.) and `SnpSift` extracts key fields into a final table
+
+A `MultiQC` report aggregates quality metrics from fastp, mapping, and deduplication steps. The final output is a collapsed table of annotated variants across all samples.
+
+### 7.3 Data
+
+Import the pre-analyzed history into your Galaxy account:
 
 :::{.callout-warning}
 ## Setup
-Make sure you are logged in to [usegalaxy.org](https://usegalaxy.org) and have your Lecture 20 history active. If you do not have the L20 data, import the pre-made datasets from the Zenodo link below.
+1. Make sure you are logged in to [usegalaxy.org](https://usegalaxy.org)
+2. Import the shared history: <https://usegalaxy.org/u/cartman/h/unnamed-history-13>
+3. Click **Import history** (the "+" icon at the top of the history panel)
 :::
 
-### 6.1 Data
+The history contains variant calls (VCF) and gene annotations (GFF) from the MRSA analysis pipeline.
 
-We need three files for the exercises:
+### 7.4 Genes of Interest
 
-- **Variant calls** (VCF): the LoFreq output from Lecture 20
-- **Gene annotations** (GTF): the *P. falciparum* 3D7 gene annotation from Lecture 20
-- **Genome file**: chromosome name and length for `bedtools complement`
+We focus on five *S. aureus* NCTC 8325 genes that play roles in virulence, cell wall maintenance, and antibiotic resistance:
+
+| Protein accession | Gene | Function |
+|-------------------|------|----------|
+| YP_500520.1 | SAOUHSC_02023 | Bifunctional autolysin |
+| YP_499546.1 | SAOUHSC_01049 | Predicted protein |
+| YP_501041.1 | SAOUHSC_02545 | Predicted protein |
+| YP_500662.1 | SAOUHSC_02165 | Predicted protein |
+| YP_499519.1 | SAOUHSC_01022 | Predicted protein |
+
+Our question: **Do any of these genes carry genetic variants in the MRSA isolates?** We will answer this using `bedtools intersect`---overlaying variant positions with gene coordinates.
 
 :::{.callout-tip}
-## If You Don't Have L20 Data
-Import the following prepared files by pasting these URLs into Galaxy's Upload tool:
-
-- Gene annotations (BED): `https://zenodo.org/records/15354240/files/pf3d7_genes.bed`
-- Variant calls (BED): `https://zenodo.org/records/15354240/files/pf3d7_variants.bed`
-- Genome file: `https://zenodo.org/records/15354240/files/pf3d7_genome.txt`
+## Hands-On Exercise
+We will work through this analysis together in class using the Galaxy history above and the BEDTools operations from Sections 5 and 6.
 :::
-
-### 6.2 Exercise 1: Convert VCF to BED
-
-Our variant calls are in VCF format (1-based). To use them with BEDTools, we convert to BED (0-based half-open).
-
-1. In Galaxy, search for the tool **"VCF to BED"** in the tool panel
-2. Select your LoFreq VCF output as input
-3. Run the tool
-
-:::{.callout-important}
-Examine the output. Notice that the `POS` values have shifted: VCF position 1024 becomes BED interval (1023, 1024). This is the coordinate conversion in action.
-:::
-
-### 6.3 Exercise 2: Intersect Variants with Genes
-
-**Question:** Which variants fall within annotated genes?
-
-1. Search for **"bedtools intersect"** (or "Intersect intervals") in Galaxy
-2. Set file A = your variant BED file
-3. Set file B = gene annotation BED file
-4. Under options, enable **"Write the original A entry"** (`-wa`) and **"Write the original B entry"** (`-wb`)
-5. Run the tool
-
-The output shows each variant paired with the gene it falls within. Compare this with the SnpEff annotation from Lecture 20---the genes should match.
-
-**Follow-up:** Now run the same tool with the **"-v"** option enabled (report entries in A with NO overlap in B). These are intergenic variants---variants falling outside any annotated gene.
-
-### 6.4 Exercise 3: Subtract Repetitive Regions
-
-In real analyses, variants in repetitive regions are often unreliable. We remove them:
-
-1. Search for **"bedtools subtract"** (or "Subtract intervals")
-2. Set file A = variant BED
-3. Set file B = repetitive regions BED
-4. Run the tool
-
-The output contains only variants outside repetitive regions---a cleaner set for downstream analysis.
-
-### 6.5 Exercise 4: Merge Overlapping Annotations
-
-Gene annotations often contain overlapping features (e.g., overlapping isoforms). Merging collapses them:
-
-1. Search for **"bedtools merge"** (or "Merge intervals")
-2. Select the gene annotation BED as input
-3. Run the tool
-
-Compare the number of intervals before and after merging. The merged file has fewer intervals---overlapping genes have been collapsed into single regions.
-
-### 6.6 Exercise 5: Per-Gene Variant Density
-
-**Question:** Which genes have the most variants?
-
-1. Search for **"bedtools coverage"** (or "Coverage intervals")
-2. Set file A = gene annotation BED
-3. Set file B = variant BED
-4. Run the tool
-
-The output adds columns showing the number of variants overlapping each gene, the number of bases covered, the gene length, and the fraction covered. Sort by the count column to find the most variable genes.
-
-### 6.7 Exercise 6: Find Intergenic Regions
-
-**Question:** What fraction of the genome lacks gene annotation?
-
-1. Search for **"bedtools complement"** (or "Complement intervals")
-2. Select the gene annotation BED as input
-3. Provide the genome file (chromosome lengths)
-4. Run the tool
-
-The output is a BED file of all intergenic regions. The sum of these interval lengths divided by the total chromosome length gives the intergenic fraction.
 
 ---
 
-## 7. Beyond BEDTools
+## 8. Beyond BEDTools
 
 BEDTools is the most widely used interval toolkit, but alternatives exist for specific workflows:
 
 - **`bedops`** [2]---optimized for speed on very large datasets; uses a streaming architecture that avoids loading entire files into memory
-- **`pybedtools`** [3]---a Python wrapper around BEDTools that integrates interval operations with pandas DataFrames
+- **`pybedtools`** [3]---a Python wrapper around BEDTools that enables scripting interval operations in Python (with optional conversion to pandas DataFrames)
 - **`GenomicRanges`**---the R/Bioconductor equivalent; dominant in the R ecosystem for genomic data analysis
 - **`bioframe`**---a pure Python library built on pandas; no BEDTools dependency required
 
@@ -367,7 +365,7 @@ The choice depends on your analysis environment: BEDTools for command-line pipel
 ## Summary
 
 - Every genomic feature is an **interval** defined by (chromosome, start, end)
-- **Coordinate systems matter**: BED/BAM use 0-based half-open; GFF/VCF/SAM use 1-based closed. Mixing them causes off-by-one errors.
+- **Coordinate systems matter**: BED uses 0-based half-open; GFF/GTF and SAM/BAM use 1-based closed; VCF uses 1-based positions. Mixing systems causes off-by-one errors.
 - Six core operations---**intersect, subtract, merge, complement, closest, coverage**---form the algebra of genomic interval analysis
 - **BEDTools** is the standard toolkit, available on the command line and in Galaxy
 - Most genomic analysis questions can be decomposed into sequences of interval operations
@@ -379,4 +377,6 @@ The choice depends on your analysis environment: BEDTools for command-line pipel
 
 1. [Quinlan, A.R. & Hall, I.M. (2010). BEDTools: a flexible suite of utilities for comparing genomic features. *Bioinformatics*, 26(6), 841--842.](https://doi.org/10.1093/bioinformatics/btq033)
 2. [Neph, S. et al. (2012). BEDOPS: high-performance genomic feature operations. *Bioinformatics*, 28(14), 1919--1920.](https://doi.org/10.1093/bioinformatics/bts277)
-3. [Dale, D. et al. (2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. *Bioinformatics*, 27(24), 3423--3424.](https://doi.org/10.1093/bioinformatics/btr539)
+3. [Dale, R.K. et al. (2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. *Bioinformatics*, 27(24), 3423--3424.](https://doi.org/10.1093/bioinformatics/btr539)
+4. [Kent, W.J. et al. (2002). The Human Genome Browser at UCSC. *Genome Research*, 12(6), 996--1006.](https://doi.org/10.1101/gr.229102)
+5. [Kaku, N. et al. (2022). Changing molecular epidemiology and characteristics of MRSA isolated from bloodstream infections: nationwide surveillance in Japan in 2019. *Journal of Antimicrobial Chemotherapy*, 77(8), 2130--2141.](https://doi.org/10.1093/jac/dkac154)
