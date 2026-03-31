@@ -356,6 +356,7 @@ BEDTools is the most widely used interval toolkit, but alternatives exist for sp
 - **`pybedtools`** [3]---a Python wrapper around BEDTools that enables scripting interval operations in Python (with optional conversion to pandas DataFrames)
 - **`GenomicRanges`**---the R/Bioconductor equivalent; dominant in the R ecosystem for genomic data analysis
 - **`bioframe`**---a pure Python library built on pandas; no BEDTools dependency required
+- **[`bx-python`](https://github.com/bxlab/bx-python)**---a Python library for fast interval indexing and manipulation; provides the interval tree and binned array implementations used by Galaxy
 
 The choice depends on your analysis environment: BEDTools for command-line pipelines, `pybedtools` or `bioframe` for Python scripts, `GenomicRanges` for R workflows. The underlying operations are identical.
 
