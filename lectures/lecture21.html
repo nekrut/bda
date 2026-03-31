@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 21: Interval Operations for Genomic Coordinates – BMMB554</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-be3771519f21acc1c5b6733774c6dcd8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -297,46 +295,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
-  <li><a href="#what-is-a-genomic-interval" id="toc-what-is-a-genomic-interval" class="nav-link" data-scroll-target="#what-is-a-genomic-interval">1. What Is a Genomic Interval?</a></li>
-  <li><a href="#coordinate-systems" id="toc-coordinate-systems" class="nav-link" data-scroll-target="#coordinate-systems">2. Coordinate Systems</a>
+  <li><a href="#the-genome-browser-intervals-everywhere" id="toc-the-genome-browser-intervals-everywhere" class="nav-link" data-scroll-target="#the-genome-browser-intervals-everywhere">1. The Genome Browser: Intervals Everywhere</a>
   <ul class="collapse">
-  <li><a href="#based-half-open" id="toc-based-half-open" class="nav-link" data-scroll-target="#based-half-open">2.1 0-Based, Half-Open</a></li>
-  <li><a href="#based-closed" id="toc-based-closed" class="nav-link" data-scroll-target="#based-closed">2.2 1-Based, Closed</a></li>
-  <li><a href="#format-to-coordinate-mapping" id="toc-format-to-coordinate-mapping" class="nav-link" data-scroll-target="#format-to-coordinate-mapping">2.3 Format-to-Coordinate Mapping</a></li>
-  <li><a href="#converting-between-systems" id="toc-converting-between-systems" class="nav-link" data-scroll-target="#converting-between-systems">2.4 Converting Between Systems</a></li>
+  <li><a href="#what-is-a-track" id="toc-what-is-a-track" class="nav-link" data-scroll-target="#what-is-a-track">1.1 What Is a Track?</a></li>
+  <li><a href="#the-key-insight" id="toc-the-key-insight" class="nav-link" data-scroll-target="#the-key-insight">1.2 The Key Insight</a></li>
   </ul></li>
-  <li><a href="#interval-file-formats" id="toc-interval-file-formats" class="nav-link" data-scroll-target="#interval-file-formats">3. Interval File Formats</a>
+  <li><a href="#what-is-a-genomic-interval" id="toc-what-is-a-genomic-interval" class="nav-link" data-scroll-target="#what-is-a-genomic-interval">2. What Is a Genomic Interval?</a></li>
+  <li><a href="#coordinate-systems" id="toc-coordinate-systems" class="nav-link" data-scroll-target="#coordinate-systems">3. Coordinate Systems</a>
   <ul class="collapse">
-  <li><a href="#bed-format" id="toc-bed-format" class="nav-link" data-scroll-target="#bed-format">3.1 BED Format</a></li>
-  <li><a href="#gffgtf-format" id="toc-gffgtf-format" class="nav-link" data-scroll-target="#gffgtf-format">3.2 GFF/GTF Format</a></li>
-  <li><a href="#vcf-positions" id="toc-vcf-positions" class="nav-link" data-scroll-target="#vcf-positions">3.3 VCF Positions</a></li>
+  <li><a href="#based-half-open" id="toc-based-half-open" class="nav-link" data-scroll-target="#based-half-open">3.1 0-Based, Half-Open</a></li>
+  <li><a href="#based-closed" id="toc-based-closed" class="nav-link" data-scroll-target="#based-closed">3.2 1-Based, Closed</a></li>
+  <li><a href="#format-to-coordinate-mapping" id="toc-format-to-coordinate-mapping" class="nav-link" data-scroll-target="#format-to-coordinate-mapping">3.3 Format-to-Coordinate Mapping</a></li>
+  <li><a href="#converting-between-systems" id="toc-converting-between-systems" class="nav-link" data-scroll-target="#converting-between-systems">3.4 Converting Between Systems</a></li>
   </ul></li>
-  <li><a href="#core-interval-operations" id="toc-core-interval-operations" class="nav-link" data-scroll-target="#core-interval-operations">4. Core Interval Operations</a>
+  <li><a href="#interval-file-formats" id="toc-interval-file-formats" class="nav-link" data-scroll-target="#interval-file-formats">4. Interval File Formats</a>
   <ul class="collapse">
-  <li><a href="#intersect" id="toc-intersect" class="nav-link" data-scroll-target="#intersect">4.1 Intersect</a></li>
-  <li><a href="#subtract" id="toc-subtract" class="nav-link" data-scroll-target="#subtract">4.2 Subtract</a></li>
-  <li><a href="#merge" id="toc-merge" class="nav-link" data-scroll-target="#merge">4.3 Merge</a></li>
-  <li><a href="#complement" id="toc-complement" class="nav-link" data-scroll-target="#complement">4.4 Complement</a></li>
-  <li><a href="#closest" id="toc-closest" class="nav-link" data-scroll-target="#closest">4.5 Closest</a></li>
-  <li><a href="#coverage" id="toc-coverage" class="nav-link" data-scroll-target="#coverage">4.6 Coverage</a></li>
+  <li><a href="#bed-format" id="toc-bed-format" class="nav-link" data-scroll-target="#bed-format">4.1 BED Format</a></li>
+  <li><a href="#gff3gtf-format" id="toc-gff3gtf-format" class="nav-link" data-scroll-target="#gff3gtf-format">4.2 GFF3/GTF Format</a></li>
+  <li><a href="#vcf-positions" id="toc-vcf-positions" class="nav-link" data-scroll-target="#vcf-positions">4.3 VCF Positions</a></li>
   </ul></li>
-  <li><a href="#bedtools" id="toc-bedtools" class="nav-link" data-scroll-target="#bedtools">5. BEDTools</a>
+  <li><a href="#core-interval-operations" id="toc-core-interval-operations" class="nav-link" data-scroll-target="#core-interval-operations">5. Core Interval Operations</a>
   <ul class="collapse">
-  <li><a href="#history" id="toc-history" class="nav-link" data-scroll-target="#history">5.1 History</a></li>
-  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">5.2 Architecture</a></li>
-  <li><a href="#command-pattern" id="toc-command-pattern" class="nav-link" data-scroll-target="#command-pattern">5.3 Command Pattern</a></li>
+  <li><a href="#intersect" id="toc-intersect" class="nav-link" data-scroll-target="#intersect">5.1 Intersect</a></li>
+  <li><a href="#subtract" id="toc-subtract" class="nav-link" data-scroll-target="#subtract">5.2 Subtract</a></li>
+  <li><a href="#merge" id="toc-merge" class="nav-link" data-scroll-target="#merge">5.3 Merge</a></li>
+  <li><a href="#complement" id="toc-complement" class="nav-link" data-scroll-target="#complement">5.4 Complement</a></li>
+  <li><a href="#closest" id="toc-closest" class="nav-link" data-scroll-target="#closest">5.5 Closest</a></li>
+  <li><a href="#coverage" id="toc-coverage" class="nav-link" data-scroll-target="#coverage">5.6 Coverage</a></li>
   </ul></li>
-  <li><a href="#hands-on-bedtools-in-galaxy" id="toc-hands-on-bedtools-in-galaxy" class="nav-link" data-scroll-target="#hands-on-bedtools-in-galaxy">6. Hands-On: BEDTools in Galaxy</a>
+  <li><a href="#bedtools" id="toc-bedtools" class="nav-link" data-scroll-target="#bedtools">6. BEDTools</a>
   <ul class="collapse">
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">6.1 Data</a></li>
-  <li><a href="#exercise-1-convert-vcf-to-bed" id="toc-exercise-1-convert-vcf-to-bed" class="nav-link" data-scroll-target="#exercise-1-convert-vcf-to-bed">6.2 Exercise 1: Convert VCF to BED</a></li>
-  <li><a href="#exercise-2-intersect-variants-with-genes" id="toc-exercise-2-intersect-variants-with-genes" class="nav-link" data-scroll-target="#exercise-2-intersect-variants-with-genes">6.3 Exercise 2: Intersect Variants with Genes</a></li>
-  <li><a href="#exercise-3-subtract-repetitive-regions" id="toc-exercise-3-subtract-repetitive-regions" class="nav-link" data-scroll-target="#exercise-3-subtract-repetitive-regions">6.4 Exercise 3: Subtract Repetitive Regions</a></li>
-  <li><a href="#exercise-4-merge-overlapping-annotations" id="toc-exercise-4-merge-overlapping-annotations" class="nav-link" data-scroll-target="#exercise-4-merge-overlapping-annotations">6.5 Exercise 4: Merge Overlapping Annotations</a></li>
-  <li><a href="#exercise-5-per-gene-variant-density" id="toc-exercise-5-per-gene-variant-density" class="nav-link" data-scroll-target="#exercise-5-per-gene-variant-density">6.6 Exercise 5: Per-Gene Variant Density</a></li>
-  <li><a href="#exercise-6-find-intergenic-regions" id="toc-exercise-6-find-intergenic-regions" class="nav-link" data-scroll-target="#exercise-6-find-intergenic-regions">6.7 Exercise 6: Find Intergenic Regions</a></li>
+  <li><a href="#history" id="toc-history" class="nav-link" data-scroll-target="#history">6.1 History</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">6.2 Architecture</a></li>
+  <li><a href="#command-pattern" id="toc-command-pattern" class="nav-link" data-scroll-target="#command-pattern">6.3 Command Pattern</a></li>
   </ul></li>
-  <li><a href="#beyond-bedtools" id="toc-beyond-bedtools" class="nav-link" data-scroll-target="#beyond-bedtools">7. Beyond BEDTools</a></li>
+  <li><a href="#hands-on-variants-in-s.-aureus" id="toc-hands-on-variants-in-s.-aureus" class="nav-link" data-scroll-target="#hands-on-variants-in-s.-aureus">7. Hands-On: Variants in <em>S. aureus</em></a>
+  <ul class="collapse">
+  <li><a href="#the-story" id="toc-the-story" class="nav-link" data-scroll-target="#the-story">7.1 The Story</a></li>
+  <li><a href="#the-variant-calling-workflow" id="toc-the-variant-calling-workflow" class="nav-link" data-scroll-target="#the-variant-calling-workflow">7.2 The Variant-Calling Workflow</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">7.3 Data</a></li>
+  <li><a href="#genes-of-interest" id="toc-genes-of-interest" class="nav-link" data-scroll-target="#genes-of-interest">7.4 Genes of Interest</a></li>
+  </ul></li>
+  <li><a href="#beyond-bedtools" id="toc-beyond-bedtools" class="nav-link" data-scroll-target="#beyond-bedtools">8. Beyond BEDTools</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture21.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
@@ -372,11 +372,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Perform core interval operations: intersect, subtract, merge, complement, closest, and coverage</li>
 <li>Use BEDTools in Galaxy to manipulate genomic intervals</li>
 <li>Apply interval operations to filter and combine genomic annotations</li>
+<li>Navigate the UCSC Genome Browser and recognize tracks as interval datasets</li>
 </ul>
 <hr>
 </section>
+<section id="the-genome-browser-intervals-everywhere" class="level2">
+<h2 class="anchored" data-anchor-id="the-genome-browser-intervals-everywhere">1. The Genome Browser: Intervals Everywhere</h2>
+<p>The <a href="https://genome.ucsc.edu">UCSC Genome Browser</a> is the most widely used tool for visualizing genomic data [4]. It displays a region of a reference genome as a horizontal coordinate axis, with datasets stacked vertically as <strong>tracks</strong>. Here we look at the human <em>TP53</em> tumor suppressor gene on chromosome 17:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture21_ucsc_overview.png" class="img-fluid figure-img"></p>
+<figcaption>UCSC Genome Browser showing the TP53 locus on human chromosome 17 (hg38). Each horizontal band is a track—a dataset mapped to genomic coordinates.</figcaption>
+</figure>
+</div>
+<p>The horizontal axis spans ~19 kb of chromosome 17. Every colored block, bar, or line in the image represents a <strong>genomic interval</strong>—a feature with a start and end position on the chromosome.</p>
+<section id="what-is-a-track" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-track">1.1 What Is a Track?</h3>
+<p>A track is a dataset projected onto genomic coordinates. Each feature within a track is an interval. The browser view above contains over a dozen tracks, each representing a different type of genomic annotation:</p>
+<ul>
+<li><strong>GENCODE / RefSeq gene models</strong> — exons (thick blocks) and introns (thin lines with arrows) defining transcript structure</li>
+<li><strong>OMIM Alleles</strong> — positions of disease-associated variants (single-base intervals)</li>
+<li><strong>Common dbSNP</strong> — known polymorphisms from dbSNP release 155</li>
+<li><strong>GTEx expression</strong> — tissue-specific expression levels (bar chart mapped to gene intervals)</li>
+<li><strong>ENCODE cCREs</strong> — candidate cis-regulatory elements (enhancers, promoters, insulators)</li>
+<li><strong>H3K27Ac</strong> — histone acetylation peaks marking active regulatory regions</li>
+<li><strong>Conservation (PhyloP)</strong> — per-base conservation scores across 100 vertebrates</li>
+<li><strong>Multiz alignments</strong> — cross-species sequence alignments (Rhesus, Mouse, Dog, Elephant, Chicken, Zebrafish)</li>
+<li><strong>RepeatMasker</strong> — repetitive elements (SINEs, LINEs, DNA transposons)</li>
+</ul>
+<p>Zooming in reveals the individual interval features more clearly:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture21_ucsc_tracks.png" class="img-fluid figure-img"></p>
+<figcaption>Zoomed view of the TP53 locus (~1.8 kb). Individual exons are visible as distinct blocks; introns as connecting lines. Each block is an interval with a precise start and end coordinate.</figcaption>
+</figure>
+</div>
+</section>
+<section id="the-key-insight" class="level3">
+<h3 class="anchored" data-anchor-id="the-key-insight">1.2 The Key Insight</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every track in the genome browser is a collection of genomic intervals. Genes, repeats, regulatory elements, variants, aligned reads—all intervals. The browser is visualizing interval arithmetic. This lecture teaches you to perform that arithmetic yourself.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
 <section id="what-is-a-genomic-interval" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-a-genomic-interval">1. What Is a Genomic Interval?</h2>
+<h2 class="anchored" data-anchor-id="what-is-a-genomic-interval">2. What Is a Genomic Interval?</h2>
 <p>Every genomic feature—a gene, an exon, a variant, a ChIP-seq peak, an aligned read—can be represented as an <strong>interval</strong>: a contiguous stretch of a chromosome defined by three values:</p>
 <pre><code>(chromosome, start, end)</code></pre>
 <p>Interval arithmetic lets us ask relational questions about these features: Which variants fall inside genes? Which peaks overlap promoters? What fraction of the genome is covered by repeats? The answers come from a small set of set-theoretic operations on intervals.</p>
@@ -396,7 +447,7 @@ Note
 <hr>
 </section>
 <section id="coordinate-systems" class="level2">
-<h2 class="anchored" data-anchor-id="coordinate-systems">2. Coordinate Systems</h2>
+<h2 class="anchored" data-anchor-id="coordinate-systems">3. Coordinate Systems</h2>
 <p>Genomics uses two coordinate conventions. Confusing them causes off-by-one errors—the single most common bug in bioinformatics pipelines.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -405,8 +456,8 @@ Note
 </figure>
 </div>
 <section id="based-half-open" class="level3">
-<h3 class="anchored" data-anchor-id="based-half-open">2.1 0-Based, Half-Open</h3>
-<p>Used by <strong>BED</strong> and <strong>BAM</strong> formats.</p>
+<h3 class="anchored" data-anchor-id="based-half-open">3.1 0-Based, Half-Open</h3>
+<p>Used by <strong>BED</strong> format.</p>
 <ul>
 <li>The first base of a chromosome is position <strong>0</strong></li>
 <li>The interval is <code>[start, end)</code>—start is included, end is excluded</li>
@@ -415,8 +466,8 @@ Note
 <p>Example: the three bases <code>GTA</code> starting at the third position of <code>ACGTACGT</code> are represented as <code>(2, 5)</code>.</p>
 </section>
 <section id="based-closed" class="level3">
-<h3 class="anchored" data-anchor-id="based-closed">2.2 1-Based, Closed</h3>
-<p>Used by <strong>GFF/GTF</strong>, <strong>VCF</strong>, and <strong>SAM</strong> formats.</p>
+<h3 class="anchored" data-anchor-id="based-closed">3.2 1-Based, Closed</h3>
+<p>Used by <strong>GFF/GTF</strong>, <strong>SAM/BAM</strong>, and <strong>VCF</strong> formats.</p>
 <ul>
 <li>The first base of a chromosome is position <strong>1</strong></li>
 <li>The interval is <code>[start, end]</code>—both start and end are included</li>
@@ -425,7 +476,7 @@ Note
 <p>The same three bases <code>GTA</code> are represented as <code>(3, 5)</code>.</p>
 </section>
 <section id="format-to-coordinate-mapping" class="level3">
-<h3 class="anchored" data-anchor-id="format-to-coordinate-mapping">2.3 Format-to-Coordinate Mapping</h3>
+<h3 class="anchored" data-anchor-id="format-to-coordinate-mapping">3.3 Format-to-Coordinate Mapping</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -437,40 +488,47 @@ Note
 </thead>
 <tbody>
 <tr class="odd">
-<td>BED</td>
+<td><a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1">BED</a></td>
 <td>0-based, half-open</td>
 <td>0</td>
 <td>No</td>
 </tr>
 <tr class="even">
-<td>BAM</td>
-<td>0-based, half-open</td>
-<td>0</td>
-<td>No</td>
+<td><a href="https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md">GFF/GTF</a></td>
+<td>1-based, closed</td>
+<td>1</td>
+<td>Yes</td>
 </tr>
 <tr class="odd">
-<td>GFF/GTF</td>
+<td><a href="https://samtools.github.io/hts-specs/SAMv1.pdf">SAM/BAM</a></td>
 <td>1-based, closed</td>
 <td>1</td>
 <td>Yes</td>
 </tr>
 <tr class="even">
-<td>VCF</td>
+<td><a href="https://samtools.github.io/hts-specs/VCFv4.3.pdf">VCF</a></td>
 <td>1-based</td>
 <td>1</td>
 <td>N/A (single position)</td>
 </tr>
-<tr class="odd">
-<td>SAM</td>
-<td>1-based, closed</td>
-<td>1</td>
-<td>Yes</td>
-</tr>
 </tbody>
 </table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>BAM is the binary-compressed form of SAM. Internally BAM stores positions as 0-based, but this is a serialization detail—every tool that reads BAM (<code>samtools</code>, <code>pysam</code>, IGV) presents coordinates as 1-based, identical to SAM. You never need to handle this conversion yourself.</p>
+</div>
+</div>
 </section>
 <section id="converting-between-systems" class="level3">
-<h3 class="anchored" data-anchor-id="converting-between-systems">2.4 Converting Between Systems</h3>
+<h3 class="anchored" data-anchor-id="converting-between-systems">3.4 Converting Between Systems</h3>
 <p>To convert the same feature:</p>
 <ul>
 <li>BED → GFF: <code>GFF_start = BED_start + 1</code>, <code>GFF_end = BED_end</code></li>
@@ -493,9 +551,9 @@ Note
 </section>
 </section>
 <section id="interval-file-formats" class="level2">
-<h2 class="anchored" data-anchor-id="interval-file-formats">3. Interval File Formats</h2>
+<h2 class="anchored" data-anchor-id="interval-file-formats">4. Interval File Formats</h2>
 <section id="bed-format" class="level3">
-<h3 class="anchored" data-anchor-id="bed-format">3.1 BED Format</h3>
+<h3 class="anchored" data-anchor-id="bed-format">4.1 <a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1">BED Format</a></h3>
 <p>BED (Browser Extensible Data) is the simplest and most widely used interval format. It is tab-delimited and 0-based half-open.</p>
 <p><strong>BED3</strong> — the minimal form:</p>
 <pre><code>NC_004318.2 322 1056
@@ -521,8 +579,8 @@ Note
 </div>
 </div>
 </section>
-<section id="gffgtf-format" class="level3">
-<h3 class="anchored" data-anchor-id="gffgtf-format">3.2 GFF/GTF Format</h3>
+<section id="gff3gtf-format" class="level3">
+<h3 class="anchored" data-anchor-id="gff3gtf-format">4.2 <a href="https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md">GFF3</a>/<a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format4">GTF</a> Format</h3>
 <p>GFF3 (General Feature Format) and GTF (Gene Transfer Format, essentially GFF version 2) use nine tab-delimited columns and 1-based closed coordinates:</p>
 <pre><code>NC_004318.2 RefSeq  gene    323 1056    .   +   .   ID=PF3D7_0400100;Name=RNF5
 NC_004318.2 RefSeq  gene    4529    6356    .   -   .   ID=PF3D7_0400200;Name=PF3D7_0400200</code></pre>
@@ -530,14 +588,14 @@ NC_004318.2 RefSeq  gene    4529    6356    .   -   .   ID=PF3D7_0400200;Name=PF
 <p>Notice the same gene <code>PF3D7_0400100</code> has start=322 in BED and start=323 in GFF—a direct consequence of the coordinate system difference.</p>
 </section>
 <section id="vcf-positions" class="level3">
-<h3 class="anchored" data-anchor-id="vcf-positions">3.3 VCF Positions</h3>
+<h3 class="anchored" data-anchor-id="vcf-positions">4.3 <a href="https://samtools.github.io/hts-specs/VCFv4.3.pdf">VCF</a> Positions</h3>
 <p>VCF uses 1-based coordinates for the <code>POS</code> field. Students encountered this in <a href="../lectures/lecture19.html">Lecture 19</a> and <a href="../lectures/lecture20.html">Lecture 20</a>. A VCF record with <code>POS=1024</code> refers to the 1024th base on the chromosome.</p>
 <p>To convert a single-nucleotide variant to BED: <code>BED_start = VCF_POS - 1</code>, <code>BED_end = VCF_POS</code>.</p>
 <hr>
 </section>
 </section>
 <section id="core-interval-operations" class="level2">
-<h2 class="anchored" data-anchor-id="core-interval-operations">4. Core Interval Operations</h2>
+<h2 class="anchored" data-anchor-id="core-interval-operations">5. Core Interval Operations</h2>
 <p>Six operations form the foundation of interval arithmetic in genomics. Nearly every analysis question can be decomposed into a sequence of these operations.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -546,7 +604,7 @@ NC_004318.2 RefSeq  gene    4529    6356    .   -   .   ID=PF3D7_0400200;Name=PF
 </figure>
 </div>
 <section id="intersect" class="level3">
-<h3 class="anchored" data-anchor-id="intersect">4.1 Intersect</h3>
+<h3 class="anchored" data-anchor-id="intersect">5.1 Intersect</h3>
 <p><strong>What it does:</strong> finds the overlapping portions between two interval sets A and B.</p>
 <p><strong>Biological use case:</strong> “Which of my called variants fall within annotated genes?” We answered this in Lecture 20 using SnpEff—but the underlying operation is an intersection of variant positions with gene intervals.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> intersect <span class="at">-a</span> variants.bed <span class="at">-b</span> genes.bed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -559,13 +617,13 @@ NC_004318.2 RefSeq  gene    4529    6356    .   -   .   ID=PF3D7_0400200;Name=PF
 </ul>
 </section>
 <section id="subtract" class="level3">
-<h3 class="anchored" data-anchor-id="subtract">4.2 Subtract</h3>
+<h3 class="anchored" data-anchor-id="subtract">5.2 Subtract</h3>
 <p><strong>What it does:</strong> removes portions of A that overlap with B.</p>
 <p><strong>Biological use case:</strong> “Remove all variants in repetitive or low-complexity regions before downstream analysis.”</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> subtract <span class="at">-a</span> variants.bed <span class="at">-b</span> repeats.bed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="merge" class="level3">
-<h3 class="anchored" data-anchor-id="merge">4.3 Merge</h3>
+<h3 class="anchored" data-anchor-id="merge">5.3 Merge</h3>
 <p><strong>What it does:</strong> collapses overlapping or adjacent intervals within a single set into non-overlapping intervals.</p>
 <p><strong>Biological use case:</strong> “Collapse overlapping exon annotations into non-redundant gene bodies.”</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> sort <span class="at">-i</span> exons.bed <span class="kw">|</span> <span class="ex">bedtools</span> merge <span class="at">-i</span> <span class="at">-</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -584,7 +642,7 @@ Note
 </div>
 </section>
 <section id="complement" class="level3">
-<h3 class="anchored" data-anchor-id="complement">4.4 Complement</h3>
+<h3 class="anchored" data-anchor-id="complement">5.4 Complement</h3>
 <p><strong>What it does:</strong> returns the regions of the genome <strong>not</strong> covered by any interval in the input set.</p>
 <p><strong>Biological use case:</strong> “What fraction of chromosome 4 is intergenic (not covered by any gene annotation)?”</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> complement <span class="at">-i</span> genes.bed <span class="at">-g</span> genome.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -592,13 +650,13 @@ Note
 <pre><code>NC_004318.2 1200490</code></pre>
 </section>
 <section id="closest" class="level3">
-<h3 class="anchored" data-anchor-id="closest">4.5 Closest</h3>
+<h3 class="anchored" data-anchor-id="closest">5.5 Closest</h3>
 <p><strong>What it does:</strong> for each interval in A, finds the nearest interval in B.</p>
 <p><strong>Biological use case:</strong> “For each intergenic variant, what is the nearest gene?”</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> closest <span class="at">-a</span> intergenic_variants.bed <span class="at">-b</span> genes.bed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="coverage" class="level3">
-<h3 class="anchored" data-anchor-id="coverage">4.6 Coverage</h3>
+<h3 class="anchored" data-anchor-id="coverage">5.6 Coverage</h3>
 <p><strong>What it does:</strong> counts how many intervals in B overlap each interval in A.</p>
 <p><strong>Biological use case:</strong> “How many variants fall within each gene? Which genes have the highest variant density?”</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> coverage <span class="at">-a</span> genes.bed <span class="at">-b</span> variants.bed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -607,17 +665,17 @@ Note
 </section>
 </section>
 <section id="bedtools" class="level2">
-<h2 class="anchored" data-anchor-id="bedtools">5. BEDTools</h2>
+<h2 class="anchored" data-anchor-id="bedtools">6. BEDTools</h2>
 <section id="history" class="level3">
-<h3 class="anchored" data-anchor-id="history">5.1 History</h3>
+<h3 class="anchored" data-anchor-id="history">6.1 History</h3>
 <p>BEDTools was created by Aaron Quinlan and Ira Hall in 2010 [1]. It provides over 30 subcommands for interval manipulation and has become the de facto standard for genomic interval arithmetic. The toolkit is available both on the command line and within Galaxy.</p>
 </section>
 <section id="architecture" class="level3">
-<h3 class="anchored" data-anchor-id="architecture">5.2 Architecture</h3>
-<p>BEDTools uses <strong>interval trees</strong>—a balanced binary search tree data structure where each node stores an interval. This enables overlap queries in O(log n + k) time, where n is the number of intervals in the database and k is the number of overlaps found. For a genome with ~25,000 genes, finding all genes overlapping a query region requires roughly 15 comparisons instead of 25,000.</p>
+<h3 class="anchored" data-anchor-id="architecture">6.2 Architecture</h3>
+<p>Early versions of BEDTools used <strong>interval trees</strong>—a balanced binary search tree where each node stores an interval, enabling overlap queries in O(log n + k) time (n = database intervals, k = overlaps found). For ~25,000 genes, finding overlaps requires roughly 15 comparisons instead of 25,000. Modern BEDTools (v2.18+) defaults to a <strong>sweep-line algorithm</strong> (“chromsweep”) for sorted input, which scans both files in coordinate order and achieves even better performance in practice. The interval tree approach is retained as a fallback for unsorted data.</p>
 </section>
 <section id="command-pattern" class="level3">
-<h3 class="anchored" data-anchor-id="command-pattern">5.3 Command Pattern</h3>
+<h3 class="anchored" data-anchor-id="command-pattern">6.3 Command Pattern</h3>
 <p>Every BEDTools command follows the same pattern:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bedtools</span> <span class="op">&lt;</span>subcommand<span class="op">&gt;</span> <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span> <span class="at">-a</span> <span class="op">&lt;</span>fileA<span class="op">&gt;</span> -b <span class="op">&lt;</span>fileB<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Common subcommands:</p>
@@ -674,9 +732,34 @@ Note
 <hr>
 </section>
 </section>
-<section id="hands-on-bedtools-in-galaxy" class="level2">
-<h2 class="anchored" data-anchor-id="hands-on-bedtools-in-galaxy">6. Hands-On: BEDTools in Galaxy</h2>
-<p>We use the <em>P. falciparum</em> data from <a href="../lectures/lecture20.html">Lecture 20</a>. Students who completed L20 already have variant calls and gene annotations in their Galaxy history.</p>
+<section id="hands-on-variants-in-s.-aureus" class="level2">
+<h2 class="anchored" data-anchor-id="hands-on-variants-in-s.-aureus">7. Hands-On: Variants in <em>S. aureus</em></h2>
+<section id="the-story" class="level3">
+<h3 class="anchored" data-anchor-id="the-story">7.1 The Story</h3>
+<p>Kaku et al.&nbsp;[5] conducted a nationwide surveillance of methicillin-resistant <em>Staphylococcus aureus</em> (MRSA) bloodstream infections across 51 Japanese hospitals in 2019. They collected 270 MRSA isolates from blood cultures and performed whole-genome sequencing to characterize the molecular epidemiology of these infections. The key finding: SCC<em>mec</em> type IV has replaced SCC<em>mec</em> type II as the dominant MRSA lineage in Japanese bloodstream infections, with ST8-IV (30.7%) and ST1-IV (29.6%) as the most prevalent combinations. The study revealed distinct geographic patterns—ST1-IV dominated in eastern Japan while ST8-IV was more common in the west—and demonstrated that the newer type IV strains show greater susceptibility to clindamycin and minocycline compared to the older type II strains.</p>
+<p>We use a subset of these data—already processed through a variant-calling pipeline—to practice interval operations. Our goal: determine whether specific genes of interest carry mutations in these MRSA isolates.</p>
+</section>
+<section id="the-variant-calling-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="the-variant-calling-workflow">7.2 The Variant-Calling Workflow</h3>
+<p>The data in the shared history were generated using the <a href="https://iwc.galaxyproject.org/workflow/haploid-variant-calling-wgs-pe-main/">Paired-End Variant Calling in Haploid System</a> workflow from the Intergalactic Workflow Commission (IWC). This standardized Galaxy workflow takes three inputs—paired-end reads, a reference genome, and gene annotations—and produces an annotated variant table.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture21_haploid_vc_workflow.svg" class="img-fluid figure-img"></p>
+<figcaption>Paired-End Variant Calling in Haploid System workflow. Yellow = inputs, blue = processing steps, orange = output, green = QC report. Solid lines = data flow, dashed lines = QC metrics.</figcaption>
+</figure>
+</div>
+<p>The pipeline proceeds in four phases:</p>
+<ol type="1">
+<li><strong>Quality control</strong>: <code>fastp</code> trims adapters and low-quality bases from paired-end reads</li>
+<li><strong>Alignment</strong>: <code>BWA-MEM</code> maps trimmed reads to the reference genome, followed by <code>Samtools view</code> (filtering to properly paired reads) and <code>MarkDuplicates</code> (removing PCR duplicates)</li>
+<li><strong>Variant calling</strong>: <code>LoFreq Viterbi</code> realigns reads around indels, then <code>LoFreq Call</code> identifies variants in haploid mode</li>
+<li><strong>Annotation</strong>: <code>SnpEff</code> annotates variants with functional effects (missense, synonymous, etc.) and <code>SnpSift</code> extracts key fields into a final table</li>
+</ol>
+<p>A <code>MultiQC</code> report aggregates quality metrics from fastp, mapping, and deduplication steps. The final output is a collapsed table of annotated variants across all samples.</p>
+</section>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">7.3 Data</h3>
+<p>Import the pre-analyzed history into your Galaxy account:</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -687,122 +770,77 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Make sure you are logged in to <a href="https://usegalaxy.org">usegalaxy.org</a> and have your Lecture 20 history active. If you do not have the L20 data, import the pre-made datasets from the Zenodo link below.</p>
+<ol type="1">
+<li>Make sure you are logged in to <a href="https://usegalaxy.org">usegalaxy.org</a></li>
+<li>Import the shared history: <a href="https://usegalaxy.org/u/cartman/h/unnamed-history-13" class="uri">https://usegalaxy.org/u/cartman/h/unnamed-history-13</a></li>
+<li>Click <strong>Import history</strong> (the “+” icon at the top of the history panel)</li>
+</ol>
 </div>
 </div>
-<section id="data" class="level3">
-<h3 class="anchored" data-anchor-id="data">6.1 Data</h3>
-<p>We need three files for the exercises:</p>
-<ul>
-<li><strong>Variant calls</strong> (VCF): the LoFreq output from Lecture 20</li>
-<li><strong>Gene annotations</strong> (GTF): the <em>P. falciparum</em> 3D7 gene annotation from Lecture 20</li>
-<li><strong>Genome file</strong>: chromosome name and length for <code>bedtools complement</code></li>
-</ul>
+<p>The history contains variant calls (VCF) and gene annotations (GFF) from the MRSA analysis pipeline.</p>
+</section>
+<section id="genes-of-interest" class="level3">
+<h3 class="anchored" data-anchor-id="genes-of-interest">7.4 Genes of Interest</h3>
+<p>We focus on five <em>S. aureus</em> NCTC 8325 genes that play roles in virulence, cell wall maintenance, and antibiotic resistance:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Protein accession</th>
+<th>Gene</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>YP_500520.1</td>
+<td>SAOUHSC_02023</td>
+<td>Bifunctional autolysin</td>
+</tr>
+<tr class="even">
+<td>YP_499546.1</td>
+<td>SAOUHSC_01049</td>
+<td>Predicted protein</td>
+</tr>
+<tr class="odd">
+<td>YP_501041.1</td>
+<td>SAOUHSC_02545</td>
+<td>Predicted protein</td>
+</tr>
+<tr class="even">
+<td>YP_500662.1</td>
+<td>SAOUHSC_02165</td>
+<td>Predicted protein</td>
+</tr>
+<tr class="odd">
+<td>YP_499519.1</td>
+<td>SAOUHSC_01022</td>
+<td>Predicted protein</td>
+</tr>
+</tbody>
+</table>
+<p>Our question: <strong>Do any of these genes carry genetic variants in the MRSA isolates?</strong> We will answer this using <code>bedtools intersect</code>—overlaying variant positions with gene coordinates.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>If You Don’t Have L20 Data
+<span class="screen-reader-only">Tip</span>Hands-On Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Import the following prepared files by pasting these URLs into Galaxy’s Upload tool:</p>
-<ul>
-<li>Gene annotations (BED): <code>https://zenodo.org/records/15354240/files/pf3d7_genes.bed</code></li>
-<li>Variant calls (BED): <code>https://zenodo.org/records/15354240/files/pf3d7_variants.bed</code></li>
-<li>Genome file: <code>https://zenodo.org/records/15354240/files/pf3d7_genome.txt</code></li>
-</ul>
+<p>We will work through this analysis together in class using the Galaxy history above and the BEDTools operations from Sections 5 and 6.</p>
 </div>
 </div>
-</section>
-<section id="exercise-1-convert-vcf-to-bed" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-1-convert-vcf-to-bed">6.2 Exercise 1: Convert VCF to BED</h3>
-<p>Our variant calls are in VCF format (1-based). To use them with BEDTools, we convert to BED (0-based half-open).</p>
-<ol type="1">
-<li>In Galaxy, search for the tool <strong>“VCF to BED”</strong> in the tool panel</li>
-<li>Select your LoFreq VCF output as input</li>
-<li>Run the tool</li>
-</ol>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Examine the output. Notice that the <code>POS</code> values have shifted: VCF position 1024 becomes BED interval (1023, 1024). This is the coordinate conversion in action.</p>
-</div>
-</div>
-</section>
-<section id="exercise-2-intersect-variants-with-genes" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-2-intersect-variants-with-genes">6.3 Exercise 2: Intersect Variants with Genes</h3>
-<p><strong>Question:</strong> Which variants fall within annotated genes?</p>
-<ol type="1">
-<li>Search for <strong>“bedtools intersect”</strong> (or “Intersect intervals”) in Galaxy</li>
-<li>Set file A = your variant BED file</li>
-<li>Set file B = gene annotation BED file</li>
-<li>Under options, enable <strong>“Write the original A entry”</strong> (<code>-wa</code>) and <strong>“Write the original B entry”</strong> (<code>-wb</code>)</li>
-<li>Run the tool</li>
-</ol>
-<p>The output shows each variant paired with the gene it falls within. Compare this with the SnpEff annotation from Lecture 20—the genes should match.</p>
-<p><strong>Follow-up:</strong> Now run the same tool with the <strong>“-v”</strong> option enabled (report entries in A with NO overlap in B). These are intergenic variants—variants falling outside any annotated gene.</p>
-</section>
-<section id="exercise-3-subtract-repetitive-regions" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-3-subtract-repetitive-regions">6.4 Exercise 3: Subtract Repetitive Regions</h3>
-<p>In real analyses, variants in repetitive regions are often unreliable. We remove them:</p>
-<ol type="1">
-<li>Search for <strong>“bedtools subtract”</strong> (or “Subtract intervals”)</li>
-<li>Set file A = variant BED</li>
-<li>Set file B = repetitive regions BED</li>
-<li>Run the tool</li>
-</ol>
-<p>The output contains only variants outside repetitive regions—a cleaner set for downstream analysis.</p>
-</section>
-<section id="exercise-4-merge-overlapping-annotations" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-4-merge-overlapping-annotations">6.5 Exercise 4: Merge Overlapping Annotations</h3>
-<p>Gene annotations often contain overlapping features (e.g., overlapping isoforms). Merging collapses them:</p>
-<ol type="1">
-<li>Search for <strong>“bedtools merge”</strong> (or “Merge intervals”)</li>
-<li>Select the gene annotation BED as input</li>
-<li>Run the tool</li>
-</ol>
-<p>Compare the number of intervals before and after merging. The merged file has fewer intervals—overlapping genes have been collapsed into single regions.</p>
-</section>
-<section id="exercise-5-per-gene-variant-density" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-5-per-gene-variant-density">6.6 Exercise 5: Per-Gene Variant Density</h3>
-<p><strong>Question:</strong> Which genes have the most variants?</p>
-<ol type="1">
-<li>Search for <strong>“bedtools coverage”</strong> (or “Coverage intervals”)</li>
-<li>Set file A = gene annotation BED</li>
-<li>Set file B = variant BED</li>
-<li>Run the tool</li>
-</ol>
-<p>The output adds columns showing the number of variants overlapping each gene, the number of bases covered, the gene length, and the fraction covered. Sort by the count column to find the most variable genes.</p>
-</section>
-<section id="exercise-6-find-intergenic-regions" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-6-find-intergenic-regions">6.7 Exercise 6: Find Intergenic Regions</h3>
-<p><strong>Question:</strong> What fraction of the genome lacks gene annotation?</p>
-<ol type="1">
-<li>Search for <strong>“bedtools complement”</strong> (or “Complement intervals”)</li>
-<li>Select the gene annotation BED as input</li>
-<li>Provide the genome file (chromosome lengths)</li>
-<li>Run the tool</li>
-</ol>
-<p>The output is a BED file of all intergenic regions. The sum of these interval lengths divided by the total chromosome length gives the intergenic fraction.</p>
 <hr>
 </section>
 </section>
 <section id="beyond-bedtools" class="level2">
-<h2 class="anchored" data-anchor-id="beyond-bedtools">7. Beyond BEDTools</h2>
+<h2 class="anchored" data-anchor-id="beyond-bedtools">8. Beyond BEDTools</h2>
 <p>BEDTools is the most widely used interval toolkit, but alternatives exist for specific workflows:</p>
 <ul>
 <li><strong><code>bedops</code></strong> [2]—optimized for speed on very large datasets; uses a streaming architecture that avoids loading entire files into memory</li>
-<li><strong><code>pybedtools</code></strong> [3]—a Python wrapper around BEDTools that integrates interval operations with pandas DataFrames</li>
+<li><strong><code>pybedtools</code></strong> [3]—a Python wrapper around BEDTools that enables scripting interval operations in Python (with optional conversion to pandas DataFrames)</li>
 <li><strong><code>GenomicRanges</code></strong>—the R/Bioconductor equivalent; dominant in the R ecosystem for genomic data analysis</li>
 <li><strong><code>bioframe</code></strong>—a pure Python library built on pandas; no BEDTools dependency required</li>
 </ul>
@@ -820,7 +858,7 @@ Important
 <div class="callout-body-container callout-body">
 <ul>
 <li>Every genomic feature is an <strong>interval</strong> defined by (chromosome, start, end)</li>
-<li><strong>Coordinate systems matter</strong>: BED/BAM use 0-based half-open; GFF/VCF/SAM use 1-based closed. Mixing them causes off-by-one errors.</li>
+<li><strong>Coordinate systems matter</strong>: BED uses 0-based half-open; GFF/GTF and SAM/BAM use 1-based closed; VCF uses 1-based positions. Mixing systems causes off-by-one errors.</li>
 <li>Six core operations—<strong>intersect, subtract, merge, complement, closest, coverage</strong>—form the algebra of genomic interval analysis</li>
 <li><strong>BEDTools</strong> is the standard toolkit, available on the command line and in Galaxy</li>
 <li>Most genomic analysis questions can be decomposed into sequences of interval operations</li>
@@ -834,7 +872,9 @@ Important
 <ol type="1">
 <li><a href="https://doi.org/10.1093/bioinformatics/btq033">Quinlan, A.R. &amp; Hall, I.M. (2010). BEDTools: a flexible suite of utilities for comparing genomic features. <em>Bioinformatics</em>, 26(6), 841–842.</a></li>
 <li><a href="https://doi.org/10.1093/bioinformatics/bts277">Neph, S. et al.&nbsp;(2012). BEDOPS: high-performance genomic feature operations. <em>Bioinformatics</em>, 28(14), 1919–1920.</a></li>
-<li><a href="https://doi.org/10.1093/bioinformatics/btr539">Dale, D. et al.&nbsp;(2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. <em>Bioinformatics</em>, 27(24), 3423–3424.</a></li>
+<li><a href="https://doi.org/10.1093/bioinformatics/btr539">Dale, R.K. et al.&nbsp;(2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. <em>Bioinformatics</em>, 27(24), 3423–3424.</a></li>
+<li><a href="https://doi.org/10.1101/gr.229102">Kent, W.J. et al.&nbsp;(2002). The Human Genome Browser at UCSC. <em>Genome Research</em>, 12(6), 996–1006.</a></li>
+<li><a href="https://doi.org/10.1093/jac/dkac154">Kaku, N. et al.&nbsp;(2022). Changing molecular epidemiology and characteristics of MRSA isolated from bloodstream infections: nationwide surveillance in Japan in 2019. <em>Journal of Antimicrobial Chemotherapy</em>, 77(8), 2130–2141.</a></li>
 </ol>
 
 
@@ -947,7 +987,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
