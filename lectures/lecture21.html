@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 21: Interval Operations for Genomic Coordinates – BMMB554</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-be3771519f21acc1c5b6733774c6dcd8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -451,6 +449,7 @@ Note
 <section id="coordinate-systems" class="level2">
 <h2 class="anchored" data-anchor-id="coordinate-systems">3. Coordinate Systems</h2>
 <p>Genomics uses two coordinate conventions. Confusing them causes off-by-one errors—the single most common bug in bioinformatics pipelines.</p>
+<p>The choice is not arbitrary. In 1982, Edsger Dijkstra argued in his note <a href="https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html"><em>“Why numbering should start at zero”</em></a> [6] that 0-based half-open intervals are the most natural convention for computing. Two properties make them superior: the length of an interval <code>[a, b)</code> is simply <code>b - a</code>, and two adjacent intervals <code>[a, b)</code> and <code>[b, c)</code> share a boundary with no gaps and no overlaps. The BED format adopts exactly this convention. GFF and VCF predate this reasoning or follow biological tradition where “the first base” is base 1.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../images/lecture21_coordinate_systems.svg" class="img-fluid figure-img"></p>
@@ -878,6 +877,7 @@ Note
 <li><a href="https://doi.org/10.1093/bioinformatics/btr539">Dale, R.K. et al.&nbsp;(2011). pybedtools: a flexible Python library for manipulating genomic datasets and annotations. <em>Bioinformatics</em>, 27(24), 3423–3424.</a></li>
 <li><a href="https://doi.org/10.1101/gr.229102">Kent, W.J. et al.&nbsp;(2002). The Human Genome Browser at UCSC. <em>Genome Research</em>, 12(6), 996–1006.</a></li>
 <li><a href="https://doi.org/10.1093/jac/dkac154">Kaku, N. et al.&nbsp;(2022). Changing molecular epidemiology and characteristics of MRSA isolated from bloodstream infections: nationwide surveillance in Japan in 2019. <em>Journal of Antimicrobial Chemotherapy</em>, 77(8), 2130–2141.</a></li>
+<li><a href="https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html">Dijkstra, E.W. (1982). Why numbering should start at zero. EWD 831.</a></li>
 </ol>
 
 
@@ -990,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
