@@ -61,6 +61,8 @@ website:
             text: "20. NGS Data Logistics"
           - href: lectures/lecture21.qmd
             text: "21. Interval Operations for Genomic Coordinates"
+          - href: lectures/lecture22.qmd
+            text: "22. Genome Assembly of MRSA Isolates"
 
 format:
   html:
