@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 23: Genome Assembly – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture23.html">23. Genome Assembly</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. Finding Sequence Matches Quickly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. K-mers, Minimizers, and Minimap2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17. DNA Sequencing Technologies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19. Variant Calling in Haploid Systems</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20. NGS Data Logistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture21.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">21. Interval Operations for Genomic Coordinates</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture22.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">22. Genome Assembly of MRSA Isolates</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture23.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">23. Genome Assembly</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#the-assembly-problem" id="toc-the-assembly-problem" class="nav-link" data-scroll-target="#the-assembly-problem">1. The Assembly Problem</a></li>
+  <li><a href="#k-mer-composition" id="toc-k-mer-composition" class="nav-link" data-scroll-target="#k-mer-composition">2. K-mer Composition</a></li>
+  <li><a href="#assembly-by-overlap" id="toc-assembly-by-overlap" class="nav-link" data-scroll-target="#assembly-by-overlap">3. Assembly by Overlap</a></li>
+  <li><a href="#coverage" id="toc-coverage" class="nav-link" data-scroll-target="#coverage">4. Coverage</a></li>
+  <li><a href="#the-three-laws-of-assembly" id="toc-the-three-laws-of-assembly" class="nav-link" data-scroll-target="#the-three-laws-of-assembly">5. The Three Laws of Assembly</a>
+  <ul class="collapse">
+  <li><a href="#the-first-law-overlaps-imply-co-location" id="toc-the-first-law-overlaps-imply-co-location" class="nav-link" data-scroll-target="#the-first-law-overlaps-imply-co-location">The First Law: Overlaps Imply Co-location</a></li>
+  <li><a href="#the-second-law-higher-coverage-is-better" id="toc-the-second-law-higher-coverage-is-better" class="nav-link" data-scroll-target="#the-second-law-higher-coverage-is-better">The Second Law: Higher Coverage Is Better</a></li>
+  <li><a href="#the-third-law-repeats-are-evil" id="toc-the-third-law-repeats-are-evil" class="nav-link" data-scroll-target="#the-third-law-repeats-are-evil">The Third Law: Repeats Are Evil</a></li>
+  </ul></li>
+  <li><a href="#graph-based-assembly" id="toc-graph-based-assembly" class="nav-link" data-scroll-target="#graph-based-assembly">6. Graph-Based Assembly</a>
+  <ul class="collapse">
+  <li><a href="#overlap-graphs-and-hamiltonian-paths" id="toc-overlap-graphs-and-hamiltonian-paths" class="nav-link" data-scroll-target="#overlap-graphs-and-hamiltonian-paths">6.1 Overlap Graphs and Hamiltonian Paths</a></li>
+  <li><a href="#de-bruijn-graphs-and-eulerian-paths" id="toc-de-bruijn-graphs-and-eulerian-paths" class="nav-link" data-scroll-target="#de-bruijn-graphs-and-eulerian-paths">6.2 De Bruijn Graphs and Eulerian Paths</a></li>
+  <li><a href="#the-bridges-of-konigsberg" id="toc-the-bridges-of-konigsberg" class="nav-link" data-scroll-target="#the-bridges-of-konigsberg">6.3 The Bridges of Konigsberg</a></li>
+  </ul></li>
+  <li><a href="#overlap-graphs-vs.-de-bruijn-graphs" id="toc-overlap-graphs-vs.-de-bruijn-graphs" class="nav-link" data-scroll-target="#overlap-graphs-vs.-de-bruijn-graphs">7. Overlap Graphs vs.&nbsp;De Bruijn Graphs</a></li>
+  <li><a href="#k-mer-size-and-repeat-resolution" id="toc-k-mer-size-and-repeat-resolution" class="nav-link" data-scroll-target="#k-mer-size-and-repeat-resolution">8. K-mer Size and Repeat Resolution</a></li>
+  <li><a href="#assembly-quality-metrics" id="toc-assembly-quality-metrics" class="nav-link" data-scroll-target="#assembly-quality-metrics">9. Assembly Quality Metrics</a></li>
+  <li><a href="#modern-assemblers" id="toc-modern-assemblers" class="nav-link" data-scroll-target="#modern-assemblers">10. Modern Assemblers</a>
+  <ul class="collapse">
+  <li><a href="#short-read-assemblers" id="toc-short-read-assemblers" class="nav-link" data-scroll-target="#short-read-assemblers">10.1 Short-Read Assemblers</a></li>
+  <li><a href="#long-read-assemblers" id="toc-long-read-assemblers" class="nav-link" data-scroll-target="#long-read-assemblers">10.2 Long-Read Assemblers</a></li>
+  <li><a href="#hifi-specific-assemblers" id="toc-hifi-specific-assemblers" class="nav-link" data-scroll-target="#hifi-specific-assemblers">10.3 HiFi-Specific Assemblers</a></li>
+  <li><a href="#hybrid-and-t2t-assemblers" id="toc-hybrid-and-t2t-assemblers" class="nav-link" data-scroll-target="#hybrid-and-t2t-assemblers">10.4 Hybrid and T2T Assemblers</a></li>
+  <li><a href="#consensus-assemblers" id="toc-consensus-assemblers" class="nav-link" data-scroll-target="#consensus-assemblers">10.5 Consensus Assemblers</a></li>
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link" data-scroll-target="#summary-table">10.6 Summary Table</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture23.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture23.html">23. Genome Assembly</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 23: Genome Assembly</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to:</p>
+<ul>
+<li>Explain why genome assembly is like solving a puzzle without the picture on the box</li>
+<li>Define k-mer composition and coverage</li>
+<li>State the three laws of assembly</li>
+<li>Construct overlap graphs and de Bruijn graphs from k-mer collections</li>
+<li>Distinguish Hamiltonian paths from Eulerian paths and explain why the latter are computationally tractable</li>
+<li>Explain how k-mer size and read length affect repeat resolution</li>
+<li>Define contig, scaffold, and N50</li>
+</ul>
+<hr>
+</section>
+<section id="the-assembly-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-assembly-problem">1. The Assembly Problem</h2>
+<p>Genome assembly is reconstructing a genome sequence from sequencing reads—without knowing what the answer looks like. It is analogous to assembling a jigsaw puzzle without the picture on the box [1].</p>
+<p>Whole-genome shotgun sequencing works by copying the input DNA many times, then randomly fragmenting all copies into short pieces (reads). The term “shotgun” refers to this random fragmentation—as if the genome was blasted apart. Our task: take the resulting pile of fragments and reconstruct the original sequence.</p>
+<pre><code>                   CTAGGCCCTCAATTTTT
+                 CTCTAGGCCCTCAATTTTT
+               GGCTCTAGGCCCTCATTTTTT
+            CTCGGCTCTAGCCCCTCATTTT
+         TATCTCGACTCTAGGCCCTCA           &lt;- Reads (Given)
+         TATCTCGACTCTAGGCC
+     TCTATATCTCGGCTCTAGG
+ GGCGTCTATATCTCG
+ GGCGTCGATATCT
+ GGCGTCTATATCT
+ -----------------------------------
+ ???????????????????????????????????     &lt;- Genome (Unknown)</code></pre>
+<hr>
+</section>
+<section id="k-mer-composition" class="level2">
+<h2 class="anchored" data-anchor-id="k-mer-composition">2. K-mer Composition</h2>
+<p>Genomes are strings of text. Sequencing generates reads—substrings of the genome. For simplicity, assume all reads have the same length <span class="math inline">\(k\)</span>. The <strong>k-mer composition</strong> of a genome is the collection of all its length-<span class="math inline">\(k\)</span> substrings.</p>
+<p>For the short “genome” <code>TATGGGGTGC</code> with <span class="math inline">\(k = 3\)</span>:</p>
+<p><span class="math display">\[
+Composition_3(\texttt{TATGGGGTGC}) = \texttt{ATG, GGG, GGG, GGT, GTG, TAT, TGC, TGG}
+\]</span></p>
+<p>We list k-mers in lexicographic (alphabetical) order because a sequencing machine does not produce reads in any particular order—we do not know where each read came from in the genome.</p>
+<hr>
+</section>
+<section id="assembly-by-overlap" class="level2">
+<h2 class="anchored" data-anchor-id="assembly-by-overlap">3. Assembly by Overlap</h2>
+<p>Given a scrambled collection of k-mers, we try to reconstruct the genome by <strong>tiling</strong> k-mers that overlap in <span class="math inline">\(k-1\)</span> nucleotides. Consider these five 3-mers:</p>
+<p><span class="math display">\[
+\texttt{AAT ATG GTT TAA TGT}
+\]</span></p>
+<p>Tiling them by their overlaps:</p>
+<pre><code>TAA
+ AAT
+  ATG
+   TGT
+    GTT
+-------
+TAATGTT</code></pre>
+<p>This works perfectly for simple cases. But what happens with repeats? Consider a larger 3-mer collection:</p>
+<p><span class="math display">\[
+\texttt{AAT ATG ATG ATG CAT CCA GAT GCC GGA GGG GTT TAA TGC TGG TGT}
+\]</span></p>
+<p>The 3-mer <code>ATG</code> appears <strong>three times</strong>. Each <code>ATG</code> can be followed by <code>TGC</code>, <code>TGG</code>, or <code>TGT</code>—we don’t know which goes where. Choosing the wrong extension leads to a dead end or an incorrect assembly.</p>
+<p>One successful tiling produces the “genome path”:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_genome_path.png" class="img-fluid figure-img"></p>
+<figcaption>Genome path for the 3-mer collection. Each 3-mer overlaps its neighbor by 2 bases, spelling out <code>TAATGCCATGGGATGTT</code>.</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="coverage" class="level2">
+<h2 class="anchored" data-anchor-id="coverage">4. Coverage</h2>
+<p><strong>Coverage</strong> is the number of reads covering a given position in the genome. In this example:</p>
+<pre><code>TAA
+ AAT
+  ATG
+   TGT
+    GTT
+-------
+TAATGTT
+0123456</code></pre>
+<p>Position 0 has coverage 1, position 3 has coverage 3. The <strong>average coverage</strong> is total bases in reads divided by genome length: <span class="math inline">\(\frac{15}{7} \approx 2\times\)</span>.</p>
+<p>A more realistic example with ~<span class="math inline">\(5\times\)</span> coverage:</p>
+<pre><code>                  CTAGGCCCTCAATTTTT
+                CTCTAGGCCCTCAATTTTT
+              GGCTCTAGGCCCTCATTTTTT
+           CTCGGCTCTAGCCCCTCATTTT
+        TATCTCGACTCTAGGCCCTCA
+        TATCTCGACTCTAGGCC
+    TCTATATCTCGGCTCTAGG
+GGCGTCTATATCTCG
+GGCGTCGATATCT
+GGCGTCTATATCT
+-----------------------------------
+GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
+<p>Average coverage: <span class="math inline">\(\frac{177}{35} \approx 5\times\)</span>.</p>
+<hr>
+</section>
+<section id="the-three-laws-of-assembly" class="level2">
+<h2 class="anchored" data-anchor-id="the-three-laws-of-assembly">5. The Three Laws of Assembly</h2>
+<section id="the-first-law-overlaps-imply-co-location" class="level3">
+<h3 class="anchored" data-anchor-id="the-first-law-overlaps-imply-co-location">The First Law: Overlaps Imply Co-location</h3>
+<p>If the <strong>suffix</strong> of one read matches the <strong>prefix</strong> of another, the two reads may originate from overlapping positions in the genome:</p>
+<pre><code>TCTATATCTCGGCTCTAGG    &lt;- read 1
+    |||||||||||||||
+    TATCTCGACTCTAGGCC  &lt;- read 2</code></pre>
+<p>The match does not need to be perfect. Differences may arise from sequencing errors, allelic variation (in diploid organisms), or polymorphisms within a population of cells.</p>
+</section>
+<section id="the-second-law-higher-coverage-is-better" class="level3">
+<h3 class="anchored" data-anchor-id="the-second-law-higher-coverage-is-better">The Second Law: Higher Coverage Is Better</h3>
+<p>Higher coverage means more overlaps, longer overlaps, and fewer gaps:</p>
+<pre><code>         TATCTCGACTCTAGGCCCTCA         &lt;- Low coverage (few reads)
+ -----------------------------------
+ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT   &lt;- Genome
+ -----------------------------------
+     TCTATATCTCGGCTCTAGG
+ GGCGTCTATATCTCG                       &lt;- Higher coverage (many reads)
+ GGCGTCGATATCT
+ ...</code></pre>
+</section>
+<section id="the-third-law-repeats-are-evil" class="level3">
+<h3 class="anchored" data-anchor-id="the-third-law-repeats-are-evil">The Third Law: Repeats Are Evil</h3>
+<p>Consider the string <code>a_long_long_long_time</code>. If we try to find the shortest superstring from its 6-mers, the greedy algorithm maximizes overlap and produces <code>a_long_long_time</code>—collapsing one repeat:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_repeat_greedy.png" class="img-fluid figure-img"></p>
+<figcaption>Greedy path through the overlap graph of <code>a_long_long_long_time</code>. Maximizing overlap yields the wrong (shorter) answer.</figcaption>
+</figure>
+</div>
+<p>The correct path has a lower total overlap but produces the right string:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_repeat_overlap.png" class="img-fluid figure-img"></p>
+<figcaption>Correct path preserving all three repeats. Total overlap is lower (39 vs 44) but the reconstruction is accurate.</figcaption>
+</figure>
+</div>
+<p>This is a fundamental problem: <strong>repeats shorter than the read length cannot be resolved</strong>. They produce ambiguous paths in the assembly graph.</p>
+<hr>
+</section>
+</section>
+<section id="graph-based-assembly" class="level2">
+<h2 class="anchored" data-anchor-id="graph-based-assembly">6. Graph-Based Assembly</h2>
+<p>Finding overlaps between all reads defines a <strong>directed graph</strong>. Edges connect reads whose suffix matches another read’s prefix. The assembly problem becomes finding a path through this graph that reconstructs the genome.</p>
+<section id="overlap-graphs-and-hamiltonian-paths" class="level3">
+<h3 class="anchored" data-anchor-id="overlap-graphs-and-hamiltonian-paths">6.1 Overlap Graphs and Hamiltonian Paths</h3>
+<p>In an <strong>overlap graph</strong>, each <strong>node</strong> is a read and each <strong>edge</strong> represents an overlap between two reads. Reconstructing the genome means finding a path that visits every <strong>node</strong> exactly once—a <strong>Hamiltonian path</strong>.</p>
+<p>For the 3-mer collection from Section 3, the overlap graph connects every pair of 3-mers that share a 2-mer overlap:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_overlap_graph.png" class="img-fluid figure-img"></p>
+<figcaption>Overlap graph for the 15 3-mers. Each node is a 3-mer; each edge indicates a 2-base overlap.</figcaption>
+</figure>
+</div>
+<p>The three copies of <code>ATG</code> create ambiguity: multiple Hamiltonian paths exist, producing different genome reconstructions:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_hamiltonian_path1.png" class="img-fluid figure-img"></p>
+<figcaption>Two Hamiltonian paths through the overlap graph, producing <code>TAATGCCATGGGATGTT</code> (top) and <code>TAATGGGATGCCATGTT</code> (bottom). Only one is correct.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_hamiltonian_path2.png" class="img-fluid figure-img"></p>
+<figcaption>The alternative Hamiltonian path.</figcaption>
+</figure>
+</div>
+<p>The problem: finding a Hamiltonian path is <strong>NP-complete</strong>—there is no efficient algorithm guaranteed to find the solution for large graphs. For a bacterial genome with millions of reads, this is computationally intractable.</p>
+</section>
+<section id="de-bruijn-graphs-and-eulerian-paths" class="level3">
+<h3 class="anchored" data-anchor-id="de-bruijn-graphs-and-eulerian-paths">6.2 De Bruijn Graphs and Eulerian Paths</h3>
+<p><a href="https://en.wikipedia.org/wiki/Nicolaas_Govert_de_Bruijn">Nicolaas de Bruijn</a> (1918–2012) proposed a different graph representation that transforms the problem from NP-complete to efficiently solvable.</p>
+<p>In a <strong>de Bruijn graph</strong>:</p>
+<ul>
+<li>Each <strong>edge</strong> represents a k-mer</li>
+<li>Each <strong>node</strong> represents a (k-1)-mer (the prefix or suffix of a k-mer)</li>
+<li>Two k-mers are connected if the suffix of one equals the prefix of the other</li>
+</ul>
+<p>For the genome <code>AAABBBBA</code> with <span class="math inline">\(k = 3\)</span>:</p>
+<pre><code>3-mers: AAA, AAB, ABB, BBB, BBB, BBA
+
+        AA → AB → BB → BA
+         ↺         ↺</code></pre>
+<p>Each edge is a k-mer. Each node is a distinct (k-1)-mer:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_kmers_as_edges.png" class="img-fluid figure-img"></p>
+<figcaption>K-mers assigned to edges. Nodes represent the (k-1)-mer overlaps between consecutive k-mers.</figcaption>
+</figure>
+</div>
+<p>Identical nodes are <strong>glued together</strong>, simplifying the graph:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_gluing_nodes.png" class="img-fluid figure-img"></p>
+<figcaption>De Bruijn graph after gluing identical nodes. The graph is much simpler than the overlap graph.</figcaption>
+</figure>
+</div>
+<p>Reconstructing the genome now means finding a path that visits every <strong>edge</strong> exactly once—an <strong>Eulerian path</strong>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_eulerian_paths.png" class="img-fluid figure-img"></p>
+<figcaption>Eulerian paths through the de Bruijn graph. Numbering of edges shows the order of traversal, reconstructing the genome.</figcaption>
+</figure>
+</div>
+<p>Unlike the Hamiltonian path problem, Euler proved in 1736 that Eulerian paths can be found efficiently.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Euler’s Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A connected directed graph has an Eulerian path if and only if every node is <strong>balanced</strong> (number of incoming edges equals number of outgoing edges), with at most two exceptions (the start and end nodes). This can be checked and solved in linear time.</p>
+</div>
+</div>
+</section>
+<section id="the-bridges-of-konigsberg" class="level3">
+<h3 class="anchored" data-anchor-id="the-bridges-of-konigsberg">6.3 The Bridges of Konigsberg</h3>
+<p>Euler’s insight originated from a famous puzzle: can you walk through the city of Konigsberg (now Kaliningrad) crossing each of its seven bridges exactly once?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_konigsberg.png" class="img-fluid figure-img"></p>
+<figcaption>The Bridges of Konigsberg. (a) A map of old Konigsberg with four land areas. (b) The bridge graph: each land area is a node, each bridge is an edge. All nodes are unbalanced, so no Eulerian path exists. From Compeau et al.&nbsp;(2011) [2].</figcaption>
+</figure>
+</div>
+<p>Euler proved this is impossible because all nodes in the graph have <strong>odd degree</strong>—an odd number of edges—so no Eulerian path exists. This was the birth of graph theory in 1736, and the same mathematics underlies modern genome assembly.</p>
+<hr>
+</section>
+</section>
+<section id="overlap-graphs-vs.-de-bruijn-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="overlap-graphs-vs.-de-bruijn-graphs">7. Overlap Graphs vs.&nbsp;De Bruijn Graphs</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 34%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Overlap Graph</th>
+<th>De Bruijn Graph</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Nodes represent</strong></td>
+<td>Reads</td>
+<td>(k-1)-mers</td>
+</tr>
+<tr class="even">
+<td><strong>Edges represent</strong></td>
+<td>Overlaps between reads</td>
+<td>k-mers</td>
+</tr>
+<tr class="odd">
+<td><strong>Assembly = finding</strong></td>
+<td>Hamiltonian path (visit every node once)</td>
+<td>Eulerian path (visit every edge once)</td>
+</tr>
+<tr class="even">
+<td><strong>Computational complexity</strong></td>
+<td>NP-complete</td>
+<td>Linear time</td>
+</tr>
+<tr class="odd">
+<td><strong>Construction</strong></td>
+<td>All-vs-all pairwise comparison, O(n<span class="math inline">\(^2\)</span>)</td>
+<td>k-mer decomposition via hash tables</td>
+</tr>
+<tr class="even">
+<td><strong>Best for</strong></td>
+<td>Long reads (ONT, PacBio)</td>
+<td>Short reads (Illumina)</td>
+</tr>
+<tr class="odd">
+<td><strong>Repeat handling</strong></td>
+<td>Better—long reads span repeats</td>
+<td>Sensitive to k-mer size</td>
+</tr>
+<tr class="even">
+<td><strong>Error tolerance</strong></td>
+<td>More robust</td>
+<td>Errors create spurious nodes/edges</td>
+</tr>
+</tbody>
+</table>
+<p>Modern short-read assemblers (SPAdes, MEGAHIT) use de Bruijn graphs. Long-read assemblers (Flye, Hifiasm) use overlap-based approaches, leveraging the fact that long reads can span most repeats directly.</p>
+<p>Repeats also cause ambiguity in de Bruijn graphs. Without edge numbering, multiple Eulerian walks are possible:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_eulerian_ambiguous1.png" class="img-fluid figure-img"></p>
+<figcaption>Eulerian walk #1: at the <code>TG</code> node we turn up first, producing <code>TAATGCCATGGGATGTT</code>.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_eulerian_ambiguous2.png" class="img-fluid figure-img"></p>
+<figcaption>Eulerian walk #2: at the <code>TG</code> node we turn down first, producing <code>TAATGGGATGCCATGTT</code>. Only one of these is correct.</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="k-mer-size-and-repeat-resolution" class="level2">
+<h2 class="anchored" data-anchor-id="k-mer-size-and-repeat-resolution">8. K-mer Size and Repeat Resolution</h2>
+<p>The choice of <span class="math inline">\(k\)</span> is critical for de Bruijn graph assembly. Repeats shorter than <span class="math inline">\(k\)</span> are resolved; repeats longer than <span class="math inline">\(k\)</span> create ambiguous paths.</p>
+<p>For the genome <code>TAATGCCATGGGATGTT</code> with the repeated 3-mer <code>ATG</code>:</p>
+<p><strong>k = 3</strong> — the de Bruijn graph has multiple Eulerian paths; the repeat is unresolved:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_debruijn_k3.png" class="img-fluid figure-img"></p>
+<figcaption>De Bruijn graph with k=3. Multiple paths exist due to the repeated ATG.</figcaption>
+</figure>
+</div>
+<p><strong>k = 4</strong> — complexity decreases, but ambiguity remains:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_debruijn_k4.png" class="img-fluid figure-img"></p>
+<figcaption>De Bruijn graph with k=4. Fewer alternative paths, but the repeat still causes branching.</figcaption>
+</figure>
+</div>
+<p><strong>k = 5</strong> — only one path exists; <span class="math inline">\(k\)</span> exceeds the repeat length and the assembly is unambiguous:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_debruijn_k5.png" class="img-fluid figure-img"></p>
+<figcaption>De Bruijn graph with k=5. A single Eulerian path reconstructs the genome correctly.</figcaption>
+</figure>
+</div>
+<p>This is why <strong>longer reads are so valuable</strong>: they span repeats that short k-mers cannot resolve. Oxford Nanopore reads of 10–100 kb can span most bacterial repeats (insertion sequences ~1 kb, transposons ~5 kb, rRNA operons ~5 kb), enabling complete, single-contig assemblies.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Fundamental Trade-off
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Larger k</strong>: resolves more repeats but requires higher coverage (fewer k-mers per read) and is more sensitive to sequencing errors</li>
+<li><strong>Smaller k</strong>: tolerates lower coverage and errors but collapses repeats</li>
+<li>Modern assemblers use <strong>multiple k-mer sizes</strong> simultaneously to balance this trade-off</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+<section id="assembly-quality-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="assembly-quality-metrics">9. Assembly Quality Metrics</h2>
+<p>How do we evaluate an assembly? Three key terms:</p>
+<ul>
+<li><strong>Contig</strong> — a contiguous sequence reconstructed from overlapping reads. An assembly typically consists of multiple contigs separated by gaps.</li>
+<li><strong>Scaffold</strong> — an ordered set of contigs with estimated gap sizes between them. Scaffolding uses paired-end or long-read information to order and orient contigs.</li>
+<li><strong>N50</strong> — the length of the shortest contig such that contigs of that length or longer cover at least 50% of the total assembly. Higher N50 = more contiguous assembly.</li>
+</ul>
+<p>To compute N50: sort contigs from longest to shortest, then cumulatively add their lengths. The contig that pushes the running total past 50% of the genome size is the N50.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_n50.png" class="img-fluid figure-img"></p>
+<figcaption>N50 illustrated. Contigs are sorted by size; the N50 contig is the one where the cumulative sum reaches 50% of the genome. Image credit: Mike Schatz.</figcaption>
+</figure>
+</div>
+<p>For a bacterial genome like <em>S. aureus</em> (~2.8 Mb):</p>
+<ul>
+<li>A short-read-only assembly might produce 50–200 contigs with N50 of 50–200 kb</li>
+<li>A long-read assembly with Flye typically produces 1–3 contigs with N50 equal to the chromosome length (~2.8 Mb)</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Connecting to Your MRSA Assembly
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Flye assemblies you are running from <a href="../lectures/lecture22.html">Lecture 22</a> should ideally produce a single circular contig for the <em>S. aureus</em> chromosome (~2.8 Mb) plus separate small contigs for plasmids. We will evaluate your assembly results using these metrics in the next class.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="modern-assemblers" class="level2">
+<h2 class="anchored" data-anchor-id="modern-assemblers">10. Modern Assemblers</h2>
+<p>The theory above translates into real tools. This section surveys the major assemblers in current use, organized by the type of data they were designed for.</p>
+<section id="short-read-assemblers" class="level3">
+<h3 class="anchored" data-anchor-id="short-read-assemblers">10.1 Short-Read Assemblers</h3>
+<section id="spades" class="level4">
+<h4 class="anchored" data-anchor-id="spades">SPAdes</h4>
+<p><a href="https://github.com/ablab/spades">SPAdes</a> [4] builds <strong>multi-sized de Bruijn graphs</strong>—constructing graphs at multiple values of <span class="math inline">\(k\)</span> and merging them. This addresses the fundamental trade-off: small <span class="math inline">\(k\)</span> captures low-coverage regions while large <span class="math inline">\(k\)</span> resolves repeats. SPAdes iteratively increases <span class="math inline">\(k\)</span> and uses paired-end information (k-bimers) to bridge gaps. Originally designed for single-cell sequencing (where coverage is extremely uneven due to MDA amplification bias), SPAdes became the default short-read assembler for bacterial genomes. Variants include metaSPAdes for metagenomics and rnaSPAdes for transcriptome assembly.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_spades_algorithm.png" class="img-fluid figure-img"></p>
+<figcaption>SPAdes multi-sized de Bruijn graph. (A) Standard de Bruijn graph at k=3 is tangled with many edges. (B) Same graph after gluing—h-paths of length 2 are highlighted. (C) Graph at k=4 is fragmented into 3 disconnected components. (D) The multisized de Bruijn graph DB(Reads, 3, 4) combines both, producing a graph that is neither tangled nor fragmented. From Bankevich et al.&nbsp;(2012) [4].</figcaption>
+</figure>
+</div>
+</section>
+<section id="minia" class="level4">
+<h4 class="anchored" data-anchor-id="minia">Minia</h4>
+<p><a href="https://github.com/GATB/minia">Minia</a> [18] demonstrated that a de Bruijn graph for an entire human genome can be stored in <strong>constant memory</strong> (~5.7 GB) using a <strong>Bloom filter</strong>—a probabilistic data structure that tests set membership without storing the elements themselves. False positives (phantom k-mers not in the data) are handled by a small auxiliary “critical false positive” table. This made Minia the first assembler capable of assembling a human genome on a desktop computer. While Minia’s output (unitigs/contigs) is less polished than SPAdes, its memory-efficient representation was foundational—the same Bloom filter approach influenced MEGAHIT’s succinct de Bruijn graph and the broader GATB (Genome Assembly &amp; Analysis Tool Box) library.</p>
+</section>
+<section id="megahit" class="level4">
+<h4 class="anchored" data-anchor-id="megahit">MEGAHIT</h4>
+<p><a href="https://github.com/voutcn/megahit">MEGAHIT</a> [5] uses a <strong>succinct de Bruijn graph</strong> (SdBG)—a compressed representation that dramatically reduces memory consumption. Like SPAdes, it iterates over multiple <span class="math inline">\(k\)</span>-mer sizes. MEGAHIT assembled a 252 Gbp soil metagenome on a single compute node, making it the tool of choice for large-scale metagenome assembly on limited hardware.</p>
+<hr>
+</section>
+</section>
+<section id="long-read-assemblers" class="level3">
+<h3 class="anchored" data-anchor-id="long-read-assemblers">10.2 Long-Read Assemblers</h3>
+<section id="canu" class="level4">
+<h4 class="anchored" data-anchor-id="canu">Canu</h4>
+<p><a href="https://github.com/marbl/canu">Canu</a> [6] follows the classic <strong>Overlap-Layout-Consensus</strong> (OLC) paradigm in three explicit stages: correct reads, trim low-quality regions, then assemble. Its key innovation is <strong>adaptive k-mer weighting</strong>—inspired by tf-idf from information retrieval—which downweights repetitive k-mers during overlap detection so that unique overlaps dominate.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_canu_algorithm.png" class="img-fluid figure-img"></p>
+<figcaption>Canu pipeline. Three stages—Correct, Trim, Assemble—each builds overlap databases independently. From Koren et al.&nbsp;(2017) [6].</figcaption>
+</figure>
+</div>
+</section>
+<section id="flye" class="level4">
+<h4 class="anchored" data-anchor-id="flye">Flye</h4>
+<p><a href="https://github.com/mikolmogorov/Flye">Flye</a> [3] takes a fundamentally different approach: it skips error correction entirely and instead builds a <strong>repeat graph</strong> directly from noisy reads. Flye first generates “disjointigs”—arbitrary concatenations of reads that traverse the genome—then identifies repeats by self-alignment and constructs a graph where edges represent unique or repetitive genomic segments. Reads are then aligned back to the graph to resolve which repeat copies connect to which unique regions.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_flye_algorithm.png" class="img-fluid figure-img"></p>
+<figcaption>Flye algorithm. (a) Genome with repeats R1 and R2. (b) Reads spanning repeats. (c-d) Disjointigs are generated and concatenated. (f-i) A repeat graph is built and progressively resolved using read paths. From Kolmogorov et al.&nbsp;(2019) [3].</figcaption>
+</figure>
+</div>
+<p>This approach is an order of magnitude faster than correct-then-assemble methods like Canu. Flye is the assembler you used in <a href="../lectures/lecture22.html">Lecture 22</a> for your MRSA data.</p>
+</section>
+<section id="miniasm" class="level4">
+<h4 class="anchored" data-anchor-id="miniasm">Miniasm</h4>
+<p><a href="https://github.com/lh3/miniasm">Miniasm</a> [7] implements the most extreme version of OLC: <strong>overlap and layout only, no consensus</strong>. It takes raw overlaps from minimap and produces an assembly graph in minutes—a bacterial genome assembles in seconds. The output is unpolished (error rate matches the reads), so miniasm is typically paired with Racon or Medaka for polishing. Miniasm is used as a building block inside other tools like Unicycler and Autocycler.</p>
+</section>
+<section id="shasta" class="level4">
+<h4 class="anchored" data-anchor-id="shasta">Shasta</h4>
+<p><a href="https://github.com/paoloshasta/shasta">Shasta</a> [8] uses a modified OLC approach with <strong>run-length encoding</strong>—compressing homopolymers before overlap detection, which eliminates the most common Nanopore error type. Shasta assembled a complete human genome from Nanopore reads in under 6 hours on a single machine.</p>
+</section>
+<section id="nextdenovo" class="level4">
+<h4 class="anchored" data-anchor-id="nextdenovo">NextDenovo</h4>
+<p><a href="https://github.com/Nextomics/NextDenovo">NextDenovo</a> [9] uses a two-module <strong>correct-then-assemble</strong> strategy (NextCorrect + NextGraph) with a string graph approach. It achieves comparable or better results than Canu at significantly lower computational cost, making it a strong choice for large-scale long-read assembly projects.</p>
+<hr>
+</section>
+</section>
+<section id="hifi-specific-assemblers" class="level3">
+<h3 class="anchored" data-anchor-id="hifi-specific-assemblers">10.3 HiFi-Specific Assemblers</h3>
+<p>PacBio HiFi reads (&gt;99% accuracy, 10–20 kb) have spawned assemblers that exploit their low error rate.</p>
+<section id="hifiasm" class="level4">
+<h4 class="anchored" data-anchor-id="hifiasm">Hifiasm</h4>
+<p><a href="https://github.com/chhylp123/hifiasm">Hifiasm</a> [10] builds a <strong>phased assembly graph</strong> that preserves haplotype information throughout the assembly process. Standard assemblers collapse heterozygous alleles; hifiasm keeps them separate. It performs haplotype-aware error correction that fixes sequencing errors while preserving true heterozygous variants, then constructs a graph where reads from the same haplotype connect to each other. With trio data (parental short reads) or Hi-C data, hifiasm produces fully phased diploid assemblies.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_hifiasm_algorithm.png" class="img-fluid figure-img"></p>
+<figcaption>Hifiasm algorithm. HiFi reads undergo haplotype-aware error correction that preserves heterozygous alleles. A phased string graph separates haplotypes, producing primary + alternate assemblies or fully phased haplotype assemblies with complementary data. From Cheng et al.&nbsp;(2021) [10].</figcaption>
+</figure>
+</div>
+</section>
+<section id="lja-la-jolla-assembler" class="level4">
+<h4 class="anchored" data-anchor-id="lja-la-jolla-assembler">LJA (La Jolla Assembler)</h4>
+<p><a href="https://github.com/AntonBankevich/LJA">LJA</a> [11] uses a <strong>multiplex de Bruijn graph</strong> that adapts <span class="math inline">\(k\)</span>-mer size locally across the graph—using smaller <span class="math inline">\(k\)</span> in low-complexity regions and larger <span class="math inline">\(k\)</span> near repeats. LJA reduces the HiFi read error rate by three orders of magnitude before graph construction, producing five-fold fewer misassemblies than other HiFi assemblers.</p>
+<hr>
+</section>
+</section>
+<section id="hybrid-and-t2t-assemblers" class="level3">
+<h3 class="anchored" data-anchor-id="hybrid-and-t2t-assemblers">10.4 Hybrid and T2T Assemblers</h3>
+<section id="masurca" class="level4">
+<h4 class="anchored" data-anchor-id="masurca">MaSuRCA</h4>
+<p><a href="https://github.com/alekseyzimin/masurca">MaSuRCA</a> [16] (Maryland Super-Read Celera Assembler) takes a unique approach to hybrid assembly: it converts short paired-end reads into <strong>super-reads</strong>—longer, highly accurate synthetic reads constructed by extending each read in both directions using the de Bruijn graph until a branch point is reached [17]. When long reads (PacBio or ONT) are available, MaSuRCA further combines super-reads with long reads to create <strong>mega-reads</strong>—long reads with short-read accuracy. The mega-reads are then assembled using a modified OLC assembler (CABOG). This approach has been particularly successful for large, repetitive plant genomes—MaSuRCA assembled the 4.3 Gb <em>Aegilops tauschii</em> (bread wheat progenitor) genome with an N50 of 487 kb.</p>
+</section>
+<section id="verkko" class="level4">
+<h4 class="anchored" data-anchor-id="verkko">Verkko</h4>
+<p><a href="https://github.com/marbl/verkko">Verkko</a> [12] combines HiFi and ONT ultra-long reads to achieve <strong>telomere-to-telomere</strong> (T2T) phased diploid assembly. It builds a multiplex de Bruijn graph from HiFi reads, then uses ONT ultra-long reads (&gt;100 kb) to traverse tangles and bubbles in the graph. Haplotype markers from trio or Hi-C data separate maternal and paternal paths.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_verkko_algorithm.png" class="img-fluid figure-img"></p>
+<figcaption>Verkko pipeline. HiFi reads build a compressed de Bruijn graph (via MBG); ONT ultra-long reads resolve tangles (via GraphAligner); haplotype markers phase the graph (via Rukki); Canu generates consensus. From Rautiainen et al.&nbsp;(2023) [12].</figcaption>
+</figure>
+</div>
+<p>Verkko assembled 20 of 46 diploid human chromosomes gap-free in its original publication. It is the assembler behind many of the T2T reference genomes being produced by the Human Pangenome Reference Consortium.</p>
+</section>
+<section id="hybracter" class="level4">
+<h4 class="anchored" data-anchor-id="hybracter">Hybracter</h4>
+<p><a href="https://github.com/gbouras13/hybracter">Hybracter</a> [13] is an automated <strong>pipeline</strong> (not a novel algorithm) that orchestrates Flye for long-read assembly, then polishes with short reads if available. It automatically classifies contigs as chromosome vs.&nbsp;plasmid and recovers small plasmids that other assemblers miss. Hybracter is designed for bacterial genomics at scale—processing hundreds of isolates with minimal user input.</p>
+<hr>
+</section>
+</section>
+<section id="consensus-assemblers" class="level3">
+<h3 class="anchored" data-anchor-id="consensus-assemblers">10.5 Consensus Assemblers</h3>
+<section id="autocycler" class="level4">
+<h4 class="anchored" data-anchor-id="autocycler">Autocycler</h4>
+<p><a href="https://github.com/rrwick/Autocycler">Autocycler</a> [14] takes a <strong>consensus meta-assembly</strong> approach: it runs multiple assemblers (Flye, miniasm, etc.) on subsampled read sets, then builds a compacted de Bruijn graph from the resulting assemblies and derives a consensus. The key insight, demonstrated by its predecessor <a href="https://github.com/rrwick/Trycycler">Trycycler</a> [15]: combining multiple assembly attempts produces lower error rates than any single assembler. Autocycler automates this process entirely (Trycycler required manual curation). Written in Rust for performance.</p>
+<hr>
+</section>
+</section>
+<section id="summary-table" class="level3">
+<h3 class="anchored" data-anchor-id="summary-table">10.6 Summary Table</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Assembler</th>
+<th>Algorithm</th>
+<th>Input data</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SPAdes</strong> [4]</td>
+<td>Multi-sized de Bruijn graph</td>
+<td>Illumina</td>
+<td>Bacterial/small genomes, single-cell</td>
+</tr>
+<tr class="even">
+<td><strong>Minia</strong> [18]</td>
+<td>Bloom filter de Bruijn graph</td>
+<td>Illumina</td>
+<td>Memory-limited, large genomes</td>
+</tr>
+<tr class="odd">
+<td><strong>MEGAHIT</strong> [5]</td>
+<td>Succinct de Bruijn graph</td>
+<td>Illumina</td>
+<td>Metagenomes, memory-limited</td>
+</tr>
+<tr class="even">
+<td><strong>Canu</strong> [6]</td>
+<td>OLC with tf-idf weighting</td>
+<td>ONT, PacBio</td>
+<td>Accurate long-read assembly</td>
+</tr>
+<tr class="odd">
+<td><strong>Flye</strong> [3]</td>
+<td>Repeat graph</td>
+<td>ONT, PacBio</td>
+<td>Fast long-read assembly, bacteria to human</td>
+</tr>
+<tr class="even">
+<td><strong>Miniasm</strong> [7]</td>
+<td>OLC (no consensus)</td>
+<td>ONT, PacBio</td>
+<td>Ultra-fast draft assemblies</td>
+</tr>
+<tr class="odd">
+<td><strong>Shasta</strong> [8]</td>
+<td>OLC with run-length encoding</td>
+<td>ONT</td>
+<td>Fast Nanopore-only, large genomes</td>
+</tr>
+<tr class="even">
+<td><strong>NextDenovo</strong> [9]</td>
+<td>String graph</td>
+<td>ONT, PacBio</td>
+<td>Cost-effective long-read assembly</td>
+</tr>
+<tr class="odd">
+<td><strong>Hifiasm</strong> [10]</td>
+<td>Phased assembly graph</td>
+<td>PacBio HiFi</td>
+<td>Haplotype-resolved diploid genomes</td>
+</tr>
+<tr class="even">
+<td><strong>LJA</strong> [11]</td>
+<td>Multiplex de Bruijn graph</td>
+<td>PacBio HiFi</td>
+<td>Lowest misassembly rate</td>
+</tr>
+<tr class="odd">
+<td><strong>MaSuRCA</strong> [16]</td>
+<td>Super-reads/mega-reads + OLC</td>
+<td>Illumina +/- ONT/PacBio</td>
+<td>Large, repetitive genomes (plants)</td>
+</tr>
+<tr class="even">
+<td><strong>Verkko</strong> [12]</td>
+<td>Hybrid de Bruijn + OLC</td>
+<td>HiFi + ONT UL</td>
+<td>T2T phased diploid assembly</td>
+</tr>
+<tr class="odd">
+<td><strong>Hybracter</strong> [13]</td>
+<td>Pipeline (Flye + polishing)</td>
+<td>ONT +/- Illumina</td>
+<td>Automated bacterial assembly</td>
+</tr>
+<tr class="even">
+<td><strong>Autocycler</strong> [14]</td>
+<td>Consensus meta-assembly</td>
+<td>ONT</td>
+<td>Highest-accuracy bacterial genomes</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Genome assembly reconstructs a genome from scrambled reads—a puzzle without the picture</li>
+<li><strong>Three laws</strong>: overlaps imply co-location; higher coverage is better; repeats are evil</li>
+<li><strong>Overlap graphs</strong> represent reads as nodes and overlaps as edges; assembly requires finding a Hamiltonian path (NP-complete)</li>
+<li><strong>De Bruijn graphs</strong> represent k-mers as edges and (k-1)-mers as nodes; assembly requires finding an Eulerian path (linear time)</li>
+<li>Larger k resolves more repeats but needs more coverage; smaller k tolerates errors but collapses repeats</li>
+<li>Long reads (ONT, PacBio) span repeats that short reads cannot resolve, enabling complete assemblies</li>
+<li><strong>N50</strong> measures assembly contiguity: the contig length at which 50% of the genome is covered</li>
+<li>Modern assemblers span a wide range: de Bruijn graph (SPAdes, MEGAHIT), OLC/repeat graph (Canu, Flye), phased graphs (hifiasm), and hybrid approaches (Verkko) for T2T assembly</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><a href="http://www.langmead-lab.org/teaching-materials/">Langmead, B. Assembly &amp; Shortest Common Superstring and De Bruijn Graph Assembly. Lecture notes, Johns Hopkins University.</a></li>
+<li><a href="https://doi.org/10.1038/nbt.2023">Compeau, P.E.C. et al.&nbsp;(2011). How to apply de Bruijn graphs to genome assembly. <em>Nature Biotechnology</em>, 29, 987–991.</a></li>
+<li><a href="https://doi.org/10.1038/s41587-019-0072-8">Kolmogorov, M. et al.&nbsp;(2019). Assembly of long, error-prone reads using repeat graphs. <em>Nature Biotechnology</em>, 37, 540–546.</a></li>
+<li><a href="https://doi.org/10.1089/cmb.2012.0021">Bankevich, A. et al.&nbsp;(2012). SPAdes: A new genome assembly algorithm and its applications to single-cell sequencing. <em>Journal of Computational Biology</em>, 19(5), 455–477.</a></li>
+<li><a href="https://doi.org/10.1093/bioinformatics/btv033">Li, D. et al.&nbsp;(2015). MEGAHIT: an ultra-fast single-node solution for large and complex metagenomics assembly via succinct de Bruijn graph. <em>Bioinformatics</em>, 31(10), 1674–1676.</a></li>
+<li><a href="https://doi.org/10.1101/gr.215087.116">Koren, S. et al.&nbsp;(2017). Canu: scalable and accurate long-read assembly via adaptive k-mer weighting and repeat separation. <em>Genome Research</em>, 27(5), 722–736.</a></li>
+<li><a href="https://doi.org/10.1093/bioinformatics/btw152">Li, H. (2016). Minimap and miniasm: fast mapping and de novo assembly for noisy long sequences. <em>Bioinformatics</em>, 32(14), 2103–2110.</a></li>
+<li><a href="https://doi.org/10.1038/s41587-020-0503-6">Shafin, K. et al.&nbsp;(2020). Nanopore sequencing and the Shasta toolkit enable efficient de novo assembly of eleven human genomes. <em>Nature Biotechnology</em>, 38, 1044–1053.</a></li>
+<li><a href="https://doi.org/10.1186/s13059-024-03252-4">Hu, J. et al.&nbsp;(2024). NextDenovo: an efficient error correction and accurate assembly tool for noisy long reads. <em>Genome Biology</em>, 25, 107.</a></li>
+<li><a href="https://doi.org/10.1038/s41592-020-01056-5">Cheng, H. et al.&nbsp;(2021). Haplotype-resolved de novo assembly using phased assembly graphs with hifiasm. <em>Nature Methods</em>, 18, 170–175.</a></li>
+<li><a href="https://doi.org/10.1038/s41587-022-01220-6">Bankevich, A. et al.&nbsp;(2022). Multiplex de Bruijn graphs enable genome assembly from long, high-fidelity reads. <em>Nature Biotechnology</em>, 40, 1075–1081.</a></li>
+<li><a href="https://doi.org/10.1038/s41587-023-01662-6">Rautiainen, M. et al.&nbsp;(2023). Telomere-to-telomere assembly of diploid chromosomes with Verkko. <em>Nature Biotechnology</em>, 41, 1474–1482.</a></li>
+<li><a href="https://doi.org/10.1099/mgen.0.001244">Bouras, G. et al.&nbsp;(2024). Hybracter: enabling scalable, automated, complete and accurate bacterial genome assemblies. <em>Microbial Genomics</em>, 10, 001244.</a></li>
+<li><a href="https://doi.org/10.1093/bioinformatics/btaf474">Wick, R.R. et al.&nbsp;(2025). Autocycler: long-read consensus assembly for bacterial genomes. <em>Bioinformatics</em>, 41(9), btaf474.</a></li>
+<li><a href="https://doi.org/10.1186/s13059-021-02483-z">Wick, R.R. et al.&nbsp;(2021). Trycycler: consensus long-read assemblies for bacterial genomes. <em>Genome Biology</em>, 22, 266.</a></li>
+<li><a href="https://doi.org/10.1093/bioinformatics/btt476">Zimin, A.V. et al.&nbsp;(2013). The MaSuRCA genome assembler. <em>Bioinformatics</em>, 29(21), 2669–2677.</a></li>
+<li><a href="https://doi.org/10.1101/gr.213405.116">Zimin, A.V. et al.&nbsp;(2017). Hybrid assembly of the large and highly repetitive genome of <em>Aegilops tauschii</em>, a progenitor of bread wheat, with the MaSuRCA mega-reads algorithm. <em>Genome Research</em>, 27(5), 787–792.</a></li>
+<li><a href="https://doi.org/10.1186/1748-7188-8-22">Chikhi, R. &amp; Rizk, G. (2013). Space-efficient and exact de Bruijn graph representation based on a Bloom filter. <em>Algorithms in Molecular Biology</em>, 8, 22.</a></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture23.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
