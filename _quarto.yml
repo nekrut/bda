@@ -63,6 +63,8 @@ website:
             text: "21. Interval Operations for Genomic Coordinates"
           - href: lectures/lecture22.qmd
             text: "22. Genome Assembly of MRSA Isolates"
+          - href: lectures/lecture23.qmd
+            text: "23. Genome Assembly"
 
 format:
   html:

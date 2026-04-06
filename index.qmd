@@ -50,7 +50,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 20 | Mar 26 | [NGS Data Logistics](lectures/lecture20.qmd) |
 | 21 | Mar 31 | [Interval Operations for Genomic Coordinates](lectures/lecture21.qmd) |
 | 22 | Apr 2 | [Genome Assembly of MRSA Isolates](lectures/lecture22.qmd) |
-| 23 | Apr 7 | - |
+| 23 | Apr 7 | [Genome Assembly](lectures/lecture23.qmd) |
 | 24 | Apr 9 | - |
 | 25 | Apr 14 | - |
 | 26 | Apr 16 | - |
