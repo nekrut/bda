@@ -312,11 +312,49 @@ The Flye assemblies you are running from [Lecture 22](lecture22.qmd) should idea
 
 ---
 
-## 10. Modern Assemblers
+## 10. Example: Assembling an MRSA Genome in Galaxy
+
+To make this concrete, here is the workflow we followed to assemble one of the MRSA isolates from the Hisatsune et al. dataset using Galaxy.
+
+### 10.1 Download and QC
+
+We downloaded both Illumina (paired-end) and Oxford Nanopore (single-end) reads from SRA using the **Faster Download and Extract Reads in FASTQ** tool (see [Lecture 22](lecture22.qmd) for details). Illumina reads were quality-trimmed with `fastp`---removing adapters and filtering bases below Q20, as in our variant-calling pipeline.
+
+### 10.2 Filtering Nanopore Reads with Filtlong
+
+Raw Nanopore reads vary enormously in length and quality. Before assembly, we filter them with [Filtlong](https://github.com/rrwick/Filtlong)---a tool designed specifically for this purpose.
+
+Filtlong scores each long read using three criteria:
+
+- **Length** --- longer reads are more valuable because they span more repeats
+- **Mean quality** --- higher average quality scores are preferred
+- **Window quality** --- the worst-quality window in a read drags down its score (a single bad region makes the whole read less useful)
+
+When Illumina reads are provided as a reference, Filtlong adds a fourth criterion: **k-mer match** --- how well the long read's k-mers match those found in the (more accurate) short reads. This provides an external quality signal independent of the Nanopore quality scores.
+
+Filtlong then ranks all reads by their composite score and retains the best subset---either a target number of bases or reads above a minimum length threshold. In the GTN tutorial, we set a minimum length of 1,000 bp.
+
+The effect is dramatic. Here is the read length distribution **before** filtering:
+
+![Read length distribution before Filtlong filtering (NanoPlot). Note the large peak of very short reads (<500 bp) that would add noise without spanning any repeats.](../images/lecture23_nanoplot_before.png)
+
+And **after** filtering:
+
+![Read length distribution after Filtlong filtering. Short reads have been removed; the remaining reads are concentrated in the 1--100 kb range, ideal for assembly.](../images/lecture23_nanoplot_after.png)
+
+The short-read peak below ~500 bp is gone. These fragments are too short to contribute useful overlap information and would only add noise to the assembly graph. The remaining reads---concentrated in the 1--100 kb range---are long enough to span most *S. aureus* repeats.
+
+### 10.3 Assembly with Flye
+
+The filtered Nanopore reads were assembled with Flye in **Nanopore corrected** mode. For a typical *S. aureus* isolate, Flye produces a single circular contig (~2.8 Mb) for the chromosome plus 0--3 small contigs for plasmids. The draft assembly is then polished with the Illumina reads using `BWA-MEM2` (alignment) followed by `Polypolish` (error correction), reducing the per-base error rate from ~1% (Nanopore-level) to <0.01% (Illumina-level).
+
+---
+
+## 11. Modern Assemblers
 
 The theory above translates into real tools. This section surveys the major assemblers in current use, organized by the type of data they were designed for.
 
-### 10.1 Short-Read Assemblers
+### 11.1 Short-Read Assemblers
 
 #### SPAdes
 
@@ -334,7 +372,7 @@ The theory above translates into real tools. This section surveys the major asse
 
 ---
 
-### 10.2 Long-Read Assemblers
+### 11.2 Long-Read Assemblers
 
 #### Canu
 
@@ -364,7 +402,7 @@ This approach is an order of magnitude faster than correct-then-assemble methods
 
 ---
 
-### 10.3 HiFi-Specific Assemblers
+### 11.3 HiFi-Specific Assemblers
 
 PacBio HiFi reads (>99% accuracy, 10--20 kb) have spawned assemblers that exploit their low error rate.
 
@@ -380,7 +418,7 @@ PacBio HiFi reads (>99% accuracy, 10--20 kb) have spawned assemblers that exploi
 
 ---
 
-### 10.4 Hybrid and T2T Assemblers
+### 11.4 Hybrid and T2T Assemblers
 
 #### MaSuRCA
 
@@ -400,7 +438,7 @@ Verkko assembled 20 of 46 diploid human chromosomes gap-free in its original pub
 
 ---
 
-### 10.5 Consensus Assemblers
+### 11.5 Consensus Assemblers
 
 #### Autocycler
 
@@ -408,7 +446,7 @@ Verkko assembled 20 of 46 diploid human chromosomes gap-free in its original pub
 
 ---
 
-### 10.6 Summary Table
+### 11.6 Summary Table
 
 | Assembler | Algorithm | Input data | Best for |
 |-----------|-----------|-----------|----------|
