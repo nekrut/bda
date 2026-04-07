@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 23: Genome Assembly – BMMB554</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -35,14 +32,15 @@ ul.task-list li input[type="checkbox"] {
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-be3771519f21acc1c5b6733774c6dcd8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +70,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -322,14 +320,20 @@ window.Quarto = {
   <li><a href="#overlap-graphs-vs.-de-bruijn-graphs" id="toc-overlap-graphs-vs.-de-bruijn-graphs" class="nav-link" data-scroll-target="#overlap-graphs-vs.-de-bruijn-graphs">7. Overlap Graphs vs.&nbsp;De Bruijn Graphs</a></li>
   <li><a href="#k-mer-size-and-repeat-resolution" id="toc-k-mer-size-and-repeat-resolution" class="nav-link" data-scroll-target="#k-mer-size-and-repeat-resolution">8. K-mer Size and Repeat Resolution</a></li>
   <li><a href="#assembly-quality-metrics" id="toc-assembly-quality-metrics" class="nav-link" data-scroll-target="#assembly-quality-metrics">9. Assembly Quality Metrics</a></li>
-  <li><a href="#modern-assemblers" id="toc-modern-assemblers" class="nav-link" data-scroll-target="#modern-assemblers">10. Modern Assemblers</a>
+  <li><a href="#example-assembling-an-mrsa-genome-in-galaxy" id="toc-example-assembling-an-mrsa-genome-in-galaxy" class="nav-link" data-scroll-target="#example-assembling-an-mrsa-genome-in-galaxy">10. Example: Assembling an MRSA Genome in Galaxy</a>
   <ul class="collapse">
-  <li><a href="#short-read-assemblers" id="toc-short-read-assemblers" class="nav-link" data-scroll-target="#short-read-assemblers">10.1 Short-Read Assemblers</a></li>
-  <li><a href="#long-read-assemblers" id="toc-long-read-assemblers" class="nav-link" data-scroll-target="#long-read-assemblers">10.2 Long-Read Assemblers</a></li>
-  <li><a href="#hifi-specific-assemblers" id="toc-hifi-specific-assemblers" class="nav-link" data-scroll-target="#hifi-specific-assemblers">10.3 HiFi-Specific Assemblers</a></li>
-  <li><a href="#hybrid-and-t2t-assemblers" id="toc-hybrid-and-t2t-assemblers" class="nav-link" data-scroll-target="#hybrid-and-t2t-assemblers">10.4 Hybrid and T2T Assemblers</a></li>
-  <li><a href="#consensus-assemblers" id="toc-consensus-assemblers" class="nav-link" data-scroll-target="#consensus-assemblers">10.5 Consensus Assemblers</a></li>
-  <li><a href="#summary-table" id="toc-summary-table" class="nav-link" data-scroll-target="#summary-table">10.6 Summary Table</a></li>
+  <li><a href="#download-and-qc" id="toc-download-and-qc" class="nav-link" data-scroll-target="#download-and-qc">10.1 Download and QC</a></li>
+  <li><a href="#filtering-nanopore-reads-with-filtlong" id="toc-filtering-nanopore-reads-with-filtlong" class="nav-link" data-scroll-target="#filtering-nanopore-reads-with-filtlong">10.2 Filtering Nanopore Reads with Filtlong</a></li>
+  <li><a href="#assembly-with-flye" id="toc-assembly-with-flye" class="nav-link" data-scroll-target="#assembly-with-flye">10.3 Assembly with Flye</a></li>
+  </ul></li>
+  <li><a href="#modern-assemblers" id="toc-modern-assemblers" class="nav-link" data-scroll-target="#modern-assemblers">11. Modern Assemblers</a>
+  <ul class="collapse">
+  <li><a href="#short-read-assemblers" id="toc-short-read-assemblers" class="nav-link" data-scroll-target="#short-read-assemblers">11.1 Short-Read Assemblers</a></li>
+  <li><a href="#long-read-assemblers" id="toc-long-read-assemblers" class="nav-link" data-scroll-target="#long-read-assemblers">11.2 Long-Read Assemblers</a></li>
+  <li><a href="#hifi-specific-assemblers" id="toc-hifi-specific-assemblers" class="nav-link" data-scroll-target="#hifi-specific-assemblers">11.3 HiFi-Specific Assemblers</a></li>
+  <li><a href="#hybrid-and-t2t-assemblers" id="toc-hybrid-and-t2t-assemblers" class="nav-link" data-scroll-target="#hybrid-and-t2t-assemblers">11.4 Hybrid and T2T Assemblers</a></li>
+  <li><a href="#consensus-assemblers" id="toc-consensus-assemblers" class="nav-link" data-scroll-target="#consensus-assemblers">11.5 Consensus Assemblers</a></li>
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link" data-scroll-target="#summary-table">11.6 Summary Table</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -742,11 +746,51 @@ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
 </div>
 <hr>
 </section>
+<section id="example-assembling-an-mrsa-genome-in-galaxy" class="level2">
+<h2 class="anchored" data-anchor-id="example-assembling-an-mrsa-genome-in-galaxy">10. Example: Assembling an MRSA Genome in Galaxy</h2>
+<p>To make this concrete, here is the workflow we followed to assemble one of the MRSA isolates from the Hisatsune et al.&nbsp;dataset using Galaxy.</p>
+<section id="download-and-qc" class="level3">
+<h3 class="anchored" data-anchor-id="download-and-qc">10.1 Download and QC</h3>
+<p>We downloaded both Illumina (paired-end) and Oxford Nanopore (single-end) reads from SRA using the <strong>Faster Download and Extract Reads in FASTQ</strong> tool (see <a href="../lectures/lecture22.html">Lecture 22</a> for details). Illumina reads were quality-trimmed with <code>fastp</code>—removing adapters and filtering bases below Q20, as in our variant-calling pipeline.</p>
+</section>
+<section id="filtering-nanopore-reads-with-filtlong" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-nanopore-reads-with-filtlong">10.2 Filtering Nanopore Reads with Filtlong</h3>
+<p>Raw Nanopore reads vary enormously in length and quality. Before assembly, we filter them with <a href="https://github.com/rrwick/Filtlong">Filtlong</a>—a tool designed specifically for this purpose.</p>
+<p>Filtlong scores each long read using three criteria:</p>
+<ul>
+<li><strong>Length</strong> — longer reads are more valuable because they span more repeats</li>
+<li><strong>Mean quality</strong> — higher average quality scores are preferred</li>
+<li><strong>Window quality</strong> — the worst-quality window in a read drags down its score (a single bad region makes the whole read less useful)</li>
+</ul>
+<p>When Illumina reads are provided as a reference, Filtlong adds a fourth criterion: <strong>k-mer match</strong> — how well the long read’s k-mers match those found in the (more accurate) short reads. This provides an external quality signal independent of the Nanopore quality scores.</p>
+<p>Filtlong then ranks all reads by their composite score and retains the best subset—either a target number of bases or reads above a minimum length threshold. In the GTN tutorial, we set a minimum length of 1,000 bp.</p>
+<p>The effect is dramatic. Here is the read length distribution <strong>before</strong> filtering:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_nanoplot_before.png" class="img-fluid figure-img"></p>
+<figcaption>Read length distribution before Filtlong filtering (NanoPlot). Note the large peak of very short reads (&lt;500 bp) that would add noise without spanning any repeats.</figcaption>
+</figure>
+</div>
+<p>And <strong>after</strong> filtering:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/lecture23_nanoplot_after.png" class="img-fluid figure-img"></p>
+<figcaption>Read length distribution after Filtlong filtering. Short reads have been removed; the remaining reads are concentrated in the 1–100 kb range, ideal for assembly.</figcaption>
+</figure>
+</div>
+<p>The short-read peak below ~500 bp is gone. These fragments are too short to contribute useful overlap information and would only add noise to the assembly graph. The remaining reads—concentrated in the 1–100 kb range—are long enough to span most <em>S. aureus</em> repeats.</p>
+</section>
+<section id="assembly-with-flye" class="level3">
+<h3 class="anchored" data-anchor-id="assembly-with-flye">10.3 Assembly with Flye</h3>
+<p>The filtered Nanopore reads were assembled with Flye in <strong>Nanopore corrected</strong> mode. For a typical <em>S. aureus</em> isolate, Flye produces a single circular contig (~2.8 Mb) for the chromosome plus 0–3 small contigs for plasmids. The draft assembly is then polished with the Illumina reads using <code>BWA-MEM2</code> (alignment) followed by <code>Polypolish</code> (error correction), reducing the per-base error rate from ~1% (Nanopore-level) to &lt;0.01% (Illumina-level).</p>
+<hr>
+</section>
+</section>
 <section id="modern-assemblers" class="level2">
-<h2 class="anchored" data-anchor-id="modern-assemblers">10. Modern Assemblers</h2>
+<h2 class="anchored" data-anchor-id="modern-assemblers">11. Modern Assemblers</h2>
 <p>The theory above translates into real tools. This section surveys the major assemblers in current use, organized by the type of data they were designed for.</p>
 <section id="short-read-assemblers" class="level3">
-<h3 class="anchored" data-anchor-id="short-read-assemblers">10.1 Short-Read Assemblers</h3>
+<h3 class="anchored" data-anchor-id="short-read-assemblers">11.1 Short-Read Assemblers</h3>
 <section id="spades" class="level4">
 <h4 class="anchored" data-anchor-id="spades">SPAdes</h4>
 <p><a href="https://github.com/ablab/spades">SPAdes</a> [4] builds <strong>multi-sized de Bruijn graphs</strong>—constructing graphs at multiple values of <span class="math inline">\(k\)</span> and merging them. This addresses the fundamental trade-off: small <span class="math inline">\(k\)</span> captures low-coverage regions while large <span class="math inline">\(k\)</span> resolves repeats. SPAdes iteratively increases <span class="math inline">\(k\)</span> and uses paired-end information (k-bimers) to bridge gaps. Originally designed for single-cell sequencing (where coverage is extremely uneven due to MDA amplification bias), SPAdes became the default short-read assembler for bacterial genomes. Variants include metaSPAdes for metagenomics and rnaSPAdes for transcriptome assembly.</p>
@@ -768,7 +812,7 @@ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
 </section>
 </section>
 <section id="long-read-assemblers" class="level3">
-<h3 class="anchored" data-anchor-id="long-read-assemblers">10.2 Long-Read Assemblers</h3>
+<h3 class="anchored" data-anchor-id="long-read-assemblers">11.2 Long-Read Assemblers</h3>
 <section id="canu" class="level4">
 <h4 class="anchored" data-anchor-id="canu">Canu</h4>
 <p><a href="https://github.com/marbl/canu">Canu</a> [6] follows the classic <strong>Overlap-Layout-Consensus</strong> (OLC) paradigm in three explicit stages: correct reads, trim low-quality regions, then assemble. Its key innovation is <strong>adaptive k-mer weighting</strong>—inspired by tf-idf from information retrieval—which downweights repetitive k-mers during overlap detection so that unique overlaps dominate.</p>
@@ -805,7 +849,7 @@ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
 </section>
 </section>
 <section id="hifi-specific-assemblers" class="level3">
-<h3 class="anchored" data-anchor-id="hifi-specific-assemblers">10.3 HiFi-Specific Assemblers</h3>
+<h3 class="anchored" data-anchor-id="hifi-specific-assemblers">11.3 HiFi-Specific Assemblers</h3>
 <p>PacBio HiFi reads (&gt;99% accuracy, 10–20 kb) have spawned assemblers that exploit their low error rate.</p>
 <section id="hifiasm" class="level4">
 <h4 class="anchored" data-anchor-id="hifiasm">Hifiasm</h4>
@@ -824,7 +868,7 @@ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
 </section>
 </section>
 <section id="hybrid-and-t2t-assemblers" class="level3">
-<h3 class="anchored" data-anchor-id="hybrid-and-t2t-assemblers">10.4 Hybrid and T2T Assemblers</h3>
+<h3 class="anchored" data-anchor-id="hybrid-and-t2t-assemblers">11.4 Hybrid and T2T Assemblers</h3>
 <section id="masurca" class="level4">
 <h4 class="anchored" data-anchor-id="masurca">MaSuRCA</h4>
 <p><a href="https://github.com/alekseyzimin/masurca">MaSuRCA</a> [16] (Maryland Super-Read Celera Assembler) takes a unique approach to hybrid assembly: it converts short paired-end reads into <strong>super-reads</strong>—longer, highly accurate synthetic reads constructed by extending each read in both directions using the de Bruijn graph until a branch point is reached [17]. When long reads (PacBio or ONT) are available, MaSuRCA further combines super-reads with long reads to create <strong>mega-reads</strong>—long reads with short-read accuracy. The mega-reads are then assembled using a modified OLC assembler (CABOG). This approach has been particularly successful for large, repetitive plant genomes—MaSuRCA assembled the 4.3 Gb <em>Aegilops tauschii</em> (bread wheat progenitor) genome with an N50 of 487 kb.</p>
@@ -847,7 +891,7 @@ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
 </section>
 </section>
 <section id="consensus-assemblers" class="level3">
-<h3 class="anchored" data-anchor-id="consensus-assemblers">10.5 Consensus Assemblers</h3>
+<h3 class="anchored" data-anchor-id="consensus-assemblers">11.5 Consensus Assemblers</h3>
 <section id="autocycler" class="level4">
 <h4 class="anchored" data-anchor-id="autocycler">Autocycler</h4>
 <p><a href="https://github.com/rrwick/Autocycler">Autocycler</a> [14] takes a <strong>consensus meta-assembly</strong> approach: it runs multiple assemblers (Flye, miniasm, etc.) on subsampled read sets, then builds a compacted de Bruijn graph from the resulting assemblies and derives a consensus. The key insight, demonstrated by its predecessor <a href="https://github.com/rrwick/Trycycler">Trycycler</a> [15]: combining multiple assembly attempts produces lower error rates than any single assembler. Autocycler automates this process entirely (Trycycler required manual curation). Written in Rust for performance.</p>
@@ -855,7 +899,7 @@ GGCGTCTATATCTCGGCTCTAGGCCCTCATTTTTT</code></pre>
 </section>
 </section>
 <section id="summary-table" class="level3">
-<h3 class="anchored" data-anchor-id="summary-table">10.6 Summary Table</h3>
+<h3 class="anchored" data-anchor-id="summary-table">11.6 Summary Table</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -1117,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
