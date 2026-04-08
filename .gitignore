@@ -56,6 +56,7 @@ images/*
 !images/upload_button.png
 !images/tiaas_registration.png
 !images/mrsa_usa300_genome.png
+!images/lecture24/
 
 # Test files (keep answers private)
 lectures/test2*.qmd
