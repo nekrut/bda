@@ -172,15 +172,44 @@ The output is a set of pairwise alignments in PAF format with CIGAR strings.
 
 ### Step 3: Graph Smoothing with `smoothxg`
 
-The raw graph from seqwish can contain local complexity---underalignment artifacts where truly homologous positions are split across multiple nodes. `smoothxg` resolves this:
+#### The Problem: Underalignment
 
-1. Identifies collinear blocks of paths through the graph
-2. Applies **Partial Order Alignment (POA)** within each block
-3. Iterates multiple passes to handle boundary effects
+The raw graph from seqwish is *correct*---every base is placed exactly once, and all alignment relationships are preserved---but it is not *clean*. Because seqwish works from pairwise alignments that may disagree at their boundaries, the graph often contains **underalignment artifacts**: regions where truly homologous positions end up in separate nodes instead of being collapsed into one.
 
-![smoothxg workflow: identifying blocks, applying POA, and iterating. Source: [PGGB GitHub repository](https://github.com/pangenome/pggb).](../images/lecture24/smoothxg_workflow.png){width=80%}
+Consider three sequences that share a 100 bp region. If the pairwise alignment of A↔B covers positions 1--100 and B↔C covers positions 5--95, seqwish will correctly merge positions 5--95 into shared nodes but leave positions 1--4 and 96--100 split. The result is a graph that is more complex than necessary---extra nodes and edges that represent alignment boundary artifacts rather than real biological variation.
 
-![Example of graph smoothing: before and after smoothxg. Source: [PGGB GitHub repository](https://github.com/pangenome/pggb).](../images/lecture24/smoothxg.png){width=50%}
+This matters because downstream tools (variant calling, visualization, read mapping) all work better on a graph where shared sequence is maximally collapsed.
+
+#### The Solution: Block-Based Partial Order Alignment
+
+`smoothxg` resolves underalignment by re-aligning paths through the graph in local blocks:
+
+![smoothxg workflow. Input GFA is preprocessed (sorted, groomed, chopped into manageable segments), divided into collinear blocks, smoothed via POA, then reassembled. Source: [PGGB GitHub repository](https://github.com/pangenome/pggb). License: CC-BY 4.0.](../images/lecture24/smoothxg_workflow.png){width=100%}
+
+**Step-by-step:**
+
+1. **Preprocessing**: The graph is sorted using PG-SGD (path-guided stochastic gradient descent) to find a good 1D ordering of nodes, then "chopped" so that no single node is too long. This creates a well-ordered graph where collinear blocks can be identified
+
+2. **Block identification**: `smoothxg` walks along the sorted graph and groups consecutive nodes into **collinear blocks**---contiguous regions where multiple paths run in parallel. A block is a subgraph where all paths traverse roughly the same set of nodes in the same order. Blocks are broken at points where paths diverge significantly (large structural variants, rearrangements)
+
+3. **POA within each block**: Each block is extracted and the paths through it are re-aligned using **Partial Order Alignment (POA)**. POA is a multiple sequence alignment method that aligns sequences to a directed acyclic graph (DAG) rather than to a single sequence. Starting from the first path, each subsequent path is aligned to the growing POA graph, progressively building a consensus DAG. This produces a locally optimal multiple alignment that collapses all shared positions into single nodes
+
+4. **Consensus generation**: POA produces consensus paths through each block. These consensus sequences are new---they represent the multiple alignment's view of the shared structure
+
+5. **Lacing blocks together**: The smoothed blocks are stitched back into a complete graph. An "unchop" step merges adjacent nodes with single in/out edges back into longer segments
+
+6. **Iteration**: Because block boundaries are somewhat arbitrary, a single pass may leave artifacts at the seams between blocks. `smoothxg` iterates multiple passes, shifting block boundaries each time, to clean up edge effects
+
+#### Before and After
+
+![Three stages of graph smoothing visualized with `odgi viz`. **Top** ("sorted graph"): the raw seqwish output after sorting---note the chaotic region in the middle where paths are fragmented and misaligned. **Middle** ("consensus paths"): POA-derived consensus paths for each block, showing the re-aligned structure. **Bottom** ("smoothed graph"): the final smoothed graph---paths are more regular, and the fragmented middle region has been resolved into clean variation. Source: [PGGB GitHub repository](https://github.com/pangenome/pggb).](../images/lecture24/smoothxg.png){width=70%}
+
+#### Why Not Just Run Multiple Sequence Alignment Directly?
+
+A reasonable question: why not skip seqwish and run a standard MSA on all input sequences? Two reasons:
+
+- **Scale**: MSA algorithms are quadratic or worse in the number/length of sequences. For human-scale pangenomes (90+ haplotypes × 3 Gbp), global MSA is intractable. By first building a rough graph (seqwish) and then smoothing in local blocks, `smoothxg` keeps the problem tractable
+- **Structure preservation**: Global MSA forces a linear coordinate system. The graph from seqwish already captures large-scale structural variation (inversions, translocations). `smoothxg` refines the *local* alignment without destroying the *global* graph topology
 
 ### Step 4: Normalization with `gfaffix`
 
