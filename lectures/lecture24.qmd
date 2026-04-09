@@ -289,11 +289,152 @@ The **Sequence Tube Map** [22] visualizes pangenome graphs using the London Unde
 
 ### Gene-Oriented Bacterial Pangenomics
 
-Bacterial pangenomics originated with Tettelin et al. [2] and has become routine in microbial genomics. The gene-oriented approach remains dominant:
+Bacterial pangenomics originated with Tettelin et al. [2] and has become routine in microbial genomics. The gene-oriented approach---clustering orthologous genes across annotated genomes to produce presence/absence matrices---remains dominant. Three tools define the landscape:
 
-- **Roary** [3]: Fast but sensitive to annotation quality
-- **Panaroo** [4]: Corrects annotation errors via a gene neighborhood graph
-- **PPanGGOLiN** [5]: Partitions genes into persistent/shell/cloud using Markov Random Fields
+---
+
+### Roary: Fast Large-Scale Pangenome Analysis
+
+**Roary** [3] was the first tool to make large-scale prokaryotic pangenome analysis practical. It processes thousands of annotated genomes in hours on a single CPU.
+
+#### Algorithm
+
+Roary takes annotated assemblies in GFF3 format (typically from Prokka) and proceeds through five steps:
+
+1. **Pre-filtering**: Extracts coding sequences from all input genomes and removes partial genes
+2. **All-vs-all comparison**: Uses CD-HIT to perform iterative clustering at decreasing identity thresholds (default: 95% for core, then down to the user-set minimum)
+3. **Clustering with MCL**: The Markov Cluster Algorithm groups remaining sequences into orthologous families based on BLASTp similarity
+4. **Core gene alignment**: Optionally produces a concatenated core gene alignment for phylogenetic analysis (using MAFFT or PRANK)
+5. **Output generation**: Produces a gene presence/absence matrix, summary statistics, and accessory gene graphs
+
+#### Key Outputs
+
+![Roary gene frequency distribution showing the characteristic U-shaped curve: many genes appear in either very few or nearly all genomes. The left peak represents strain-specific (cloud) genes; the right peak represents core genes. Source: [Roary documentation](https://sanger-pathogens.github.io/Roary/).](../images/lecture24/roary_frequency.png){width=70%}
+
+![Roary pangenome matrix for 58 strains (6,445 gene clusters). Rows are genomes ordered by a parSNP phylogenetic tree; columns are gene clusters. Dark blue = gene present. The dense left block is the core genome; sparse right columns are accessory genes. Source: [Roary documentation](https://sanger-pathogens.github.io/Roary/).](../images/lecture24/roary_matrix.png){width=90%}
+
+![Conserved vs. total genes as genomes are added. The divergence between the total gene count (dashed) and conserved gene count (solid) indicates an open pangenome---new genes keep appearing with each additional genome. Source: [Roary documentation](https://sanger-pathogens.github.io/Roary/).](../images/lecture24/roary_conserved_vs_total.png){width=60%}
+
+#### Strengths and Limitations
+
+Roary is fast and widely cited (>6,000 citations), but has important limitations:
+
+- **Annotation sensitivity**: Roary trusts input annotations completely. If a gene annotator fragments a gene, mis-calls a start codon, or misses a gene entirely, Roary propagates the error into the pangenome
+- **No error correction**: Unlike Panaroo, there is no mechanism to detect or fix annotation artifacts
+- **Fixed identity threshold**: The percent identity cutoff for "same gene" is global, which can be problematic for species with highly variable evolutionary rates across loci
+
+::: {.callout-warning}
+## Roary Is No Longer Maintained
+Roary is officially unmaintained as of 2020. For new analyses, Panaroo or PPanGGOLiN are recommended.
+:::
+
+---
+
+### Panaroo: Error-Correcting Pangenome Analysis
+
+**Panaroo** [4] was designed to solve the annotation error problem that plagues Roary and similar tools. Tonkin-Hill et al. demonstrated that annotation errors cause nearly an order of magnitude more false gene clusters in existing tools.
+
+#### The Problem: Annotation Errors
+
+Bacterial gene annotation is imperfect. Common errors include:
+
+- **Gene fragmentation**: A single gene split into two or more ORFs (due to sequencing errors, frameshifts, or assembly breaks)
+- **Gene fusion**: Two adjacent genes merged into one ORF
+- **Missed genes**: Real genes not called by the annotator
+- **Contamination**: Genes from contaminant sequences included in the assembly
+- **Inconsistent start codons**: The same gene called with different start positions in different genomes
+
+These errors propagate into pangenome analyses, inflating the accessory genome and corrupting downstream statistics.
+
+#### Algorithm: The Gene Neighborhood Graph
+
+Panaroo's key innovation is constructing a **gene neighborhood graph** and using its structure to detect and correct errors:
+
+1. **Initial clustering**: Genes are clustered by sequence similarity (like Roary)
+2. **Graph construction**: A graph is built where nodes are gene clusters and edges connect genes that are adjacent on a contig. Edge weights reflect how many genomes support the adjacency
+3. **Error correction via graph surgery**:
+   - **Trailing end errors**: Genes near contig ends that appear in only one genome are flagged and removed
+   - **Gene fragmentation**: Adjacent nodes in the graph whose sequences, when concatenated, match a single gene in other genomes are merged
+   - **Contamination**: Genes appearing in a single genome with no graph neighbors from that genome are removed
+   - **Missing genes**: If a gene is absent in a genome but its graph neighbors are present, Panaroo searches the intergenic sequence for the missing gene using a sensitive re-BLASTing step
+
+![Panaroo gene neighborhood graph visualized in Cytoscape. Nodes are gene families; edges represent genomic adjacency. Dense clusters correspond to conserved genomic neighborhoods. Source: [Panaroo documentation](https://gthlab.au/panaroo/).](../images/lecture24/panaroo_gene_neighbourhood.png){width=60%}
+
+#### Key Features
+
+- **Modes of stringency**: Strict, moderate, and sensitive modes trade off between removing false positives and retaining rare genuine genes
+- **Structural variant detection**: The graph structure reveals large-scale rearrangements, inversions, and gene order changes
+- **Pangenome merging**: Can incrementally add new genomes to an existing pangenome graph without recomputing everything
+- **Gene neighborhood analysis**: The graph directly supports neighborhood-based queries---"what genes are always found next to gene X?"
+
+#### Performance
+
+In benchmarks against Roary, PanX, COGsoft, and PPanGGOLiN, Panaroo produced nearly an order of magnitude fewer errors on simulated datasets with realistic annotation noise [4].
+
+---
+
+### PPanGGOLiN: Partitioned Pangenome Graphs
+
+**PPanGGOLiN** (Partitioned PanGenome Graph Of Linked Neighbors) [5] takes a fundamentally different approach: rather than simply classifying genes as "core" or "accessory" based on arbitrary frequency thresholds, it uses a statistical model that accounts for **genomic context**.
+
+#### The Core Idea: Context-Aware Partitioning
+
+Traditional pangenome tools classify genes based on frequency alone: if a gene is in >95% of genomes, it is "core"; otherwise, "accessory." This binary split is arbitrary---the threshold dramatically affects results, and there is no principled way to choose it.
+
+PPanGGOLiN solves this with a three-way statistical partition:
+
+- **Persistent genome**: Genes present in (nearly) all genomes---the true functional core
+- **Shell genome**: Genes present in a moderate fraction of genomes---often lifestyle-associated, niche-specific, or mobile
+- **Cloud genome**: Genes present in very few genomes---strain-specific, often acquired via horizontal gene transfer
+
+#### Algorithm
+
+![PPanGGOLiN workflow. (A) Input genomes with colored gene arrows. (B-C) Gene clustering into families. (D.a) Construction of a chromosomal neighborhood graph where nodes are gene families and edges reflect genomic adjacency (edge thickness = number of supporting genomes). (D.b) Presence/absence matrix. (E.a-b) Bernoulli Mixture Model + Markov Random Field for Neighborhood Expectation Maximization (NEM). (F) Final partitioned pangenome graph colored by persistent (orange), shell (green), and cloud (cyan). Source: [PPanGGOLiN GitHub](https://github.com/labgem/PPanGGOLiN).](../images/lecture24/ppanggolin_workflow.png){width=80%}
+
+The pipeline has four major stages:
+
+1. **Gene family construction**: Genes from all input genomes are clustered into families using MMseqs2 (fast and sensitive sequence clustering)
+
+2. **Graph construction**: A graph is built where:
+   - **Nodes** = gene families
+   - **Edges** = genomic adjacency (two gene families are connected if their member genes are neighbors on a contig)
+   - Edge weights reflect the number of genomes supporting the adjacency
+
+3. **Statistical partitioning** via Neighborhood Expectation Maximization (NEM):
+   - A **Bernoulli Mixture Model** (BMM) models the presence/absence pattern of each gene family across genomes as a mixture of three components (persistent, shell, cloud)
+   - A **Markov Random Field** (MRF) incorporates the graph structure: neighboring gene families in the graph tend to belong to the same partition. This is the key innovation---genomic context informs classification
+   - The EM algorithm iterates between assigning gene families to partitions (E-step) and updating partition parameters (M-step)
+
+4. **Output generation**: The partitioned pangenome graph, along with statistics, gene families, and visualizations
+
+#### Visualizations
+
+PPanGGOLiN produces several diagnostic plots:
+
+![PPanGGOLiN U-shaped frequency distribution. Gene families are colored by their partition assignment: cloud (cyan, left peak), shell (green, middle), persistent (orange, right peak). The dashed vertical line marks the partition boundary. The U-shape is characteristic of open pangenomes. Source: [PPanGGOLiN GitHub](https://github.com/labgem/PPanGGOLiN).](../images/lecture24/ppanggolin_uplot.png){width=80%}
+
+![PPanGGOLiN tile plot showing gene family presence/absence across genomes, with a dendrogram and partition coloring. Rows are gene families colored by partition (cloud/shell/persistent); columns are genomes. Source: [PPanGGOLiN GitHub](https://github.com/labgem/PPanGGOLiN).](../images/lecture24/ppanggolin_tileplot.png){width=70%}
+
+#### Key Features
+
+- **Works with MAGs and SAGs**: Unlike tools requiring complete genomes, PPanGGOLiN handles metagenome-assembled genomes (MAGs) and single-cell amplified genomes (SAGs) where some genes are missing due to incomplete assembly
+- **Spot detection**: Identifies "spots"---regions of genomic plasticity where gene content varies across strains (often insertion hotspots for mobile elements)
+- **Module detection**: Finds sets of co-occurring genes that are gained/lost together, suggesting functional units or mobile genetic elements
+- **Scalable**: Tested on 439 species in the original publication
+
+#### Comparison of Gene-Oriented Tools
+
+| Feature | Roary | Panaroo | PPanGGOLiN |
+|---------|-------|---------|------------|
+| **Clustering** | CD-HIT + MCL | BLASTp + MCL | MMseqs2 |
+| **Error correction** | None | Graph-based surgery | None (but robust to incomplete genomes) |
+| **Partitioning** | Frequency threshold | Frequency threshold | Statistical (BMM + MRF) |
+| **Graph structure** | Accessory gene graph | Gene neighborhood graph | Partitioned neighborhood graph |
+| **MAG/SAG support** | No | Limited | Yes |
+| **Speed (1,000 genomes)** | ~4.5 hours | ~6 hours | ~2 hours |
+| **Maintained** | No (since 2020) | Yes | Yes |
+
+---
 
 ### Graph-Based Bacterial Pangenomics
 
