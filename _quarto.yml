@@ -65,6 +65,8 @@ website:
             text: "22. Genome Assembly of MRSA Isolates"
           - href: lectures/lecture23.qmd
             text: "23. Genome Assembly"
+          - href: lectures/lecture24.qmd
+            text: "24. Pangenomics"
 
 format:
   html:

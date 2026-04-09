@@ -51,7 +51,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 21 | Mar 31 | [Interval Operations for Genomic Coordinates](lectures/lecture21.qmd) |
 | 22 | Apr 2 | [Genome Assembly of MRSA Isolates](lectures/lecture22.qmd) |
 | 23 | Apr 7 | [Genome Assembly](lectures/lecture23.qmd) |
-| 24 | Apr 9 | - |
+| 24 | Apr 9 | [Pangenomics](lectures/lecture24.qmd) |
 | 25 | Apr 14 | - |
 | 26 | Apr 16 | - |
 | 27 | Apr 21 | - |
