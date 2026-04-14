@@ -169,6 +169,11 @@ cd ~/gxy3/app && npm start
 
 The `gxy3` window will appear on your Windows desktop (WSLg handles the display automatically).
 
+::: {.callout-warning}
+## Previously hit a `libnss3.so` error?
+The first version of the setup script missed some Electron system libraries. If `npm start` failed with *"error while loading shared libraries: libnss3.so"*, just **re-run the setup one-liner from Step 2** --- it's safe to run again and will install the missing libraries. Then retry Step 3.
+:::
+
 ::: {.callout-tip}
 ## Windows/WSL2 Tips
 - Keep analysis data inside `~/` (the Linux filesystem) for best performance
@@ -237,6 +242,7 @@ After configuring preferences, test that everything works:
 | `conda` not found | Re-run `conda init` and `source ~/.bashrc` (or `~/.zshrc` on Mac) |
 | Window doesn't appear (Windows) | Run `wsl --update` and restart Ubuntu |
 | Slow performance (Windows) | Make sure you're working in `~/`, not `/mnt/c/` |
+| `error while loading shared libraries: libnss3.so` (Windows) | Re-run the WSL2 setup script from §5 Step 2 |
 
 ---
 
