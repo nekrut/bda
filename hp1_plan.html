@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>BMMB554 | Biological data analysis – BMMB554</title>
+<title>hp1_plan – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -91,7 +91,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
 </ul>
@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">BMMB554 | Biological data analysis</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -283,291 +283,93 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#goals-of-this-class" id="toc-goals-of-this-class" class="nav-link active" data-scroll-target="#goals-of-this-class">Goals of this class</a></li>
-  <li><a href="#lectures" id="toc-lectures" class="nav-link" data-scroll-target="#lectures">Lectures</a></li>
-  <li><a href="#grading" id="toc-grading" class="nav-link" data-scroll-target="#grading">Grading</a></li>
-  <li><a href="#academic-integrity" id="toc-academic-integrity" class="nav-link" data-scroll-target="#academic-integrity">Academic integrity</a></li>
+  <li><a href="#take-home-project-1." id="toc-take-home-project-1." class="nav-link active" data-scroll-target="#take-home-project-1.">Take-home project 1.</a>
+  <ul class="collapse">
+  <li><a href="#goal" id="toc-goal" class="nav-link" data-scroll-target="#goal">Goal</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a>
+  <ul class="collapse">
+  <li><a href="#formatting-the-data" id="toc-formatting-the-data" class="nav-link" data-scroll-target="#formatting-the-data">Formatting the data</a></li>
+  <li><a href="#creating-notebook" id="toc-creating-notebook" class="nav-link" data-scroll-target="#creating-notebook">Creating Notebook</a></li>
+  <li><a href="#saving-notebook" id="toc-saving-notebook" class="nav-link" data-scroll-target="#saving-notebook">Saving notebook</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/hp1_plan.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">BMMB554 | Biological data analysis</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/banner.png" class="img-fluid figure-img"></p>
-<figcaption>Abstract artistic visualization of biological data analysis</figcaption>
-</figure>
-</div>
-<p><small style="font-size: 0.7em; color: #595959;">Image by <a href="https://www.instagram.com/rorschachsflock?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw==">Bob Harris</a></small></p>
-<section id="goals-of-this-class" class="level2">
-<h2 class="anchored" data-anchor-id="goals-of-this-class">Goals of this class</h2>
-<p>Genomic data analysis is a pyramid. Consider an RNA-seq experiment: you receive reads from your sequencing machine, map them, and count how many fall within each gene. This <strong>primary analysis</strong> uses well-established tools and workflow systems, often requiring significant computational infrastructure. The output—count tables for RNA-seq, variant lists for variant calling, or peak coordinates for ChIP-seq—are intermediate datasets. They don’t yet contain biological insights.</p>
-<p>The <strong>secondary analysis</strong> extracts meaning from these intermediate data. It’s typically done on a case-by-case basis using frameworks like Jupyter, RStudio, or Observable, since the approach depends on your experimental design. This is where programming, data management, and version control skills become critical.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/data-pyramid.svg" class="img-fluid figure-img" style="width:50.0%"></p>
-<figcaption><strong>Data analysis as a pyramid.</strong> Primary data (sequencing reads) is processed into smaller intermediate datasets, which are then analyzed to produce final insights—the content of your theses, publications, and blog posts. As you climb the pyramid, standardization (availability of standard tools and procedures) and computational demands all decrease.</figcaption>
-</figure>
-</div>
-<p>In this course we will try to learn key skills for climbing this pyramid. The course will be divided into the following sections:</p>
-<ol type="1">
-<li><strong>Foundations | Tools</strong> - UNIX shell, Python for data manipulation, Python for visualization, version control with Git/GitHub, and responsible use of agentic AI tools.</li>
-<li><strong>Foundations | Computational approaches</strong> - algorithms for alignment, mapping, assembly, and composition analysis.<br>
-</li>
-<li><strong>Application | Datatypes and analysis</strong> - hands-on primary and secondary analyses in genome assembly, transcriptomics, variation, epigenetics, and community analysis.</li>
-<li><strong>Application | Class projects</strong> - class will be divided into groups with each group given a research project.</li>
-</ol>
+<section id="take-home-project-1." class="level1">
+<h1>Take-home project 1.</h1>
+<section id="goal" class="level2">
+<h2 class="anchored" data-anchor-id="goal">Goal</h2>
+<p>You will create a Jupyter Notebook describing the steps listed in the implementation section. This notebook will contain initial data and instructions for students to complete Take-Home Project 1.</p>
 </section>
-<section id="lectures" class="level2">
-<h2 class="anchored" data-anchor-id="lectures">Lectures</h2>
-<div id="tbl-schedule" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-schedule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Course schedule
-</figcaption>
-<div aria-describedby="tbl-schedule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<section id="implementation" class="level2">
+<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
+<section id="formatting-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="formatting-the-data">Formatting the data</h3>
+<ul>
+<li>Download the following dataset: https://usegalaxy.eu/api/datasets/4838ba20a6d86765fd8e284ee2695b49/display?to_ext=tabular</li>
+<li>The dataset contains 16 columns. Some columns begin with the following string: ‘ANN[*].’ . This string should be removed from the heading of these columns.</li>
+<li>Put the dataset in the GitHub data repository of this course so it can be pulled from GitHub into Collab notebooks.</li>
+</ul>
+</section>
+<section id="creating-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="creating-notebook">Creating Notebook</h3>
+<ul>
+<li>Notebook should have a title “Take-home project 1”</li>
+<li>It should contain the cell pulling in the dataset you formatted above into a pandas DataFrame.</li>
+<li>Write an instruction markdown cell with the following text (the text within triple quotes) :</li>
+</ul>
+<p>““” Our goal is to understand whether the malaria parasite (<a href="https://brc-analytics.dev.clevercanary.com/data/organisms/5833"><em>Plasmodium falciparum</em></a>) infecting these individuals is resistant to <a href="https://en.wikipedia.org/wiki/Pyrimethamine">Pyrimethamine</a>—an antimalarial drug. Resistance to Pyrimethamine is conferred by a mutation in <code>PF3D7_0417200</code> (<em>dhfr</em>) gene ({% cite Cowman1988 %}). Given sequencing data from four individuals we will determine which one of them is infected with a <em>Plasmodium falciparum</em> carrying mutations in this gene.</p>
+<p>Variant calls in the provided Pandas data frame represent analysis of four samples: two from Ivory Coast and two from Colombia:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>#</th>
-<th>Date</th>
-<th style="text-align: left;">Topic</th>
+<th>Accession</th>
+<th>Location</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
-<td>Jan 13</td>
-<td style="text-align: left;"><a href="./lectures/lecture1.html">Getting Started with GitHub</a></td>
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR636434">ERR636434</a></td>
+<td>Ivory coast</td>
 </tr>
 <tr class="even">
-<td>2</td>
-<td>Jan 15</td>
-<td style="text-align: left;"><a href="./lectures/lecture2.html">Introduction to Bash</a></td>
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR636028">ERR636028</a></td>
+<td>Ivory coast</td>
 </tr>
 <tr class="odd">
-<td>3</td>
-<td>Jan 20</td>
-<td style="text-align: left;"><a href="./lectures/lecture3.html">Py1: Data analysis ecosystem - Crunch, load, visualize</a></td>
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR042232">ERR042232</a></td>
+<td>Colombia</td>
 </tr>
 <tr class="even">
-<td>4</td>
-<td>Jan 22</td>
-<td style="text-align: left;"><a href="./lectures/lecture4.html">Py2: Simple sequence manipulation</a></td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>Jan 27</td>
-<td style="text-align: left;"><a href="./lectures/lecture5.html">Py3: Parsing FASTA</a></td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>Jan 29</td>
-<td style="text-align: left;"><a href="./lectures/lecture6.html">Py4: FASTQ and Quality Scores</a></td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>Feb 3</td>
-<td style="text-align: left;"><a href="./lectures/lecture7.html">Py5: Data Manipulation with Pandas</a></td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>Feb 5</td>
-<td style="text-align: left;"><a href="./lectures/lecture8.html">Py6: Building graphs with Altair</a></td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td>Feb 10</td>
-<td style="text-align: left;"><a href="./lectures/lecture9.html">Git and GitHub</a></td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td>Feb 12</td>
-<td style="text-align: left;"><a href="./lectures/lecture10.html">Publishing Your CV with GitHub Pages</a></td>
-</tr>
-<tr class="odd">
-<td>11</td>
-<td>Feb 17</td>
-<td style="text-align: left;"><a href="./lectures/lecture11.html">Building a Website with Claude Code</a></td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>Feb 19</td>
-<td style="text-align: left;"><a href="./lectures/lecture12.html">Responsible Use of Coding Agents</a></td>
-</tr>
-<tr class="odd">
-<td>13</td>
-<td>Feb 24</td>
-<td style="text-align: left;"><a href="./lectures/lecture13.html">Sequence Alignment</a></td>
-</tr>
-<tr class="even">
-<td>14</td>
-<td>Feb 26</td>
-<td style="text-align: left;"><a href="./lectures/lecture14.html">Finding Sequence Matches Quickly</a></td>
-</tr>
-<tr class="odd">
-<td>15</td>
-<td>Mar 3</td>
-<td style="text-align: left;"><a href="./lectures/lecture15.html">K-mers, Minimizers, and Minimap2</a></td>
-</tr>
-<tr class="even">
-<td>16</td>
-<td>Mar 5</td>
-<td style="text-align: left;">-</td>
-</tr>
-<tr class="odd">
-<td>-</td>
-<td>-</td>
-<td style="text-align: left;">Spring break</td>
-</tr>
-<tr class="even">
-<td>17</td>
-<td>Mar 17</td>
-<td style="text-align: left;"><a href="./lectures/lecture17.html">DNA Sequencing Technologies</a></td>
-</tr>
-<tr class="odd">
-<td>18</td>
-<td>Mar 19</td>
-<td style="text-align: left;">-</td>
-</tr>
-<tr class="even">
-<td>19</td>
-<td>Mar 24</td>
-<td style="text-align: left;"><a href="./lectures/lecture19.html">Variant Calling in Haploid Systems</a></td>
-</tr>
-<tr class="odd">
-<td>20</td>
-<td>Mar 26</td>
-<td style="text-align: left;"><a href="./lectures/lecture20.html">NGS Data Logistics</a></td>
-</tr>
-<tr class="even">
-<td>21</td>
-<td>Mar 31</td>
-<td style="text-align: left;"><a href="./lectures/lecture21.html">Interval Operations for Genomic Coordinates</a></td>
-</tr>
-<tr class="odd">
-<td>22</td>
-<td>Apr 2</td>
-<td style="text-align: left;"><a href="./lectures/lecture22.html">Genome Assembly of MRSA Isolates</a></td>
-</tr>
-<tr class="even">
-<td>23</td>
-<td>Apr 7</td>
-<td style="text-align: left;"><a href="./lectures/lecture23.html">Genome Assembly</a></td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>Apr 9</td>
-<td style="text-align: left;"><a href="./lectures/lecture24.html">Pangenomics</a></td>
-</tr>
-<tr class="even">
-<td>25</td>
-<td>Apr 14</td>
-<td style="text-align: left;"><a href="./lectures/lecture25.html">Setting Up the gxy3 Agent</a></td>
-</tr>
-<tr class="odd">
-<td>26</td>
-<td>Apr 16</td>
-<td style="text-align: left;">-</td>
-</tr>
-<tr class="even">
-<td>27</td>
-<td>Apr 21</td>
-<td style="text-align: left;">-</td>
-</tr>
-<tr class="odd">
-<td>28</td>
-<td>Apr 23</td>
-<td style="text-align: left;">-</td>
-</tr>
-<tr class="even">
-<td>29</td>
-<td>Apr 28</td>
-<td style="text-align: left;">-</td>
-</tr>
-<tr class="odd">
-<td>30</td>
-<td>Apr 30</td>
-<td style="text-align: left;">-</td>
+<td><a href="https://www.ncbi.nlm.nih.gov/sra/?term=ERR042228">ERR042228</a></td>
+<td>Colombia</td>
 </tr>
 </tbody>
 </table>
-</div>
-</figure>
-</div>
+<p>These accessions correspond to datasets stored in the <a href="https://www.ncbi.nlm.nih.gov/sra">Sequence Read Archive</a> at NCBI.</p>
+<p>(data from <a href="https://www.malariagen.net/data_package/open-dataset-plasmodium-falciparum-v70/">MalariaGen</a> )</p>
+<p>What you need to do:</p>
+<ul>
+<li>Filter variants falling within the <em>dhfr</em> gene</li>
+<li>Restrict variants to missense variants only using the effect column.</li>
+<li>Create a graph that shows samples vs variant coordinates, in which graph marks are proportional to alternative allele frequencies (<strong>AF</strong> column)</li>
+<li>Create a graph showing a world map in which allele frequencies of these two samples are represented as pie charts within the map of Colombia and within the map of Ivory Coast. ““”</li>
+</ul>
 </section>
-<section id="grading" class="level2">
-<h2 class="anchored" data-anchor-id="grading">Grading</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Component</th>
-<th>Weight</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Thursday Quizzes</td>
-<td>10%</td>
-</tr>
-<tr class="even">
-<td>Section Exams (3 × 16.7%)</td>
-<td>50%</td>
-</tr>
-<tr class="odd">
-<td>Final Project</td>
-<td>40%</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Thursday Quizzes</strong> — Short weekly quizzes covering material from the previous week’s lectures. These are designed to ensure that you do read the material that is given as homework.</p>
-<p><strong>Section Exams</strong> — Three take-home exams, one after each major section: (1) Tools, (2) Computational approaches, (3) Datatypes and analysis.</p>
-<p><strong>Final Project</strong> — Group research project applying course concepts to a real biological dataset.</p>
-</section>
-<section id="academic-integrity" class="level2">
-<h2 class="anchored" data-anchor-id="academic-integrity">Academic integrity</h2>
-<div style="font-size: 0.8em;">
-<p>Academic integrity is the pursuit of scholarly activity in an open, honest, and responsible manner. All students should act with personal integrity, respect other students’ dignity, rights, and property, and help create and maintain an environment in which all can succeed through the fruits of their efforts (see <a href="https://undergrad.psu.edu/aappm/G-9-academic-integrity.html">Penn State Policy G-9</a>).</p>
-<p>Dishonest behavior will not be tolerated. Students facing allegations of academic misconduct may not drop/withdraw from the affected course unless they are cleared of wrongdoing.</p>
-<p><strong>Use of AI Tools</strong>: Students may use generative AI tools (such as ChatGPT, Claude, GitHub Copilot) for learning and exploring concepts. However, all submitted work must represent your own understanding. If you use AI assistance, you must be able to explain your code and reasoning.</p>
-<section id="educational-equity" class="level3">
-<h3 class="anchored" data-anchor-id="educational-equity">Educational Equity</h3>
-<p>Penn State takes great pride in fostering a diverse and inclusive environment for students, faculty, and staff. Discrimination or harassment against any person because of age, ancestry, color, disability, gender identity, national origin, race, religious belief, sex, sexual orientation, or veteran status is not tolerated.</p>
-<p>Report incidents of bias at <a href="https://equity.psu.edu/report-bias">https://equity.psu.edu/report-bias</a>.</p>
-</section>
-<section id="disability-accommodations" class="level3">
-<h3 class="anchored" data-anchor-id="disability-accommodations">Disability Accommodations</h3>
-<p>Penn State welcomes students with disabilities into the University’s educational programs. If you have a disability-related need for reasonable academic adjustments, contact <a href="https://equity.psu.edu/student-disability-resources">Student Disability Resources</a> at your campus.</p>
-</section>
-<section id="counseling-and-mental-health" class="level3">
-<h3 class="anchored" data-anchor-id="counseling-and-mental-health">Counseling and Mental Health</h3>
-<p>Students facing personal or academic stressors may benefit from counseling or other support. Contact <a href="https://studentaffairs.psu.edu/caps">Counseling and Psychological Services (CAPS)</a> or the Penn State Crisis Line at <strong>877-229-6400</strong> (24/7).</p>
-</section>
-</div>
-<hr>
-<p><em>This page complies with <a href="https://accessibility.psu.edu/guidelines/wcaglist/">Penn State accessibility requirements</a>.</em></p>
+<section id="saving-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="saving-notebook">Saving notebook</h3>
+<p>Create a directory called “Projects,” save this notebook to this directory, and call it “Project 1.”</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1009,4 +811,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/hp1_plan.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
