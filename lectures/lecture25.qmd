@@ -96,6 +96,16 @@ npm start
 
 The `gxy3` window should appear on your screen.
 
+::: {.callout-warning}
+## Previously hit `ENOENT ... dist/electron`?
+An earlier version of `gxy3` hardcoded the Linux path to the Electron binary, so `npm start` failed on macOS. To pick up the fix, run:
+
+```bash
+cd ~/gxy3 && git pull
+cd app && npm start
+```
+:::
+
 ---
 
 ## 4. Installation: Linux (Ubuntu/Debian)
@@ -243,6 +253,7 @@ After configuring preferences, test that everything works:
 | Window doesn't appear (Windows) | Run `wsl --update` and restart Ubuntu |
 | Slow performance (Windows) | Make sure you're working in `~/`, not `/mnt/c/` |
 | `error while loading shared libraries: libnss3.so` (Windows) | Re-run the WSL2 setup script from §5 Step 2 |
+| `spawn ... dist/electron ENOENT` (macOS) | `cd ~/gxy3 && git pull` then retry `npm start` |
 
 ---
 
