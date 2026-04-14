@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lecture 12: Responsible Use of Coding Agents – BMMB554</title>
+<title>Lecture 25: Setting Up the gxy3 Agent – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,9 +103,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -150,7 +147,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture12.html">12. Responsible Use of Coding Agents</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture25.html">25. Setting Up the gxy3 Agent</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -239,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link active">
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
   </div>
 </li>
@@ -305,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture25.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/lecture25.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">25. Setting Up the gxy3 Agent</span></a>
   </div>
 </li>
@@ -321,55 +318,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#agentic-concepts" id="toc-agentic-concepts" class="nav-link active" data-scroll-target="#agentic-concepts">Agentic concepts</a>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#what-is-gxy3" id="toc-what-is-gxy3" class="nav-link" data-scroll-target="#what-is-gxy3">1. What is gxy3?</a>
   <ul class="collapse">
-  <li><a href="#what-makes-an-agent-agentic" id="toc-what-makes-an-agent-agentic" class="nav-link" data-scroll-target="#what-makes-an-agent-agentic">What makes an agent “agentic”?</a></li>
-  <li><a href="#skills" id="toc-skills" class="nav-link" data-scroll-target="#skills">Skills</a></li>
-  <li><a href="#mcp-model-context-protocol" id="toc-mcp-model-context-protocol" class="nav-link" data-scroll-target="#mcp-model-context-protocol">MCP: Model Context Protocol</a></li>
-  <li><a href="#slash-commands" id="toc-slash-commands" class="nav-link" data-scroll-target="#slash-commands">Slash commands</a></li>
-  <li><a href="#putting-it-together" id="toc-putting-it-together" class="nav-link" data-scroll-target="#putting-it-together">Putting it together</a></li>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How It Works</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">Architecture</a></li>
   </ul></li>
-  <li><a href="#in-claude-we-trust" id="toc-in-claude-we-trust" class="nav-link" data-scroll-target="#in-claude-we-trust">In Claude we trust?</a>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">2. Prerequisites</a></li>
+  <li><a href="#installation-macos" id="toc-installation-macos" class="nav-link" data-scroll-target="#installation-macos">3. Installation: macOS</a>
   <ul class="collapse">
-  <li><a href="#the-current-moment" id="toc-the-current-moment" class="nav-link" data-scroll-target="#the-current-moment">The current moment</a></li>
+  <li><a href="#step-1-install-homebrew" id="toc-step-1-install-homebrew" class="nav-link" data-scroll-target="#step-1-install-homebrew">Step 1 — Install Homebrew</a></li>
+  <li><a href="#step-2-install-node.js-and-git" id="toc-step-2-install-node.js-and-git" class="nav-link" data-scroll-target="#step-2-install-node.js-and-git">Step 2 — Install Node.js and Git</a></li>
+  <li><a href="#step-3-install-miniforge" id="toc-step-3-install-miniforge" class="nav-link" data-scroll-target="#step-3-install-miniforge">Step 3 — Install Miniforge</a></li>
+  <li><a href="#step-4-clone-and-start-gxy3" id="toc-step-4-clone-and-start-gxy3" class="nav-link" data-scroll-target="#step-4-clone-and-start-gxy3">Step 4 — Clone and start gxy3</a></li>
   </ul></li>
-  <li><a href="#setting-things-up" id="toc-setting-things-up" class="nav-link" data-scroll-target="#setting-things-up">Setting things up</a>
+  <li><a href="#installation-linux-ubuntudebian" id="toc-installation-linux-ubuntudebian" class="nav-link" data-scroll-target="#installation-linux-ubuntudebian">4. Installation: Linux (Ubuntu/Debian)</a>
   <ul class="collapse">
-  <li><a href="#step-1-log-into-github" id="toc-step-1-log-into-github" class="nav-link" data-scroll-target="#step-1-log-into-github">Step 1: Log into GitHub</a></li>
-  <li><a href="#step-2-create-a-new-repository" id="toc-step-2-create-a-new-repository" class="nav-link" data-scroll-target="#step-2-create-a-new-repository">Step 2: Create a new repository</a></li>
-  <li><a href="#step-3-start-a-codespace" id="toc-step-3-start-a-codespace" class="nav-link" data-scroll-target="#step-3-start-a-codespace">Step 3: Start a Codespace</a></li>
-  <li><a href="#step-4-install-claude-code-and-set-your-api-key" id="toc-step-4-install-claude-code-and-set-your-api-key" class="nav-link" data-scroll-target="#step-4-install-claude-code-and-set-your-api-key">Step 4: Install Claude Code and set your API key</a></li>
+  <li><a href="#step-1-install-system-dependencies" id="toc-step-1-install-system-dependencies" class="nav-link" data-scroll-target="#step-1-install-system-dependencies">Step 1 — Install system dependencies</a></li>
+  <li><a href="#step-2-install-node.js" id="toc-step-2-install-node.js" class="nav-link" data-scroll-target="#step-2-install-node.js">Step 2 — Install Node.js</a></li>
+  <li><a href="#step-3-install-miniforge-1" id="toc-step-3-install-miniforge-1" class="nav-link" data-scroll-target="#step-3-install-miniforge-1">Step 3 — Install Miniforge</a></li>
+  <li><a href="#step-4-clone-and-start-gxy3-1" id="toc-step-4-clone-and-start-gxy3-1" class="nav-link" data-scroll-target="#step-4-clone-and-start-gxy3-1">Step 4 — Clone and start gxy3</a></li>
   </ul></li>
-  <li><a href="#data-analysis-with-plan-files" id="toc-data-analysis-with-plan-files" class="nav-link" data-scroll-target="#data-analysis-with-plan-files">Data analysis with plan files</a>
+  <li><a href="#installation-windows" id="toc-installation-windows" class="nav-link" data-scroll-target="#installation-windows">5. Installation: Windows</a>
   <ul class="collapse">
-  <li><a href="#why-plan-files" id="toc-why-plan-files" class="nav-link" data-scroll-target="#why-plan-files">Why plan files?</a></li>
-  <li><a href="#the-dataset-anscombes-quartet" id="toc-the-dataset-anscombes-quartet" class="nav-link" data-scroll-target="#the-dataset-anscombes-quartet">The dataset: Anscombe’s quartet</a></li>
-  <li><a href="#step-1-download-the-data" id="toc-step-1-download-the-data" class="nav-link" data-scroll-target="#step-1-download-the-data">Step 1: Download the data</a></li>
-  <li><a href="#step-2-write-a-plan-file" id="toc-step-2-write-a-plan-file" class="nav-link" data-scroll-target="#step-2-write-a-plan-file">Step 2: Write a plan file</a></li>
-  <li><a href="#step-3-execute-the-plan" id="toc-step-3-execute-the-plan" class="nav-link" data-scroll-target="#step-3-execute-the-plan">Step 3: Execute the plan</a></li>
-  <li><a href="#step-4-review-and-iterate" id="toc-step-4-review-and-iterate" class="nav-link" data-scroll-target="#step-4-review-and-iterate">Step 4: Review and iterate</a></li>
+  <li><a href="#step-1-install-wsl2" id="toc-step-1-install-wsl2" class="nav-link" data-scroll-target="#step-1-install-wsl2">Step 1 — Install WSL2</a></li>
+  <li><a href="#step-2-run-the-setup-script" id="toc-step-2-run-the-setup-script" class="nav-link" data-scroll-target="#step-2-run-the-setup-script">Step 2 — Run the setup script</a></li>
+  <li><a href="#step-3-launch-gxy3" id="toc-step-3-launch-gxy3" class="nav-link" data-scroll-target="#step-3-launch-gxy3">Step 3 — Launch gxy3</a></li>
   </ul></li>
-  <li><a href="#literature-research-with-agentic-tools" id="toc-literature-research-with-agentic-tools" class="nav-link" data-scroll-target="#literature-research-with-agentic-tools">Literature research with agentic tools</a>
+  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">6. Configuration</a>
   <ul class="collapse">
-  <li><a href="#the-challenge" id="toc-the-challenge" class="nav-link" data-scroll-target="#the-challenge">The challenge</a></li>
-  <li><a href="#step-1-write-a-literature-search-plan" id="toc-step-1-write-a-literature-search-plan" class="nav-link" data-scroll-target="#step-1-write-a-literature-search-plan">Step 1: Write a literature search plan</a></li>
-  <li><a href="#step-2-execute-the-plan" id="toc-step-2-execute-the-plan" class="nav-link" data-scroll-target="#step-2-execute-the-plan">Step 2: Execute the plan</a></li>
-  <li><a href="#step-3-validate-the-output" id="toc-step-3-validate-the-output" class="nav-link" data-scroll-target="#step-3-validate-the-output">Step 3: Validate the output</a></li>
+  <li><a href="#llm-provider" id="toc-llm-provider" class="nav-link" data-scroll-target="#llm-provider">LLM Provider</a></li>
+  <li><a href="#working-directory" id="toc-working-directory" class="nav-link" data-scroll-target="#working-directory">Working Directory</a></li>
+  <li><a href="#package-manager" id="toc-package-manager" class="nav-link" data-scroll-target="#package-manager">Package Manager</a></li>
   </ul></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a>
+  <li><a href="#verifying-your-installation" id="toc-verifying-your-installation" class="nav-link" data-scroll-target="#verifying-your-installation">7. Verifying Your Installation</a>
   <ul class="collapse">
-  <li><a href="#what-we-covered-today" id="toc-what-we-covered-today" class="nav-link" data-scroll-target="#what-we-covered-today">What we covered today</a></li>
-  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key takeaways</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
+  </ul></li>
+  <li><a href="#understanding-the-interface" id="toc-understanding-the-interface" class="nav-link" data-scroll-target="#understanding-the-interface">8. Understanding the Interface</a>
+  <ul class="collapse">
+  <li><a href="#left-pane-chat" id="toc-left-pane-chat" class="nav-link" data-scroll-target="#left-pane-chat">Left Pane: Chat</a></li>
+  <li><a href="#right-pane-artifacts" id="toc-right-pane-artifacts" class="nav-link" data-scroll-target="#right-pane-artifacts">Right Pane: Artifacts</a></li>
+  <li><a href="#header" id="toc-header" class="nav-link" data-scroll-target="#header">Header</a></li>
+  </ul></li>
+  <li><a href="#your-first-analysis" id="toc-your-first-analysis" class="nav-link" data-scroll-target="#your-first-analysis">9. Your First Analysis</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">10. Summary</a>
+  <ul class="collapse">
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s Next</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture12.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture25.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture12.html">12. Responsible Use of Coding Agents</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture25.html">25. Setting Up the gxy3 Agent</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Lecture 12: Responsible Use of Coding Agents</h1>
+<h1 class="title">Lecture 25: Setting Up the gxy3 Agent</h1>
 </div>
 
 
@@ -386,336 +391,348 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><img src="../images/lecture12_header.png" class="img-fluid"></p>
-<p>Last class we used Claude Code to turn a CV into a Quarto website. Today we go deeper: understanding how agentic tools work under the hood, using them responsibly, and applying them to two real tasks—data analysis and literature research.</p>
-<section id="agentic-concepts" class="level1">
-<h1>Agentic concepts</h1>
-<section id="what-makes-an-agent-agentic" class="level2">
-<h2 class="anchored" data-anchor-id="what-makes-an-agent-agentic">What makes an agent “agentic”?</h2>
-<p>A regular chatbot generates text. An <strong>agentic</strong> tool takes <em>actions</em>—reading files, running code, searching the web, calling APIs. The difference is autonomy: you describe a goal, and the agent figures out the steps.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-    A["You describe&lt;br/&gt;a goal"] --&gt; B["Agent plans&lt;br/&gt;the steps"]
-    B --&gt; C["Agent executes&lt;br/&gt;(read, write, run)"]
-    C --&gt; D["Agent checks&lt;br/&gt;results"]
-    D --&gt;|"Not done"| B
-    D --&gt;|"Done"| E["Returns&lt;br/&gt;output"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p>Three concepts make modern agents powerful: <strong>skills</strong>, <strong>MCP servers</strong>, and <strong>slash commands</strong>.</p>
-</section>
-<section id="skills" class="level2">
-<h2 class="anchored" data-anchor-id="skills">Skills</h2>
-<p>A <strong>skill</strong> is a reusable chunk of instructions that tells the agent <em>how</em> to do something specific. Think of it as a recipe card. When you invoke a skill, the agent loads those instructions and follows them.</p>
-<p>For example, Claude Code has a built-in <code>/commit</code> skill. When you type <code>/commit</code>, it doesn’t just run <code>git commit</code>—it reads a detailed set of instructions that tell it to:</p>
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to:</p>
 <ul>
-<li>Check <code>git status</code> and <code>git diff</code></li>
-<li>Draft a concise commit message summarizing the “why”</li>
-<li>Stage the right files</li>
-<li>Avoid committing secrets</li>
+<li>Explain what <code>gxy3</code> is and how it replaces Galaxy’s web UI with a chat interface</li>
+<li>Install <code>gxy3</code> on macOS, Linux, or Windows</li>
+<li>Configure <code>gxy3</code> with your Anthropic API key</li>
+<li>Run your first bioinformatics analysis through the chat interface</li>
 </ul>
-<p>Without the skill, you’d have to explain all of this every time. Skills encode best practices so you don’t have to repeat yourself.</p>
+<hr>
 </section>
-<section id="mcp-model-context-protocol" class="level2">
-<h2 class="anchored" data-anchor-id="mcp-model-context-protocol">MCP: Model Context Protocol</h2>
-<p><strong>MCP</strong> (Model Context Protocol) is an open standard that lets agents connect to external services. An MCP <strong>server</strong> is a small program that exposes a set of tools the agent can call—like searching a database, querying a bioinformatics platform, or fetching data from the web.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-    A["Agent&lt;br/&gt;(Claude Code)"] --&gt; B["MCP Server&lt;br/&gt;(Galaxy)"]
-    A --&gt; C["MCP Server&lt;br/&gt;(PubMed)"]
-    A --&gt; D["MCP Server&lt;br/&gt;(File system)"]
-    B --&gt; E["Search tools&lt;br/&gt;Run workflows"]
-    C --&gt; F["Search papers&lt;br/&gt;Fetch abstracts"]
-    D --&gt; G["Read/write&lt;br/&gt;local files"]
-</pre>
+<section id="what-is-gxy3" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-gxy3">1. What is gxy3?</h2>
+<p><a href="https://github.com/nekrut/gxy3"><code>gxy3</code></a> is an AI-driven bioinformatics desktop application. It replaces Galaxy’s traditional web interface with a <strong>natural language chat interface</strong>: you describe an analysis in plain English, and an AI agent plans and executes it.</p>
+<section id="how-it-works" class="level3">
+<h3 class="anchored" data-anchor-id="how-it-works">How It Works</h3>
+<ol type="1">
+<li>You describe an analysis in the chat pane (e.g., <em>“assemble these MRSA genomes with autocycler”</em>)</li>
+<li>The agent creates an executable <strong>plan</strong> and displays it for your review</li>
+<li>You approve (with optional edits), and the agent executes step by step</li>
+<li>Progress is shown as a visual DAG; results appear in a dedicated Results tab</li>
+</ol>
+</section>
+<section id="architecture" class="level3">
+<h3 class="anchored" data-anchor-id="architecture">Architecture</h3>
+<pre><code>Electron App
+├── Main Process (Node.js)
+│   ├── Agent Runtime (LLM interaction, tool-use loop)
+│   ├── gxy3 Extension (plan management, execution)
+│   └── IPC Layer (typed channels to renderer)
+├── Preload (contextBridge)
+└── Renderer (two-pane layout)
+    ├── Left:  Chat (streaming messages, thinking indicator)
+    └── Right: Artifacts (plan editor, visual DAG, typed results)</code></pre>
+<p>The app runs entirely on your machine. For small/medium analyses, tools are installed and executed locally via <code>conda</code>/<code>mamba</code>. Galaxy integration for large-scale compute is planned for a future phase.</p>
+<hr>
+</section>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">2. Prerequisites</h2>
+<p>Before installing <code>gxy3</code>, make sure you have:</p>
+<ul>
+<li><strong>Your Anthropic API key</strong> — this was sent to you earlier in the semester. You will need it to configure the LLM provider. If you lost it, ask the instructor.</li>
+<li><strong>A computer running macOS, Linux, or Windows 10/11</strong></li>
+<li><strong>An internet connection</strong> (for downloading dependencies and accessing the Anthropic API)</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p></p></figure><p></p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>API Key Security
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>Your Anthropic API key is like a password. <strong>Do not share it</strong>, commit it to Git, or post it publicly. If compromised, anyone can use your account and rack up charges.</p>
 </div>
-<p>Why does this matter? Without MCP, an agent can only do what’s built into it. With MCP, it can plug into <em>any</em> service that provides an MCP server. This is the same idea as USB—a universal standard that lets different devices work together without custom adapters.</p>
+</div>
+<hr>
+</section>
+<section id="installation-macos" class="level2">
+<h2 class="anchored" data-anchor-id="installation-macos">3. Installation: macOS</h2>
+<section id="step-1-install-homebrew" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-install-homebrew">Step 1 — Install Homebrew</h3>
+<p>If you don’t already have Homebrew, open <strong>Terminal</strong> (<code>Cmd+Space</code>, type “Terminal”) and paste:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/bin/bash</span> <span class="at">-c</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Follow the prompts. This also installs Xcode Command Line Tools if needed.</p>
+</section>
+<section id="step-2-install-node.js-and-git" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-install-node.js-and-git">Step 2 — Install Node.js and Git</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install node git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-3-install-miniforge" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-install-miniforge">Step 3 — Install Miniforge</h3>
+<p>Miniforge provides <code>conda</code> and <code>mamba</code> for installing bioinformatics tools:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install miniforge</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init <span class="st">"</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">"</span><span class="va">$SHELL</span><span class="st">"</span><span class="va">)</span><span class="st">"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-4-clone-and-start-gxy3" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-clone-and-start-gxy3">Step 4 — Clone and start gxy3</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/nekrut/gxy3.git</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> gxy3 <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>gxy3</code> window should appear on your screen.</p>
+<hr>
+</section>
+</section>
+<section id="installation-linux-ubuntudebian" class="level2">
+<h2 class="anchored" data-anchor-id="installation-linux-ubuntudebian">4. Installation: Linux (Ubuntu/Debian)</h2>
+<section id="step-1-install-system-dependencies" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-install-system-dependencies">Step 1 — Install system dependencies</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> git curl build-essential</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-2-install-node.js" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-install-node.js">Step 2 — Install Node.js</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install <span class="at">--lts</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-3-install-miniforge-1" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-install-miniforge-1">Step 3 — Install Miniforge</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh <span class="at">-o</span> ~/miniforge.sh</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> ~/miniforge.sh <span class="at">-b</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">~/miniforge3/bin/conda</span> init bash</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> ~/miniforge.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-4-clone-and-start-gxy3-1" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-clone-and-start-gxy3-1">Step 4 — Clone and start gxy3</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/nekrut/gxy3.git</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> gxy3 <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="installation-windows" class="level2">
+<h2 class="anchored" data-anchor-id="installation-windows">5. Installation: Windows</h2>
+<p><code>gxy3</code> runs on Windows inside <strong>WSL2</strong> (Windows Subsystem for Linux). This gives you a full Linux environment with graphical display—no dual-booting needed.</p>
+<section id="step-1-install-wsl2" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-install-wsl2">Step 1 — Install WSL2</h3>
+<p>Right-click the Start button, select <strong>Terminal (Admin)</strong> or <strong>PowerShell (Admin)</strong>, and run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">--</span>web-download <span class="op">-</span>d Ubuntu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Restart your computer when prompted. After reboot, <strong>Ubuntu</strong> will open automatically—create a username and password when asked.</p>
+</section>
+<section id="step-2-run-the-setup-script" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-run-the-setup-script">Step 2 — Run the setup script</h3>
+<p>Inside the Ubuntu window, paste this and press Enter:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/nekrut/gxy3/master/scripts/setup-wsl.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This installs Node.js, Miniforge, and clones <code>gxy3</code>. Takes a few minutes.</p>
+</section>
+<section id="step-3-launch-gxy3" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-launch-gxy3">Step 3 — Launch gxy3</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gxy3/app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>gxy3</code> window will appear on your Windows desktop (WSLg handles the display automatically).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Windows/WSL2 Tips
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Keep analysis data inside <code>~/</code> (the Linux filesystem) for best performance</li>
+<li>Avoid working on <code>/mnt/c/</code> paths—cross-filesystem access is significantly slower</li>
+<li>Windows 11 has WSLg built in; on Windows 10 run <code>wsl --update</code> first</li>
+<li>To open Ubuntu again later, search for “Ubuntu” in the Start menu</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="configuration" class="level2">
+<h2 class="anchored" data-anchor-id="configuration">6. Configuration</h2>
+<p>On first launch, open <strong>Preferences</strong> (gear icon, or <code>Ctrl+,</code> / <code>Cmd+,</code> on Mac).</p>
+<section id="llm-provider" class="level3">
+<h3 class="anchored" data-anchor-id="llm-provider">LLM Provider</h3>
+<ol type="1">
+<li>Set <strong>Provider</strong> to <strong>Anthropic</strong></li>
+<li>Paste your <strong>Anthropic API key</strong> (the one sent to you earlier in the semester)</li>
+<li>Select a model (Claude Sonnet 4.6 recommended for balance of speed and capability)</li>
+</ol>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>Which Model?
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>MCP was introduced by Anthropic in late 2024 and is now supported by multiple AI platforms. It’s an open protocol—anyone can build an MCP server for their service.</p>
+<p><code>gxy3</code> supports multiple providers (Anthropic, OpenAI, Google AI, Ollama), but for this class we use <strong>Anthropic</strong>. The API key you received works with all Claude models. Session token costs are displayed in the header so you can monitor usage.</p>
 </div>
 </div>
 </section>
-<section id="slash-commands" class="level2">
-<h2 class="anchored" data-anchor-id="slash-commands">Slash commands</h2>
-<p><strong>Slash commands</strong> are shortcuts you type in the agent’s prompt to trigger specific behaviors. They’re the user-facing interface to skills and tools.</p>
-<p>Some examples in Claude Code:</p>
+<section id="working-directory" class="level3">
+<h3 class="anchored" data-anchor-id="working-directory">Working Directory</h3>
+<p>Set this to a folder where analysis output will be saved. A good choice:</p>
+<ul>
+<li><strong>macOS/Linux</strong>: <code>~/bda-analyses/</code></li>
+<li><strong>Windows/WSL2</strong>: <code>~/bda-analyses/</code> (inside the Linux filesystem, <strong>not</strong> <code>/mnt/c/...</code>)</li>
+</ul>
+<p>Create the directory if it doesn’t exist:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/bda-analyses</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="package-manager" class="level3">
+<h3 class="anchored" data-anchor-id="package-manager">Package Manager</h3>
+<p>Leave as <strong>“auto”</strong>. This prefers <code>mamba</code> (faster) and falls back to <code>conda</code>.</p>
+<hr>
+</section>
+</section>
+<section id="verifying-your-installation" class="level2">
+<h2 class="anchored" data-anchor-id="verifying-your-installation">7. Verifying Your Installation</h2>
+<p>After configuring preferences, test that everything works:</p>
+<ol type="1">
+<li><p>In the chat pane, type:</p>
+<blockquote class="blockquote">
+<p><em>Install fastqc and run fastqc –version</em></p>
+</blockquote></li>
+<li><p>The agent should:</p>
+<ul>
+<li>Create a plan with two steps (install <code>fastqc</code>, run the version check)</li>
+<li>Display the plan in the artifact pane for your approval</li>
+<li>After you approve, create a conda environment, install <code>fastqc</code>, and report the version</li>
+</ul></li>
+<li><p>If you see a version number in the results—you’re set up correctly.</p></li>
+</ol>
+<section id="troubleshooting" class="level3">
+<h3 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Command</th>
-<th>What it does</th>
+<th>Problem</th>
+<th>Solution</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>/commit</code></td>
-<td>Stages changes and creates a Git commit</td>
+<td><code>npm start</code> fails with module errors</td>
+<td>Run <code>npm install</code> again in both <code>gxy3/</code> and <code>gxy3/app/</code></td>
 </tr>
 <tr class="even">
-<td><code>/review-pr</code></td>
-<td>Reviews a pull request</td>
+<td>“API key invalid” error</td>
+<td>Double-check the key in Preferences—no extra spaces</td>
 </tr>
 <tr class="odd">
-<td><code>/help</code></td>
-<td>Shows available commands</td>
+<td><code>conda</code> not found</td>
+<td>Re-run <code>conda init</code> and <code>source ~/.bashrc</code> (or <code>~/.zshrc</code> on Mac)</td>
+</tr>
+<tr class="even">
+<td>Window doesn’t appear (Windows)</td>
+<td>Run <code>wsl --update</code> and restart Ubuntu</td>
+</tr>
+<tr class="odd">
+<td>Slow performance (Windows)</td>
+<td>Make sure you’re working in <code>~/</code>, not <code>/mnt/c/</code></td>
 </tr>
 </tbody>
 </table>
-<p>Slash commands keep you in flow—instead of writing a multi-sentence prompt, you type a short command and the agent knows exactly what to do.</p>
-</section>
-<section id="putting-it-together" class="level2">
-<h2 class="anchored" data-anchor-id="putting-it-together">Putting it together</h2>
-<p>The key insight: <strong>skills define <em>how</em> to do things, MCP servers define <em>what services</em> are available, and slash commands let you trigger them quickly</strong>. Together, they make agents reliable and extensible. Instead of hoping the AI figures out the right approach, you give it structured tools and instructions.</p>
+<hr>
 </section>
 </section>
-<section id="in-claude-we-trust" class="level1">
-<h1>In Claude we trust?</h1>
-<p>Agentic AI is developing at an unprecedented pace. Before we use these tools for real work, we need to talk about what they are—and what they aren’t.</p>
-<section id="the-current-moment" class="level2">
-<h2 class="anchored" data-anchor-id="the-current-moment">The current moment</h2>
-<p>Two recent opinion pieces capture the tension:</p>
+<section id="understanding-the-interface" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-the-interface">8. Understanding the Interface</h2>
+<p>The <code>gxy3</code> interface has two panes:</p>
+<section id="left-pane-chat" class="level3">
+<h3 class="anchored" data-anchor-id="left-pane-chat">Left Pane: Chat</h3>
 <ul>
-<li><p><strong>Paul Ford</strong> (New York Times, Feb 18 2026): <a href="https://www.nytimes.com/2026/02/18/opinion/ai-software.html?unlocked_article_code=1.NFA.1naz.pRVgItN2aiHM&amp;smid=url-share">AI and the Future of Software</a> — a software professional describes the moment when AI could do the technical work of his job, and what that means for the field.</p></li>
-<li><p><strong>Peggy Noonan</strong> (Wall Street Journal, Feb 13 2026): <a href="https://www.wsj.com/opinion/brace-yourself-for-the-ai-tsunami-95a625dc?st=rf7uCU&amp;reflink=desktopwebshare_permalink">Brace Yourself for the AI Tsunami</a> — on the warnings from AI creators themselves, including Anthropic CEO Dario Amodei, that this is moving faster than expected and carries risks of “terrible empowerment.”</p></li>
-</ul>
-<p>Watch this video for additional context:</p>
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/QiT2yK-5-yg?si=Hwi1ilQGJ4BTZvrt" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Agentic AI is more than a tool
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A hammer doesn’t decide where to strike. An agent does. It reads your files, writes code, runs commands, and makes decisions about what to do next. This autonomy is what makes agents powerful—and what makes them dangerous when used carelessly.</p>
-<p>Despite the fact that modern models are extremely capable, <strong>they still make mistakes</strong>. They hallucinate references, invent data, produce plausible-looking but incorrect code, and confidently assert things that are wrong.</p>
-<p><strong>In research contexts—writing papers, reporting results, citing literature—you must never trust AI output without verification.</strong> Every claim needs a source. Every number needs a check. Every citation needs to be confirmed as real. The agent is a collaborator, not an authority.</p>
-</div>
-</div>
-</section>
-</section>
-<section id="setting-things-up" class="level1">
-<h1>Setting things up</h1>
-<p>Before we start, let’s set up a fresh workspace.</p>
-<section id="step-1-log-into-github" class="level2">
-<h2 class="anchored" data-anchor-id="step-1-log-into-github">Step 1: Log into GitHub</h2>
-<p>Go to <a href="https://github.com">github.com</a> and sign in.</p>
-</section>
-<section id="step-2-create-a-new-repository" class="level2">
-<h2 class="anchored" data-anchor-id="step-2-create-a-new-repository">Step 2: Create a new repository</h2>
-<p>1. Click <strong>“+”</strong> → <strong>“New repository”</strong> in the top-right corner</p>
-<p>2. Name it something like <code>research-initiated</code></p>
-<p>3. Check <strong>“Add a README file”</strong></p>
-<p>4. Click <strong>“Create repository”</strong></p>
-</section>
-<section id="step-3-start-a-codespace" class="level2">
-<h2 class="anchored" data-anchor-id="step-3-start-a-codespace">Step 3: Start a Codespace</h2>
-<p>1. In your new repo, click <strong>Code → Codespaces → “+”</strong></p>
-<p>2. Wait for the Codespace to spin up and open the terminal</p>
-</section>
-<section id="step-4-install-claude-code-and-set-your-api-key" class="level2">
-<h2 class="anchored" data-anchor-id="step-4-install-claude-code-and-set-your-api-key">Step 4: Install Claude Code and set your API key</h2>
-<p>Follow the same setup as <a href="../lectures/lecture11.html">Lecture 11</a> — Steps 2 through 4:</p>
-<p>1. Install Claude Code:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>2. Restart the terminal (or run <code>source ~/.bashrc</code>)</p>
-<p>3. Set your API key (replace with the key I give you):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span><span class="st">"your-key-here"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>4. Configure Claude Code for API key authentication:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.claude</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'echo ${ANTHROPIC_API_KEY}'</span> <span class="op">&gt;</span> ~/.claude/anthropic_key_helper.sh</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x ~/.claude/anthropic_key_helper.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">LAST20</span><span class="op">=</span><span class="va">$(</span><span class="bu">echo</span> <span class="at">-n</span> <span class="st">"</span><span class="va">$ANTHROPIC_API_KEY</span><span class="st">"</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-c</span> 20<span class="va">)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/.claude.json <span class="op">&lt;&lt; EOF</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "customApiKeyResponses": {</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="st">    "approved": ["</span><span class="va">$LAST20</span><span class="st">"],</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="st">    "rejected": []</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="st">  },</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="st">  "hasCompletedOnboarding": true</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> ~/.claude/claude.json <span class="op">&lt;&lt; EOF</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="st">  "apiKeyHelper": "</span><span class="va">$HOME</span><span class="st">/.claude/anthropic_key_helper.sh"</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>5. Start Claude Code:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="data-analysis-with-plan-files" class="level1">
-<h1>Data analysis with plan files</h1>
-<section id="why-plan-files" class="level2">
-<h2 class="anchored" data-anchor-id="why-plan-files">Why plan files?</h2>
-<p>In the previous lecture we typed a single prompt and let Claude Code run. That works for simple tasks, but for data analysis we want something better:</p>
-<ul>
-<li><strong>Reproducibility</strong>: anyone can read the plan and understand exactly what was done</li>
-<li><strong>Iteration</strong>: you can refine the plan, re-run it, and compare results</li>
-<li><strong>Documentation</strong>: the plan itself becomes part of your analysis record</li>
-</ul>
-<p>Instead of ad-hoc prompts, we’ll write <strong>plan files</strong>—structured Markdown documents that describe what we want the agent to do. The agent reads the plan and produces a Jupyter notebook as output.</p>
-</section>
-<section id="the-dataset-anscombes-quartet" class="level2">
-<h2 class="anchored" data-anchor-id="the-dataset-anscombes-quartet">The dataset: Anscombe’s quartet</h2>
-<p><a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe’s quartet</a> is a famous set of four datasets that have nearly identical summary statistics (mean, variance, correlation, regression line) but look completely different when plotted. It’s a classic demonstration of why visualization matters.</p>
-</section>
-<section id="step-1-download-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="step-1-download-the-data">Step 1: Download the data</h2>
-<p>Open a second terminal in the Codespace so you can keep Claude Code running. Click the <strong>“+”</strong> button in the top-right corner of the terminal panel, or use the shortcut <code>Ctrl+Shift+`</code>. Then download the data:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-o</span> anscombe_quartet.tsv https://raw.githubusercontent.com/nekrut/bda/main/data/anscombe_quartet.tsv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Take a look at what we downloaded:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-code-copy="true"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> anscombe_quartet.tsv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You should see three columns: <code>dataset</code>, <code>x</code>, and <code>y</code>, with four groups (I, II, III, IV).</p>
-</section>
-<section id="step-2-write-a-plan-file" class="level2">
-<h2 class="anchored" data-anchor-id="step-2-write-a-plan-file">Step 2: Write a plan file</h2>
-<p>We’ll write the plan together in class. Create a file called <code>anscombe_plan.md</code> in the Codespace editor and describe what you want the analysis to do. Think about:</p>
-<ul>
-<li>What summary statistics to compute for each group</li>
-<li>What visualizations to create</li>
-<li>What the output should be (a Jupyter notebook)</li>
+<li>Type your analysis requests in natural language</li>
+<li>The agent responds with streaming markdown</li>
+<li>Tool usage is shown as expandable cards</li>
+<li>A “thinking” indicator appears while the agent reasons</li>
 </ul>
 </section>
-<section id="step-3-execute-the-plan" class="level2">
-<h2 class="anchored" data-anchor-id="step-3-execute-the-plan">Step 3: Execute the plan</h2>
-<p>Switch back to the terminal running Claude Code and feed it your plan:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-copy="true"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Read anscombe_plan.md and execute it. Create a Jupyter notebook with the complete analysis.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Watch what Claude Code does—it reads the plan, writes code, and produces the notebook.</p>
-</section>
-<section id="step-4-review-and-iterate" class="level2">
-<h2 class="anchored" data-anchor-id="step-4-review-and-iterate">Step 4: Review and iterate</h2>
-<p>Open the generated notebook and check:</p>
+<section id="right-pane-artifacts" class="level3">
+<h3 class="anchored" data-anchor-id="right-pane-artifacts">Right Pane: Artifacts</h3>
+<p>Three tabs:</p>
 <ul>
-<li>Are the summary statistics correct?</li>
-<li>Do the plots look right?</li>
-<li>Is the interpretation reasonable?</li>
-</ul>
-<p>If something needs fixing, update the plan file and re-run. This is the power of plan-based workflows: you refine the <em>specification</em>, not the code.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The plan file approach works for any analysis, not just Anscombe’s quartet. For your own research, write a plan describing your data, your questions, and your expected outputs. Then let the agent do the implementation while you focus on the science.</p>
-</div>
-</div>
-</section>
-</section>
-<section id="literature-research-with-agentic-tools" class="level1">
-<h1>Literature research with agentic tools</h1>
-<section id="the-challenge" class="level2">
-<h2 class="anchored" data-anchor-id="the-challenge">The challenge</h2>
-<p>Finding and summarizing relevant papers is one of the most time-consuming parts of research. An agentic tool can help—but only if you verify everything it produces.</p>
-<p>In this example, we’ll research recent papers on a topic of your choice. I’ll demonstrate with the <strong>CDKN2A gene across mammals</strong>—a tumor suppressor gene (also known as p16) that plays a critical role in cell cycle regulation. Studying it across species helps us understand cancer resistance in long-lived mammals.</p>
-</section>
-<section id="step-1-write-a-literature-search-plan" class="level2">
-<h2 class="anchored" data-anchor-id="step-1-write-a-literature-search-plan">Step 1: Write a literature search plan</h2>
-<p>We’ll write this plan together in class. Create a file (e.g., <code>lit_search_plan.md</code>) describing:</p>
+<li><strong>Plan</strong>: The current analysis plan as a visual DAG (directed acyclic graph). Steps are color-coded:
 <ul>
-<li>What topic you’re searching for</li>
-<li>What search terms to use</li>
-<li>What information to extract per paper (title, authors, DOI, summary)</li>
-<li>What verification steps to perform</li>
+<li>🟢 Green = completed</li>
+<li>🟠 Orange = running</li>
+<li>🔴 Red = failed</li>
+<li>⚪ Gray = pending</li>
+</ul></li>
+<li><strong>Results</strong>: Typed outputs from the analysis (markdown reports, tables, images, file links)</li>
+<li><strong>Raw</strong>: The plan in editable YAML+markdown format</li>
 </ul>
-<p>The key requirement: <strong>every paper found must be verified</strong>. The plan should explicitly instruct the agent to confirm that DOIs resolve, titles match, and authors are correct.</p>
 </section>
-<section id="step-2-execute-the-plan" class="level2">
-<h2 class="anchored" data-anchor-id="step-2-execute-the-plan">Step 2: Execute the plan</h2>
-<p>Feed the plan to Claude Code and let it search for papers and create a literature review document.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Critical: verify everything
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The agent will find papers and write summaries. Some will be real. Some might be hallucinated—fake papers with plausible-sounding titles and author names that don’t actually exist.</p>
-<p><strong>You must check every single reference.</strong> Click every DOI. Confirm every title. This is not optional—citing a non-existent paper in a thesis or publication is a serious academic integrity issue.</p>
-</div>
-</div>
-</section>
-<section id="step-3-validate-the-output" class="level2">
-<h2 class="anchored" data-anchor-id="step-3-validate-the-output">Step 3: Validate the output</h2>
-<p>For each paper in the generated review:</p>
-<p>1. Click the DOI or URL — does it lead to a real paper?</p>
-<p>2. Does the title match?</p>
-<p>3. Are the authors correct?</p>
-<p>4. Does the summary accurately reflect the paper’s findings?</p>
-<p>Mark any discrepancies. If a paper doesn’t exist, delete it. If details are wrong, correct them.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This verification step is not a one-time annoyance—it’s the core skill. The agent does the tedious initial search. You do the critical thinking. This division of labor is what makes agentic tools useful rather than dangerous.</p>
-</div>
-</div>
+<section id="header" class="level3">
+<h3 class="anchored" data-anchor-id="header">Header</h3>
+<ul>
+<li><strong>Working directory</strong> display with a change button</li>
+<li><strong>Session cost</strong> showing token usage and estimated cost for the current session</li>
+</ul>
+<hr>
 </section>
 </section>
-<section id="summary" class="level1">
-<h1>Summary</h1>
-<section id="what-we-covered-today" class="level2">
-<h2 class="anchored" data-anchor-id="what-we-covered-today">What we covered today</h2>
+<section id="your-first-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="your-first-analysis">9. Your First Analysis</h2>
+<p>Try running a simple quality check. Download a test FASTQ file and analyze it:</p>
+<blockquote class="blockquote">
+<p><em>Download a small FASTQ file from the EBI and run FastQC on it. Show me the results.</em></p>
+</blockquote>
+<p>The agent will:</p>
 <ol type="1">
-<li><strong>Agentic concepts</strong>: skills, MCP servers, and slash commands—how agents extend their capabilities</li>
-<li><strong>AI safety</strong>: the current moment, risks of agentic AI, and why verification is non-negotiable</li>
-<li><strong>Plan-based data analysis</strong>: writing structured plans for reproducible analysis with Anscombe’s quartet</li>
-<li><strong>Literature research</strong>: using agents to find papers while maintaining academic rigor through verification</li>
+<li>Plan the steps (download, install FastQC, run analysis)</li>
+<li>Ask for your approval</li>
+<li>Execute each step, showing progress in the DAG</li>
+<li>Display the FastQC report in the Results tab</li>
 </ol>
+<hr>
 </section>
-<section id="key-takeaways" class="level2">
-<h2 class="anchored" data-anchor-id="key-takeaways">Key takeaways</h2>
-<ul>
-<li><strong>Plan files</strong> give you reproducibility and documentation for free—use them instead of ad-hoc prompts</li>
-<li><strong>MCP servers</strong> let agents connect to external services through a universal protocol</li>
-<li><strong>Skills and slash commands</strong> encode best practices so agents behave consistently</li>
-<li><strong>Never trust agent output in research contexts</strong> without independent verification</li>
-<li>The agent is a <strong>collaborator</strong>, not an authority—you are always responsible for the final result</li>
-</ul>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">10. Summary</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gxy3</code></td>
+<td>Desktop app for chat-driven bioinformatics</td>
+</tr>
+<tr class="even">
+<td>Electron</td>
+<td>Cross-platform desktop framework</td>
+</tr>
+<tr class="odd">
+<td><code>conda</code>/<code>mamba</code></td>
+<td>Package manager for bioinformatics tools</td>
+</tr>
+<tr class="even">
+<td>Anthropic API key</td>
+<td>Authenticates your LLM access</td>
+</tr>
+<tr class="odd">
+<td>Working directory</td>
+<td>Where analysis output is saved</td>
+</tr>
+</tbody>
+</table>
+<section id="whats-next" class="level3">
+<h3 class="anchored" data-anchor-id="whats-next">What’s Next</h3>
+<p>In upcoming lectures we will use <code>gxy3</code> to run real bioinformatics analyses—genome assembly, variant calling, and more—all through natural language conversation with the agent.</p>
 
 
 </section>
@@ -1160,4 +1177,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture12.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture25.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
