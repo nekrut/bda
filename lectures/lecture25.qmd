@@ -1,0 +1,300 @@
+---
+title: "Lecture 25: Setting Up the gxy3 Agent"
+---
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+
+- Explain what `gxy3` is and how it replaces Galaxy's web UI with a chat interface
+- Install `gxy3` on macOS, Linux, or Windows
+- Configure `gxy3` with your Anthropic API key
+- Run your first bioinformatics analysis through the chat interface
+
+---
+
+## 1. What is gxy3?
+
+[`gxy3`](https://github.com/nekrut/gxy3) is an AI-driven bioinformatics desktop application. It replaces Galaxy's traditional web interface with a **natural language chat interface**: you describe an analysis in plain English, and an AI agent plans and executes it.
+
+### How It Works
+
+1. You describe an analysis in the chat pane (e.g., *"assemble these MRSA genomes with autocycler"*)
+2. The agent creates an executable **plan** and displays it for your review
+3. You approve (with optional edits), and the agent executes step by step
+4. Progress is shown as a visual DAG; results appear in a dedicated Results tab
+
+### Architecture
+
+```
+Electron App
+├── Main Process (Node.js)
+│   ├── Agent Runtime (LLM interaction, tool-use loop)
+│   ├── gxy3 Extension (plan management, execution)
+│   └── IPC Layer (typed channels to renderer)
+├── Preload (contextBridge)
+└── Renderer (two-pane layout)
+    ├── Left:  Chat (streaming messages, thinking indicator)
+    └── Right: Artifacts (plan editor, visual DAG, typed results)
+```
+
+The app runs entirely on your machine. For small/medium analyses, tools are installed and executed locally via `conda`/`mamba`. Galaxy integration for large-scale compute is planned for a future phase.
+
+---
+
+## 2. Prerequisites
+
+Before installing `gxy3`, make sure you have:
+
+- **Your Anthropic API key** --- this was sent to you earlier in the semester. You will need it to configure the LLM provider. If you lost it, ask the instructor.
+- **A computer running macOS, Linux, or Windows 10/11**
+- **An internet connection** (for downloading dependencies and accessing the Anthropic API)
+
+::: {.callout-important}
+## API Key Security
+Your Anthropic API key is like a password. **Do not share it**, commit it to Git, or post it publicly. If compromised, anyone can use your account and rack up charges.
+:::
+
+---
+
+## 3. Installation: macOS
+
+### Step 1 --- Install Homebrew
+
+If you don't already have Homebrew, open **Terminal** (`Cmd+Space`, type "Terminal") and paste:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Follow the prompts. This also installs Xcode Command Line Tools if needed.
+
+### Step 2 --- Install Node.js and Git
+
+```bash
+brew install node git
+```
+
+### Step 3 --- Install Miniforge
+
+Miniforge provides `conda` and `mamba` for installing bioinformatics tools:
+
+```bash
+brew install miniforge
+conda init "$(basename "$SHELL")"
+source ~/.zshrc
+```
+
+### Step 4 --- Clone and start gxy3
+
+```bash
+git clone https://github.com/nekrut/gxy3.git
+cd gxy3 && npm install
+cd app && npm install
+npm start
+```
+
+The `gxy3` window should appear on your screen.
+
+---
+
+## 4. Installation: Linux (Ubuntu/Debian)
+
+### Step 1 --- Install system dependencies
+
+```bash
+sudo apt update
+sudo apt install -y git curl build-essential
+```
+
+### Step 2 --- Install Node.js
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+```
+
+### Step 3 --- Install Miniforge
+
+```bash
+curl -fsSL https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -o ~/miniforge.sh
+bash ~/miniforge.sh -b
+~/miniforge3/bin/conda init bash
+source ~/.bashrc
+rm ~/miniforge.sh
+```
+
+### Step 4 --- Clone and start gxy3
+
+```bash
+git clone https://github.com/nekrut/gxy3.git
+cd gxy3 && npm install
+cd app && npm install
+npm start
+```
+
+---
+
+## 5. Installation: Windows
+
+`gxy3` runs on Windows inside **WSL2** (Windows Subsystem for Linux). This gives you a full Linux environment with graphical display---no dual-booting needed.
+
+### Step 1 --- Install WSL2
+
+Right-click the Start button, select **Terminal (Admin)** or **PowerShell (Admin)**, and run:
+
+```powershell
+wsl --install --web-download -d Ubuntu
+```
+
+Restart your computer when prompted. After reboot, **Ubuntu** will open automatically---create a username and password when asked.
+
+### Step 2 --- Run the setup script
+
+Inside the Ubuntu window, paste this and press Enter:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nekrut/gxy3/master/scripts/setup-wsl.sh | bash
+source ~/.bashrc
+```
+
+This installs Node.js, Miniforge, and clones `gxy3`. Takes a few minutes.
+
+### Step 3 --- Launch gxy3
+
+```bash
+cd ~/gxy3/app && npm start
+```
+
+The `gxy3` window will appear on your Windows desktop (WSLg handles the display automatically).
+
+::: {.callout-tip}
+## Windows/WSL2 Tips
+- Keep analysis data inside `~/` (the Linux filesystem) for best performance
+- Avoid working on `/mnt/c/` paths---cross-filesystem access is significantly slower
+- Windows 11 has WSLg built in; on Windows 10 run `wsl --update` first
+- To open Ubuntu again later, search for "Ubuntu" in the Start menu
+:::
+
+---
+
+## 6. Configuration
+
+On first launch, open **Preferences** (gear icon, or `Ctrl+,` / `Cmd+,` on Mac).
+
+### LLM Provider
+
+1. Set **Provider** to **Anthropic**
+2. Paste your **Anthropic API key** (the one sent to you earlier in the semester)
+3. Select a model (Claude Sonnet 4.6 recommended for balance of speed and capability)
+
+::: {.callout-note}
+## Which Model?
+`gxy3` supports multiple providers (Anthropic, OpenAI, Google AI, Ollama), but for this class we use **Anthropic**. The API key you received works with all Claude models. Session token costs are displayed in the header so you can monitor usage.
+:::
+
+### Working Directory
+
+Set this to a folder where analysis output will be saved. A good choice:
+
+- **macOS/Linux**: `~/bda-analyses/`
+- **Windows/WSL2**: `~/bda-analyses/` (inside the Linux filesystem, **not** `/mnt/c/...`)
+
+Create the directory if it doesn't exist:
+
+```bash
+mkdir -p ~/bda-analyses
+```
+
+### Package Manager
+
+Leave as **"auto"**. This prefers `mamba` (faster) and falls back to `conda`.
+
+---
+
+## 7. Verifying Your Installation
+
+After configuring preferences, test that everything works:
+
+1. In the chat pane, type:
+
+   > *Install fastqc and run fastqc --version*
+
+2. The agent should:
+   - Create a plan with two steps (install `fastqc`, run the version check)
+   - Display the plan in the artifact pane for your approval
+   - After you approve, create a conda environment, install `fastqc`, and report the version
+
+3. If you see a version number in the results---you're set up correctly.
+
+### Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `npm start` fails with module errors | Run `npm install` again in both `gxy3/` and `gxy3/app/` |
+| "API key invalid" error | Double-check the key in Preferences---no extra spaces |
+| `conda` not found | Re-run `conda init` and `source ~/.bashrc` (or `~/.zshrc` on Mac) |
+| Window doesn't appear (Windows) | Run `wsl --update` and restart Ubuntu |
+| Slow performance (Windows) | Make sure you're working in `~/`, not `/mnt/c/` |
+
+---
+
+## 8. Understanding the Interface
+
+The `gxy3` interface has two panes:
+
+### Left Pane: Chat
+
+- Type your analysis requests in natural language
+- The agent responds with streaming markdown
+- Tool usage is shown as expandable cards
+- A "thinking" indicator appears while the agent reasons
+
+### Right Pane: Artifacts
+
+Three tabs:
+
+- **Plan**: The current analysis plan as a visual DAG (directed acyclic graph). Steps are color-coded:
+  - 🟢 Green = completed
+  - 🟠 Orange = running
+  - 🔴 Red = failed
+  - ⚪ Gray = pending
+- **Results**: Typed outputs from the analysis (markdown reports, tables, images, file links)
+- **Raw**: The plan in editable YAML+markdown format
+
+### Header
+
+- **Working directory** display with a change button
+- **Session cost** showing token usage and estimated cost for the current session
+
+---
+
+## 9. Your First Analysis
+
+Try running a simple quality check. Download a test FASTQ file and analyze it:
+
+> *Download a small FASTQ file from the EBI and run FastQC on it. Show me the results.*
+
+The agent will:
+
+1. Plan the steps (download, install FastQC, run analysis)
+2. Ask for your approval
+3. Execute each step, showing progress in the DAG
+4. Display the FastQC report in the Results tab
+
+---
+
+## 10. Summary
+
+| Component | What It Does |
+|-----------|-------------|
+| `gxy3` | Desktop app for chat-driven bioinformatics |
+| Electron | Cross-platform desktop framework |
+| `conda`/`mamba` | Package manager for bioinformatics tools |
+| Anthropic API key | Authenticates your LLM access |
+| Working directory | Where analysis output is saved |
+
+### What's Next
+
+In upcoming lectures we will use `gxy3` to run real bioinformatics analyses---genome assembly, variant calling, and more---all through natural language conversation with the agent.

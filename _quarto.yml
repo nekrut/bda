@@ -67,6 +67,8 @@ website:
             text: "23. Genome Assembly"
           - href: lectures/lecture24.qmd
             text: "24. Pangenomics"
+          - href: lectures/lecture25.qmd
+            text: "25. Setting Up the gxy3 Agent"
 
 format:
   html:
