@@ -54,7 +54,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 24 | Apr 9 | [Pangenomics](lectures/lecture24.qmd) |
 | 25 | Apr 14 | [Setting Up the gxy3 Agent](lectures/lecture25.qmd) |
 | 26 | Apr 16 | - |
-| 27 | Apr 21 | - |
+| 27 | Apr 21 | [Bulk RNA-seq Theory](lectures/lecture27.qmd) |
 | 28 | Apr 23 | - |
 | 29 | Apr 28 | - |
 | 30 | Apr 30 | - |
