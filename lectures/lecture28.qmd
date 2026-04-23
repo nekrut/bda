@@ -13,6 +13,28 @@ By the end of this lecture, you will be able to:
 
 ---
 
+## 0. Before We Start --- Submit Your Assembly
+
+::: {.callout-important}
+## Action required: submit your assembly URL via the form
+Before today's exercise, re-submit a link to **your MRSA isolate assembly** using this Google form:
+
+[**https://forms.gle/NoAcPSddhjGT9noT6**](https://forms.gle/NoAcPSddhjGT9noT6)
+
+The form asks for your **email address** and a **URL to the FASTA file** produced by your assembler.
+
+**The URL must point to a FASTA assembly. Nothing else.**
+
+- ✅ A link to the FASTA dataset itself (e.g. a Galaxy dataset URL ending in `?to_ext=fasta`, or a direct HTTPS link to a `.fasta` / `.fasta.gz` file)
+- ❌ Not a link to a Galaxy **history** (URLs with `/u/<user>/h/...`)
+- ❌ Not a link to a FASTQ, BAM, tabular report, or image
+- ❌ Not a link to a folder or shared drive
+
+If you are unsure how to get a direct FASTA link from Galaxy: open the dataset, click the **floppy-disk / save** icon or the dataset title, and copy the URL that ends in `/display?to_ext=fasta`.
+:::
+
+---
+
 ## 1. What Is Claude Code?
 
 [Claude Code](https://code.claude.com/) is Anthropic's command-line coding agent. You run it in a terminal inside any directory---a software project, an analysis folder, a notebook repo---and interact with it through natural-language prompts. The agent reads files, runs commands, edits code, and explains what it did, all with your approval policy in place.
