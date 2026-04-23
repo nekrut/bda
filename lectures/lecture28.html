@@ -735,9 +735,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The files are named <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code>. Point Claude Code at that folder and it will pull them directly—no manual downloading, no manifest file.</p>
 <p>A prompt like this is enough to kick things off:</p>
 <blockquote class="blockquote">
-<p><em>Download <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code> from <code>https://github.com/nekrut/bda/tree/main/data/assemblies</code> into a local <code>assemblies/</code> directory, then gunzip them.</em></p>
+<p><em>Download <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code> from <code>https://github.com/nekrut/bda/tree/main/data/assemblies</code> into a local <code>assemblies/</code> directory. Keep them gzipped.</em></p>
 </blockquote>
-<p>Claude Code will resolve the raw-file URLs, fetch each one, and decompress them.</p>
+<p>Claude Code will resolve the raw-file URLs and fetch each one. <strong>Leave the files compressed</strong>—every downstream tool we will use (<code>minimap2</code>, <code>samtools</code>, <code>bwa</code>) reads <code>.fasta.gz</code> directly, so there is no reason to waste disk on uncompressed copies.</p>
 <p>The reference genome is <em>Staphylococcus aureus</em> <strong>NCTC 8325</strong> (<code>NC_007795.1</code>). Ask Claude Code to fetch it:</p>
 <blockquote class="blockquote">
 <p><em>Download the FASTA for NCBI accession <code>NC_007795.1</code> as <code>reference.fasta</code> and index it with <code>samtools faidx</code>.</em></p>
