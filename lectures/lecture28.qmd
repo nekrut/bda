@@ -329,9 +329,9 @@ The files are named `assembly1.fasta.gz` through `assembly13.fasta.gz`. Point Cl
 
 A prompt like this is enough to kick things off:
 
-> *Download `assembly1.fasta.gz` through `assembly13.fasta.gz` from `https://github.com/nekrut/bda/tree/main/data/assemblies` into a local `assemblies/` directory, then gunzip them.*
+> *Download `assembly1.fasta.gz` through `assembly13.fasta.gz` from `https://github.com/nekrut/bda/tree/main/data/assemblies` into a local `assemblies/` directory. Keep them gzipped.*
 
-Claude Code will resolve the raw-file URLs, fetch each one, and decompress them.
+Claude Code will resolve the raw-file URLs and fetch each one. **Leave the files compressed**---every downstream tool we will use (`minimap2`, `samtools`, `bwa`) reads `.fasta.gz` directly, so there is no reason to waste disk on uncompressed copies.
 
 The reference genome is *Staphylococcus aureus* **NCTC 8325** (`NC_007795.1`). Ask Claude Code to fetch it:
 
