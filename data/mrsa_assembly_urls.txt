@@ -1,0 +1,20 @@
+# 13 MRSA isolate assemblies (Galaxy dataset URLs)
+# Used in Lecture 28 exercise: align each assembly against the S. aureus
+# NCTC 8325 reference genome (NC_007795.1).
+#
+# One URL per line. Save the downloaded files as assembly1.fasta,
+# assembly2.fasta, ..., assembly13.fasta in the order listed below.
+
+https://galaxy-main.usegalaxy.org/api/datasets/f9cad7b01a4721351dca868a46c1e8a6/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a472135ef8517f1b617ad8a/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a472135ddf6f54182d4c1f6/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a4721353d25dce4e870e34e/display?to_ext=fasta
+https://galaxy-main.usegalaxy.org/api/datasets/f9cad7b01a47213597dcfe449e47db21/display?to_ext=fasta
+https://galaxy-main.usegalaxy.org/api/datasets/f9cad7b01a4721359ba1f66b087c3ad9/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a472135912a554ee6de8d49/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a472135d1283e399f72688c/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a472135444c4e8b36d8c182/display?to_ext=fasta
+https://usegalaxy.org/api/datasets/f9cad7b01a4721358e7be5a8d27f11f5/display?to_ext=fasta
+https://galaxy-main.usegalaxy.org/api/datasets/f9cad7b01a47213545bc72e32c801256/display?to_ext=fasta
+https://galaxy-main.usegalaxy.org/api/datasets/f9cad7b01a472135d85f8d76b7b0bd26/display?to_ext=fasta
+https://galaxy-main.usegalaxy.org/api/datasets/f9cad7b01a472135f6e64a713175e2b5/display?to_ext=fasta

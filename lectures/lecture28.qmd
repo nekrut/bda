@@ -1,0 +1,309 @@
+---
+title: "Lecture 28: Running Claude Code"
+---
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+
+- Install the Claude Code CLI on macOS, Linux, or Windows (via WSL2)
+- Authenticate Claude Code on first run using the browser OAuth flow
+- Verify your installation with `claude --version` and `claude doctor`
+- Launch a Claude Code session inside a project directory
+
+---
+
+## 1. What Is Claude Code?
+
+[Claude Code](https://code.claude.com/) is Anthropic's command-line coding agent. You run it in a terminal inside any directory---a software project, an analysis folder, a notebook repo---and interact with it through natural-language prompts. The agent reads files, runs commands, edits code, and explains what it did, all with your approval policy in place.
+
+Claude Code is not a chatbot; it is an **interactive terminal program** that spawns tools (shell, file editor, git, package managers) on your machine. Everything happens locally, under your user account, inside the directory where you started it. This lecture sets up the tool on your laptop so we can use it in the remaining labs.
+
+::: {.callout-important}
+## You need an Anthropic account or API key
+Claude Code authenticates against your Anthropic account (via a browser OAuth flow on first run) or with an API key. The keys distributed earlier in the semester work for both. If you lost yours, ask the instructor.
+:::
+
+---
+
+## 2. Prerequisites
+
+A working terminal on one of the supported platforms:
+
+- **macOS 11+** (Intel or Apple Silicon)
+- **Linux** x86_64 or ARM64 with at least 4 GB RAM (Ubuntu 20.04+, Debian 11+, or equivalent)
+- **Windows 10/11** with **WSL2** (Windows Subsystem for Linux) enabled
+
+You do *not* need Node.js, Python, or any IDE to get started---Claude Code ships as a single native binary. The project directory you open it in may of course need its own dependencies.
+
+---
+
+## 3. Installation: macOS
+
+The officially recommended install method is the native installer. Open **Terminal** (`Cmd+Space`, type "Terminal") and paste:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+The script detects Intel vs. Apple Silicon automatically, downloads the right binary, and drops it on your `PATH`. Re-open the terminal (or `exec $SHELL`) so the new path is picked up.
+
+::: {.callout-tip}
+## Homebrew alternative
+If you already use Homebrew and prefer it:
+
+```bash
+brew install --cask claude-code          # stable
+# or
+brew install --cask claude-code@latest   # rolling
+```
+
+Homebrew installations do **not** auto-update; you must run `brew upgrade` manually. The native installer auto-updates in the background.
+:::
+
+Verify the install:
+
+```bash
+claude --version
+claude doctor
+```
+
+`claude doctor` prints a detailed environment report---useful if something later goes wrong.
+
+---
+
+## 4. Installation: Linux (Ubuntu/Debian)
+
+Same native installer as macOS:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+If you prefer system package management, Anthropic also publishes an APT repository that auto-updates along with the rest of your system:
+
+```bash
+sudo install -d -m 0755 /etc/apt/keyrings
+sudo curl -fsSL https://downloads.claude.ai/keys/claude-code.asc \
+    -o /etc/apt/keyrings/claude-code.asc
+echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" \
+    | sudo tee /etc/apt/sources.list.d/claude-code.list
+sudo apt update
+sudo apt install claude-code
+```
+
+Verify:
+
+```bash
+claude --version
+claude doctor
+```
+
+---
+
+## 5. Installation: Windows (via WSL2)
+
+On Windows, the recommended path is to run Claude Code **inside WSL2**---Microsoft's lightweight Linux container that ships with Windows 10/11. This gives you a real Linux environment (shell, filesystem, package manager) while keeping your Windows desktop. Everything the agent does happens inside the WSL2 container.
+
+::: {.callout-note}
+## Why WSL2 and not native Windows?
+A native Windows installer exists (`irm https://claude.ai/install.ps1 | iex`), but most bioinformatics tooling---`conda`, `samtools`, `fastp`, `salmon`, and every pipeline we use in this course---was written for Unix. Running Claude Code in WSL2 means the commands the agent executes "just work." Use native Windows only if your project is Windows-specific.
+:::
+
+### Step 1 --- Install WSL2
+
+Right-click the **Start** button, choose **Terminal (Admin)** or **PowerShell (Admin)**, and run:
+
+```powershell
+wsl --install --web-download -d Ubuntu
+```
+
+Reboot when prompted. After the reboot, an **Ubuntu** terminal opens automatically and asks you to create a Linux username and password. These are *separate* from your Windows login.
+
+If Ubuntu does not open automatically, search for "Ubuntu" in the Start menu.
+
+::: {.callout-tip}
+## Windows 10 users
+Run `wsl --update` in an admin PowerShell before Step 1 to make sure WSL2 is current. Windows 11 ships with WSL2 ready to go.
+:::
+
+### Step 2 --- Install Claude Code inside WSL2
+
+Everything from here on runs inside the **Ubuntu** window, *not* PowerShell. In the Ubuntu prompt, paste:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+exec bash
+```
+
+The `exec bash` at the end replaces your current shell with a fresh one so the new `claude` command appears on your `PATH`.
+
+### Step 3 --- Verify
+
+```bash
+claude --version
+claude doctor
+```
+
+::: {.callout-tip}
+## WSL2 gotchas
+- **Keep your work in the Linux filesystem** (`~/`, not `/mnt/c/...`). Cross-filesystem reads from Windows (`C:`) into WSL2 are an order of magnitude slower and break some file-watching tools
+- **The browser OAuth flow works**: WSL2 can open your default Windows browser automatically on first `claude` run
+- **No Git for Windows needed**: Git is already installed inside Ubuntu (or available via `sudo apt install git`)
+- To get back to your Ubuntu shell later, search for "Ubuntu" in the Start menu, or run `wsl` from any Windows terminal
+:::
+
+---
+
+## 6. First Run and Authentication
+
+::: {.callout-important}
+## We are authenticating with API keys in this class
+Claude Code supports two auth flows: browser OAuth (sign in with an Anthropic account) and an **API key**. For this course we are using the **API keys** that were distributed earlier in the semester---the same key you used to configure `gxy3` in [Lecture 25](lecture25.qmd). If you lost it, ask the instructor. Do *not* create a personal Anthropic account for this class; the provided key is already funded for your coursework.
+:::
+
+### Step 1 --- Export the API key
+
+Open your terminal (Terminal on macOS, your Linux shell, or the Ubuntu window on Windows/WSL2) and set the key as an environment variable:
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
+Replace `sk-ant-...` with the full key you were sent. This makes it available to the current shell.
+
+To make the key persist across terminal sessions, append the same line to your shell's startup file:
+
+```bash
+# macOS (zsh — the default since Catalina):
+echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.zshrc
+
+# Linux / WSL2 Ubuntu (bash):
+echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.bashrc
+```
+
+Then reload the file: `source ~/.zshrc` (macOS) or `source ~/.bashrc` (Linux/WSL2).
+
+::: {.callout-important}
+## API key security
+The key is a password. Treat it accordingly:
+
+- **Do not commit it to Git**---`.zshrc` / `.bashrc` are fine because they live outside any repo; never put the key in a file inside a project directory
+- **Do not paste it** into Slack, issue trackers, Zoom chat, or a shared notebook
+- **Do not share it** with classmates---each person has their own
+- A leaked key can run up charges on the class account. Tell the instructor immediately if you think yours has leaked, and we will rotate it
+:::
+
+### Step 2 --- Launch Claude Code
+
+`cd` into a project directory and run:
+
+```bash
+claude
+```
+
+Because `ANTHROPIC_API_KEY` is set, Claude Code picks it up automatically, skips the browser flow, and drops you straight into an **interactive session** in the current directory. On subsequent runs it reuses the same key.
+
+If you see a browser window open or a login prompt, that means the key was not found---exit (`Ctrl+D`), verify with `echo $ANTHROPIC_API_KEY` that your key is set, and try again.
+
+---
+
+## 7. A Quick Smoke Test
+
+With `claude` running in a directory, try:
+
+> *List the files in this directory and summarize what the project does.*
+
+The agent should list the contents, read a `README.md` if one exists, and give you a one-paragraph summary. If that works, you are set up. If not, exit (`Ctrl+D` or type `/exit`) and run `claude doctor` to diagnose.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `claude: command not found` after install | Open a new terminal or run `exec $SHELL` (macOS/Linux) / `exec bash` (WSL2) |
+| Browser does not open on first run (WSL2) | Copy the URL from the terminal into your Windows browser manually |
+| "API key invalid" on startup | Run `echo $ANTHROPIC_API_KEY` — check for trailing whitespace or quoting errors; keys start with `sk-ant-` |
+| `claude` opens a browser instead of using your key | The key is not set in the current shell. Re-source your shell rc file or re-run `export ANTHROPIC_API_KEY=...` |
+| Extremely slow file operations on Windows | Make sure your project lives in `~/` inside WSL2, not under `/mnt/c/` |
+| `claude doctor` reports a missing dependency | Follow the doctor's repair hint; usually a `sudo apt install` or a re-run of the installer |
+
+---
+
+## 8. Giving Claude Code a Dataset to Work On
+
+In the next class you will ask Claude Code to (a) **download 13 MRSA isolate assemblies** from Galaxy and (b) **align each one against the *S. aureus* NCTC 8325 reference genome** (accession `NC_007795.1`). The interesting question at this stage is not the bioinformatics---you already know how to run an aligner---but **how you hand Claude Code the list of inputs**. There are three patterns worth knowing.
+
+### Pattern A --- Point at a manifest file in the course repo
+
+A **manifest** is just a plain-text file listing one URL per line. Claude Code is excellent at reading a file you point it at and then acting on every line. The manifest for this exercise lives in the course repository at:
+
+```
+data/mrsa_assembly_urls.txt
+```
+
+Clone the course repo (or `git pull` if you already have it) and start Claude Code from inside it:
+
+```bash
+git clone https://github.com/nekrut/bda.git
+cd bda
+claude
+```
+
+Then, at the `>` prompt, type something like:
+
+> *Read `data/mrsa_assembly_urls.txt`. For each URL in that file, download the file with `wget` into a new directory called `assemblies/`, naming the outputs `assembly1.fasta`, `assembly2.fasta`, ..., in the order they appear. Skip blank lines and lines starting with `#`.*
+
+Claude Code will read the manifest, announce its plan, and---after you approve the first `wget` call---iterate through all 13 URLs. You will be asked for permission the first time a new tool (like `wget`) runs; you can approve the whole session if you trust the prompt.
+
+::: {.callout-tip}
+## Why a manifest and not paste-the-URLs?
+Pasting 13 long Galaxy URLs into a chat prompt works, but it (a) clutters your terminal scrollback, (b) burns tokens on every turn because the URLs stay in context, and (c) makes the prompt hard to re-run. A one-line reference to a file is cleaner and reproducible.
+:::
+
+### Pattern B --- Record the task in `CLAUDE.md`
+
+Claude Code automatically reads a file named `CLAUDE.md` from the directory where it was launched (and from each parent directory, up to your home). Anything in it becomes persistent context for every prompt in that project. This is the right place for *project-level instructions* that you do not want to retype each session.
+
+Create `CLAUDE.md` in your working directory with content like:
+
+```markdown
+# MRSA assembly-alignment project
+
+## Input data
+- 13 isolate assemblies listed in `data/mrsa_assembly_urls.txt`
+  (download into `assemblies/`, name `assembly1.fasta` ... `assembly13.fasta`)
+- Reference: *S. aureus* NCTC 8325 (NC_007795.1). Fetch with:
+  `curl -o reference.fasta 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_007795.1&rettype=fasta'`
+
+## Output layout
+- Alignments in `alignments/assembly{N}.sam` (or `.paf` if using minimap2)
+- Keep intermediate files out of git; only commit scripts and summaries
+
+## Conventions
+- Prefer `minimap2 -a` for assembly-to-reference alignment
+- Use `samtools sort` + `samtools index` on every BAM before reporting
+```
+
+Once this file exists, you can simply say *"Download the input data and align each assembly against the reference"* and Claude Code already knows what you mean. `CLAUDE.md` is the closest thing Claude Code has to a project README for the agent.
+
+### Pattern C --- Hand it URLs directly in the prompt
+
+For quick one-offs, it is perfectly fine to paste URLs straight into the prompt. You can reference a single Galaxy URL with the `@` mention syntax (Claude Code treats `@<url>` as "please fetch this for me") or just write it inline:
+
+> *Download `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_007795.1&rettype=fasta` as `reference.fasta`, then index it with `samtools faidx`.*
+
+Use this for the single reference-genome URL and for any follow-up ad-hoc download. Save the manifest pattern (A) for the 13-way fan-out.
+
+### What to do when Claude Code gets it wrong
+
+Three things fail more often than people expect:
+
+1. **Empty or corrupt FASTA** --- Galaxy occasionally returns an HTML error page with status 200. Ask Claude Code to verify each download: `check that every file starts with a "`>`" character and is at least 1 MB; re-download any that fail`.
+2. **Wrong order** --- if the manifest order matters for downstream analysis, say so explicitly. Otherwise Claude Code may sort alphabetically or parallelize in an unpredictable order.
+3. **Silent network retries** --- long-running `wget` loops can stall without a visible error. Adding `--tries=3 --timeout=60` to the prompt produces more robust behavior.
+
+In every case, the fix is to **tell Claude Code what correctness looks like** in the prompt. "Verify by X" is more useful than "download Y".
+
+---
+
+*Next sections of this lecture will cover authoring your first custom slash command, configuring `settings.json` for permissions, and using subagents---to be added.*

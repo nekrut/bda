@@ -71,6 +71,8 @@ website:
             text: "25. Setting Up the gxy3 Agent"
           - href: lectures/lecture27.qmd
             text: "27. Bulk RNA-seq Theory"
+          - href: lectures/lecture28.qmd
+            text: "28. Running Claude Code"
 
 format:
   html:
