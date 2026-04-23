@@ -668,11 +668,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="giving-claude-code-a-dataset-to-work-on">8. Giving Claude Code a Dataset to Work On</h2>
 <p>In the next class you will ask Claude Code to align 13 MRSA isolate assemblies against the <em>S. aureus</em> NCTC 8325 reference genome (<code>NC_007795.1</code>).</p>
 <p>The assemblies are already committed to the course repository under:</p>
-<p><a href="https://github.com/nekrut/bda/tree/main/data"><strong><code>data/</code> on GitHub</strong></a></p>
+<p><a href="https://github.com/nekrut/bda/tree/main/data/assemblies"><strong><code>data/assemblies/</code> on GitHub</strong></a></p>
 <p>The files are named <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code>. Just point Claude Code at that folder and it can pull them directly—no manual downloading, no manifest file, no separate URL list.</p>
 <p>A prompt like this is enough:</p>
 <blockquote class="blockquote">
-<p><em>Download <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code> from <code>https://github.com/nekrut/bda/tree/main/data</code> into a local <code>assemblies/</code> directory, then gunzip them.</em></p>
+<p><em>Download <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code> from <code>https://github.com/nekrut/bda/tree/main/data/assemblies</code> into a local <code>assemblies/</code> directory, then gunzip them.</em></p>
 </blockquote>
 <p>Claude Code will resolve the raw-file URLs, fetch each one, and decompress them. You do not have to list the URLs yourself.</p>
 <hr>
