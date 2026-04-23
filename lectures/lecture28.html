@@ -351,13 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
   </ul></li>
-  <li><a href="#giving-claude-code-a-dataset-to-work-on" id="toc-giving-claude-code-a-dataset-to-work-on" class="nav-link" data-scroll-target="#giving-claude-code-a-dataset-to-work-on">8. Giving Claude Code a Dataset to Work On</a>
-  <ul class="collapse">
-  <li><a href="#pattern-a-point-at-a-manifest-file-in-the-course-repo" id="toc-pattern-a-point-at-a-manifest-file-in-the-course-repo" class="nav-link" data-scroll-target="#pattern-a-point-at-a-manifest-file-in-the-course-repo">Pattern A — Point at a manifest file in the course repo</a></li>
-  <li><a href="#pattern-b-record-the-task-in-claude.md" id="toc-pattern-b-record-the-task-in-claude.md" class="nav-link" data-scroll-target="#pattern-b-record-the-task-in-claude.md">Pattern B — Record the task in <code>CLAUDE.md</code></a></li>
-  <li><a href="#pattern-c-hand-it-urls-directly-in-the-prompt" id="toc-pattern-c-hand-it-urls-directly-in-the-prompt" class="nav-link" data-scroll-target="#pattern-c-hand-it-urls-directly-in-the-prompt">Pattern C — Hand it URLs directly in the prompt</a></li>
-  <li><a href="#what-to-do-when-claude-code-gets-it-wrong" id="toc-what-to-do-when-claude-code-gets-it-wrong" class="nav-link" data-scroll-target="#what-to-do-when-claude-code-gets-it-wrong">What to do when Claude Code gets it wrong</a></li>
-  </ul></li>
+  <li><a href="#giving-claude-code-a-dataset-to-work-on" id="toc-giving-claude-code-a-dataset-to-work-on" class="nav-link" data-scroll-target="#giving-claude-code-a-dataset-to-work-on">8. Giving Claude Code a Dataset to Work On</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture28.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -672,77 +666,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="giving-claude-code-a-dataset-to-work-on" class="level2">
 <h2 class="anchored" data-anchor-id="giving-claude-code-a-dataset-to-work-on">8. Giving Claude Code a Dataset to Work On</h2>
-<p>In the next class you will ask Claude Code to (a) <strong>download 13 MRSA isolate assemblies</strong> from Galaxy and (b) <strong>align each one against the <em>S. aureus</em> NCTC 8325 reference genome</strong> (accession <code>NC_007795.1</code>). The interesting question at this stage is not the bioinformatics—you already know how to run an aligner—but <strong>how you hand Claude Code the list of inputs</strong>. There are three patterns worth knowing.</p>
-<section id="pattern-a-point-at-a-manifest-file-in-the-course-repo" class="level3">
-<h3 class="anchored" data-anchor-id="pattern-a-point-at-a-manifest-file-in-the-course-repo">Pattern A — Point at a manifest file in the course repo</h3>
-<p>A <strong>manifest</strong> is just a plain-text file listing one URL per line. Claude Code is excellent at reading a file you point it at and then acting on every line. The manifest for this exercise lives in the course repository at:</p>
-<pre><code>data/mrsa_assembly_urls.txt</code></pre>
-<p>Clone the course repo (or <code>git pull</code> if you already have it) and start Claude Code from inside it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/nekrut/bda.git</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> bda</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then, at the <code>&gt;</code> prompt, type something like:</p>
+<p>In the next class you will ask Claude Code to align 13 MRSA isolate assemblies against the <em>S. aureus</em> NCTC 8325 reference genome (<code>NC_007795.1</code>).</p>
+<p>The assemblies are already committed to the course repository under:</p>
+<p><a href="https://github.com/nekrut/bda/tree/main/data"><strong><code>data/</code> on GitHub</strong></a></p>
+<p>The files are named <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code>. Just point Claude Code at that folder and it can pull them directly—no manual downloading, no manifest file, no separate URL list.</p>
+<p>A prompt like this is enough:</p>
 <blockquote class="blockquote">
-<p><em>Read <code>data/mrsa_assembly_urls.txt</code>. For each URL in that file, download the file with <code>wget</code> into a new directory called <code>assemblies/</code>, naming the outputs <code>assembly1.fasta</code>, <code>assembly2.fasta</code>, …, in the order they appear. Skip blank lines and lines starting with <code>#</code>.</em></p>
+<p><em>Download <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code> from <code>https://github.com/nekrut/bda/tree/main/data</code> into a local <code>assemblies/</code> directory, then gunzip them.</em></p>
 </blockquote>
-<p>Claude Code will read the manifest, announce its plan, and—after you approve the first <code>wget</code> call—iterate through all 13 URLs. You will be asked for permission the first time a new tool (like <code>wget</code>) runs; you can approve the whole session if you trust the prompt.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Why a manifest and not paste-the-URLs?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Pasting 13 long Galaxy URLs into a chat prompt works, but it (a) clutters your terminal scrollback, (b) burns tokens on every turn because the URLs stay in context, and (c) makes the prompt hard to re-run. A one-line reference to a file is cleaner and reproducible.</p>
-</div>
-</div>
-</section>
-<section id="pattern-b-record-the-task-in-claude.md" class="level3">
-<h3 class="anchored" data-anchor-id="pattern-b-record-the-task-in-claude.md">Pattern B — Record the task in <code>CLAUDE.md</code></h3>
-<p>Claude Code automatically reads a file named <code>CLAUDE.md</code> from the directory where it was launched (and from each parent directory, up to your home). Anything in it becomes persistent context for every prompt in that project. This is the right place for <em>project-level instructions</em> that you do not want to retype each session.</p>
-<p>Create <code>CLAUDE.md</code> in your working directory with content like:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># MRSA assembly-alignment project</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Input data</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>13 isolate assemblies listed in <span class="in">`data/mrsa_assembly_urls.txt`</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  (download into <span class="in">`assemblies/`</span>, name <span class="in">`assembly1.fasta`</span> ... <span class="in">`assembly13.fasta`</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Reference: *S. aureus* NCTC 8325 (NC_007795.1). Fetch with:</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="in">`curl -o reference.fasta 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=NC_007795.1&amp;rettype=fasta'`</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Output layout</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Alignments in <span class="in">`alignments/assembly{N}.sam`</span> (or <span class="in">`.paf`</span> if using minimap2)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Keep intermediate files out of git; only commit scripts and summaries</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conventions</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Prefer <span class="in">`minimap2 -a`</span> for assembly-to-reference alignment</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use <span class="in">`samtools sort`</span> + <span class="in">`samtools index`</span> on every BAM before reporting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Once this file exists, you can simply say <em>“Download the input data and align each assembly against the reference”</em> and Claude Code already knows what you mean. <code>CLAUDE.md</code> is the closest thing Claude Code has to a project README for the agent.</p>
-</section>
-<section id="pattern-c-hand-it-urls-directly-in-the-prompt" class="level3">
-<h3 class="anchored" data-anchor-id="pattern-c-hand-it-urls-directly-in-the-prompt">Pattern C — Hand it URLs directly in the prompt</h3>
-<p>For quick one-offs, it is perfectly fine to paste URLs straight into the prompt. You can reference a single Galaxy URL with the <code>@</code> mention syntax (Claude Code treats <code>@&lt;url&gt;</code> as “please fetch this for me”) or just write it inline:</p>
-<blockquote class="blockquote">
-<p><em>Download <code>https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&amp;id=NC_007795.1&amp;rettype=fasta</code> as <code>reference.fasta</code>, then index it with <code>samtools faidx</code>.</em></p>
-</blockquote>
-<p>Use this for the single reference-genome URL and for any follow-up ad-hoc download. Save the manifest pattern (A) for the 13-way fan-out.</p>
-</section>
-<section id="what-to-do-when-claude-code-gets-it-wrong" class="level3">
-<h3 class="anchored" data-anchor-id="what-to-do-when-claude-code-gets-it-wrong">What to do when Claude Code gets it wrong</h3>
-<p>Three things fail more often than people expect:</p>
-<ol type="1">
-<li><strong>Empty or corrupt FASTA</strong> — Galaxy occasionally returns an HTML error page with status 200. Ask Claude Code to verify each download: <code>check that every file starts with a "</code>&gt;<code>" character and is at least 1 MB; re-download any that fail</code>.</li>
-<li><strong>Wrong order</strong> — if the manifest order matters for downstream analysis, say so explicitly. Otherwise Claude Code may sort alphabetically or parallelize in an unpredictable order.</li>
-<li><strong>Silent network retries</strong> — long-running <code>wget</code> loops can stall without a visible error. Adding <code>--tries=3 --timeout=60</code> to the prompt produces more robust behavior.</li>
-</ol>
-<p>In every case, the fix is to <strong>tell Claude Code what correctness looks like</strong> in the prompt. “Verify by X” is more useful than “download Y”.</p>
+<p>Claude Code will resolve the raw-file URLs, fetch each one, and decompress them. You do not have to list the URLs yourself.</p>
 <hr>
 <p><em>Next sections of this lecture will cover authoring your first custom slash command, configuring <code>settings.json</code> for permissions, and using subagents—to be added.</em></p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
