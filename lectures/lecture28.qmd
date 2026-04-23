@@ -6,10 +6,11 @@ title: "Lecture 28: Running Claude Code"
 
 By the end of this lecture, you will be able to:
 
-- Install the Claude Code CLI on macOS, Linux, or Windows (via WSL2)
-- Authenticate Claude Code on first run using the browser OAuth flow
-- Verify your installation with `claude --version` and `claude doctor`
-- Launch a Claude Code session inside a project directory
+- Create a personal GitHub repository for your MRSA analysis work
+- Install `git` and the Claude Code CLI on macOS, Linux, or Windows (via WSL2)
+- Authenticate Claude Code with your provided API key
+- Clone your repository and launch Claude Code inside it
+- Direct Claude Code to fetch the class assemblies and start aligning them against the MRSA reference
 
 ---
 
@@ -39,28 +40,54 @@ If you are unsure how to get a direct FASTA link from Galaxy: open the dataset, 
 
 [Claude Code](https://code.claude.com/) is Anthropic's command-line coding agent. You run it in a terminal inside any directory---a software project, an analysis folder, a notebook repo---and interact with it through natural-language prompts. The agent reads files, runs commands, edits code, and explains what it did, all with your approval policy in place.
 
-Claude Code is not a chatbot; it is an **interactive terminal program** that spawns tools (shell, file editor, git, package managers) on your machine. Everything happens locally, under your user account, inside the directory where you started it. This lecture sets up the tool on your laptop so we can use it in the remaining labs.
+Claude Code is not a chatbot; it is an **interactive terminal program** that spawns tools (shell, file editor, git, package managers) on your machine. Everything happens locally, under your user account, inside the directory where you started it.
 
-::: {.callout-important}
-## You need an Anthropic account or API key
-Claude Code authenticates against your Anthropic account (via a browser OAuth flow on first run) or with an API key. The keys distributed earlier in the semester work for both. If you lost yours, ask the instructor.
-:::
+In this lecture we will (1) create a GitHub repository to hold your MRSA analysis, (2) install Claude Code and `git` on your laptop, (3) clone that repository locally, and (4) launch Claude Code inside it so that all analysis we do in the next class happens in one place.
 
 ---
 
 ## 2. Prerequisites
 
-A working terminal on one of the supported platforms:
+- A **GitHub account** ([sign up at github.com](https://github.com/join) if you do not have one)
+- A working terminal on one of the supported platforms:
+    - **macOS 11+** (Intel or Apple Silicon)
+    - **Linux** x86_64 or ARM64 with at least 4 GB RAM (Ubuntu 20.04+, Debian 11+, or equivalent)
+    - **Windows 10/11** with **WSL2** (Windows Subsystem for Linux) enabled
+- The **Anthropic API key** distributed earlier in the semester (the same one you used to configure `gxy3` in [Lecture 25](lecture25.qmd))
 
-- **macOS 11+** (Intel or Apple Silicon)
-- **Linux** x86_64 or ARM64 with at least 4 GB RAM (Ubuntu 20.04+, Debian 11+, or equivalent)
-- **Windows 10/11** with **WSL2** (Windows Subsystem for Linux) enabled
-
-You do *not* need Node.js, Python, or any IDE to get started---Claude Code ships as a single native binary. The project directory you open it in may of course need its own dependencies.
+You do *not* need Node.js, Python, or any IDE to get started---Claude Code ships as a single native binary.
 
 ---
 
-## 3. Installation: macOS
+## 3. Create an `MRSA-analysis` Repository on GitHub
+
+We will keep all your isolate-alignment work in a fresh GitHub repository. Create it **empty**---Claude Code will fill it up.
+
+1. Go to [github.com](https://github.com) and sign in
+2. Click the **+** icon in the top-right corner → **New repository**
+3. Fill in the form:
+    - **Repository name:** `MRSA-analysis`
+    - **Description** (optional): *"MRSA isolate alignment against NCTC 8325 reference"*
+    - **Visibility:** **Public** is fine---the repo will only contain your own work. Choose Private if you prefer
+    - **Initialize this repository with:** check **Add a README file**. Leave `.gitignore` and `license` as *None* for now
+4. Click **Create repository**
+
+GitHub now shows your new, almost-empty repository. Copy the **HTTPS clone URL** from the green **`<> Code`** button---it looks like:
+
+```
+https://github.com/<your-username>/MRSA-analysis.git
+```
+
+You will paste this URL in §8 when you clone the repo.
+
+::: {.callout-note}
+## No sharing required
+You do **not** need to add collaborators or change permission settings. A fresh, empty repository under your own account is all we need.
+:::
+
+---
+
+## 4. Installation: Claude Code on macOS
 
 The officially recommended install method is the native installer. Open **Terminal** (`Cmd+Space`, type "Terminal") and paste:
 
@@ -94,7 +121,7 @@ claude doctor
 
 ---
 
-## 4. Installation: Linux (Ubuntu/Debian)
+## 5. Installation: Claude Code on Linux (Ubuntu/Debian)
 
 Same native installer as macOS:
 
@@ -123,7 +150,7 @@ claude doctor
 
 ---
 
-## 5. Installation: Windows (via WSL2)
+## 6. Installation: Claude Code on Windows (via WSL2)
 
 On Windows, the recommended path is to run Claude Code **inside WSL2**---Microsoft's lightweight Linux container that ships with Windows 10/11. This gives you a real Linux environment (shell, filesystem, package manager) while keeping your Windows desktop. Everything the agent does happens inside the WSL2 container.
 
@@ -171,22 +198,19 @@ claude doctor
 ## WSL2 gotchas
 - **Keep your work in the Linux filesystem** (`~/`, not `/mnt/c/...`). Cross-filesystem reads from Windows (`C:`) into WSL2 are an order of magnitude slower and break some file-watching tools
 - **The browser OAuth flow works**: WSL2 can open your default Windows browser automatically on first `claude` run
-- **No Git for Windows needed**: Git is already installed inside Ubuntu (or available via `sudo apt install git`)
 - To get back to your Ubuntu shell later, search for "Ubuntu" in the Start menu, or run `wsl` from any Windows terminal
 :::
 
 ---
 
-## 6. First Run and Authentication
+## 7. Authenticate Claude Code with Your API Key
 
 ::: {.callout-important}
 ## We are authenticating with API keys in this class
 Claude Code supports two auth flows: browser OAuth (sign in with an Anthropic account) and an **API key**. For this course we are using the **API keys** that were distributed earlier in the semester---the same key you used to configure `gxy3` in [Lecture 25](lecture25.qmd). If you lost it, ask the instructor. Do *not* create a personal Anthropic account for this class; the provided key is already funded for your coursework.
 :::
 
-### Step 1 --- Export the API key
-
-Open your terminal (Terminal on macOS, your Linux shell, or the Ubuntu window on Windows/WSL2) and set the key as an environment variable:
+In your terminal (Terminal on macOS, your Linux shell, or the Ubuntu window on Windows/WSL2), set the key as an environment variable:
 
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
@@ -216,56 +240,104 @@ The key is a password. Treat it accordingly:
 - A leaked key can run up charges on the class account. Tell the instructor immediately if you think yours has leaked, and we will rotate it
 :::
 
-### Step 2 --- Launch Claude Code
+---
 
-`cd` into a project directory and run:
+## 8. Install Git and Clone Your Repository
+
+To get the empty `MRSA-analysis` repository you just created onto your laptop, you need `git`. It may already be installed; check with:
+
+```bash
+git --version
+```
+
+If the command is missing, install it on your platform:
+
+- **macOS** --- either run `xcode-select --install` (the first time you use a developer command, macOS offers to install the Command Line Tools, which include `git`), or use Homebrew: `brew install git`
+- **Linux (Ubuntu/Debian)** --- `sudo apt update && sudo apt install git`
+- **Windows (WSL2 / Ubuntu)** --- same as Linux: `sudo apt update && sudo apt install git`. Do **not** install Git-for-Windows; you want `git` inside WSL2 alongside Claude Code
+
+Configure your identity once (this is what git stamps on each commit):
+
+```bash
+git config --global user.name  "Your Name"
+git config --global user.email "you@example.com"
+```
+
+Use the email address associated with your GitHub account.
+
+Now clone your repository. Replace `<your-username>` with your GitHub username:
+
+```bash
+cd ~                                 # start in your home directory
+git clone https://github.com/<your-username>/MRSA-analysis.git
+cd MRSA-analysis
+```
+
+You should see a single `README.md` file (created by GitHub when you initialized the repo). That is the project folder where all your analysis will live.
+
+::: {.callout-tip}
+## Pushing back to GitHub
+Cloning over HTTPS works out of the box. When you later run `git push` to send commits back, GitHub will ask for a **Personal Access Token** (not your password). The simplest way to handle this is to install GitHub's CLI (`gh`) and run `gh auth login`, which sets up a credential helper for you---but you do not need this today, only cloning.
+:::
+
+---
+
+## 9. Launch Claude Code Inside Your Repository
+
+Now that you are **inside the `MRSA-analysis` folder**, launch Claude Code:
 
 ```bash
 claude
 ```
 
-Because `ANTHROPIC_API_KEY` is set, Claude Code picks it up automatically, skips the browser flow, and drops you straight into an **interactive session** in the current directory. On subsequent runs it reuses the same key.
+Because `ANTHROPIC_API_KEY` is set, Claude Code picks it up automatically, skips the browser flow, and drops you straight into an interactive session. On subsequent runs it reuses the same key.
 
-If you see a browser window open or a login prompt, that means the key was not found---exit (`Ctrl+D`), verify with `echo $ANTHROPIC_API_KEY` that your key is set, and try again.
+::: {.callout-tip}
+## Always launch Claude Code from inside the project
+Claude Code takes the directory you start it in as its workspace. Everything it reads, writes, and runs is scoped to that folder (and subfolders). Starting it from inside `MRSA-analysis` keeps all your generated scripts, downloaded data, and alignment outputs together---and makes them easy to commit and push to GitHub.
+:::
 
----
+If you see a browser window open or a login prompt, the API key was not found---exit (`Ctrl+D`), check with `echo $ANTHROPIC_API_KEY` that your key is set in this shell, and try again.
 
-## 7. A Quick Smoke Test
+### Smoke test
 
-With `claude` running in a directory, try:
+At the `>` prompt, try:
 
 > *List the files in this directory and summarize what the project does.*
 
-The agent should list the contents, read a `README.md` if one exists, and give you a one-paragraph summary. If that works, you are set up. If not, exit (`Ctrl+D` or type `/exit`) and run `claude doctor` to diagnose.
+The agent should list the contents (just the `README.md` for now), read it, and give you a one-paragraph summary. If that works, you are set up.
 
 ### Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
 | `claude: command not found` after install | Open a new terminal or run `exec $SHELL` (macOS/Linux) / `exec bash` (WSL2) |
-| Browser does not open on first run (WSL2) | Copy the URL from the terminal into your Windows browser manually |
-| "API key invalid" on startup | Run `echo $ANTHROPIC_API_KEY` — check for trailing whitespace or quoting errors; keys start with `sk-ant-` |
-| `claude` opens a browser instead of using your key | The key is not set in the current shell. Re-source your shell rc file or re-run `export ANTHROPIC_API_KEY=...` |
+| Browser opens on first run (WSL2) | The key is not set in this shell---re-source your shell rc file or re-run `export ANTHROPIC_API_KEY=...` |
+| "API key invalid" on startup | Run `echo $ANTHROPIC_API_KEY` --- check for trailing whitespace or quoting errors; keys start with `sk-ant-` |
 | Extremely slow file operations on Windows | Make sure your project lives in `~/` inside WSL2, not under `/mnt/c/` |
 | `claude doctor` reports a missing dependency | Follow the doctor's repair hint; usually a `sudo apt install` or a re-run of the installer |
 
 ---
 
-## 8. Giving Claude Code a Dataset to Work On
+## 10. Download the Assemblies and Align Against the MRSA Reference
 
-In the next class you will ask Claude Code to align 13 MRSA isolate assemblies against the *S. aureus* NCTC 8325 reference genome (`NC_007795.1`).
-
-The assemblies are already committed to the course repository under:
+With Claude Code running inside `MRSA-analysis`, the rest of the exercise is just prompts. The 13 isolate assemblies are already committed to the course repository under:
 
 [**`data/assemblies/` on GitHub**](https://github.com/nekrut/bda/tree/main/data/assemblies)
 
-The files are named `assembly1.fasta.gz` through `assembly13.fasta.gz`. Just point Claude Code at that folder and it can pull them directly---no manual downloading, no manifest file, no separate URL list.
+The files are named `assembly1.fasta.gz` through `assembly13.fasta.gz`. Point Claude Code at that folder and it will pull them directly---no manual downloading, no manifest file.
 
-A prompt like this is enough:
+A prompt like this is enough to kick things off:
 
 > *Download `assembly1.fasta.gz` through `assembly13.fasta.gz` from `https://github.com/nekrut/bda/tree/main/data/assemblies` into a local `assemblies/` directory, then gunzip them.*
 
-Claude Code will resolve the raw-file URLs, fetch each one, and decompress them. You do not have to list the URLs yourself.
+Claude Code will resolve the raw-file URLs, fetch each one, and decompress them.
+
+The reference genome is *Staphylococcus aureus* **NCTC 8325** (`NC_007795.1`). Ask Claude Code to fetch it:
+
+> *Download the FASTA for NCBI accession `NC_007795.1` as `reference.fasta` and index it with `samtools faidx`.*
+
+Once both the reference and the 13 assemblies are in place, ask Claude Code to align each assembly to the reference (e.g. with `minimap2 -a`) and save the per-isolate alignments under `alignments/`. We will iterate on this in the next class.
 
 ---
 
