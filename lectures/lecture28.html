@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 28: Running Claude Code – BMMB554</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -336,24 +334,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#before-we-start-submit-your-assembly" id="toc-before-we-start-submit-your-assembly" class="nav-link" data-scroll-target="#before-we-start-submit-your-assembly">0. Before We Start — Submit Your Assembly</a></li>
   <li><a href="#what-is-claude-code" id="toc-what-is-claude-code" class="nav-link" data-scroll-target="#what-is-claude-code">1. What Is Claude Code?</a></li>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">2. Prerequisites</a></li>
-  <li><a href="#installation-macos" id="toc-installation-macos" class="nav-link" data-scroll-target="#installation-macos">3. Installation: macOS</a></li>
-  <li><a href="#installation-linux-ubuntudebian" id="toc-installation-linux-ubuntudebian" class="nav-link" data-scroll-target="#installation-linux-ubuntudebian">4. Installation: Linux (Ubuntu/Debian)</a></li>
-  <li><a href="#installation-windows-via-wsl2" id="toc-installation-windows-via-wsl2" class="nav-link" data-scroll-target="#installation-windows-via-wsl2">5. Installation: Windows (via WSL2)</a>
+  <li><a href="#create-an-mrsa-analysis-repository-on-github" id="toc-create-an-mrsa-analysis-repository-on-github" class="nav-link" data-scroll-target="#create-an-mrsa-analysis-repository-on-github">3. Create an <code>MRSA-analysis</code> Repository on GitHub</a></li>
+  <li><a href="#installation-claude-code-on-macos" id="toc-installation-claude-code-on-macos" class="nav-link" data-scroll-target="#installation-claude-code-on-macos">4. Installation: Claude Code on macOS</a></li>
+  <li><a href="#installation-claude-code-on-linux-ubuntudebian" id="toc-installation-claude-code-on-linux-ubuntudebian" class="nav-link" data-scroll-target="#installation-claude-code-on-linux-ubuntudebian">5. Installation: Claude Code on Linux (Ubuntu/Debian)</a></li>
+  <li><a href="#installation-claude-code-on-windows-via-wsl2" id="toc-installation-claude-code-on-windows-via-wsl2" class="nav-link" data-scroll-target="#installation-claude-code-on-windows-via-wsl2">6. Installation: Claude Code on Windows (via WSL2)</a>
   <ul class="collapse">
   <li><a href="#step-1-install-wsl2" id="toc-step-1-install-wsl2" class="nav-link" data-scroll-target="#step-1-install-wsl2">Step 1 — Install WSL2</a></li>
   <li><a href="#step-2-install-claude-code-inside-wsl2" id="toc-step-2-install-claude-code-inside-wsl2" class="nav-link" data-scroll-target="#step-2-install-claude-code-inside-wsl2">Step 2 — Install Claude Code inside WSL2</a></li>
   <li><a href="#step-3-verify" id="toc-step-3-verify" class="nav-link" data-scroll-target="#step-3-verify">Step 3 — Verify</a></li>
   </ul></li>
-  <li><a href="#first-run-and-authentication" id="toc-first-run-and-authentication" class="nav-link" data-scroll-target="#first-run-and-authentication">6. First Run and Authentication</a>
+  <li><a href="#authenticate-claude-code-with-your-api-key" id="toc-authenticate-claude-code-with-your-api-key" class="nav-link" data-scroll-target="#authenticate-claude-code-with-your-api-key">7. Authenticate Claude Code with Your API Key</a></li>
+  <li><a href="#install-git-and-clone-your-repository" id="toc-install-git-and-clone-your-repository" class="nav-link" data-scroll-target="#install-git-and-clone-your-repository">8. Install Git and Clone Your Repository</a></li>
+  <li><a href="#launch-claude-code-inside-your-repository" id="toc-launch-claude-code-inside-your-repository" class="nav-link" data-scroll-target="#launch-claude-code-inside-your-repository">9. Launch Claude Code Inside Your Repository</a>
   <ul class="collapse">
-  <li><a href="#step-1-export-the-api-key" id="toc-step-1-export-the-api-key" class="nav-link" data-scroll-target="#step-1-export-the-api-key">Step 1 — Export the API key</a></li>
-  <li><a href="#step-2-launch-claude-code" id="toc-step-2-launch-claude-code" class="nav-link" data-scroll-target="#step-2-launch-claude-code">Step 2 — Launch Claude Code</a></li>
-  </ul></li>
-  <li><a href="#a-quick-smoke-test" id="toc-a-quick-smoke-test" class="nav-link" data-scroll-target="#a-quick-smoke-test">7. A Quick Smoke Test</a>
-  <ul class="collapse">
+  <li><a href="#smoke-test" id="toc-smoke-test" class="nav-link" data-scroll-target="#smoke-test">Smoke test</a></li>
   <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
   </ul></li>
-  <li><a href="#giving-claude-code-a-dataset-to-work-on" id="toc-giving-claude-code-a-dataset-to-work-on" class="nav-link" data-scroll-target="#giving-claude-code-a-dataset-to-work-on">8. Giving Claude Code a Dataset to Work On</a></li>
+  <li><a href="#download-the-assemblies-and-align-against-the-mrsa-reference" id="toc-download-the-assemblies-and-align-against-the-mrsa-reference" class="nav-link" data-scroll-target="#download-the-assemblies-and-align-against-the-mrsa-reference">10. Download the Assemblies and Align Against the MRSA Reference</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture28.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -383,10 +380,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
 <p>By the end of this lecture, you will be able to:</p>
 <ul>
-<li>Install the Claude Code CLI on macOS, Linux, or Windows (via WSL2)</li>
-<li>Authenticate Claude Code on first run using the browser OAuth flow</li>
-<li>Verify your installation with <code>claude --version</code> and <code>claude doctor</code></li>
-<li>Launch a Claude Code session inside a project directory</li>
+<li>Create a personal GitHub repository for your MRSA analysis work</li>
+<li>Install <code>git</code> and the Claude Code CLI on macOS, Linux, or Windows (via WSL2)</li>
+<li>Authenticate Claude Code with your provided API key</li>
+<li>Clone your repository and launch Claude Code inside it</li>
+<li>Direct Claude Code to fetch the class assemblies and start aligning them against the MRSA reference</li>
 </ul>
 <hr>
 </section>
@@ -420,37 +418,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="what-is-claude-code" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-claude-code">1. What Is Claude Code?</h2>
 <p><a href="https://code.claude.com/">Claude Code</a> is Anthropic’s command-line coding agent. You run it in a terminal inside any directory—a software project, an analysis folder, a notebook repo—and interact with it through natural-language prompts. The agent reads files, runs commands, edits code, and explains what it did, all with your approval policy in place.</p>
-<p>Claude Code is not a chatbot; it is an <strong>interactive terminal program</strong> that spawns tools (shell, file editor, git, package managers) on your machine. Everything happens locally, under your user account, inside the directory where you started it. This lecture sets up the tool on your laptop so we can use it in the remaining labs.</p>
-<div class="callout callout-style-default callout-important callout-titled">
+<p>Claude Code is not a chatbot; it is an <strong>interactive terminal program</strong> that spawns tools (shell, file editor, git, package managers) on your machine. Everything happens locally, under your user account, inside the directory where you started it.</p>
+<p>In this lecture we will (1) create a GitHub repository to hold your MRSA analysis, (2) install Claude Code and <code>git</code> on your laptop, (3) clone that repository locally, and (4) launch Claude Code inside it so that all analysis we do in the next class happens in one place.</p>
+<hr>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">2. Prerequisites</h2>
+<ul>
+<li>A <strong>GitHub account</strong> (<a href="https://github.com/join">sign up at github.com</a> if you do not have one)</li>
+<li>A working terminal on one of the supported platforms:
+<ul>
+<li><strong>macOS 11+</strong> (Intel or Apple Silicon)</li>
+<li><strong>Linux</strong> x86_64 or ARM64 with at least 4 GB RAM (Ubuntu 20.04+, Debian 11+, or equivalent)</li>
+<li><strong>Windows 10/11</strong> with <strong>WSL2</strong> (Windows Subsystem for Linux) enabled</li>
+</ul></li>
+<li>The <strong>Anthropic API key</strong> distributed earlier in the semester (the same one you used to configure <code>gxy3</code> in <a href="../lectures/lecture25.html">Lecture 25</a>)</li>
+</ul>
+<p>You do <em>not</em> need Node.js, Python, or any IDE to get started—Claude Code ships as a single native binary.</p>
+<hr>
+</section>
+<section id="create-an-mrsa-analysis-repository-on-github" class="level2">
+<h2 class="anchored" data-anchor-id="create-an-mrsa-analysis-repository-on-github">3. Create an <code>MRSA-analysis</code> Repository on GitHub</h2>
+<p>We will keep all your isolate-alignment work in a fresh GitHub repository. Create it <strong>empty</strong>—Claude Code will fill it up.</p>
+<ol type="1">
+<li>Go to <a href="https://github.com">github.com</a> and sign in</li>
+<li>Click the <strong>+</strong> icon in the top-right corner → <strong>New repository</strong></li>
+<li>Fill in the form:
+<ul>
+<li><strong>Repository name:</strong> <code>MRSA-analysis</code></li>
+<li><strong>Description</strong> (optional): <em>“MRSA isolate alignment against NCTC 8325 reference”</em></li>
+<li><strong>Visibility:</strong> <strong>Public</strong> is fine—the repo will only contain your own work. Choose Private if you prefer</li>
+<li><strong>Initialize this repository with:</strong> check <strong>Add a README file</strong>. Leave <code>.gitignore</code> and <code>license</code> as <em>None</em> for now</li>
+</ul></li>
+<li>Click <strong>Create repository</strong></li>
+</ol>
+<p>GitHub now shows your new, almost-empty repository. Copy the <strong>HTTPS clone URL</strong> from the green <strong><code>&lt;&gt; Code</code></strong> button—it looks like:</p>
+<pre><code>https://github.com/&lt;your-username&gt;/MRSA-analysis.git</code></pre>
+<p>You will paste this URL in §8 when you clone the repo.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>You need an Anthropic account or API key
+<span class="screen-reader-only">Note</span>No sharing required
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Claude Code authenticates against your Anthropic account (via a browser OAuth flow on first run) or with an API key. The keys distributed earlier in the semester work for both. If you lost yours, ask the instructor.</p>
+<p>You do <strong>not</strong> need to add collaborators or change permission settings. A fresh, empty repository under your own account is all we need.</p>
 </div>
 </div>
 <hr>
 </section>
-<section id="prerequisites" class="level2">
-<h2 class="anchored" data-anchor-id="prerequisites">2. Prerequisites</h2>
-<p>A working terminal on one of the supported platforms:</p>
-<ul>
-<li><strong>macOS 11+</strong> (Intel or Apple Silicon)</li>
-<li><strong>Linux</strong> x86_64 or ARM64 with at least 4 GB RAM (Ubuntu 20.04+, Debian 11+, or equivalent)</li>
-<li><strong>Windows 10/11</strong> with <strong>WSL2</strong> (Windows Subsystem for Linux) enabled</li>
-</ul>
-<p>You do <em>not</em> need Node.js, Python, or any IDE to get started—Claude Code ships as a single native binary. The project directory you open it in may of course need its own dependencies.</p>
-<hr>
-</section>
-<section id="installation-macos" class="level2">
-<h2 class="anchored" data-anchor-id="installation-macos">3. Installation: macOS</h2>
+<section id="installation-claude-code-on-macos" class="level2">
+<h2 class="anchored" data-anchor-id="installation-claude-code-on-macos">4. Installation: Claude Code on macOS</h2>
 <p>The officially recommended install method is the native installer. Open <strong>Terminal</strong> (<code>Cmd+Space</code>, type “Terminal”) and paste:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The script detects Intel vs.&nbsp;Apple Silicon automatically, downloads the right binary, and drops it on your <code>PATH</code>. Re-open the terminal (or <code>exec $SHELL</code>) so the new path is picked up.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -463,37 +486,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <p>If you already use Homebrew and prefer it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> claude-code          <span class="co"># stable</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> claude-code@latest   <span class="co"># rolling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> claude-code          <span class="co"># stable</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> claude-code@latest   <span class="co"># rolling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Homebrew installations do <strong>not</strong> auto-update; you must run <code>brew upgrade</code> manually. The native installer auto-updates in the background.</p>
 </div>
 </div>
 <p>Verify the install:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">--version</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">--version</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>claude doctor</code> prints a detailed environment report—useful if something later goes wrong.</p>
 <hr>
 </section>
-<section id="installation-linux-ubuntudebian" class="level2">
-<h2 class="anchored" data-anchor-id="installation-linux-ubuntudebian">4. Installation: Linux (Ubuntu/Debian)</h2>
+<section id="installation-claude-code-on-linux-ubuntudebian" class="level2">
+<h2 class="anchored" data-anchor-id="installation-claude-code-on-linux-ubuntudebian">5. Installation: Claude Code on Linux (Ubuntu/Debian)</h2>
 <p>Same native installer as macOS:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If you prefer system package management, Anthropic also publishes an APT repository that auto-updates along with the rest of your system:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> install <span class="at">-d</span> <span class="at">-m</span> 0755 /etc/apt/keyrings</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> curl <span class="at">-fsSL</span> https://downloads.claude.ai/keys/claude-code.asc <span class="dt">\</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> /etc/apt/keyrings/claude-code.asc</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main"</span> <span class="dt">\</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/claude-code.list</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install claude-code</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> install <span class="at">-d</span> <span class="at">-m</span> 0755 /etc/apt/keyrings</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> curl <span class="at">-fsSL</span> https://downloads.claude.ai/keys/claude-code.asc <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">-o</span> /etc/apt/keyrings/claude-code.asc</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main"</span> <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/claude-code.list</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install claude-code</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Verify:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">--version</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">--version</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
-<section id="installation-windows-via-wsl2" class="level2">
-<h2 class="anchored" data-anchor-id="installation-windows-via-wsl2">5. Installation: Windows (via WSL2)</h2>
+<section id="installation-claude-code-on-windows-via-wsl2" class="level2">
+<h2 class="anchored" data-anchor-id="installation-claude-code-on-windows-via-wsl2">6. Installation: Claude Code on Windows (via WSL2)</h2>
 <p>On Windows, the recommended path is to run Claude Code <strong>inside WSL2</strong>—Microsoft’s lightweight Linux container that ships with Windows 10/11. This gives you a real Linux environment (shell, filesystem, package manager) while keeping your Windows desktop. Everything the agent does happens inside the WSL2 container.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -511,7 +534,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-1-install-wsl2" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-install-wsl2">Step 1 — Install WSL2</h3>
 <p>Right-click the <strong>Start</strong> button, choose <strong>Terminal (Admin)</strong> or <strong>PowerShell (Admin)</strong>, and run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">--</span>web-download <span class="op">-</span>d Ubuntu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">--</span>web-download <span class="op">-</span>d Ubuntu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Reboot when prompted. After the reboot, an <strong>Ubuntu</strong> terminal opens automatically and asks you to create a Linux username and password. These are <em>separate</em> from your Windows login.</p>
 <p>If Ubuntu does not open automatically, search for “Ubuntu” in the Start menu.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -531,14 +554,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-2-install-claude-code-inside-wsl2" class="level3">
 <h3 class="anchored" data-anchor-id="step-2-install-claude-code-inside-wsl2">Step 2 — Install Claude Code inside WSL2</h3>
 <p>Everything from here on runs inside the <strong>Ubuntu</strong> window, <em>not</em> PowerShell. In the Ubuntu prompt, paste:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span> bash</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://claude.ai/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span> bash</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The <code>exec bash</code> at the end replaces your current shell with a fresh one so the new <code>claude</code> command appears on your <code>PATH</code>.</p>
 </section>
 <section id="step-3-verify" class="level3">
 <h3 class="anchored" data-anchor-id="step-3-verify">Step 3 — Verify</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">--version</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> <span class="at">--version</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -552,7 +575,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Keep your work in the Linux filesystem</strong> (<code>~/</code>, not <code>/mnt/c/...</code>). Cross-filesystem reads from Windows (<code>C:</code>) into WSL2 are an order of magnitude slower and break some file-watching tools</li>
 <li><strong>The browser OAuth flow works</strong>: WSL2 can open your default Windows browser automatically on first <code>claude</code> run</li>
-<li><strong>No Git for Windows needed</strong>: Git is already installed inside Ubuntu (or available via <code>sudo apt install git</code>)</li>
 <li>To get back to your Ubuntu shell later, search for “Ubuntu” in the Start menu, or run <code>wsl</code> from any Windows terminal</li>
 </ul>
 </div>
@@ -560,8 +582,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="first-run-and-authentication" class="level2">
-<h2 class="anchored" data-anchor-id="first-run-and-authentication">6. First Run and Authentication</h2>
+<section id="authenticate-claude-code-with-your-api-key" class="level2">
+<h2 class="anchored" data-anchor-id="authenticate-claude-code-with-your-api-key">7. Authenticate Claude Code with Your API Key</h2>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -575,17 +597,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Claude Code supports two auth flows: browser OAuth (sign in with an Anthropic account) and an <strong>API key</strong>. For this course we are using the <strong>API keys</strong> that were distributed earlier in the semester—the same key you used to configure <code>gxy3</code> in <a href="../lectures/lecture25.html">Lecture 25</a>. If you lost it, ask the instructor. Do <em>not</em> create a personal Anthropic account for this class; the provided key is already funded for your coursework.</p>
 </div>
 </div>
-<section id="step-1-export-the-api-key" class="level3">
-<h3 class="anchored" data-anchor-id="step-1-export-the-api-key">Step 1 — Export the API key</h3>
-<p>Open your terminal (Terminal on macOS, your Linux shell, or the Ubuntu window on Windows/WSL2) and set the key as an environment variable:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span><span class="st">"sk-ant-..."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In your terminal (Terminal on macOS, your Linux shell, or the Ubuntu window on Windows/WSL2), set the key as an environment variable:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span><span class="st">"sk-ant-..."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Replace <code>sk-ant-...</code> with the full key you were sent. This makes it available to the current shell.</p>
 <p>To make the key persist across terminal sessions, append the same line to your shell’s startup file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS (zsh — the default since Catalina):</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export ANTHROPIC_API_KEY="sk-ant-..."'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux / WSL2 Ubuntu (bash):</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export ANTHROPIC_API_KEY="sk-ant-..."'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS (zsh — the default since Catalina):</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export ANTHROPIC_API_KEY="sk-ant-..."'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux / WSL2 Ubuntu (bash):</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export ANTHROPIC_API_KEY="sk-ant-..."'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then reload the file: <code>source ~/.zshrc</code> (macOS) or <code>source ~/.bashrc</code> (Linux/WSL2).</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -606,23 +626,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </div>
 </div>
-</section>
-<section id="step-2-launch-claude-code" class="level3">
-<h3 class="anchored" data-anchor-id="step-2-launch-claude-code">Step 2 — Launch Claude Code</h3>
-<p><code>cd</code> into a project directory and run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Because <code>ANTHROPIC_API_KEY</code> is set, Claude Code picks it up automatically, skips the browser flow, and drops you straight into an <strong>interactive session</strong> in the current directory. On subsequent runs it reuses the same key.</p>
-<p>If you see a browser window open or a login prompt, that means the key was not found—exit (<code>Ctrl+D</code>), verify with <code>echo $ANTHROPIC_API_KEY</code> that your key is set, and try again.</p>
 <hr>
 </section>
+<section id="install-git-and-clone-your-repository" class="level2">
+<h2 class="anchored" data-anchor-id="install-git-and-clone-your-repository">8. Install Git and Clone Your Repository</h2>
+<p>To get the empty <code>MRSA-analysis</code> repository you just created onto your laptop, you need <code>git</code>. It may already be installed; check with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the command is missing, install it on your platform:</p>
+<ul>
+<li><strong>macOS</strong> — either run <code>xcode-select --install</code> (the first time you use a developer command, macOS offers to install the Command Line Tools, which include <code>git</code>), or use Homebrew: <code>brew install git</code></li>
+<li><strong>Linux (Ubuntu/Debian)</strong> — <code>sudo apt update &amp;&amp; sudo apt install git</code></li>
+<li><strong>Windows (WSL2 / Ubuntu)</strong> — same as Linux: <code>sudo apt update &amp;&amp; sudo apt install git</code>. Do <strong>not</strong> install Git-for-Windows; you want <code>git</code> inside WSL2 alongside Claude Code</li>
+</ul>
+<p>Configure your identity once (this is what git stamps on each commit):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name  <span class="st">"Your Name"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">"you@example.com"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use the email address associated with your GitHub account.</p>
+<p>Now clone your repository. Replace <code>&lt;your-username&gt;</code> with your GitHub username:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~                                 <span class="co"># start in your home directory</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/<span class="op">&lt;</span>your-username<span class="op">&gt;</span>/MRSA-analysis.git</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> MRSA-analysis</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You should see a single <code>README.md</code> file (created by GitHub when you initialized the repo). That is the project folder where all your analysis will live.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Pushing back to GitHub
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cloning over HTTPS works out of the box. When you later run <code>git push</code> to send commits back, GitHub will ask for a <strong>Personal Access Token</strong> (not your password). The simplest way to handle this is to install GitHub’s CLI (<code>gh</code>) and run <code>gh auth login</code>, which sets up a credential helper for you—but you do not need this today, only cloning.</p>
+</div>
+</div>
+<hr>
 </section>
-<section id="a-quick-smoke-test" class="level2">
-<h2 class="anchored" data-anchor-id="a-quick-smoke-test">7. A Quick Smoke Test</h2>
-<p>With <code>claude</code> running in a directory, try:</p>
+<section id="launch-claude-code-inside-your-repository" class="level2">
+<h2 class="anchored" data-anchor-id="launch-claude-code-inside-your-repository">9. Launch Claude Code Inside Your Repository</h2>
+<p>Now that you are <strong>inside the <code>MRSA-analysis</code> folder</strong>, launch Claude Code:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">claude</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Because <code>ANTHROPIC_API_KEY</code> is set, Claude Code picks it up automatically, skips the browser flow, and drops you straight into an interactive session. On subsequent runs it reuses the same key.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Always launch Claude Code from inside the project
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Claude Code takes the directory you start it in as its workspace. Everything it reads, writes, and runs is scoped to that folder (and subfolders). Starting it from inside <code>MRSA-analysis</code> keeps all your generated scripts, downloaded data, and alignment outputs together—and makes them easy to commit and push to GitHub.</p>
+</div>
+</div>
+<p>If you see a browser window open or a login prompt, the API key was not found—exit (<code>Ctrl+D</code>), check with <code>echo $ANTHROPIC_API_KEY</code> that your key is set in this shell, and try again.</p>
+<section id="smoke-test" class="level3">
+<h3 class="anchored" data-anchor-id="smoke-test">Smoke test</h3>
+<p>At the <code>&gt;</code> prompt, try:</p>
 <blockquote class="blockquote">
 <p><em>List the files in this directory and summarize what the project does.</em></p>
 </blockquote>
-<p>The agent should list the contents, read a <code>README.md</code> if one exists, and give you a one-paragraph summary. If that works, you are set up. If not, exit (<code>Ctrl+D</code> or type <code>/exit</code>) and run <code>claude doctor</code> to diagnose.</p>
+<p>The agent should list the contents (just the <code>README.md</code> for now), read it, and give you a one-paragraph summary. If that works, you are set up.</p>
+</section>
 <section id="troubleshooting" class="level3">
 <h3 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h3>
 <table class="caption-top table">
@@ -642,22 +708,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Open a new terminal or run <code>exec $SHELL</code> (macOS/Linux) / <code>exec bash</code> (WSL2)</td>
 </tr>
 <tr class="even">
-<td>Browser does not open on first run (WSL2)</td>
-<td>Copy the URL from the terminal into your Windows browser manually</td>
+<td>Browser opens on first run (WSL2)</td>
+<td>The key is not set in this shell—re-source your shell rc file or re-run <code>export ANTHROPIC_API_KEY=...</code></td>
 </tr>
 <tr class="odd">
 <td>“API key invalid” on startup</td>
 <td>Run <code>echo $ANTHROPIC_API_KEY</code> — check for trailing whitespace or quoting errors; keys start with <code>sk-ant-</code></td>
 </tr>
 <tr class="even">
-<td><code>claude</code> opens a browser instead of using your key</td>
-<td>The key is not set in the current shell. Re-source your shell rc file or re-run <code>export ANTHROPIC_API_KEY=...</code></td>
-</tr>
-<tr class="odd">
 <td>Extremely slow file operations on Windows</td>
 <td>Make sure your project lives in <code>~/</code> inside WSL2, not under <code>/mnt/c/</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>claude doctor</code> reports a missing dependency</td>
 <td>Follow the doctor’s repair hint; usually a <code>sudo apt install</code> or a re-run of the installer</td>
 </tr>
@@ -666,17 +728,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="giving-claude-code-a-dataset-to-work-on" class="level2">
-<h2 class="anchored" data-anchor-id="giving-claude-code-a-dataset-to-work-on">8. Giving Claude Code a Dataset to Work On</h2>
-<p>In the next class you will ask Claude Code to align 13 MRSA isolate assemblies against the <em>S. aureus</em> NCTC 8325 reference genome (<code>NC_007795.1</code>).</p>
-<p>The assemblies are already committed to the course repository under:</p>
+<section id="download-the-assemblies-and-align-against-the-mrsa-reference" class="level2">
+<h2 class="anchored" data-anchor-id="download-the-assemblies-and-align-against-the-mrsa-reference">10. Download the Assemblies and Align Against the MRSA Reference</h2>
+<p>With Claude Code running inside <code>MRSA-analysis</code>, the rest of the exercise is just prompts. The 13 isolate assemblies are already committed to the course repository under:</p>
 <p><a href="https://github.com/nekrut/bda/tree/main/data/assemblies"><strong><code>data/assemblies/</code> on GitHub</strong></a></p>
-<p>The files are named <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code>. Just point Claude Code at that folder and it can pull them directly—no manual downloading, no manifest file, no separate URL list.</p>
-<p>A prompt like this is enough:</p>
+<p>The files are named <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code>. Point Claude Code at that folder and it will pull them directly—no manual downloading, no manifest file.</p>
+<p>A prompt like this is enough to kick things off:</p>
 <blockquote class="blockquote">
 <p><em>Download <code>assembly1.fasta.gz</code> through <code>assembly13.fasta.gz</code> from <code>https://github.com/nekrut/bda/tree/main/data/assemblies</code> into a local <code>assemblies/</code> directory, then gunzip them.</em></p>
 </blockquote>
-<p>Claude Code will resolve the raw-file URLs, fetch each one, and decompress them. You do not have to list the URLs yourself.</p>
+<p>Claude Code will resolve the raw-file URLs, fetch each one, and decompress them.</p>
+<p>The reference genome is <em>Staphylococcus aureus</em> <strong>NCTC 8325</strong> (<code>NC_007795.1</code>). Ask Claude Code to fetch it:</p>
+<blockquote class="blockquote">
+<p><em>Download the FASTA for NCBI accession <code>NC_007795.1</code> as <code>reference.fasta</code> and index it with <code>samtools faidx</code>.</em></p>
+</blockquote>
+<p>Once both the reference and the 13 assemblies are in place, ask Claude Code to align each assembly to the reference (e.g.&nbsp;with <code>minimap2 -a</code>) and save the per-isolate alignments under <code>alignments/</code>. We will iterate on this in the next class.</p>
 <hr>
 <p><em>Next sections of this lecture will cover authoring your first custom slash command, configuring <code>settings.json</code> for permissions, and using subagents—to be added.</em></p>
 
@@ -790,7 +856,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
