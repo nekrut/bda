@@ -257,13 +257,13 @@ In the next class you will ask Claude Code to align 13 MRSA isolate assemblies a
 
 The assemblies are already committed to the course repository under:
 
-[**`data/` on GitHub**](https://github.com/nekrut/bda/tree/main/data)
+[**`data/assemblies/` on GitHub**](https://github.com/nekrut/bda/tree/main/data/assemblies)
 
 The files are named `assembly1.fasta.gz` through `assembly13.fasta.gz`. Just point Claude Code at that folder and it can pull them directly---no manual downloading, no manifest file, no separate URL list.
 
 A prompt like this is enough:
 
-> *Download `assembly1.fasta.gz` through `assembly13.fasta.gz` from `https://github.com/nekrut/bda/tree/main/data` into a local `assemblies/` directory, then gunzip them.*
+> *Download `assembly1.fasta.gz` through `assembly13.fasta.gz` from `https://github.com/nekrut/bda/tree/main/data/assemblies` into a local `assemblies/` directory, then gunzip them.*
 
 Claude Code will resolve the raw-file URLs, fetch each one, and decompress them. You do not have to list the URLs yourself.
 
