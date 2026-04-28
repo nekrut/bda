@@ -923,7 +923,7 @@
     "href": "lectures/lecture30.html#the-goal",
     "title": "Lecture 30: Replicating a Published RNA-seq Study with Orbit",
     "section": "The Goal",
-    "text": "The Goal\nYou will use Orbit to independently replicate the RNA-seq analysis reported in:\nPubMed 37769084\nYou should not pre-read the methods section in detail. The point of the exercise is to let the agent read the paper, explain it back to you, propose an analysis plan, run it on Galaxy (or locally), and then place its own results next to the paper’s. You will direct the agent and approve its decisions; the heavy lifting is what Orbit does between your prompts.\n\n\n\n\n\n\nImportantSubmission\n\n\n\nA Google form for uploading your final PDF summary will be emailed to you separately. The deadline is the start of next Tuesday’s class. Submit one PDF per student.",
+    "text": "The Goal\nYou will use Orbit to independently replicate the RNA-seq analysis reported in:\nPubMed 37769084\nYou should not pre-read the methods section in detail. The point of the exercise is to let the agent read the paper, explain it back to you, propose an analysis plan, run it on Galaxy (or locally), and then place its own results next to the paper’s. You will direct the agent and approve its decisions; the heavy lifting is what Orbit does between your prompts.\n\n\n\n\n\n\nImportantSubmission\n\n\n\nSubmit your final PDF summary via this Google form:\nhttps://forms.gle/zQNnxCqTD3TJH19W7\nThe deadline is the start of next Tuesday’s class. One PDF per student. Use your Penn State email address on the form.",
     "crumbs": [
       "Home",
       "Lectures",
@@ -995,7 +995,7 @@
     "href": "lectures/lecture30.html#step-5-submit-the-pdf",
     "title": "Lecture 30: Replicating a Published RNA-seq Study with Orbit",
     "section": "Step 5 — Submit the PDF",
-    "text": "Step 5 — Submit the PDF\nOnce summary.pdf looks complete:\n\nOpen it and read it through. Confirm every section in Step 4 is present\nCommit your project to git:\ncd ~/analyses/pmid-37769084\ngit add notebook.md summary.pdf\ngit commit -m \"Replication of PMID 37769084\"\nUpload summary.pdf to the form linked in the email I will send separately. One PDF per student. Use your Penn State email address on the form",
+    "text": "Step 5 — Submit the PDF\nOnce summary.pdf looks complete:\n\nOpen it and read it through. Confirm every section in Step 4 is present\nCommit your project to git:\ncd ~/analyses/pmid-37769084\ngit add notebook.md summary.pdf\ngit commit -m \"Replication of PMID 37769084\"\nUpload summary.pdf via the Google form: https://forms.gle/zQNnxCqTD3TJH19W7. One PDF per student. Use your Penn State email address on the form",
     "crumbs": [
       "Home",
       "Lectures",
