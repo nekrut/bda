@@ -1,0 +1,325 @@
+---
+title: "Lecture 29: Skills, MCP Servers, and Installing Orbit"
+---
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+
+- Explain what an **agentic skill** is and recognize the file-system layout used by Claude-style skills
+- Compare how Anthropic, OpenAI, and Google package reusable agent capabilities
+- Describe the **Model Context Protocol (MCP)** and what an "MCP server" provides to an agent
+- Find and evaluate MCP servers for bioinformatics and literature work
+- Install the latest **Orbit** (`notebook-rewire-pure-md` branch) on macOS, Linux, or Windows (WSL2)
+
+---
+
+## 1. Agentic Skills
+
+### 1.1 What is a skill?
+
+A **skill** is a small, self-contained packet of *operational know-how* that an agent can load on demand. It is not new model weights, not a code library, and not a fine-tune---it is **markdown** (sometimes with helper scripts) that tells the agent *how* to do a task: what the steps are, what gotchas to watch for, what tool order works, what conventions a particular project uses.
+
+A useful analogy: imagine you onboard a new postdoc. They are smart, but they do not know your lab's conventions---which servers to use, which tool flags you prefer, where the data lives, which scripts are blessed. A skill is the one-page handover note for one such convention. The agent reads it the moment it needs it, follows it, and forgets it again.
+
+Three things distinguish skills from "just put it in the prompt":
+
+1. **On-demand loading.** A skill only enters the context when the agent decides it is relevant. You can have hundreds of skills available without paying for hundreds of prompts' worth of tokens on every turn.
+2. **Routing by description.** Each skill carries a one-line description; the agent (or a router) reads the descriptions, not the full bodies, to decide which to load.
+3. **Discoverable + shareable.** Skills live in a folder structure on disk or in a GitHub repo. A team can curate a set, version them, and pull them into many agents.
+
+### 1.2 Anatomy of a Claude-style skill
+
+Anthropic's convention is the most concrete and is becoming a de-facto standard---other agents (including Loom/Orbit) read the same layout. A skill is a directory:
+
+```
+my-skill/
+├── SKILL.md          # required: the actual instructions
+├── reference.md      # optional: deeper docs the skill links to
+└── scripts/          # optional: helper scripts the skill invokes
+    └── do_thing.py
+```
+
+`SKILL.md` starts with a YAML frontmatter:
+
+```markdown
+---
+name: paired-collection-from-pe-fastq
+description: Build a Galaxy paired-collection dataset from a directory of paired-end FASTQ files using the Apply Rules DSL.
+---
+
+## When to use
+... (rules of thumb the agent can reason about) ...
+
+## Steps
+1. ...
+2. ...
+
+## Gotchas
+- Apply Rules trims `_R1`/`_R2` suffixes by default; ...
+```
+
+A repo of skills usually has a top-level **`AGENTS.md`** that acts as a router---a flat index of "topic → path-to-SKILL.md" so the agent can pick the right one without scanning every file.
+
+### 1.3 Examples
+
+- **`galaxyproject/galaxy-skills`** --- the default skills bundle for Loom/Orbit. Covers things like "build a paired collection from PE FASTQ", "map a tool over a collection", "convert a Nextflow pipeline to a Galaxy workflow", "Galaxy MCP usage and common gotchas". The agent fetches them on demand from GitHub and caches them locally
+- **`anthropics/skills`** (Anthropic's public examples) --- skills for PDF generation, spreadsheet manipulation, Slack-flavored formatting, web research workflows
+- **Project-local skills** in `.claude/skills/` (or `~/.claude/skills/` for personal ones) --- e.g. *"how we run the lab pipeline,"* *"how to format a manuscript figure,"* *"how to deploy this app."* These never leave your laptop
+
+### 1.4 Skills across vendors
+
+Different vendors have converged on similar ideas with different vocabularies:
+
+| Vendor | Name for "skill-like" packaging | Storage | Loaded how |
+|---|---|---|---|
+| **Anthropic (Claude)** | **Skills** | `SKILL.md` files in `~/.claude/skills/` or `<repo>/.claude/skills/` (or fetched from GitHub) | Agent reads YAML frontmatter, decides on demand |
+| **OpenAI** | **Custom GPTs** (UI), **Apps in ChatGPT**, **Custom Instructions**, **tools** in the Assistants/Agents API | OpenAI servers (Custom GPTs) or as JSON tool specs (API) | Selected by user (Custom GPT) or routed by the model (tools) |
+| **Google (Gemini)** | **Gems** (consumer app), **Tools + Apps** in Vertex AI Agent Builder | Google servers | Selected by user (Gems) or routed by the agent runtime (Tools) |
+
+Three observations are worth emphasizing:
+
+1. **Anthropic's skills are file-system native.** Anyone can write one in markdown, drop it in a folder, and the agent picks it up. There is no UI to click through, no server to register with. This is why community repos of skills exist on GitHub
+2. **OpenAI's Custom GPTs are closer to a published persona** than to a skill. They bundle instructions, retrieval files, and tools behind a single ChatGPT-only entry point. Outside of ChatGPT (e.g. via the API) the analog is "Assistants" with attached tool specs and files
+3. **Gemini Gems** sit roughly in the middle: a saved system-prompt + tools combination that lives in Google's app rather than as a portable file on disk. Vertex AI Agent Builder is more programmable but cloud-hosted
+
+For this course we focus on the Claude/Loom/Orbit convention because it is the only one that is fully *file-based, portable, and Git-trackable*---which is exactly the property you want when teaching reproducible analyses.
+
+::: {.callout-tip}
+## Skills vs. tools vs. system prompt
+A useful mental hierarchy:
+
+- **System prompt** = "who you are" (always loaded)
+- **Tool** = "verb you can call" (always loaded as a callable)
+- **Skill** = "playbook for a verb" (loaded only when needed)
+:::
+
+---
+
+## 2. MCP Servers
+
+### 2.1 What problem MCP solves
+
+Imagine every agent (Claude Code, Orbit, Cursor, Cline, GPT, ...) wants to call into your lab's database, into Galaxy, into PubMed. Without a standard, every agent has to ship custom code for every backend, and every backend has to ship custom adapters for every agent. That is an N×M problem.
+
+The **Model Context Protocol (MCP)**, introduced by Anthropic in late 2024 and now adopted by every major agent vendor, is a small, JSON-RPC--based, vendor-neutral protocol that breaks the N×M problem into N+M:
+
+- An **MCP server** exposes *tools*, *resources*, and *prompts* over the protocol.
+- Any **MCP client** (agent) can speak to any MCP server.
+
+You write a server once, every MCP-aware agent can use it.
+
+### 2.2 What does a server provide?
+
+An MCP server can offer three kinds of things:
+
+- **Tools** --- callable verbs the agent can invoke (e.g. `pubmed_search`, `galaxy_run_tool`)
+- **Resources** --- read-only data the agent can pull into context (e.g. a CSV the server exposes, the contents of an issue tracker)
+- **Prompts** --- reusable prompt templates the user can invoke
+
+For research workflows the **tools** facet is by far the most common.
+
+### 2.3 Adding an MCP server to Claude Code or Orbit
+
+In Claude Code, you register a server in `~/.claude/mcp.json` (or per-project `.claude/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "galaxy": {
+      "command": "uvx",
+      "args": ["galaxy-mcp"],
+      "env": {
+        "GALAXY_URL": "https://usegalaxy.org",
+        "GALAXY_API_KEY": "abc..."
+      }
+    }
+  }
+}
+```
+
+Orbit registers Galaxy MCP automatically when Galaxy credentials are configured; additional servers can be added through Preferences. The shape is the same: a launch command + environment.
+
+### 2.4 Where to find MCP servers
+
+- **Official catalog** --- [`modelcontextprotocol/servers`](https://github.com/modelcontextprotocol/servers): reference servers for filesystem, Git, GitHub, Slack, Postgres, Puppeteer, Brave Search, etc.
+- **Community awesome list** --- [`punkpeye/awesome-mcp-servers`](https://github.com/punkpeye/awesome-mcp-servers): the largest directory; categorized by domain
+- **Public registry** --- [`mcp.so`](https://mcp.so): browsable index with install snippets
+- **PyPI / npm / GitHub** --- many servers ship as `uvx <name>` or `npx -y <name>`, so you can also discover them through standard package indexes
+
+### 2.5 MCP servers worth knowing about for biology and research
+
+The community is moving fast; treat the table below as *currently popular* rather than exhaustive. Search the awesome list for the latest.
+
+| Server | Purpose |
+|---|---|
+| **`galaxy-mcp`** | Galaxy API: tool search, history/dataset operations, workflow invocation, IWC search. Used by Orbit by default |
+| **`pubmed` / `entrez-mcp`** family | Search and fetch records from NCBI's E-utilities (PubMed, GenBank, RefSeq, etc.) |
+| **`biorxiv-mcp` / `medrxiv-mcp`** | Query the bioRxiv / medRxiv preprint APIs (`api.biorxiv.org`) for recent preprints, DOIs, and full-text PDFs |
+| **`arxiv-mcp-server`** | Same idea for arXiv---useful for methods/CS-side preprints |
+| **`semantic-scholar-mcp`** | Citation graph, paper recommendations, abstracts |
+| **`uniprot-mcp` / `ensembl-mcp` / `ucsc-mcp`** | Sequence and annotation lookups against the major reference databases |
+| **`github-mcp`** (official) | Issues, PRs, code search inside a repo or org |
+| **`filesystem-mcp`** (official) | Scoped read/write under a sandboxed directory |
+| **`playwright-mcp`** (official) | Headless browser automation---useful for scraping pages without an API |
+| **`slack-mcp`** (official) | Read/write to Slack channels |
+
+::: {.callout-warning}
+## Vet third-party MCP servers before trusting them
+An MCP server runs as a process on your laptop with whatever permissions you give it. Reading random `npx`-installable servers from the internet is the same trust decision as installing any other CLI tool. Prefer servers that (a) are popular on the awesome list, (b) have an active git history, and (c) you can audit before running. For credentialed services (GitHub, Slack, your Galaxy account), the server holds your token---treat it like you would any other CLI authenticated to that service.
+:::
+
+---
+
+## 3. Install Orbit
+
+### 3.1 What is Orbit?
+
+[Orbit](https://github.com/nekrut/pi-galaxy-analyst) is the Electron desktop shell for **Loom**, an AI co-scientist for Galaxy bioinformatics. It is the GUI front end you will use in lab; the brain underneath (Loom) is the same regardless of whether you launch from the terminal or from Orbit.
+
+Orbit gives you:
+
+- A three-pane layout: file tree on the left, chat in the middle, tabbed artifacts (notebook, activity, file preview) on the right
+- A live, git-tracked `notebook.md` that is the durable project log
+- An activity tab streaming every command the agent runs, plus per-process CPU / memory
+- Built-in Galaxy connection management and skill-repo configuration
+
+In this lecture you install the **`notebook-rewire-pure-md`** branch, which is the active development line.
+
+### 3.2 Prerequisites
+
+- **Node.js 18 or newer**
+- **`git`**
+- **`uv`** (provides `uvx`, used to launch the Galaxy MCP server)
+- An **Anthropic API key** (or another supported provider)---the same key you have been using since [Lecture 25](lecture25.qmd) is fine
+
+### 3.3 macOS
+
+Open **Terminal** (`Cmd+Space`, type "Terminal") and run:
+
+```bash
+# Homebrew, if you do not have it yet
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Node, git, uv
+brew install node git uv
+
+# Clone the dev branch
+git clone -b notebook-rewire-pure-md \
+    https://github.com/nekrut/pi-galaxy-analyst.git
+cd pi-galaxy-analyst
+
+# Install both workspaces (root + Electron app)
+npm install
+cd app && npm install
+```
+
+Launch Orbit from inside `app/`:
+
+```bash
+npm start
+```
+
+### 3.4 Linux (Ubuntu/Debian)
+
+```bash
+# Build essentials + git + curl
+sudo apt update
+sudo apt install -y git curl build-essential
+
+# Node via nvm (skip if you already have Node 18+)
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+
+# uv (for the Galaxy MCP server)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc
+
+# Clone the dev branch
+git clone -b notebook-rewire-pure-md \
+    https://github.com/nekrut/pi-galaxy-analyst.git
+cd pi-galaxy-analyst
+
+npm install
+cd app && npm install
+npm start
+```
+
+::: {.callout-note}
+## Electron's runtime libraries
+Electron needs a handful of system libraries (`libnss3`, `libatk1.0-0`, `libgbm1`, `libasound2`, etc.). On a fresh Ubuntu install they are pulled in transitively by `build-essential` plus normal desktop packages, but if `npm start` errors out about a missing `.so`, install the named library with `sudo apt install` and re-run.
+:::
+
+### 3.5 Windows (via WSL2)
+
+Orbit on Windows runs **inside WSL2**---the same Linux container you set up for Claude Code in [Lecture 28](lecture28.qmd). If you do not yet have WSL2, follow §6 of that lecture first. Everything below runs **inside the Ubuntu window**, not PowerShell.
+
+```bash
+# Build essentials + git + curl (skip if already installed)
+sudo apt update
+sudo apt install -y git curl build-essential
+
+# Node via nvm
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+
+# uv (for the Galaxy MCP server)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc
+
+# Clone the dev branch into your Linux home directory (NOT /mnt/c/)
+cd ~
+git clone -b notebook-rewire-pure-md \
+    https://github.com/nekrut/pi-galaxy-analyst.git
+cd pi-galaxy-analyst
+
+npm install
+cd app && npm install
+npm start
+```
+
+::: {.callout-tip}
+## WSL2 reminders
+- Keep the clone in `~/` (the Linux filesystem). Cloning into `/mnt/c/...` makes every read crawl across the WSL boundary
+- Electron will pop a real Windows desktop window thanks to WSLg---you should see the Orbit UI on your normal desktop, not in the terminal
+- If you see `libnss3.so: cannot open shared object file`: `sudo apt install -y libnss3 libatk1.0-0 libgbm1 libasound2` and re-run `npm start`
+:::
+
+### 3.6 First launch
+
+On first launch Orbit shows a one-page **welcome screen** asking for:
+
+1. **LLM provider + API key.** Use **Anthropic** with the class API key from [Lecture 28](lecture28.qmd). You can also pick OpenAI, Google AI, or a local OpenAI-compatible endpoint
+2. **Galaxy server (optional).** A URL plus your Galaxy API key. Skip if you only want to test the chat for now
+3. **Working directory.** Pick (or create) a folder where this project's `notebook.md` will live
+
+You can change any of these later from **Preferences** (`Cmd/Ctrl+,`).
+
+A quick smoke test once Orbit is open:
+
+> *List the files in this directory and tell me what kind of project this looks like.*
+
+If the agent responds with a sensible summary and you see its tool calls streaming in the **Activity** tab, the install worked.
+
+::: {.callout-note}
+## Updating later
+Because you cloned a branch directly, updating to the latest dev commit is just:
+
+```bash
+cd ~/pi-galaxy-analyst
+git pull
+npm install
+cd app && npm install
+npm start
+```
+:::
+
+---
+
+## What we covered
+
+- A **skill** is a markdown packet of operational know-how an agent loads on demand. Anthropic's `SKILL.md` convention is the most portable and is what Loom/Orbit follow
+- **MCP** is a vendor-neutral protocol that lets any agent talk to any tool server. Bioinformatics-relevant servers exist for Galaxy, NCBI, bioRxiv/medRxiv, UniProt, Ensembl, and more---curated in the official and community awesome lists
+- **Orbit** is the Electron front end for the Loom co-scientist. Install the `notebook-rewire-pure-md` branch from `https://github.com/nekrut/pi-galaxy-analyst`; the steps are nearly identical across macOS, Linux, and WSL2

@@ -73,6 +73,8 @@ website:
             text: "27. Bulk RNA-seq Theory"
           - href: lectures/lecture28.qmd
             text: "28. Running Claude Code"
+          - href: lectures/lecture29.qmd
+            text: "29. Skills, MCP Servers, and Installing Orbit"
 
 format:
   html:

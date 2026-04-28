@@ -56,7 +56,7 @@ In this course we will try to learn key skills for climbing this pyramid. The co
 | 26 | Apr 16 | - |
 | 27 | Apr 21 | [Bulk RNA-seq Theory](lectures/lecture27.qmd) |
 | 28 | Apr 23 | [Running Claude Code](lectures/lecture28.qmd) |
-| 29 | Apr 28 | - |
+| 29 | Apr 28 | [Skills, MCP Servers, and Installing Orbit](lectures/lecture29.qmd) |
 | 30 | Apr 30 | - |
 
 ## Grading
