@@ -22,7 +22,11 @@ You should not pre-read the methods section in detail. The point of the exercise
 
 ::: {.callout-important}
 ## Submission
-A Google form for uploading your final PDF summary will be emailed to you separately. **The deadline is the start of next Tuesday's class.** Submit one PDF per student.
+Submit your final PDF summary via this Google form:
+
+[**https://forms.gle/zQNnxCqTD3TJH19W7**](https://forms.gle/zQNnxCqTD3TJH19W7)
+
+**The deadline is the start of next Tuesday's class.** One PDF per student. Use your Penn State email address on the form.
 :::
 
 ---
@@ -149,7 +153,7 @@ Once `summary.pdf` looks complete:
    git commit -m "Replication of PMID 37769084"
    ```
 
-3. Upload `summary.pdf` to the form linked in the **email I will send separately**. One PDF per student. Use your Penn State email address on the form
+3. Upload `summary.pdf` via the Google form: [**https://forms.gle/zQNnxCqTD3TJH19W7**](https://forms.gle/zQNnxCqTD3TJH19W7). One PDF per student. Use your Penn State email address on the form
 
 ---
 
