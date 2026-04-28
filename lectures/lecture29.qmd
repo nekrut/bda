@@ -177,6 +177,14 @@ An MCP server is a program that runs on your laptop with whatever permissions yo
 
 ## 3. Install Orbit
 
+::: {.callout-warning}
+## Alpha software --- expect rough edges
+
+Orbit is an **alpha release**. Things will break. You will hit bugs. Some flows will be half-wired or behave unexpectedly. That is expected.
+
+One of the reasons we are running this lecture is so you find these bugs --- when something breaks, that is useful signal, not a failure on your part. Note what you did, what you saw, and what you expected; we will collect these and feed them back to development.
+:::
+
 ### 3.1 What is Orbit?
 
 [Orbit](https://github.com/nekrut/pi-galaxy-analyst) is the desktop application for **Loom**, an AI co-scientist for Galaxy bioinformatics. It is built with [Electron](https://www.electronjs.org/) (the same framework as Slack or VS Code), so it looks and behaves like a normal desktop window. The "brain" underneath (Loom) is the same whether you launch it from the terminal or from Orbit---Orbit just gives you a friendlier window into it.
