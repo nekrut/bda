@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 29: Skills, MCP Servers, and Installing Orbit – BMMB554</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -361,7 +359,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#macos" id="toc-macos" class="nav-link" data-scroll-target="#macos">3.3 macOS</a></li>
   <li><a href="#linux-ubuntudebian" id="toc-linux-ubuntudebian" class="nav-link" data-scroll-target="#linux-ubuntudebian">3.4 Linux (Ubuntu/Debian)</a></li>
   <li><a href="#windows-via-wsl2" id="toc-windows-via-wsl2" class="nav-link" data-scroll-target="#windows-via-wsl2">3.5 Windows (via WSL2)</a></li>
-  <li><a href="#first-launch" id="toc-first-launch" class="nav-link" data-scroll-target="#first-launch">3.6 First launch</a></li>
+  </ul></li>
+  <li><a href="#configure-orbit" id="toc-configure-orbit" class="nav-link" data-scroll-target="#configure-orbit">4. Configure Orbit</a>
+  <ul class="collapse">
+  <li><a href="#llm-provider-and-api-key" id="toc-llm-provider-and-api-key" class="nav-link" data-scroll-target="#llm-provider-and-api-key">4.1 LLM provider and API key</a></li>
+  <li><a href="#galaxy-server-and-api-key" id="toc-galaxy-server-and-api-key" class="nav-link" data-scroll-target="#galaxy-server-and-api-key">4.2 Galaxy server and API key</a></li>
+  <li><a href="#working-directory" id="toc-working-directory" class="nav-link" data-scroll-target="#working-directory">4.3 Working directory</a></li>
+  <li><a href="#smoke-test" id="toc-smoke-test" class="nav-link" data-scroll-target="#smoke-test">4.4 Smoke test</a></li>
+  <li><a href="#where-the-configuration-lives" id="toc-where-the-configuration-lives" class="nav-link" data-scroll-target="#where-the-configuration-lives">4.5 Where the configuration lives</a></li>
   </ul></li>
   <li><a href="#what-we-covered" id="toc-what-we-covered" class="nav-link" data-scroll-target="#what-we-covered">What we covered</a></li>
   </ul>
@@ -398,6 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Describe the <strong>Model Context Protocol (MCP)</strong> and what an “MCP server” provides to an agent</li>
 <li>Find and evaluate MCP servers for bioinformatics and literature work</li>
 <li>Install the latest <strong>Orbit</strong> (<code>notebook-rewire-pure-md</code> branch) on macOS, Linux, or Windows (WSL2)</li>
+<li>Configure Orbit with your Anthropic API key and a Galaxy API key</li>
 </ul>
 <hr>
 </section>
@@ -793,38 +799,108 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </div>
 </div>
+<hr>
 </section>
 </section>
-<section id="first-launch" class="level3">
-<h3 class="anchored" data-anchor-id="first-launch">3.6 First launch</h3>
-<p>On first launch Orbit shows a one-page <strong>welcome screen</strong> asking for:</p>
+</section>
+<section id="configure-orbit" class="level2">
+<h2 class="anchored" data-anchor-id="configure-orbit">4. Configure Orbit</h2>
+<p>The first time you run <code>npm start</code> Orbit opens a one-page <strong>welcome screen</strong> that walks you through three things:</p>
 <ol type="1">
-<li><strong>LLM provider + API key.</strong> Use <strong>Anthropic</strong> with the class API key from <a href="../lectures/lecture28.html">Lecture 28</a>. You can also pick OpenAI, Google AI, or a local OpenAI-compatible endpoint</li>
-<li><strong>Galaxy server (optional).</strong> A URL plus your Galaxy API key. Skip if you only want to test the chat for now</li>
-<li><strong>Working directory.</strong> Pick (or create) a folder where this project’s <code>notebook.md</code> will live</li>
+<li><strong>LLM provider + API key</strong> (which model and which credentials to use)</li>
+<li><strong>Galaxy server</strong> (optional — the bioinformatics platform Orbit can drive on your behalf)</li>
+<li><strong>Working directory</strong> (which folder this project’s <code>notebook.md</code> will live in)</li>
 </ol>
-<p>You can change any of these later from <strong>Preferences</strong> (<code>Cmd/Ctrl+,</code>).</p>
-<p>A quick smoke test once Orbit is open:</p>
+<p>You can skip any of these on first launch and fill them in later from <strong>Preferences</strong> (<code>Cmd+,</code> on macOS, <code>Ctrl+,</code> on Linux/WSL2).</p>
+<section id="llm-provider-and-api-key" class="level3">
+<h3 class="anchored" data-anchor-id="llm-provider-and-api-key">4.1 LLM provider and API key</h3>
+<p>For this class:</p>
+<ul>
+<li><strong>Provider:</strong> Anthropic</li>
+<li><strong>API key:</strong> the class key from <a href="../lectures/lecture28.html">Lecture 28</a> (<code>sk-ant-...</code>)</li>
+<li><strong>Model:</strong> the default (<code>claude-sonnet-4-6</code>) is fine</li>
+</ul>
+<p>Other providers (OpenAI, Google AI, or a local OpenAI-compatible server like Ollama) work too—you would just paste the matching key. If your <code>ANTHROPIC_API_KEY</code> environment variable is already set in your shell, Orbit can pick it up automatically.</p>
+</section>
+<section id="galaxy-server-and-api-key" class="level3">
+<h3 class="anchored" data-anchor-id="galaxy-server-and-api-key">4.2 Galaxy server and API key</h3>
+<p>The “Galaxy server” entry tells Orbit which Galaxy instance to use when the agent decides a step is best run on Galaxy. It needs two things: the <strong>server URL</strong> and your <strong>Galaxy API key</strong>.</p>
+<section id="server-url" class="level4">
+<h4 class="anchored" data-anchor-id="server-url">Server URL</h4>
+<p>For this course, use:</p>
+<pre><code>https://usegalaxy.org</code></pre>
+<p>If you have a preferred Galaxy server (e.g.&nbsp;Galaxy Europe at <code>https://usegalaxy.eu</code>, or your institution’s instance), paste that URL instead. Orbit supports several servers in parallel through “profiles” — you can switch between them later from Preferences or with <code>/connect</code>.</p>
+</section>
+<section id="getting-your-galaxy-api-key" class="level4">
+<h4 class="anchored" data-anchor-id="getting-your-galaxy-api-key">Getting your Galaxy API key</h4>
+<p>A Galaxy <strong>API key</strong> is a long random string that lets a program log in to Galaxy on your behalf, the same way a password would—except it can be regenerated and revoked without changing your password. Galaxy generates one for you on demand:</p>
+<ol type="1">
+<li>Go to your Galaxy server in a web browser (e.g.&nbsp;<a href="https://usegalaxy.org"><code>https://usegalaxy.org</code></a>) and <strong>log in</strong> with your usual Galaxy account</li>
+<li>From the top menu bar, click <strong>User → Preferences</strong></li>
+<li>On the Preferences page, click <strong>Manage API Key</strong></li>
+<li>If you have never created a key before, click <strong>Create a new key</strong> (or <strong>Generate</strong>); if a key already exists you can simply copy it. Keys look like a long hexadecimal string, e.g.&nbsp;<code>f9cad7b01a47213585a62adb4e8daa8d</code></li>
+<li>Copy the key to your clipboard</li>
+</ol>
+<p>Now paste that key into Orbit’s welcome screen (or <strong>Preferences → Galaxy</strong>) under the <strong>API key</strong> field, with the server URL filled in above. Click <strong>Save</strong> or <strong>Connect</strong>; the green dot in Orbit’s footer should light up to confirm the connection.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Treat the Galaxy API key like a password
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Anyone who has your key can read your histories, launch jobs that cost compute time on your account, and delete your data. Do not paste it into chat, into a public notebook, or into a file inside a Git repo. Orbit stores it in <code>~/.loom/config.json</code> on your laptop only.</p>
+<p>If you think a key has leaked, return to <strong>User → Preferences → Manage API Key</strong> and click <strong>Create a new key</strong>—this immediately revokes the old one.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="working-directory" class="level3">
+<h3 class="anchored" data-anchor-id="working-directory">4.3 Working directory</h3>
+<p>This is the folder where Orbit will create (and keep updating) the project’s <code>notebook.md</code>—the durable record of every plan, decision, and result. Pick a fresh, empty folder for each new analysis, e.g.:</p>
+<ul>
+<li>macOS / Linux: <code>~/analyses/mrsa-alignment</code></li>
+<li>WSL2: same—use a path under <code>~/</code>, <strong>not</strong> under <code>/mnt/c/...</code></li>
+</ul>
+<p>You can switch working directories any time from inside Orbit with <code>Cmd/Ctrl+O</code>; each folder becomes its own project.</p>
+</section>
+<section id="smoke-test" class="level3">
+<h3 class="anchored" data-anchor-id="smoke-test">4.4 Smoke test</h3>
+<p>Once configuration is saved, Orbit drops you into the chat. Try:</p>
 <blockquote class="blockquote">
 <p><em>List the files in this directory and tell me what kind of project this looks like.</em></p>
 </blockquote>
-<p>If the agent responds with a sensible summary and you see its tool calls streaming in the <strong>Activity</strong> tab, the install worked.</p>
+<p>If the agent responds sensibly and you see its tool calls streaming in the <strong>Activity</strong> tab on the right, your install plus configuration are working.</p>
+<p>If you connected a Galaxy server, also try:</p>
+<blockquote class="blockquote">
+<p><em>Search the Galaxy tool catalog for <code>fastp</code> and tell me which versions are available.</em></p>
+</blockquote>
+<p>A correct answer (or a meaningful “I cannot reach the server” error) confirms the Galaxy API key is wired up.</p>
+</section>
+<section id="where-the-configuration-lives" class="level3">
+<h3 class="anchored" data-anchor-id="where-the-configuration-lives">4.5 Where the configuration lives</h3>
+<p>Once you save, Orbit writes your settings to a single file:</p>
+<pre><code>~/.loom/config.json</code></pre>
+<p>The file holds your provider keys, Galaxy profiles, and skill repository list. You can edit it by hand if you prefer, but the safer path is to use Orbit’s Preferences dialog.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Updating later
+<span class="screen-reader-only">Note</span>Updating Orbit later
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Because you cloned a branch directly, updating to the latest dev commit is just:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/pi-galaxy-analyst</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Because you cloned a branch directly, updating to the latest development commit is just:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/pi-galaxy-analyst</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <hr>
@@ -833,9 +909,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="what-we-covered" class="level2">
 <h2 class="anchored" data-anchor-id="what-we-covered">What we covered</h2>
 <ul>
-<li>A <strong>skill</strong> is a markdown packet of operational know-how an agent loads on demand. Anthropic’s <code>SKILL.md</code> convention is the most portable and is what Loom/Orbit follow</li>
-<li><strong>MCP</strong> is a vendor-neutral protocol that lets any agent talk to any tool server. Bioinformatics-relevant servers exist for Galaxy, NCBI, bioRxiv/medRxiv, UniProt, Ensembl, and more—curated in the official and community awesome lists</li>
-<li><strong>Orbit</strong> is the Electron front end for the Loom co-scientist. Install the <code>notebook-rewire-pure-md</code> branch from <code>https://github.com/nekrut/pi-galaxy-analyst</code>; the steps are nearly identical across macOS, Linux, and WSL2</li>
+<li>A <strong>skill</strong> is a markdown file with operational know-how that an agent reads only when it is relevant. Anthropic’s <code>SKILL.md</code> convention is the most portable and is what Loom/Orbit follow</li>
+<li><strong>MCP</strong> is a small shared protocol that lets any agent talk to any tool server. Bioinformatics-relevant servers exist for Galaxy, NCBI, bioRxiv/medRxiv, UniProt, Ensembl, and more—curated in the official and community awesome lists</li>
+<li><strong>Orbit</strong> is the desktop application for the Loom co-scientist. Install the <code>notebook-rewire-pure-md</code> branch from <code>https://github.com/nekrut/pi-galaxy-analyst</code>; the steps are nearly identical across macOS, Linux, and WSL2</li>
+<li>Configuring Orbit means three things: the <strong>Anthropic API key</strong> (from Lecture 28), the <strong>Galaxy server URL + Galaxy API key</strong> (from Galaxy → User → Preferences → Manage API Key), and a <strong>working directory</strong> for <code>notebook.md</code></li>
 </ul>
 
 
@@ -948,7 +1025,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
