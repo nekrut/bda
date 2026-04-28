@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 29: Skills, MCP Servers, and Installing Orbit – BMMB554</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">BMMB554</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nekrut/bda"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Edit on GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture29.html">29. Skills, MCP Servers, and Installing Orbit</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lectures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Getting Started with GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Introduction to Bash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Py1: Data analysis ecosystem - Crunch, load, visualize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Py2: Simple sequence manipulation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Py3: Parsing FASTA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Py4: FASTQ and Quality Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Py5: Data Manipulation with Pandas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Py6: Building graphs with Altair</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. Git and GitHub</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Publishing Your CV with GitHub Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Building a Website with Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Responsible Use of Coding Agents</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Sequence Alignment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. Finding Sequence Matches Quickly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. K-mers, Minimizers, and Minimap2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17. DNA Sequencing Technologies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19. Variant Calling in Haploid Systems</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20. NGS Data Logistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture21.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">21. Interval Operations for Genomic Coordinates</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture22.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">22. Genome Assembly of MRSA Isolates</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture23.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">23. Genome Assembly</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture24.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">24. Pangenomics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture25.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">25. Setting Up the gxy3 Agent</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture27.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">27. Bulk RNA-seq Theory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture28.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">28. Running Claude Code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture29.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">29. Skills, MCP Servers, and Installing Orbit</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives">Learning Objectives</a></li>
+  <li><a href="#agentic-skills" id="toc-agentic-skills" class="nav-link" data-scroll-target="#agentic-skills">1. Agentic Skills</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-skill" id="toc-what-is-a-skill" class="nav-link" data-scroll-target="#what-is-a-skill">1.1 What is a skill?</a></li>
+  <li><a href="#anatomy-of-a-claude-style-skill" id="toc-anatomy-of-a-claude-style-skill" class="nav-link" data-scroll-target="#anatomy-of-a-claude-style-skill">1.2 Anatomy of a Claude-style skill</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">1.3 Examples</a></li>
+  <li><a href="#skills-across-vendors" id="toc-skills-across-vendors" class="nav-link" data-scroll-target="#skills-across-vendors">1.4 Skills across vendors</a></li>
+  </ul></li>
+  <li><a href="#mcp-servers" id="toc-mcp-servers" class="nav-link" data-scroll-target="#mcp-servers">2. MCP Servers</a>
+  <ul class="collapse">
+  <li><a href="#what-problem-mcp-solves" id="toc-what-problem-mcp-solves" class="nav-link" data-scroll-target="#what-problem-mcp-solves">2.1 What problem MCP solves</a></li>
+  <li><a href="#what-does-a-server-provide" id="toc-what-does-a-server-provide" class="nav-link" data-scroll-target="#what-does-a-server-provide">2.2 What does a server provide?</a></li>
+  <li><a href="#adding-an-mcp-server-to-claude-code-or-orbit" id="toc-adding-an-mcp-server-to-claude-code-or-orbit" class="nav-link" data-scroll-target="#adding-an-mcp-server-to-claude-code-or-orbit">2.3 Adding an MCP server to Claude Code or Orbit</a></li>
+  <li><a href="#where-to-find-mcp-servers" id="toc-where-to-find-mcp-servers" class="nav-link" data-scroll-target="#where-to-find-mcp-servers">2.4 Where to find MCP servers</a></li>
+  <li><a href="#mcp-servers-worth-knowing-about-for-biology-and-research" id="toc-mcp-servers-worth-knowing-about-for-biology-and-research" class="nav-link" data-scroll-target="#mcp-servers-worth-knowing-about-for-biology-and-research">2.5 MCP servers worth knowing about for biology and research</a></li>
+  </ul></li>
+  <li><a href="#install-orbit" id="toc-install-orbit" class="nav-link" data-scroll-target="#install-orbit">3. Install Orbit</a>
+  <ul class="collapse">
+  <li><a href="#what-is-orbit" id="toc-what-is-orbit" class="nav-link" data-scroll-target="#what-is-orbit">3.1 What is Orbit?</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">3.2 Prerequisites</a></li>
+  <li><a href="#macos" id="toc-macos" class="nav-link" data-scroll-target="#macos">3.3 macOS</a></li>
+  <li><a href="#linux-ubuntudebian" id="toc-linux-ubuntudebian" class="nav-link" data-scroll-target="#linux-ubuntudebian">3.4 Linux (Ubuntu/Debian)</a></li>
+  <li><a href="#windows-via-wsl2" id="toc-windows-via-wsl2" class="nav-link" data-scroll-target="#windows-via-wsl2">3.5 Windows (via WSL2)</a></li>
+  <li><a href="#first-launch" id="toc-first-launch" class="nav-link" data-scroll-target="#first-launch">3.6 First launch</a></li>
+  </ul></li>
+  <li><a href="#what-we-covered" id="toc-what-we-covered" class="nav-link" data-scroll-target="#what-we-covered">What we covered</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture29.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture29.html">29. Skills, MCP Servers, and Installing Orbit</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lecture 29: Skills, MCP Servers, and Installing Orbit</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="learning-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this lecture, you will be able to:</p>
+<ul>
+<li>Explain what an <strong>agentic skill</strong> is and recognize the file-system layout used by Claude-style skills</li>
+<li>Compare how Anthropic, OpenAI, and Google package reusable agent capabilities</li>
+<li>Describe the <strong>Model Context Protocol (MCP)</strong> and what an “MCP server” provides to an agent</li>
+<li>Find and evaluate MCP servers for bioinformatics and literature work</li>
+<li>Install the latest <strong>Orbit</strong> (<code>notebook-rewire-pure-md</code> branch) on macOS, Linux, or Windows (WSL2)</li>
+</ul>
+<hr>
+</section>
+<section id="agentic-skills" class="level2">
+<h2 class="anchored" data-anchor-id="agentic-skills">1. Agentic Skills</h2>
+<section id="what-is-a-skill" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-skill">1.1 What is a skill?</h3>
+<p>A <strong>skill</strong> is a small, self-contained packet of <em>operational know-how</em> that an agent can load on demand. It is not new model weights, not a code library, and not a fine-tune—it is <strong>markdown</strong> (sometimes with helper scripts) that tells the agent <em>how</em> to do a task: what the steps are, what gotchas to watch for, what tool order works, what conventions a particular project uses.</p>
+<p>A useful analogy: imagine you onboard a new postdoc. They are smart, but they do not know your lab’s conventions—which servers to use, which tool flags you prefer, where the data lives, which scripts are blessed. A skill is the one-page handover note for one such convention. The agent reads it the moment it needs it, follows it, and forgets it again.</p>
+<p>Three things distinguish skills from “just put it in the prompt”:</p>
+<ol type="1">
+<li><strong>On-demand loading.</strong> A skill only enters the context when the agent decides it is relevant. You can have hundreds of skills available without paying for hundreds of prompts’ worth of tokens on every turn.</li>
+<li><strong>Routing by description.</strong> Each skill carries a one-line description; the agent (or a router) reads the descriptions, not the full bodies, to decide which to load.</li>
+<li><strong>Discoverable + shareable.</strong> Skills live in a folder structure on disk or in a GitHub repo. A team can curate a set, version them, and pull them into many agents.</li>
+</ol>
+</section>
+<section id="anatomy-of-a-claude-style-skill" class="level3">
+<h3 class="anchored" data-anchor-id="anatomy-of-a-claude-style-skill">1.2 Anatomy of a Claude-style skill</h3>
+<p>Anthropic’s convention is the most concrete and is becoming a de-facto standard—other agents (including Loom/Orbit) read the same layout. A skill is a directory:</p>
+<pre><code>my-skill/
+├── SKILL.md          # required: the actual instructions
+├── reference.md      # optional: deeper docs the skill links to
+└── scripts/          # optional: helper scripts the skill invokes
+    └── do_thing.py</code></pre>
+<p><code>SKILL.md</code> starts with a YAML frontmatter:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">name:</span><span class="co"> paired-collection-from-pe-fastq</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> Build a Galaxy paired-collection dataset from a directory of paired-end FASTQ files using the Apply Rules DSL.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">## When to use</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>... (rules of thumb the agent can reason about) ...</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Steps</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>...</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>...</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Gotchas</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Apply Rules trims <span class="in">`_R1`</span>/<span class="in">`_R2`</span> suffixes by default; ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A repo of skills usually has a top-level <strong><code>AGENTS.md</code></strong> that acts as a router—a flat index of “topic → path-to-SKILL.md” so the agent can pick the right one without scanning every file.</p>
+</section>
+<section id="examples" class="level3">
+<h3 class="anchored" data-anchor-id="examples">1.3 Examples</h3>
+<ul>
+<li><strong><code>galaxyproject/galaxy-skills</code></strong> — the default skills bundle for Loom/Orbit. Covers things like “build a paired collection from PE FASTQ”, “map a tool over a collection”, “convert a Nextflow pipeline to a Galaxy workflow”, “Galaxy MCP usage and common gotchas”. The agent fetches them on demand from GitHub and caches them locally</li>
+<li><strong><code>anthropics/skills</code></strong> (Anthropic’s public examples) — skills for PDF generation, spreadsheet manipulation, Slack-flavored formatting, web research workflows</li>
+<li><strong>Project-local skills</strong> in <code>.claude/skills/</code> (or <code>~/.claude/skills/</code> for personal ones) — e.g.&nbsp;<em>“how we run the lab pipeline,”</em> <em>“how to format a manuscript figure,”</em> <em>“how to deploy this app.”</em> These never leave your laptop</li>
+</ul>
+</section>
+<section id="skills-across-vendors" class="level3">
+<h3 class="anchored" data-anchor-id="skills-across-vendors">1.4 Skills across vendors</h3>
+<p>Different vendors have converged on similar ideas with different vocabularies:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Vendor</th>
+<th>Name for “skill-like” packaging</th>
+<th>Storage</th>
+<th>Loaded how</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Anthropic (Claude)</strong></td>
+<td><strong>Skills</strong></td>
+<td><code>SKILL.md</code> files in <code>~/.claude/skills/</code> or <code>&lt;repo&gt;/.claude/skills/</code> (or fetched from GitHub)</td>
+<td>Agent reads YAML frontmatter, decides on demand</td>
+</tr>
+<tr class="even">
+<td><strong>OpenAI</strong></td>
+<td><strong>Custom GPTs</strong> (UI), <strong>Apps in ChatGPT</strong>, <strong>Custom Instructions</strong>, <strong>tools</strong> in the Assistants/Agents API</td>
+<td>OpenAI servers (Custom GPTs) or as JSON tool specs (API)</td>
+<td>Selected by user (Custom GPT) or routed by the model (tools)</td>
+</tr>
+<tr class="odd">
+<td><strong>Google (Gemini)</strong></td>
+<td><strong>Gems</strong> (consumer app), <strong>Tools + Apps</strong> in Vertex AI Agent Builder</td>
+<td>Google servers</td>
+<td>Selected by user (Gems) or routed by the agent runtime (Tools)</td>
+</tr>
+</tbody>
+</table>
+<p>Three observations are worth emphasizing:</p>
+<ol type="1">
+<li><strong>Anthropic’s skills are file-system native.</strong> Anyone can write one in markdown, drop it in a folder, and the agent picks it up. There is no UI to click through, no server to register with. This is why community repos of skills exist on GitHub</li>
+<li><strong>OpenAI’s Custom GPTs are closer to a published persona</strong> than to a skill. They bundle instructions, retrieval files, and tools behind a single ChatGPT-only entry point. Outside of ChatGPT (e.g.&nbsp;via the API) the analog is “Assistants” with attached tool specs and files</li>
+<li><strong>Gemini Gems</strong> sit roughly in the middle: a saved system-prompt + tools combination that lives in Google’s app rather than as a portable file on disk. Vertex AI Agent Builder is more programmable but cloud-hosted</li>
+</ol>
+<p>For this course we focus on the Claude/Loom/Orbit convention because it is the only one that is fully <em>file-based, portable, and Git-trackable</em>—which is exactly the property you want when teaching reproducible analyses.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Skills vs.&nbsp;tools vs.&nbsp;system prompt
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A useful mental hierarchy:</p>
+<ul>
+<li><strong>System prompt</strong> = “who you are” (always loaded)</li>
+<li><strong>Tool</strong> = “verb you can call” (always loaded as a callable)</li>
+<li><strong>Skill</strong> = “playbook for a verb” (loaded only when needed)</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="mcp-servers" class="level2">
+<h2 class="anchored" data-anchor-id="mcp-servers">2. MCP Servers</h2>
+<section id="what-problem-mcp-solves" class="level3">
+<h3 class="anchored" data-anchor-id="what-problem-mcp-solves">2.1 What problem MCP solves</h3>
+<p>Imagine every agent (Claude Code, Orbit, Cursor, Cline, GPT, …) wants to call into your lab’s database, into Galaxy, into PubMed. Without a standard, every agent has to ship custom code for every backend, and every backend has to ship custom adapters for every agent. That is an N×M problem.</p>
+<p>The <strong>Model Context Protocol (MCP)</strong>, introduced by Anthropic in late 2024 and now adopted by every major agent vendor, is a small, JSON-RPC–based, vendor-neutral protocol that breaks the N×M problem into N+M:</p>
+<ul>
+<li>An <strong>MCP server</strong> exposes <em>tools</em>, <em>resources</em>, and <em>prompts</em> over the protocol.</li>
+<li>Any <strong>MCP client</strong> (agent) can speak to any MCP server.</li>
+</ul>
+<p>You write a server once, every MCP-aware agent can use it.</p>
+</section>
+<section id="what-does-a-server-provide" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-a-server-provide">2.2 What does a server provide?</h3>
+<p>An MCP server can offer three kinds of things:</p>
+<ul>
+<li><strong>Tools</strong> — callable verbs the agent can invoke (e.g.&nbsp;<code>pubmed_search</code>, <code>galaxy_run_tool</code>)</li>
+<li><strong>Resources</strong> — read-only data the agent can pull into context (e.g.&nbsp;a CSV the server exposes, the contents of an issue tracker)</li>
+<li><strong>Prompts</strong> — reusable prompt templates the user can invoke</li>
+</ul>
+<p>For research workflows the <strong>tools</strong> facet is by far the most common.</p>
+</section>
+<section id="adding-an-mcp-server-to-claude-code-or-orbit" class="level3">
+<h3 class="anchored" data-anchor-id="adding-an-mcp-server-to-claude-code-or-orbit">2.3 Adding an MCP server to Claude Code or Orbit</h3>
+<p>In Claude Code, you register a server in <code>~/.claude/mcp.json</code> (or per-project <code>.claude/mcp.json</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"mcpServers"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"galaxy"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"uvx"</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"galaxy-mcp"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"env"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"GALAXY_URL"</span><span class="fu">:</span> <span class="st">"https://usegalaxy.org"</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"GALAXY_API_KEY"</span><span class="fu">:</span> <span class="st">"abc..."</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Orbit registers Galaxy MCP automatically when Galaxy credentials are configured; additional servers can be added through Preferences. The shape is the same: a launch command + environment.</p>
+</section>
+<section id="where-to-find-mcp-servers" class="level3">
+<h3 class="anchored" data-anchor-id="where-to-find-mcp-servers">2.4 Where to find MCP servers</h3>
+<ul>
+<li><strong>Official catalog</strong> — <a href="https://github.com/modelcontextprotocol/servers"><code>modelcontextprotocol/servers</code></a>: reference servers for filesystem, Git, GitHub, Slack, Postgres, Puppeteer, Brave Search, etc.</li>
+<li><strong>Community awesome list</strong> — <a href="https://github.com/punkpeye/awesome-mcp-servers"><code>punkpeye/awesome-mcp-servers</code></a>: the largest directory; categorized by domain</li>
+<li><strong>Public registry</strong> — <a href="https://mcp.so"><code>mcp.so</code></a>: browsable index with install snippets</li>
+<li><strong>PyPI / npm / GitHub</strong> — many servers ship as <code>uvx &lt;name&gt;</code> or <code>npx -y &lt;name&gt;</code>, so you can also discover them through standard package indexes</li>
+</ul>
+</section>
+<section id="mcp-servers-worth-knowing-about-for-biology-and-research" class="level3">
+<h3 class="anchored" data-anchor-id="mcp-servers-worth-knowing-about-for-biology-and-research">2.5 MCP servers worth knowing about for biology and research</h3>
+<p>The community is moving fast; treat the table below as <em>currently popular</em> rather than exhaustive. Search the awesome list for the latest.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Server</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong><code>galaxy-mcp</code></strong></td>
+<td>Galaxy API: tool search, history/dataset operations, workflow invocation, IWC search. Used by Orbit by default</td>
+</tr>
+<tr class="even">
+<td><strong><code>pubmed</code> / <code>entrez-mcp</code></strong> family</td>
+<td>Search and fetch records from NCBI’s E-utilities (PubMed, GenBank, RefSeq, etc.)</td>
+</tr>
+<tr class="odd">
+<td><strong><code>biorxiv-mcp</code> / <code>medrxiv-mcp</code></strong></td>
+<td>Query the bioRxiv / medRxiv preprint APIs (<code>api.biorxiv.org</code>) for recent preprints, DOIs, and full-text PDFs</td>
+</tr>
+<tr class="even">
+<td><strong><code>arxiv-mcp-server</code></strong></td>
+<td>Same idea for arXiv—useful for methods/CS-side preprints</td>
+</tr>
+<tr class="odd">
+<td><strong><code>semantic-scholar-mcp</code></strong></td>
+<td>Citation graph, paper recommendations, abstracts</td>
+</tr>
+<tr class="even">
+<td><strong><code>uniprot-mcp</code> / <code>ensembl-mcp</code> / <code>ucsc-mcp</code></strong></td>
+<td>Sequence and annotation lookups against the major reference databases</td>
+</tr>
+<tr class="odd">
+<td><strong><code>github-mcp</code></strong> (official)</td>
+<td>Issues, PRs, code search inside a repo or org</td>
+</tr>
+<tr class="even">
+<td><strong><code>filesystem-mcp</code></strong> (official)</td>
+<td>Scoped read/write under a sandboxed directory</td>
+</tr>
+<tr class="odd">
+<td><strong><code>playwright-mcp</code></strong> (official)</td>
+<td>Headless browser automation—useful for scraping pages without an API</td>
+</tr>
+<tr class="even">
+<td><strong><code>slack-mcp</code></strong> (official)</td>
+<td>Read/write to Slack channels</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Vet third-party MCP servers before trusting them
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An MCP server runs as a process on your laptop with whatever permissions you give it. Reading random <code>npx</code>-installable servers from the internet is the same trust decision as installing any other CLI tool. Prefer servers that (a) are popular on the awesome list, (b) have an active git history, and (c) you can audit before running. For credentialed services (GitHub, Slack, your Galaxy account), the server holds your token—treat it like you would any other CLI authenticated to that service.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="install-orbit" class="level2">
+<h2 class="anchored" data-anchor-id="install-orbit">3. Install Orbit</h2>
+<section id="what-is-orbit" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-orbit">3.1 What is Orbit?</h3>
+<p><a href="https://github.com/nekrut/pi-galaxy-analyst">Orbit</a> is the Electron desktop shell for <strong>Loom</strong>, an AI co-scientist for Galaxy bioinformatics. It is the GUI front end you will use in lab; the brain underneath (Loom) is the same regardless of whether you launch from the terminal or from Orbit.</p>
+<p>Orbit gives you:</p>
+<ul>
+<li>A three-pane layout: file tree on the left, chat in the middle, tabbed artifacts (notebook, activity, file preview) on the right</li>
+<li>A live, git-tracked <code>notebook.md</code> that is the durable project log</li>
+<li>An activity tab streaming every command the agent runs, plus per-process CPU / memory</li>
+<li>Built-in Galaxy connection management and skill-repo configuration</li>
+</ul>
+<p>In this lecture you install the <strong><code>notebook-rewire-pure-md</code></strong> branch, which is the active development line.</p>
+</section>
+<section id="prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="prerequisites">3.2 Prerequisites</h3>
+<ul>
+<li><strong>Node.js 18 or newer</strong></li>
+<li><strong><code>git</code></strong></li>
+<li><strong><code>uv</code></strong> (provides <code>uvx</code>, used to launch the Galaxy MCP server)</li>
+<li>An <strong>Anthropic API key</strong> (or another supported provider)—the same key you have been using since <a href="../lectures/lecture25.html">Lecture 25</a> is fine</li>
+</ul>
+</section>
+<section id="macos" class="level3">
+<h3 class="anchored" data-anchor-id="macos">3.3 macOS</h3>
+<p>Open <strong>Terminal</strong> (<code>Cmd+Space</code>, type “Terminal”) and run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Homebrew, if you do not have it yet</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/bin/bash</span> <span class="at">-c</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="va">)</span><span class="st">"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Node, git, uv</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install node git uv</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dev branch</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> notebook-rewire-pure-md <span class="dt">\</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    https://github.com/nekrut/pi-galaxy-analyst.git</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pi-galaxy-analyst</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Install both workspaces (root + Electron app)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Launch Orbit from inside <code>app/</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="linux-ubuntudebian" class="level3">
+<h3 class="anchored" data-anchor-id="linux-ubuntudebian">3.4 Linux (Ubuntu/Debian)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build essentials + git + curl</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> git curl build-essential</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Node via nvm (skip if you already have Node 18+)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install <span class="at">--lts</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># uv (for the Galaxy MCP server)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dev branch</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> notebook-rewire-pure-md <span class="dt">\</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    https://github.com/nekrut/pi-galaxy-analyst.git</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pi-galaxy-analyst</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Electron’s runtime libraries
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Electron needs a handful of system libraries (<code>libnss3</code>, <code>libatk1.0-0</code>, <code>libgbm1</code>, <code>libasound2</code>, etc.). On a fresh Ubuntu install they are pulled in transitively by <code>build-essential</code> plus normal desktop packages, but if <code>npm start</code> errors out about a missing <code>.so</code>, install the named library with <code>sudo apt install</code> and re-run.</p>
+</div>
+</div>
+</section>
+<section id="windows-via-wsl2" class="level3">
+<h3 class="anchored" data-anchor-id="windows-via-wsl2">3.5 Windows (via WSL2)</h3>
+<p>Orbit on Windows runs <strong>inside WSL2</strong>—the same Linux container you set up for Claude Code in <a href="../lectures/lecture28.html">Lecture 28</a>. If you do not yet have WSL2, follow §6 of that lecture first. Everything below runs <strong>inside the Ubuntu window</strong>, not PowerShell.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build essentials + git + curl (skip if already installed)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> git curl build-essential</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Node via nvm</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install <span class="at">--lts</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># uv (for the Galaxy MCP server)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dev branch into your Linux home directory (NOT /mnt/c/)</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> notebook-rewire-pure-md <span class="dt">\</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    https://github.com/nekrut/pi-galaxy-analyst.git</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pi-galaxy-analyst</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>WSL2 reminders
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Keep the clone in <code>~/</code> (the Linux filesystem). Cloning into <code>/mnt/c/...</code> makes every read crawl across the WSL boundary</li>
+<li>Electron will pop a real Windows desktop window thanks to WSLg—you should see the Orbit UI on your normal desktop, not in the terminal</li>
+<li>If you see <code>libnss3.so: cannot open shared object file</code>: <code>sudo apt install -y libnss3 libatk1.0-0 libgbm1 libasound2</code> and re-run <code>npm start</code></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="first-launch" class="level3">
+<h3 class="anchored" data-anchor-id="first-launch">3.6 First launch</h3>
+<p>On first launch Orbit shows a one-page <strong>welcome screen</strong> asking for:</p>
+<ol type="1">
+<li><strong>LLM provider + API key.</strong> Use <strong>Anthropic</strong> with the class API key from <a href="../lectures/lecture28.html">Lecture 28</a>. You can also pick OpenAI, Google AI, or a local OpenAI-compatible endpoint</li>
+<li><strong>Galaxy server (optional).</strong> A URL plus your Galaxy API key. Skip if you only want to test the chat for now</li>
+<li><strong>Working directory.</strong> Pick (or create) a folder where this project’s <code>notebook.md</code> will live</li>
+</ol>
+<p>You can change any of these later from <strong>Preferences</strong> (<code>Cmd/Ctrl+,</code>).</p>
+<p>A quick smoke test once Orbit is open:</p>
+<blockquote class="blockquote">
+<p><em>List the files in this directory and tell me what kind of project this looks like.</em></p>
+</blockquote>
+<p>If the agent responds with a sensible summary and you see its tool calls streaming in the <strong>Activity</strong> tab, the install worked.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Updating later
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Because you cloned a branch directly, updating to the latest dev commit is just:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/pi-galaxy-analyst</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="what-we-covered" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-covered">What we covered</h2>
+<ul>
+<li>A <strong>skill</strong> is a markdown packet of operational know-how an agent loads on demand. Anthropic’s <code>SKILL.md</code> convention is the most portable and is what Loom/Orbit follow</li>
+<li><strong>MCP</strong> is a vendor-neutral protocol that lets any agent talk to any tool server. Bioinformatics-relevant servers exist for Galaxy, NCBI, bioRxiv/medRxiv, UniProt, Ensembl, and more—curated in the official and community awesome lists</li>
+<li><strong>Orbit</strong> is the Electron front end for the Loom co-scientist. Install the <code>notebook-rewire-pure-md</code> branch from <code>https://github.com/nekrut/pi-galaxy-analyst</code>; the steps are nearly identical across macOS, Linux, and WSL2</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the "Edit this page" link container
+  const repoLinks = document.querySelector('.nav-footer-center, .quarto-other-links, .quarto-code-links');
+
+  // Create commit info element
+  const commitDiv = document.createElement('div');
+  commitDiv.id = 'commit-info';
+  commitDiv.style.cssText = 'font-size: 0.7em; color: #888; margin-top: 0.5em; text-align: center;';
+
+  // Fetch latest commit from GitHub API
+  fetch('https://api.github.com/repos/nekrut/bda/commits/main')
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date(data.commit.author.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const shortSha = data.sha.substring(0, 7);
+      commitDiv.innerHTML = `Last updated: <a href="${data.html_url}" style="color: #888;">${shortSha}</a> (${date})`;
+
+      // Try to insert after repo actions or at bottom of sidebar
+      const sidebar = document.querySelector('.sidebar-navigation, .sidebar');
+      if (sidebar) {
+        sidebar.appendChild(commitDiv);
+      } else {
+        // Fallback: append to body
+        const footer = document.querySelector('.nav-footer') || document.body;
+        footer.appendChild(commitDiv);
+      }
+    })
+    .catch(err => console.log('Could not fetch commit info'));
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture29.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
