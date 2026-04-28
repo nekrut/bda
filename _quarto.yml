@@ -75,8 +75,6 @@ website:
             text: "28. Running Claude Code"
           - href: lectures/lecture29.qmd
             text: "29. Skills, MCP Servers, and Installing Orbit"
-          - href: lectures/lecture30.qmd
-            text: "30. Replicating a Published RNA-seq Study with Orbit"
 
 format:
   html:
