@@ -324,12 +324,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">29. Skills, MCP Servers, and Installing Orbit</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture30.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">30. Replicating a Published RNA-seq Study with Orbit</span></a>
-  </div>
-</li>
       </ul>
   </li>
     </ul>
@@ -375,6 +369,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#where-the-configuration-lives" id="toc-where-the-configuration-lives" class="nav-link" data-scroll-target="#where-the-configuration-lives">4.5 Where the configuration lives</a></li>
   </ul></li>
   <li><a href="#what-we-covered" id="toc-what-we-covered" class="nav-link" data-scroll-target="#what-we-covered">What we covered</a></li>
+  <li><a href="#take-home-exercise-replicate-a-published-rna-seq-study" id="toc-take-home-exercise-replicate-a-published-rna-seq-study" class="nav-link" data-scroll-target="#take-home-exercise-replicate-a-published-rna-seq-study">5. Take-Home Exercise — Replicate a Published RNA-seq Study</a>
+  <ul class="collapse">
+  <li><a href="#before-you-start" id="toc-before-you-start" class="nav-link" data-scroll-target="#before-you-start">5.1 Before you start</a></li>
+  <li><a href="#step-1-start-a-fresh-project-and-read-the-paper" id="toc-step-1-start-a-fresh-project-and-read-the-paper" class="nav-link" data-scroll-target="#step-1-start-a-fresh-project-and-read-the-paper">5.2 Step 1 — Start a fresh project and read the paper</a></li>
+  <li><a href="#step-2-generate-a-replication-plan" id="toc-step-2-generate-a-replication-plan" class="nav-link" data-scroll-target="#step-2-generate-a-replication-plan">5.3 Step 2 — Generate a replication plan</a></li>
+  <li><a href="#step-3-execute-the-plan" id="toc-step-3-execute-the-plan" class="nav-link" data-scroll-target="#step-3-execute-the-plan">5.4 Step 3 — Execute the plan</a></li>
+  <li><a href="#step-4-compare-your-results-to-the-published-results" id="toc-step-4-compare-your-results-to-the-published-results" class="nav-link" data-scroll-target="#step-4-compare-your-results-to-the-published-results">5.5 Step 4 — Compare your results to the published results</a></li>
+  <li><a href="#step-5-submit-the-pdf" id="toc-step-5-submit-the-pdf" class="nav-link" data-scroll-target="#step-5-submit-the-pdf">5.6 Step 5 — Submit the PDF</a></li>
+  <li><a href="#what-counts-as-a-successful-replication" id="toc-what-counts-as-a-successful-replication" class="nav-link" data-scroll-target="#what-counts-as-a-successful-replication">5.7 What counts as a successful replication?</a></li>
+  <li><a href="#tips-and-gotchas" id="toc-tips-and-gotchas" class="nav-link" data-scroll-target="#tips-and-gotchas">5.8 Tips and gotchas</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture29.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -920,8 +925,157 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Orbit</strong> is the desktop application for the Loom co-scientist. Install the <code>notebook-rewire-pure-md</code> branch from <code>https://github.com/nekrut/pi-galaxy-analyst</code>; the steps are nearly identical across macOS, Linux, and WSL2</li>
 <li>Configuring Orbit means three things: the <strong>Anthropic API key</strong> (from Lecture 28), the <strong>Galaxy server URL + Galaxy API key</strong> (from Galaxy → User → Preferences → Manage API Key), and a <strong>working directory</strong> for <code>notebook.md</code></li>
 </ul>
+<hr>
+</section>
+<section id="take-home-exercise-replicate-a-published-rna-seq-study" class="level2">
+<h2 class="anchored" data-anchor-id="take-home-exercise-replicate-a-published-rna-seq-study">5. Take-Home Exercise — Replicate a Published RNA-seq Study</h2>
+<p>You will use Orbit to <strong>independently replicate the RNA-seq analysis</strong> reported in:</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/37769084/"><strong>PubMed 37769084</strong></a></p>
+<p>You should not pre-read the methods section in detail. The point of the exercise is to let the agent read the paper, explain it back to you, propose an analysis plan, run it on Galaxy (or locally), and then place its own results next to the paper’s. You will direct the agent and approve its decisions; the heavy lifting is what Orbit does between your prompts.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Submission
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Submit your final PDF summary via this Google form:</p>
+<p><a href="https://forms.gle/zQNnxCqTD3TJH19W7"><strong>https://forms.gle/zQNnxCqTD3TJH19W7</strong></a></p>
+<p><strong>The deadline is the start of next Tuesday’s class.</strong> One PDF per student. Use your Penn State email address on the form.</p>
+</div>
+</div>
+<section id="before-you-start" class="level3">
+<h3 class="anchored" data-anchor-id="before-you-start">5.1 Before you start</h3>
+<p>Confirm that everything from §3 and §4 above is in place:</p>
+<ul>
+<li>Orbit launches with <code>npm start</code> from inside <code>~/pi-galaxy-analyst/app/</code></li>
+<li>Your <strong>Anthropic API key</strong> is configured (Preferences → LLM)</li>
+<li>Your <strong>Galaxy API key</strong> is configured (Preferences → Galaxy), pointing at <code>https://usegalaxy.org</code> (or another server you have access to)</li>
+<li>The footer shows a <strong>green</strong> Galaxy connection dot</li>
+</ul>
+<p>If any of those are missing, fix them before going further—this exercise relies on Galaxy doing most of the compute.</p>
+</section>
+<section id="step-1-start-a-fresh-project-and-read-the-paper" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-start-a-fresh-project-and-read-the-paper">5.2 Step 1 — Start a fresh project and read the paper</h3>
+<p>Create a new, empty directory for this exercise and open Orbit pointing at it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/analyses/pmid-37769084</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/pi-galaxy-analyst/app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When Orbit opens, switch the working directory (<code>Cmd/Ctrl+O</code>) to <code>~/analyses/pmid-37769084</code> if it is not already there. A fresh <code>notebook.md</code> will be created and committed to git automatically.</p>
+<p>Now ask Orbit to read the paper and tell you what is in it:</p>
+<blockquote class="blockquote">
+<p><em>Read the paper at https://pubmed.ncbi.nlm.nih.gov/37769084/ and write a brief summary in the notebook of: (a) the biological question, (b) the experimental design (organism, conditions, replicates), (c) the type of sequencing data and where it is deposited (GEO, SRA, ENA accessions), and (d) the bioinformatics pipeline the authors used.</em></p>
+</blockquote>
+<p>The agent will fetch the abstract, follow links to the full text where possible, and write the summary into <code>notebook.md</code>. <strong>Read what it wrote.</strong> If anything is missing or seems wrong, push back:</p>
+<blockquote class="blockquote">
+<p><em>I do not see a SRA/GEO accession in your summary. Search again and confirm.</em></p>
+</blockquote>
+<p>Iterate until the summary correctly identifies the public sequencing data backing the paper.</p>
+</section>
+<section id="step-2-generate-a-replication-plan" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-generate-a-replication-plan">5.3 Step 2 — Generate a replication plan</h3>
+<p>Once the paper is summarized, ask for a plan:</p>
+<blockquote class="blockquote">
+<p><em>Generate a plan for replicating the RNA-seq analysis described in this paper. Use Galaxy where possible. Map each step to a specific Galaxy tool (or a local command if Galaxy is not the right fit). Include parameter choices and explain where you got each parameter (paper text, default, your judgment).</em></p>
+</blockquote>
+<p>Orbit will draft the plan <strong>in chat</strong> as a markdown section—<em>not</em> in the notebook yet. It will tag each step <code>[local]</code>, <code>[hybrid]</code>, or <code>[remote]</code> based on what Galaxy can run.</p>
+<p>Review the plan critically:</p>
+<ul>
+<li>Does the data fetch step use the correct accessions from Step 1?</li>
+<li>Are the QC and alignment tools sensible?</li>
+<li>Does the differential expression step match what the paper used (DESeq2, edgeR, limma-voom)?</li>
+<li>Are read counts, genome build, and annotation versions called out?</li>
+</ul>
+<p>Push back where needed:</p>
+<blockquote class="blockquote">
+<p><em>Step 4 uses the GRCh38 reference, but the paper aligned to mm10. Revise.</em></p>
+</blockquote>
+<p>When the plan looks right, approve it (<code>yes</code>, <code>looks good</code>, <code>go ahead</code>). Orbit will then show a <strong>parameter table</strong> for review. Adjust any parameters you want to change, then approve again. <strong>Only after both approvals does the plan get written into <code>notebook.md</code> and execution start.</strong></p>
+</section>
+<section id="step-3-execute-the-plan" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-execute-the-plan">5.4 Step 3 — Execute the plan</h3>
+<p>Tell Orbit to run the plan. For long-running Galaxy steps it will dispatch the job, embed a tracking block in the notebook, and either wait or move on, depending on dependencies.</p>
+<p>While jobs run:</p>
+<ul>
+<li>The <strong>Activity</strong> tab streams every command and shows the proc-monitor for local steps</li>
+<li>The <strong>Notebook</strong> tab shows the live plan with <code>[ ]</code> / <code>[x]</code> / <code>[!]</code> step status</li>
+<li>The footer shows token / cost usage</li>
+</ul>
+<p>When a Galaxy job is in flight, you can ask <code>/execute</code> or just say <em>“check on the running invocations”</em> to advance.</p>
+<p>If a step fails, do not retry blindly. Ask Orbit <em>why</em>:</p>
+<blockquote class="blockquote">
+<p><em>Step 3 failed. Read the Galaxy job log and explain what went wrong.</em></p>
+</blockquote>
+<p>Then decide whether to fix parameters, switch tools, or skip the step with a note.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>This will take time
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RNA-seq alignment and quantification against a mammalian genome are not fast. Expect Galaxy queue waits plus tens of minutes per step. Start early; do not begin Step 3 the night before the deadline.</p>
+</div>
+</div>
+</section>
+<section id="step-4-compare-your-results-to-the-published-results" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-compare-your-results-to-the-published-results">5.5 Step 4 — Compare your results to the published results</h3>
+<p>When the plan completes, ask Orbit to compare its output to the paper’s:</p>
+<blockquote class="blockquote">
+<p><em>Compare the differentially expressed genes you identified to those reported in the paper (look at the supplementary tables if available). Calculate overlap, agreement on direction of change, and note any major differences. Add the comparison as a new section in the notebook.</em></p>
+</blockquote>
+<p>Then ask for a PDF:</p>
+<blockquote class="blockquote">
+<p><em>Generate a PDF summary of this entire analysis. Include: (1) the paper summary, (2) the replication plan as executed, (3) the parameters used, (4) key result figures or tables, (5) the comparison with the published results, and (6) a short reflection on what matched, what did not, and why. Save the PDF as summary.pdf in this directory.</em></p>
+</blockquote>
+<p>Orbit can generate PDFs through <code>pandoc</code> or a similar local tool. If the first attempt looks rough, iterate:</p>
+<blockquote class="blockquote">
+<p><em>The PDF is missing the comparison table. Re-render including everything I just listed.</em></p>
+</blockquote>
+</section>
+<section id="step-5-submit-the-pdf" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-submit-the-pdf">5.6 Step 5 — Submit the PDF</h3>
+<p>Once <code>summary.pdf</code> looks complete:</p>
+<ol type="1">
+<li><p>Open it and read it through. Confirm every section above is present</p></li>
+<li><p>Commit your project to git:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/analyses/pmid-37769084</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add notebook.md summary.pdf</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Replication of PMID 37769084"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Upload <code>summary.pdf</code> via the Google form: <a href="https://forms.gle/zQNnxCqTD3TJH19W7"><strong>https://forms.gle/zQNnxCqTD3TJH19W7</strong></a>. One PDF per student. Use your Penn State email address on the form</p></li>
+</ol>
+</section>
+<section id="what-counts-as-a-successful-replication" class="level3">
+<h3 class="anchored" data-anchor-id="what-counts-as-a-successful-replication">5.7 What counts as a successful replication?</h3>
+<p>Full numerical agreement is <strong>not</strong> the bar. RNA-seq pipelines have many parameter choices, and even moderate differences (different aligner, different annotation version) can change individual gene-level results.</p>
+<p>What we are looking for in your PDF:</p>
+<ul>
+<li><strong>You understood what the paper did.</strong> The summary section is correct</li>
+<li><strong>Your plan is defensible.</strong> Each step makes biological and technical sense; choices are justified</li>
+<li><strong>You actually ran it.</strong> The notebook shows real Galaxy invocations and real outputs, not just plans</li>
+<li><strong>You honestly compared.</strong> If your top differentially expressed genes do not match the paper’s, say so and offer a hypothesis (sample mix-up? different normalization? annotation version?)</li>
+<li><strong>The PDF is readable.</strong> A scientist who has not seen the paper should be able to follow what you did</li>
+</ul>
+</section>
+<section id="tips-and-gotchas" class="level3">
+<h3 class="anchored" data-anchor-id="tips-and-gotchas">5.8 Tips and gotchas</h3>
+<ul>
+<li><strong>Start with the paper, not the data.</strong> If you go straight to “download these FASTQs and run an RNA-seq pipeline” without grounding the analysis in the paper’s design, your comparison will be impossible</li>
+<li><strong>Use <code>/summarize</code> periodically.</strong> It pulls a digest into <code>notebook.md</code> so you (and the agent) can stay oriented when the chat history gets long</li>
+<li><strong>Push back on the agent.</strong> If a plan step looks wrong, <em>say so</em>. Orbit will revise. Approving without thinking defeats the exercise</li>
+<li><strong>Use the Galaxy MCP search.</strong> Asking <em>“search the Galaxy IWC for a published RNA-seq DE workflow”</em> often yields a ready-made workflow that does most of the heavy lifting</li>
+<li><strong>Cost.</strong> Watch the cost indicator in the footer. Long, chatty sessions on Opus can add up; switch to Sonnet (<code>/model sonnet</code>) for routine steps</li>
+<li><strong>Save often.</strong> <code>notebook.md</code> is git-tracked automatically, but committing your own milestones gives you cleaner restore points if you need to back out a bad plan</li>
+</ul>
+<p>If you get stuck for more than a couple of hours on the same step, post in the class channel—someone else is probably stuck on the same thing.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
