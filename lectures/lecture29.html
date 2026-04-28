@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 29: Skills, MCP Servers, and Installing Orbit – BMMB554</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -405,13 +403,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="agentic-skills">1. Agentic Skills</h2>
 <section id="what-is-a-skill" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-a-skill">1.1 What is a skill?</h3>
-<p>A <strong>skill</strong> is a small, self-contained packet of <em>operational know-how</em> that an agent can load on demand. It is not new model weights, not a code library, and not a fine-tune—it is <strong>markdown</strong> (sometimes with helper scripts) that tells the agent <em>how</em> to do a task: what the steps are, what gotchas to watch for, what tool order works, what conventions a particular project uses.</p>
-<p>A useful analogy: imagine you onboard a new postdoc. They are smart, but they do not know your lab’s conventions—which servers to use, which tool flags you prefer, where the data lives, which scripts are blessed. A skill is the one-page handover note for one such convention. The agent reads it the moment it needs it, follows it, and forgets it again.</p>
-<p>Three things distinguish skills from “just put it in the prompt”:</p>
+<p>A <strong>skill</strong> is a short, self-contained set of instructions an agent can pull in when it needs them. It is just <strong>a markdown file</strong> (sometimes with a helper script next to it) that explains <em>how</em> to do one specific task: the steps, the common mistakes, the order of tools, the conventions a particular project uses. Skills do not change the model itself—they are reading material the agent picks up only when the topic comes up.</p>
+<p>A useful analogy: imagine you onboard a new postdoc. They are smart, but they do not know your lab’s conventions—which servers to use, which tool flags you prefer, where the data lives, which scripts are blessed. A skill is the one-page handover note for one such convention. The agent reads it the moment it needs it, follows it, and sets it aside again.</p>
+<p>Three things make skills different from “just put the instructions in the prompt”:</p>
 <ol type="1">
-<li><strong>On-demand loading.</strong> A skill only enters the context when the agent decides it is relevant. You can have hundreds of skills available without paying for hundreds of prompts’ worth of tokens on every turn.</li>
-<li><strong>Routing by description.</strong> Each skill carries a one-line description; the agent (or a router) reads the descriptions, not the full bodies, to decide which to load.</li>
-<li><strong>Discoverable + shareable.</strong> Skills live in a folder structure on disk or in a GitHub repo. A team can curate a set, version them, and pull them into many agents.</li>
+<li><strong>Loaded only when needed.</strong> A skill is added to the conversation only when the agent decides it is relevant. You can keep hundreds of skills around without making every prompt longer (and more expensive)</li>
+<li><strong>Picked by short description.</strong> Each skill has a one-line description at the top. The agent reads only those one-liners to decide which skill to open, instead of reading every full skill every time</li>
+<li><strong>Easy to share and reuse.</strong> Skills are plain files on disk or in a GitHub repo. A lab can curate a set, version-control them with git, and use the same set across many projects and many agents</li>
 </ol>
 </section>
 <section id="anatomy-of-a-claude-style-skill" class="level3">
@@ -422,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ├── reference.md      # optional: deeper docs the skill links to
 └── scripts/          # optional: helper scripts the skill invokes
     └── do_thing.py</code></pre>
-<p><code>SKILL.md</code> starts with a YAML frontmatter:</p>
+<p><code>SKILL.md</code> starts with a small <strong>header block</strong> that names the skill and describes what it is for. The header is fenced by a pair of <code>---</code> lines—the same syntax Quarto uses at the top of these lecture files (it is called <em>YAML frontmatter</em>, but you do not need to remember the term):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">name:</span><span class="co"> paired-collection-from-pe-fastq</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> Build a Galaxy paired-collection dataset from a directory of paired-end FASTQ files using the Apply Rules DSL.</span></span>
@@ -437,7 +435,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Gotchas</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Apply Rules trims <span class="in">`_R1`</span>/<span class="in">`_R2`</span> suffixes by default; ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A repo of skills usually has a top-level <strong><code>AGENTS.md</code></strong> that acts as a router—a flat index of “topic → path-to-SKILL.md” so the agent can pick the right one without scanning every file.</p>
+<p>The <code>name</code> and <code>description</code> are the bits the agent checks first when deciding whether to open the file.</p>
+<p>A repository of skills usually has a top-level <strong><code>AGENTS.md</code></strong> that lists every skill in one place—a kind of table of contents (<em>“this topic → that file”</em>) so the agent can find the right one without opening every skill on disk.</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">1.3 Examples</h3>
@@ -461,7 +460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="header">
 <th>Vendor</th>
 <th>Name for “skill-like” packaging</th>
-<th>Storage</th>
+<th>Where it lives</th>
 <th>Loaded how</th>
 </tr>
 </thead>
@@ -469,28 +468,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><strong>Anthropic (Claude)</strong></td>
 <td><strong>Skills</strong></td>
-<td><code>SKILL.md</code> files in <code>~/.claude/skills/</code> or <code>&lt;repo&gt;/.claude/skills/</code> (or fetched from GitHub)</td>
-<td>Agent reads YAML frontmatter, decides on demand</td>
+<td>Plain markdown files in <code>~/.claude/skills/</code> (or inside a project, or in a GitHub repo)</td>
+<td>Agent reads the header line, opens the file when relevant</td>
 </tr>
 <tr class="even">
 <td><strong>OpenAI</strong></td>
-<td><strong>Custom GPTs</strong> (UI), <strong>Apps in ChatGPT</strong>, <strong>Custom Instructions</strong>, <strong>tools</strong> in the Assistants/Agents API</td>
-<td>OpenAI servers (Custom GPTs) or as JSON tool specs (API)</td>
-<td>Selected by user (Custom GPT) or routed by the model (tools)</td>
+<td><strong>Custom GPTs</strong> (in ChatGPT), <strong>Apps in ChatGPT</strong>, <strong>Custom Instructions</strong>, or <strong>tools</strong> in the Assistants/Agents API</td>
+<td>OpenAI’s servers (Custom GPTs) or written as a small JSON description (API)</td>
+<td>Picked by the user (Custom GPT) or chosen by the model (tools)</td>
 </tr>
 <tr class="odd">
 <td><strong>Google (Gemini)</strong></td>
-<td><strong>Gems</strong> (consumer app), <strong>Tools + Apps</strong> in Vertex AI Agent Builder</td>
-<td>Google servers</td>
-<td>Selected by user (Gems) or routed by the agent runtime (Tools)</td>
+<td><strong>Gems</strong> (in the Gemini app), or <strong>Tools + Apps</strong> in Vertex AI Agent Builder</td>
+<td>Google’s servers</td>
+<td>Picked by the user (Gems) or chosen by the agent at runtime (Tools)</td>
 </tr>
 </tbody>
 </table>
 <p>Three observations are worth emphasizing:</p>
 <ol type="1">
-<li><strong>Anthropic’s skills are file-system native.</strong> Anyone can write one in markdown, drop it in a folder, and the agent picks it up. There is no UI to click through, no server to register with. This is why community repos of skills exist on GitHub</li>
-<li><strong>OpenAI’s Custom GPTs are closer to a published persona</strong> than to a skill. They bundle instructions, retrieval files, and tools behind a single ChatGPT-only entry point. Outside of ChatGPT (e.g.&nbsp;via the API) the analog is “Assistants” with attached tool specs and files</li>
-<li><strong>Gemini Gems</strong> sit roughly in the middle: a saved system-prompt + tools combination that lives in Google’s app rather than as a portable file on disk. Vertex AI Agent Builder is more programmable but cloud-hosted</li>
+<li><strong>Anthropic’s skills are just files.</strong> Anyone can write one in markdown, drop it in a folder, and the agent picks it up. There is no website to log into, no server to register with. This is why people share whole repos of skills on GitHub</li>
+<li><strong>OpenAI’s Custom GPTs are closer to a published persona</strong> than to a skill. Each one bundles instructions, attached files, and tools behind a single ChatGPT entry point. Outside of ChatGPT (e.g.&nbsp;through OpenAI’s API) the closest equivalent is an “Assistant” with attached files and tool definitions</li>
+<li><strong>Gemini Gems</strong> sit roughly in the middle: a saved combination of instructions and tools that lives inside Google’s app rather than as a portable file on your disk. Google’s Vertex AI Agent Builder is more programmable but runs on Google Cloud rather than on your laptop</li>
 </ol>
 <p>For this course we focus on the Claude/Loom/Orbit convention because it is the only one that is fully <em>file-based, portable, and Git-trackable</em>—which is exactly the property you want when teaching reproducible analyses.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -505,9 +504,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="callout-body-container callout-body">
 <p>A useful mental hierarchy:</p>
 <ul>
-<li><strong>System prompt</strong> = “who you are” (always loaded)</li>
-<li><strong>Tool</strong> = “verb you can call” (always loaded as a callable)</li>
-<li><strong>Skill</strong> = “playbook for a verb” (loaded only when needed)</li>
+<li><strong>System prompt</strong> = “who you are” — always part of the conversation</li>
+<li><strong>Tool</strong> = “an action the agent can take” (run a command, edit a file, call an API) — always available</li>
+<li><strong>Skill</strong> = “playbook for a tricky task” — pulled in only when the agent decides it is relevant</li>
 </ul>
 </div>
 </div>
@@ -518,23 +517,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="mcp-servers">2. MCP Servers</h2>
 <section id="what-problem-mcp-solves" class="level3">
 <h3 class="anchored" data-anchor-id="what-problem-mcp-solves">2.1 What problem MCP solves</h3>
-<p>Imagine every agent (Claude Code, Orbit, Cursor, Cline, GPT, …) wants to call into your lab’s database, into Galaxy, into PubMed. Without a standard, every agent has to ship custom code for every backend, and every backend has to ship custom adapters for every agent. That is an N×M problem.</p>
-<p>The <strong>Model Context Protocol (MCP)</strong>, introduced by Anthropic in late 2024 and now adopted by every major agent vendor, is a small, JSON-RPC–based, vendor-neutral protocol that breaks the N×M problem into N+M:</p>
+<p>Suppose every agent (Claude Code, Orbit, Cursor, Cline, ChatGPT, …) wants to talk to your lab’s database, to Galaxy, and to PubMed. Without a shared standard, every agent has to ship its own custom code for each one of those services, and every service has to ship a different adapter for each agent. With <em>N</em> agents and <em>M</em> services, that is <em>N × M</em> pieces of glue code—it does not scale.</p>
+<p>The <strong>Model Context Protocol (MCP)</strong>, introduced by Anthropic in late 2024 and now adopted by every major agent vendor, is a small <strong>shared protocol</strong>—a common language both sides agree to speak. It cuts that <em>N × M</em> down to <em>N + M</em>:</p>
 <ul>
-<li>An <strong>MCP server</strong> exposes <em>tools</em>, <em>resources</em>, and <em>prompts</em> over the protocol.</li>
-<li>Any <strong>MCP client</strong> (agent) can speak to any MCP server.</li>
+<li>An <strong>MCP server</strong> is a small program that exposes some service (your database, Galaxy, PubMed, …) in the MCP language</li>
+<li>An <strong>MCP client</strong> is the agent</li>
+<li>Any agent that speaks MCP can talk to any server that speaks MCP</li>
 </ul>
-<p>You write a server once, every MCP-aware agent can use it.</p>
+<p>You write a server once; every MCP-aware agent can use it.</p>
 </section>
 <section id="what-does-a-server-provide" class="level3">
 <h3 class="anchored" data-anchor-id="what-does-a-server-provide">2.2 What does a server provide?</h3>
 <p>An MCP server can offer three kinds of things:</p>
 <ul>
-<li><strong>Tools</strong> — callable verbs the agent can invoke (e.g.&nbsp;<code>pubmed_search</code>, <code>galaxy_run_tool</code>)</li>
-<li><strong>Resources</strong> — read-only data the agent can pull into context (e.g.&nbsp;a CSV the server exposes, the contents of an issue tracker)</li>
-<li><strong>Prompts</strong> — reusable prompt templates the user can invoke</li>
+<li><strong>Tools</strong> — actions the agent can run on your behalf (e.g.&nbsp;<em>search PubMed</em> or <em>launch a Galaxy workflow</em>)</li>
+<li><strong>Resources</strong> — read-only data the agent can pull in (e.g.&nbsp;a CSV the server exposes, or the current contents of an issue tracker)</li>
+<li><strong>Prompts</strong> — ready-made prompt templates a user can invoke</li>
 </ul>
-<p>For research workflows the <strong>tools</strong> facet is by far the most common.</p>
+<p>For research work, the <strong>tools</strong> category is by far the most common.</p>
 </section>
 <section id="adding-an-mcp-server-to-claude-code-or-orbit" class="level3">
 <h3 class="anchored" data-anchor-id="adding-an-mcp-server-to-claude-code-or-orbit">2.3 Adding an MCP server to Claude Code or Orbit</h3>
@@ -625,11 +625,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Vet third-party MCP servers before trusting them
+<span class="screen-reader-only">Warning</span>Check third-party MCP servers before you run them
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>An MCP server runs as a process on your laptop with whatever permissions you give it. Reading random <code>npx</code>-installable servers from the internet is the same trust decision as installing any other CLI tool. Prefer servers that (a) are popular on the awesome list, (b) have an active git history, and (c) you can audit before running. For credentialed services (GitHub, Slack, your Galaxy account), the server holds your token—treat it like you would any other CLI authenticated to that service.</p>
+<p>An MCP server is a program that runs on your laptop with whatever permissions you give it. Installing a random one off the internet is exactly the same trust decision as installing any other command-line tool. Prefer servers that (a) appear on the popular curated lists, (b) have an active git history, and (c) you (or someone you trust) can read before running. If a server logs into a service for you (GitHub, Slack, your Galaxy account), it is holding your access token—treat it as carefully as you would any other tool you let into that account.</p>
 </div>
 </div>
 <hr>
@@ -639,15 +639,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="install-orbit">3. Install Orbit</h2>
 <section id="what-is-orbit" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-orbit">3.1 What is Orbit?</h3>
-<p><a href="https://github.com/nekrut/pi-galaxy-analyst">Orbit</a> is the Electron desktop shell for <strong>Loom</strong>, an AI co-scientist for Galaxy bioinformatics. It is the GUI front end you will use in lab; the brain underneath (Loom) is the same regardless of whether you launch from the terminal or from Orbit.</p>
+<p><a href="https://github.com/nekrut/pi-galaxy-analyst">Orbit</a> is the desktop application for <strong>Loom</strong>, an AI co-scientist for Galaxy bioinformatics. It is built with <a href="https://www.electronjs.org/">Electron</a> (the same framework as Slack or VS Code), so it looks and behaves like a normal desktop window. The “brain” underneath (Loom) is the same whether you launch it from the terminal or from Orbit—Orbit just gives you a friendlier window into it.</p>
 <p>Orbit gives you:</p>
 <ul>
-<li>A three-pane layout: file tree on the left, chat in the middle, tabbed artifacts (notebook, activity, file preview) on the right</li>
-<li>A live, git-tracked <code>notebook.md</code> that is the durable project log</li>
-<li>An activity tab streaming every command the agent runs, plus per-process CPU / memory</li>
-<li>Built-in Galaxy connection management and skill-repo configuration</li>
+<li>A three-pane layout: file tree on the left, chat in the middle, and on the right a tabbed pane that shows the live notebook, the agent’s activity, or a previewed file</li>
+<li>A live, git-tracked <code>notebook.md</code> that acts as the durable project log</li>
+<li>An activity tab that streams every command the agent runs, plus per-process CPU and memory</li>
+<li>Built-in management for Galaxy connections and skill repositories</li>
 </ul>
-<p>In this lecture you install the <strong><code>notebook-rewire-pure-md</code></strong> branch, which is the active development line.</p>
+<p>In this lecture you install the <strong><code>notebook-rewire-pure-md</code></strong> branch, which is the active development version.</p>
 </section>
 <section id="prerequisites" class="level3">
 <h3 class="anchored" data-anchor-id="prerequisites">3.2 Prerequisites</h3>
@@ -707,39 +707,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Electron’s runtime libraries
+<span class="screen-reader-only">Note</span>If <code>npm start</code> complains about a missing library
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Electron needs a handful of system libraries (<code>libnss3</code>, <code>libatk1.0-0</code>, <code>libgbm1</code>, <code>libasound2</code>, etc.). On a fresh Ubuntu install they are pulled in transitively by <code>build-essential</code> plus normal desktop packages, but if <code>npm start</code> errors out about a missing <code>.so</code>, install the named library with <code>sudo apt install</code> and re-run.</p>
+<p>Orbit (because it is built on Electron) relies on a handful of standard system libraries—typically <code>libnss3</code>, <code>libatk1.0-0</code>, <code>libgbm1</code>, and <code>libasound2</code>. On a normal Ubuntu desktop these are usually already there, but if <code>npm start</code> fails with a message like <code>cannot open shared object file: libnss3.so</code>, install the named library with <code>sudo apt install &lt;name&gt;</code> and try again.</p>
 </div>
 </div>
 </section>
 <section id="windows-via-wsl2" class="level3">
 <h3 class="anchored" data-anchor-id="windows-via-wsl2">3.5 Windows (via WSL2)</h3>
-<p>Orbit on Windows runs <strong>inside WSL2</strong>—the same Linux container you set up for Claude Code in <a href="../lectures/lecture28.html">Lecture 28</a>. If you do not yet have WSL2, follow §6 of that lecture first. Everything below runs <strong>inside the Ubuntu window</strong>, not PowerShell.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build essentials + git + curl (skip if already installed)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> git curl build-essential</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Node via nvm</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install <span class="at">--lts</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># uv (for the Galaxy MCP server)</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw">|</span> <span class="fu">sh</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dev branch into your Linux home directory (NOT /mnt/c/)</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> notebook-rewire-pure-md <span class="dt">\</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    https://github.com/nekrut/pi-galaxy-analyst.git</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pi-galaxy-analyst</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On Windows, Orbit runs <strong>inside WSL2</strong> (the Windows Subsystem for Linux, version 2)—a lightweight Linux environment that ships with Windows 10/11. We use it because every tool below was written for Linux and runs much more reliably there than on native Windows.</p>
+<section id="step-1-install-or-update-wsl2" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-install-or-update-wsl2">Step 1 — Install (or update) WSL2</h4>
+<p>Right-click the <strong>Start</strong> button, choose <strong>Terminal (Admin)</strong> or <strong>Windows PowerShell (Admin)</strong>, and run <strong>one</strong> of the following depending on your situation:</p>
+<p><strong>If you have never installed WSL2 before:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">--</span>web-download <span class="op">-</span>d Ubuntu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Reboot when prompted. After the reboot, an <strong>Ubuntu</strong> window opens automatically and asks you to create a Linux username and password. These are <em>separate</em> from your Windows login—pick anything memorable.</p>
+<p><strong>If WSL2 is already installed</strong> (e.g.&nbsp;you set it up for Claude Code in <a href="../lectures/lecture28.html">Lecture 28</a>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>update</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">-</span>l <span class="op">-</span>v</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first command brings WSL2 itself up to date; the second lists your installed Linux distributions and confirms each is on <strong>VERSION 2</strong>. If you already have Ubuntu running on WSL2, you do not need to install anything else—just open the <strong>Ubuntu</strong> app from the Start menu and skip to Step 2.</p>
+<p>If you have an older WSL1 distribution and want to upgrade it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>set-version Ubuntu <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Windows 10 vs.&nbsp;Windows 11
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Windows 11 ships with WSL2 ready to go. On Windows 10, run <code>wsl --update</code> in an admin PowerShell <em>before</em> <code>wsl --install</code> to make sure you have a recent enough WSL release.</p>
+</div>
+</div>
+</section>
+<section id="step-2-open-the-ubuntu-shell" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-open-the-ubuntu-shell">Step 2 — Open the Ubuntu shell</h4>
+<p>From here on, every command runs <strong>inside the Ubuntu window</strong> (the Linux shell), not in PowerShell. If the window is not already open, click <strong>Start</strong>, type “Ubuntu”, and press Enter.</p>
+</section>
+<section id="step-3-install-the-prerequisites-and-orbit" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-install-the-prerequisites-and-orbit">Step 3 — Install the prerequisites and Orbit</h4>
+<p>Inside the Ubuntu shell, paste:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build essentials + git + curl (skip any already installed)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> git curl build-essential</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Node via nvm (skip if you already have Node 18+)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nvm</span> install <span class="at">--lts</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># uv (for the Galaxy MCP server)</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the dev branch into your Linux home directory (NOT /mnt/c/)</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> notebook-rewire-pure-md <span class="dt">\</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    https://github.com/nekrut/pi-galaxy-analyst.git</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pi-galaxy-analyst</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -751,12 +784,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>Keep the clone in <code>~/</code> (the Linux filesystem). Cloning into <code>/mnt/c/...</code> makes every read crawl across the WSL boundary</li>
-<li>Electron will pop a real Windows desktop window thanks to WSLg—you should see the Orbit UI on your normal desktop, not in the terminal</li>
-<li>If you see <code>libnss3.so: cannot open shared object file</code>: <code>sudo apt install -y libnss3 libatk1.0-0 libgbm1 libasound2</code> and re-run <code>npm start</code></li>
+<li>Keep the clone inside <code>~/</code> (your Linux home directory). Cloning into <code>/mnt/c/...</code> (your Windows drive) makes every file read crawl across the boundary between the two filesystems and will be much slower</li>
+<li>Even though you launched it from a Linux shell, Orbit will appear as a normal Windows desktop window (Windows takes care of this for you through a feature called WSLg)</li>
+<li>If you see <code>libnss3.so: cannot open shared object file</code>, install the missing libraries: <code>sudo apt install -y libnss3 libatk1.0-0 libgbm1 libasound2</code>, then re-run <code>npm start</code></li>
+<li>To get back to the Ubuntu shell later, search for “Ubuntu” in the Start menu, or run <code>wsl</code> from any Windows terminal</li>
 </ul>
 </div>
 </div>
+</section>
 </section>
 <section id="first-launch" class="level3">
 <h3 class="anchored" data-anchor-id="first-launch">3.6 First launch</h3>
@@ -783,11 +818,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <p>Because you cloned a branch directly, updating to the latest dev commit is just:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/pi-galaxy-analyst</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/pi-galaxy-analyst</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> app <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> start</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <hr>
@@ -911,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

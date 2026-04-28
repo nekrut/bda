@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lecture 27: Bulk RNA-seq Theory – BMMB554</title>
+<title>Lecture 26: Bulk RNA-seq Theory – BMMB554</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -141,7 +141,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture27.html">27. Bulk RNA-seq Theory</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture26.html">26. Bulk RNA-seq Theory</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -302,20 +302,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture27.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">27. Bulk RNA-seq Theory</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture28.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">28. Running Claude Code</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lectures/lecture29.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">29. Skills, MCP Servers, and Installing Orbit</span></a>
+  <a href="../lectures/lecture26.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">26. Bulk RNA-seq Theory</span></a>
   </div>
 </li>
       </ul>
@@ -380,14 +368,14 @@ window.Quarto = {
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">9. Summary</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture27.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture26.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture27.html">27. Bulk RNA-seq Theory</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture1.html">Lectures</a></li><li class="breadcrumb-item"><a href="../lectures/lecture26.html">26. Bulk RNA-seq Theory</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Lecture 27: Bulk RNA-seq Theory</h1>
+<h1 class="title">Lecture 26: Bulk RNA-seq Theory</h1>
 </div>
 
 
@@ -576,7 +564,7 @@ window.Quarto = {
 <p>Bulk RNA-seq reads come from mature (spliced) mRNA but are usually aligned to the (unspliced) genome. The alignment has to cope with a physical gap between the genomic location of a read’s 5’ portion and the location of its 3’ portion—the intervening intron, which may be hundreds or hundreds of thousands of bases long.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../images/lecture27/splice_alignment.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="../images/lecture26/splice_alignment.svg" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>A read sampled from the mature mRNA is represented in the genome as two (or more) non-adjacent blocks separated by intronic DNA. The aligner must discover the junction and encode the gap as the <code>N</code> CIGAR operator. Unlike DNA-seq, a contiguous genomic alignment does not exist for junction-spanning reads.</figcaption>
 </figure>
 </div>
@@ -595,7 +583,7 @@ window.Quarto = {
 </ol>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../images/lecture27/star_mmp.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="../images/lecture26/star_mmp.svg" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>STAR’s MMP-and-stitch procedure. Each MMP provides an unambiguously placed anchor; anchors are joined by searching the genomic gap for canonical splice motifs. Short anchors adjacent to junctions are the main source of misalignment; the two-pass mode fixes this.</figcaption>
 </figure>
 </div>
@@ -616,7 +604,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../images/lecture27/hisat2_index.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="../images/lecture26/hisat2_index.svg" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>HISAT2’s hierarchical index. Finding a seed in the global index localizes a read to one or a few of the ~55,000 local indexes; extension (including splice-aware extension) then stays within a single local index, keeping the working set small.</figcaption>
 </figure>
 </div>
@@ -647,7 +635,7 @@ window.Quarto = {
 <p>The coloring is the key to quantification. Two different isoforms of the same gene share many k-mers (identical exons) but differ at isoform-specific k-mers (alternative exons, alternative UTRs). In the DBG, these appear as <strong>bubbles</strong>: a shared path splits into transcript-specific branches and merges again.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../images/lecture27/kallisto_tdbg.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="../images/lecture26/kallisto_tdbg.svg" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>kallisto’s transcriptome DBG. Each node is a k-mer and carries the set of transcripts it belongs to. A read is a path of k-mers; the <strong>equivalence class</strong> is the intersection of the color sets along that path. Reads whose equivalence class has one transcript are unambiguous; reads with larger equivalence classes feed the EM step.</figcaption>
 </figure>
 </div>
@@ -677,7 +665,7 @@ window.Quarto = {
 </ol>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../images/lecture27/salmon_selective.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<p><img src="../images/lecture26/salmon_selective.svg" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>salmon processes each read into a rich equivalence class (transcripts that passed a lightweight alignment score threshold), then runs EM with three learned bias models.</figcaption>
 </figure>
 </div>
@@ -1279,7 +1267,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/nekrut\.github\.io\/bda\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1611,4 +1599,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture27.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nekrut/bda/edit/main/lectures/lecture26.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
