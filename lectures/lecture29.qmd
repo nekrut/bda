@@ -11,6 +11,7 @@ By the end of this lecture, you will be able to:
 - Describe the **Model Context Protocol (MCP)** and what an "MCP server" provides to an agent
 - Find and evaluate MCP servers for bioinformatics and literature work
 - Install the latest **Orbit** (`notebook-rewire-pure-md` branch) on macOS, Linux, or Windows (WSL2)
+- Configure Orbit with your Anthropic API key and a Galaxy API key
 
 ---
 
@@ -331,25 +332,97 @@ npm start
 - To get back to the Ubuntu shell later, search for "Ubuntu" in the Start menu, or run `wsl` from any Windows terminal
 :::
 
-### 3.6 First launch
+---
 
-On first launch Orbit shows a one-page **welcome screen** asking for:
+## 4. Configure Orbit
 
-1. **LLM provider + API key.** Use **Anthropic** with the class API key from [Lecture 28](lecture28.qmd). You can also pick OpenAI, Google AI, or a local OpenAI-compatible endpoint
-2. **Galaxy server (optional).** A URL plus your Galaxy API key. Skip if you only want to test the chat for now
-3. **Working directory.** Pick (or create) a folder where this project's `notebook.md` will live
+The first time you run `npm start` Orbit opens a one-page **welcome screen** that walks you through three things:
 
-You can change any of these later from **Preferences** (`Cmd/Ctrl+,`).
+1. **LLM provider + API key** (which model and which credentials to use)
+2. **Galaxy server** (optional --- the bioinformatics platform Orbit can drive on your behalf)
+3. **Working directory** (which folder this project's `notebook.md` will live in)
 
-A quick smoke test once Orbit is open:
+You can skip any of these on first launch and fill them in later from **Preferences** (`Cmd+,` on macOS, `Ctrl+,` on Linux/WSL2).
+
+### 4.1 LLM provider and API key
+
+For this class:
+
+- **Provider:** Anthropic
+- **API key:** the class key from [Lecture 28](lecture28.qmd) (`sk-ant-...`)
+- **Model:** the default (`claude-sonnet-4-6`) is fine
+
+Other providers (OpenAI, Google AI, or a local OpenAI-compatible server like Ollama) work too---you would just paste the matching key. If your `ANTHROPIC_API_KEY` environment variable is already set in your shell, Orbit can pick it up automatically.
+
+### 4.2 Galaxy server and API key
+
+The "Galaxy server" entry tells Orbit which Galaxy instance to use when the agent decides a step is best run on Galaxy. It needs two things: the **server URL** and your **Galaxy API key**.
+
+#### Server URL
+
+For this course, use:
+
+```
+https://usegalaxy.org
+```
+
+If you have a preferred Galaxy server (e.g. Galaxy Europe at `https://usegalaxy.eu`, or your institution's instance), paste that URL instead. Orbit supports several servers in parallel through "profiles" --- you can switch between them later from Preferences or with `/connect`.
+
+#### Getting your Galaxy API key
+
+A Galaxy **API key** is a long random string that lets a program log in to Galaxy on your behalf, the same way a password would---except it can be regenerated and revoked without changing your password. Galaxy generates one for you on demand:
+
+1. Go to your Galaxy server in a web browser (e.g. [`https://usegalaxy.org`](https://usegalaxy.org)) and **log in** with your usual Galaxy account
+2. From the top menu bar, click **User → Preferences**
+3. On the Preferences page, click **Manage API Key**
+4. If you have never created a key before, click **Create a new key** (or **Generate**); if a key already exists you can simply copy it. Keys look like a long hexadecimal string, e.g. `f9cad7b01a47213585a62adb4e8daa8d`
+5. Copy the key to your clipboard
+
+Now paste that key into Orbit's welcome screen (or **Preferences → Galaxy**) under the **API key** field, with the server URL filled in above. Click **Save** or **Connect**; the green dot in Orbit's footer should light up to confirm the connection.
+
+::: {.callout-important}
+## Treat the Galaxy API key like a password
+Anyone who has your key can read your histories, launch jobs that cost compute time on your account, and delete your data. Do not paste it into chat, into a public notebook, or into a file inside a Git repo. Orbit stores it in `~/.loom/config.json` on your laptop only.
+
+If you think a key has leaked, return to **User → Preferences → Manage API Key** and click **Create a new key**---this immediately revokes the old one.
+:::
+
+### 4.3 Working directory
+
+This is the folder where Orbit will create (and keep updating) the project's `notebook.md`---the durable record of every plan, decision, and result. Pick a fresh, empty folder for each new analysis, e.g.:
+
+- macOS / Linux: `~/analyses/mrsa-alignment`
+- WSL2: same---use a path under `~/`, **not** under `/mnt/c/...`
+
+You can switch working directories any time from inside Orbit with `Cmd/Ctrl+O`; each folder becomes its own project.
+
+### 4.4 Smoke test
+
+Once configuration is saved, Orbit drops you into the chat. Try:
 
 > *List the files in this directory and tell me what kind of project this looks like.*
 
-If the agent responds with a sensible summary and you see its tool calls streaming in the **Activity** tab, the install worked.
+If the agent responds sensibly and you see its tool calls streaming in the **Activity** tab on the right, your install plus configuration are working.
+
+If you connected a Galaxy server, also try:
+
+> *Search the Galaxy tool catalog for `fastp` and tell me which versions are available.*
+
+A correct answer (or a meaningful "I cannot reach the server" error) confirms the Galaxy API key is wired up.
+
+### 4.5 Where the configuration lives
+
+Once you save, Orbit writes your settings to a single file:
+
+```
+~/.loom/config.json
+```
+
+The file holds your provider keys, Galaxy profiles, and skill repository list. You can edit it by hand if you prefer, but the safer path is to use Orbit's Preferences dialog.
 
 ::: {.callout-note}
-## Updating later
-Because you cloned a branch directly, updating to the latest dev commit is just:
+## Updating Orbit later
+Because you cloned a branch directly, updating to the latest development commit is just:
 
 ```bash
 cd ~/pi-galaxy-analyst
@@ -364,6 +437,7 @@ npm start
 
 ## What we covered
 
-- A **skill** is a markdown packet of operational know-how an agent loads on demand. Anthropic's `SKILL.md` convention is the most portable and is what Loom/Orbit follow
-- **MCP** is a vendor-neutral protocol that lets any agent talk to any tool server. Bioinformatics-relevant servers exist for Galaxy, NCBI, bioRxiv/medRxiv, UniProt, Ensembl, and more---curated in the official and community awesome lists
-- **Orbit** is the Electron front end for the Loom co-scientist. Install the `notebook-rewire-pure-md` branch from `https://github.com/nekrut/pi-galaxy-analyst`; the steps are nearly identical across macOS, Linux, and WSL2
+- A **skill** is a markdown file with operational know-how that an agent reads only when it is relevant. Anthropic's `SKILL.md` convention is the most portable and is what Loom/Orbit follow
+- **MCP** is a small shared protocol that lets any agent talk to any tool server. Bioinformatics-relevant servers exist for Galaxy, NCBI, bioRxiv/medRxiv, UniProt, Ensembl, and more---curated in the official and community awesome lists
+- **Orbit** is the desktop application for the Loom co-scientist. Install the `notebook-rewire-pure-md` branch from `https://github.com/nekrut/pi-galaxy-analyst`; the steps are nearly identical across macOS, Linux, and WSL2
+- Configuring Orbit means three things: the **Anthropic API key** (from Lecture 28), the **Galaxy server URL + Galaxy API key** (from Galaxy → User → Preferences → Manage API Key), and a **working directory** for `notebook.md`
