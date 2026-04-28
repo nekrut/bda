@@ -18,15 +18,15 @@ By the end of this lecture, you will be able to:
 
 ### 1.1 What is a skill?
 
-A **skill** is a small, self-contained packet of *operational know-how* that an agent can load on demand. It is not new model weights, not a code library, and not a fine-tune---it is **markdown** (sometimes with helper scripts) that tells the agent *how* to do a task: what the steps are, what gotchas to watch for, what tool order works, what conventions a particular project uses.
+A **skill** is a short, self-contained set of instructions an agent can pull in when it needs them. It is just **a markdown file** (sometimes with a helper script next to it) that explains *how* to do one specific task: the steps, the common mistakes, the order of tools, the conventions a particular project uses. Skills do not change the model itself---they are reading material the agent picks up only when the topic comes up.
 
-A useful analogy: imagine you onboard a new postdoc. They are smart, but they do not know your lab's conventions---which servers to use, which tool flags you prefer, where the data lives, which scripts are blessed. A skill is the one-page handover note for one such convention. The agent reads it the moment it needs it, follows it, and forgets it again.
+A useful analogy: imagine you onboard a new postdoc. They are smart, but they do not know your lab's conventions---which servers to use, which tool flags you prefer, where the data lives, which scripts are blessed. A skill is the one-page handover note for one such convention. The agent reads it the moment it needs it, follows it, and sets it aside again.
 
-Three things distinguish skills from "just put it in the prompt":
+Three things make skills different from "just put the instructions in the prompt":
 
-1. **On-demand loading.** A skill only enters the context when the agent decides it is relevant. You can have hundreds of skills available without paying for hundreds of prompts' worth of tokens on every turn.
-2. **Routing by description.** Each skill carries a one-line description; the agent (or a router) reads the descriptions, not the full bodies, to decide which to load.
-3. **Discoverable + shareable.** Skills live in a folder structure on disk or in a GitHub repo. A team can curate a set, version them, and pull them into many agents.
+1. **Loaded only when needed.** A skill is added to the conversation only when the agent decides it is relevant. You can keep hundreds of skills around without making every prompt longer (and more expensive)
+2. **Picked by short description.** Each skill has a one-line description at the top. The agent reads only those one-liners to decide which skill to open, instead of reading every full skill every time
+3. **Easy to share and reuse.** Skills are plain files on disk or in a GitHub repo. A lab can curate a set, version-control them with git, and use the same set across many projects and many agents
 
 ### 1.2 Anatomy of a Claude-style skill
 
@@ -40,7 +40,7 @@ my-skill/
     └── do_thing.py
 ```
 
-`SKILL.md` starts with a YAML frontmatter:
+`SKILL.md` starts with a small **header block** that names the skill and describes what it is for. The header is fenced by a pair of `---` lines---the same syntax Quarto uses at the top of these lecture files (it is called *YAML frontmatter*, but you do not need to remember the term):
 
 ```markdown
 ---
@@ -59,7 +59,9 @@ description: Build a Galaxy paired-collection dataset from a directory of paired
 - Apply Rules trims `_R1`/`_R2` suffixes by default; ...
 ```
 
-A repo of skills usually has a top-level **`AGENTS.md`** that acts as a router---a flat index of "topic → path-to-SKILL.md" so the agent can pick the right one without scanning every file.
+The `name` and `description` are the bits the agent checks first when deciding whether to open the file.
+
+A repository of skills usually has a top-level **`AGENTS.md`** that lists every skill in one place---a kind of table of contents (*"this topic → that file"*) so the agent can find the right one without opening every skill on disk.
 
 ### 1.3 Examples
 
@@ -71,17 +73,17 @@ A repo of skills usually has a top-level **`AGENTS.md`** that acts as a router--
 
 Different vendors have converged on similar ideas with different vocabularies:
 
-| Vendor | Name for "skill-like" packaging | Storage | Loaded how |
+| Vendor | Name for "skill-like" packaging | Where it lives | Loaded how |
 |---|---|---|---|
-| **Anthropic (Claude)** | **Skills** | `SKILL.md` files in `~/.claude/skills/` or `<repo>/.claude/skills/` (or fetched from GitHub) | Agent reads YAML frontmatter, decides on demand |
-| **OpenAI** | **Custom GPTs** (UI), **Apps in ChatGPT**, **Custom Instructions**, **tools** in the Assistants/Agents API | OpenAI servers (Custom GPTs) or as JSON tool specs (API) | Selected by user (Custom GPT) or routed by the model (tools) |
-| **Google (Gemini)** | **Gems** (consumer app), **Tools + Apps** in Vertex AI Agent Builder | Google servers | Selected by user (Gems) or routed by the agent runtime (Tools) |
+| **Anthropic (Claude)** | **Skills** | Plain markdown files in `~/.claude/skills/` (or inside a project, or in a GitHub repo) | Agent reads the header line, opens the file when relevant |
+| **OpenAI** | **Custom GPTs** (in ChatGPT), **Apps in ChatGPT**, **Custom Instructions**, or **tools** in the Assistants/Agents API | OpenAI's servers (Custom GPTs) or written as a small JSON description (API) | Picked by the user (Custom GPT) or chosen by the model (tools) |
+| **Google (Gemini)** | **Gems** (in the Gemini app), or **Tools + Apps** in Vertex AI Agent Builder | Google's servers | Picked by the user (Gems) or chosen by the agent at runtime (Tools) |
 
 Three observations are worth emphasizing:
 
-1. **Anthropic's skills are file-system native.** Anyone can write one in markdown, drop it in a folder, and the agent picks it up. There is no UI to click through, no server to register with. This is why community repos of skills exist on GitHub
-2. **OpenAI's Custom GPTs are closer to a published persona** than to a skill. They bundle instructions, retrieval files, and tools behind a single ChatGPT-only entry point. Outside of ChatGPT (e.g. via the API) the analog is "Assistants" with attached tool specs and files
-3. **Gemini Gems** sit roughly in the middle: a saved system-prompt + tools combination that lives in Google's app rather than as a portable file on disk. Vertex AI Agent Builder is more programmable but cloud-hosted
+1. **Anthropic's skills are just files.** Anyone can write one in markdown, drop it in a folder, and the agent picks it up. There is no website to log into, no server to register with. This is why people share whole repos of skills on GitHub
+2. **OpenAI's Custom GPTs are closer to a published persona** than to a skill. Each one bundles instructions, attached files, and tools behind a single ChatGPT entry point. Outside of ChatGPT (e.g. through OpenAI's API) the closest equivalent is an "Assistant" with attached files and tool definitions
+3. **Gemini Gems** sit roughly in the middle: a saved combination of instructions and tools that lives inside Google's app rather than as a portable file on your disk. Google's Vertex AI Agent Builder is more programmable but runs on Google Cloud rather than on your laptop
 
 For this course we focus on the Claude/Loom/Orbit convention because it is the only one that is fully *file-based, portable, and Git-trackable*---which is exactly the property you want when teaching reproducible analyses.
 
@@ -89,9 +91,9 @@ For this course we focus on the Claude/Loom/Orbit convention because it is the o
 ## Skills vs. tools vs. system prompt
 A useful mental hierarchy:
 
-- **System prompt** = "who you are" (always loaded)
-- **Tool** = "verb you can call" (always loaded as a callable)
-- **Skill** = "playbook for a verb" (loaded only when needed)
+- **System prompt** = "who you are" --- always part of the conversation
+- **Tool** = "an action the agent can take" (run a command, edit a file, call an API) --- always available
+- **Skill** = "playbook for a tricky task" --- pulled in only when the agent decides it is relevant
 :::
 
 ---
@@ -100,24 +102,25 @@ A useful mental hierarchy:
 
 ### 2.1 What problem MCP solves
 
-Imagine every agent (Claude Code, Orbit, Cursor, Cline, GPT, ...) wants to call into your lab's database, into Galaxy, into PubMed. Without a standard, every agent has to ship custom code for every backend, and every backend has to ship custom adapters for every agent. That is an N×M problem.
+Suppose every agent (Claude Code, Orbit, Cursor, Cline, ChatGPT, ...) wants to talk to your lab's database, to Galaxy, and to PubMed. Without a shared standard, every agent has to ship its own custom code for each one of those services, and every service has to ship a different adapter for each agent. With *N* agents and *M* services, that is *N × M* pieces of glue code---it does not scale.
 
-The **Model Context Protocol (MCP)**, introduced by Anthropic in late 2024 and now adopted by every major agent vendor, is a small, JSON-RPC--based, vendor-neutral protocol that breaks the N×M problem into N+M:
+The **Model Context Protocol (MCP)**, introduced by Anthropic in late 2024 and now adopted by every major agent vendor, is a small **shared protocol**---a common language both sides agree to speak. It cuts that *N × M* down to *N + M*:
 
-- An **MCP server** exposes *tools*, *resources*, and *prompts* over the protocol.
-- Any **MCP client** (agent) can speak to any MCP server.
+- An **MCP server** is a small program that exposes some service (your database, Galaxy, PubMed, ...) in the MCP language
+- An **MCP client** is the agent
+- Any agent that speaks MCP can talk to any server that speaks MCP
 
-You write a server once, every MCP-aware agent can use it.
+You write a server once; every MCP-aware agent can use it.
 
 ### 2.2 What does a server provide?
 
 An MCP server can offer three kinds of things:
 
-- **Tools** --- callable verbs the agent can invoke (e.g. `pubmed_search`, `galaxy_run_tool`)
-- **Resources** --- read-only data the agent can pull into context (e.g. a CSV the server exposes, the contents of an issue tracker)
-- **Prompts** --- reusable prompt templates the user can invoke
+- **Tools** --- actions the agent can run on your behalf (e.g. *search PubMed* or *launch a Galaxy workflow*)
+- **Resources** --- read-only data the agent can pull in (e.g. a CSV the server exposes, or the current contents of an issue tracker)
+- **Prompts** --- ready-made prompt templates a user can invoke
 
-For research workflows the **tools** facet is by far the most common.
+For research work, the **tools** category is by far the most common.
 
 ### 2.3 Adding an MCP server to Claude Code or Orbit
 
@@ -165,8 +168,8 @@ The community is moving fast; treat the table below as *currently popular* rathe
 | **`slack-mcp`** (official) | Read/write to Slack channels |
 
 ::: {.callout-warning}
-## Vet third-party MCP servers before trusting them
-An MCP server runs as a process on your laptop with whatever permissions you give it. Reading random `npx`-installable servers from the internet is the same trust decision as installing any other CLI tool. Prefer servers that (a) are popular on the awesome list, (b) have an active git history, and (c) you can audit before running. For credentialed services (GitHub, Slack, your Galaxy account), the server holds your token---treat it like you would any other CLI authenticated to that service.
+## Check third-party MCP servers before you run them
+An MCP server is a program that runs on your laptop with whatever permissions you give it. Installing a random one off the internet is exactly the same trust decision as installing any other command-line tool. Prefer servers that (a) appear on the popular curated lists, (b) have an active git history, and (c) you (or someone you trust) can read before running. If a server logs into a service for you (GitHub, Slack, your Galaxy account), it is holding your access token---treat it as carefully as you would any other tool you let into that account.
 :::
 
 ---
@@ -175,16 +178,16 @@ An MCP server runs as a process on your laptop with whatever permissions you giv
 
 ### 3.1 What is Orbit?
 
-[Orbit](https://github.com/nekrut/pi-galaxy-analyst) is the Electron desktop shell for **Loom**, an AI co-scientist for Galaxy bioinformatics. It is the GUI front end you will use in lab; the brain underneath (Loom) is the same regardless of whether you launch from the terminal or from Orbit.
+[Orbit](https://github.com/nekrut/pi-galaxy-analyst) is the desktop application for **Loom**, an AI co-scientist for Galaxy bioinformatics. It is built with [Electron](https://www.electronjs.org/) (the same framework as Slack or VS Code), so it looks and behaves like a normal desktop window. The "brain" underneath (Loom) is the same whether you launch it from the terminal or from Orbit---Orbit just gives you a friendlier window into it.
 
 Orbit gives you:
 
-- A three-pane layout: file tree on the left, chat in the middle, tabbed artifacts (notebook, activity, file preview) on the right
-- A live, git-tracked `notebook.md` that is the durable project log
-- An activity tab streaming every command the agent runs, plus per-process CPU / memory
-- Built-in Galaxy connection management and skill-repo configuration
+- A three-pane layout: file tree on the left, chat in the middle, and on the right a tabbed pane that shows the live notebook, the agent's activity, or a previewed file
+- A live, git-tracked `notebook.md` that acts as the durable project log
+- An activity tab that streams every command the agent runs, plus per-process CPU and memory
+- Built-in management for Galaxy connections and skill repositories
 
-In this lecture you install the **`notebook-rewire-pure-md`** branch, which is the active development line.
+In this lecture you install the **`notebook-rewire-pure-md`** branch, which is the active development version.
 
 ### 3.2 Prerequisites
 
@@ -247,20 +250,60 @@ npm start
 ```
 
 ::: {.callout-note}
-## Electron's runtime libraries
-Electron needs a handful of system libraries (`libnss3`, `libatk1.0-0`, `libgbm1`, `libasound2`, etc.). On a fresh Ubuntu install they are pulled in transitively by `build-essential` plus normal desktop packages, but if `npm start` errors out about a missing `.so`, install the named library with `sudo apt install` and re-run.
+## If `npm start` complains about a missing library
+Orbit (because it is built on Electron) relies on a handful of standard system libraries---typically `libnss3`, `libatk1.0-0`, `libgbm1`, and `libasound2`. On a normal Ubuntu desktop these are usually already there, but if `npm start` fails with a message like `cannot open shared object file: libnss3.so`, install the named library with `sudo apt install <name>` and try again.
 :::
 
 ### 3.5 Windows (via WSL2)
 
-Orbit on Windows runs **inside WSL2**---the same Linux container you set up for Claude Code in [Lecture 28](lecture28.qmd). If you do not yet have WSL2, follow §6 of that lecture first. Everything below runs **inside the Ubuntu window**, not PowerShell.
+On Windows, Orbit runs **inside WSL2** (the Windows Subsystem for Linux, version 2)---a lightweight Linux environment that ships with Windows 10/11. We use it because every tool below was written for Linux and runs much more reliably there than on native Windows.
+
+#### Step 1 --- Install (or update) WSL2
+
+Right-click the **Start** button, choose **Terminal (Admin)** or **Windows PowerShell (Admin)**, and run **one** of the following depending on your situation:
+
+**If you have never installed WSL2 before:**
+
+```powershell
+wsl --install --web-download -d Ubuntu
+```
+
+Reboot when prompted. After the reboot, an **Ubuntu** window opens automatically and asks you to create a Linux username and password. These are *separate* from your Windows login---pick anything memorable.
+
+**If WSL2 is already installed** (e.g. you set it up for Claude Code in [Lecture 28](lecture28.qmd)):
+
+```powershell
+wsl --update
+wsl -l -v
+```
+
+The first command brings WSL2 itself up to date; the second lists your installed Linux distributions and confirms each is on **VERSION 2**. If you already have Ubuntu running on WSL2, you do not need to install anything else---just open the **Ubuntu** app from the Start menu and skip to Step 2.
+
+If you have an older WSL1 distribution and want to upgrade it:
+
+```powershell
+wsl --set-version Ubuntu 2
+```
+
+::: {.callout-tip}
+## Windows 10 vs. Windows 11
+Windows 11 ships with WSL2 ready to go. On Windows 10, run `wsl --update` in an admin PowerShell *before* `wsl --install` to make sure you have a recent enough WSL release.
+:::
+
+#### Step 2 --- Open the Ubuntu shell
+
+From here on, every command runs **inside the Ubuntu window** (the Linux shell), not in PowerShell. If the window is not already open, click **Start**, type "Ubuntu", and press Enter.
+
+#### Step 3 --- Install the prerequisites and Orbit
+
+Inside the Ubuntu shell, paste:
 
 ```bash
-# Build essentials + git + curl (skip if already installed)
+# Build essentials + git + curl (skip any already installed)
 sudo apt update
 sudo apt install -y git curl build-essential
 
-# Node via nvm
+# Node via nvm (skip if you already have Node 18+)
 curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 source ~/.bashrc
 nvm install --lts
@@ -282,9 +325,10 @@ npm start
 
 ::: {.callout-tip}
 ## WSL2 reminders
-- Keep the clone in `~/` (the Linux filesystem). Cloning into `/mnt/c/...` makes every read crawl across the WSL boundary
-- Electron will pop a real Windows desktop window thanks to WSLg---you should see the Orbit UI on your normal desktop, not in the terminal
-- If you see `libnss3.so: cannot open shared object file`: `sudo apt install -y libnss3 libatk1.0-0 libgbm1 libasound2` and re-run `npm start`
+- Keep the clone inside `~/` (your Linux home directory). Cloning into `/mnt/c/...` (your Windows drive) makes every file read crawl across the boundary between the two filesystems and will be much slower
+- Even though you launched it from a Linux shell, Orbit will appear as a normal Windows desktop window (Windows takes care of this for you through a feature called WSLg)
+- If you see `libnss3.so: cannot open shared object file`, install the missing libraries: `sudo apt install -y libnss3 libatk1.0-0 libgbm1 libasound2`, then re-run `npm start`
+- To get back to the Ubuntu shell later, search for "Ubuntu" in the Start menu, or run `wsl` from any Windows terminal
 :::
 
 ### 3.6 First launch
