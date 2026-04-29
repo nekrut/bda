@@ -301,6 +301,28 @@ Windows 11 ships with WSL2 ready to go. On Windows 10, run `wsl --update` in an 
 
 From here on, every command runs **inside the Ubuntu window** (the Linux shell), not in PowerShell. If the window is not already open, click **Start**, type "Ubuntu", and press Enter.
 
+::: {.callout-warning}
+## Your prompt should end in `$`, not `#`
+
+If your prompt looks like `root@DESKTOP-XXX:/#` (ends in `#`), you are logged in as **root** --- this is wrong, and `npm` will refuse to install in this state.
+
+It usually means you skipped the Ubuntu first-run setup (closed the window during the username prompt, never rebooted, or typed `wsl` in PowerShell before ever opening the Ubuntu app). To fix it, **inside the root shell**:
+
+```bash
+adduser yourname              # pick any lowercase username
+usermod -aG sudo yourname
+exit
+```
+
+Then in **PowerShell**:
+
+```powershell
+ubuntu config --default-user yourname
+```
+
+Close every Ubuntu window, reopen the **Ubuntu** app from the Start menu --- the prompt should now end in `$` and show `yourname@...`.
+:::
+
 #### Step 3 --- Install the prerequisites and Orbit
 
 Inside the Ubuntu shell, paste:
