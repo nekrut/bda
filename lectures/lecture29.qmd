@@ -187,7 +187,7 @@ One of the reasons we are running this lecture is so you find these bugs --- whe
 
 ### 3.1 What is Orbit?
 
-[Orbit](https://github.com/nekrut/pi-galaxy-analyst) is the desktop application for **Loom**, an AI co-scientist for Galaxy bioinformatics. It is built with [Electron](https://www.electronjs.org/) (the same framework as Slack or VS Code), so it looks and behaves like a normal desktop window. The "brain" underneath (Loom) is the same whether you launch it from the terminal or from Orbit---Orbit just gives you a friendlier window into it.
+[Orbit](https://github.com/galaxyproject/loom) is the desktop application for **Loom**, an AI co-scientist for Galaxy bioinformatics. It is built with [Electron](https://www.electronjs.org/) (the same framework as Slack or VS Code), so it looks and behaves like a normal desktop window. The "brain" underneath (Loom) is the same whether you launch it from the terminal or from Orbit---Orbit just gives you a friendlier window into it.
 
 Orbit gives you:
 
@@ -196,7 +196,7 @@ Orbit gives you:
 - An activity tab that streams every command the agent runs, plus per-process CPU and memory
 - Built-in management for Galaxy connections and skill repositories
 
-In this lecture you install the **`notebook-rewire-pure-md`** branch, which is the active development version.
+The repository now lives at **`galaxyproject/loom`**; in this lecture you build it from source off the default branch.
 
 ### 3.2 Prerequisites
 
@@ -216,10 +216,9 @@ Open **Terminal** (`Cmd+Space`, type "Terminal") and run:
 # Node, git, uv
 brew install node git uv
 
-# Clone the dev branch
-git clone -b notebook-rewire-pure-md \
-    https://github.com/nekrut/pi-galaxy-analyst.git
-cd pi-galaxy-analyst
+# Clone Loom
+git clone https://github.com/galaxyproject/loom.git
+cd loom
 
 # Install both workspaces (root + Electron app)
 npm install
@@ -248,10 +247,9 @@ nvm install --lts
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.bashrc
 
-# Clone the dev branch
-git clone -b notebook-rewire-pure-md \
-    https://github.com/nekrut/pi-galaxy-analyst.git
-cd pi-galaxy-analyst
+# Clone Loom
+git clone https://github.com/galaxyproject/loom.git
+cd loom
 
 npm install
 cd app && npm install
@@ -321,11 +319,10 @@ nvm install --lts
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.bashrc
 
-# Clone the dev branch into your Linux home directory (NOT /mnt/c/)
+# Clone Loom into your Linux home directory (NOT /mnt/c/)
 cd ~
-git clone -b notebook-rewire-pure-md \
-    https://github.com/nekrut/pi-galaxy-analyst.git
-cd pi-galaxy-analyst
+git clone https://github.com/galaxyproject/loom.git
+cd loom
 
 npm install
 cd app && npm install
